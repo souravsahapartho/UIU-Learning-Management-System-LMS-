@@ -3,6 +3,8 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const crypto = require("crypto");
 
+require("dotenv").config();
+
 const app = express();
 
 process.on("uncaughtException", (err) =>
@@ -27,10 +29,11 @@ const hashPassword = (password) => {
 };
 
 const db = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "elms_db",
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  port: process.env.MYSQLPORT,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -537,9 +540,11 @@ app.use((req, res) =>
   }),
 );
 
-app.listen(5005, "0.0.0.0", () => {
+const PORT = process.env.PORT || 5005;
+
+app.listen(PORT, "0.0.0.0", () => {
   console.log("=========================================");
-  console.log("🚀 SERVER VERSION FINAL RUNNING on port 5005");
-  console.log("✅ Assignments, Feedback & Complaints Verified");
+  console.log(`🚀 SERVER RUNNING ON PORT ${PORT}`);
+  console.log("✅ Railway MySQL Connected");
   console.log("=========================================");
 });
