@@ -4,13 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ELMS - Educational Learning Management System</title>
-    <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="elms_favicon.jpg?v=2" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-
     <style>
       * {
         margin: 0;
@@ -97,7 +95,6 @@
       .logo span {
         color: #2563eb;
       }
-
       .left-nav-container {
         display: flex;
         align-items: center;
@@ -827,6 +824,9 @@
       .dot-orange {
         background: #f97316;
       }
+      .dot-red {
+        background: #ef4444;
+      }
       .act-text {
         font-size: 15px;
         font-weight: 600;
@@ -1028,7 +1028,6 @@
         border-color: #fca5a5;
       }
 
-      /* Progress Page Specific Styles */
       .progress-page-header {
         margin-bottom: 30px;
       }
@@ -1310,8 +1309,10 @@
       .notif-icon.orange {
         background-color: #f97316;
       }
+      .notif-icon.red {
+        background-color: #ef4444;
+      }
 
-      /* 🔥 New Course Player Styles 🔥 */
       .course-player-container {
         max-width: 1200px;
         margin: 0 auto;
@@ -1374,7 +1375,6 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
       }
 
-      /* 🔥 Chat Specific Styles 🔥 */
       .cp-chat-area {
         background: white;
         border: 1px solid #e2e8f0;
@@ -1466,14 +1466,13 @@
         background: #2563eb;
         border-color: #2563eb;
       }
-
       .cp-layout {
         display: grid;
         grid-template-columns: 2.5fr 1fr;
         gap: 24px;
       }
 
-      /* 🔥 DARK MODE GLOBAL STYLES 🔥 */
+      /* DARK MODE */
       body.dark-mode {
         background-color: #0f172a;
         color: #e2e8f0;
@@ -1691,7 +1690,7 @@
         border-left-color: #ef4444 !important;
       }
 
-      /* 🔥 COMPREHENSIVE RESPONSIVE STYLES 🔥 */
+      /* RESPONSIVE */
       @media (max-width: 1200px) {
         .dashboard-content {
           padding: 30px;
@@ -1754,9 +1753,6 @@
         .hero-image-box {
           height: 250px;
         }
-        .hero-image-box h2 {
-          font-size: 28px;
-        }
         .auth-box {
           padding: 30px 20px;
         }
@@ -1809,15 +1805,6 @@
         }
         .user-card .action-container {
           flex-direction: column;
-        }
-        .btn-approve-full,
-        .btn-reject-full {
-          width: 100%;
-        }
-        .cp-meta {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 8px;
         }
         .aac-top,
         .aac-bottom,
@@ -1901,7 +1888,7 @@
     </style>
   </head>
   <body>
-    <!-- nav -->
+    <!-- Navbar -->
     <nav class="navbar" id="main-nav">
       <div class="logo" onclick="navigateTo('landing')">
         <span>ELMS</span> Platform
@@ -1919,7 +1906,7 @@
       </div>
     </nav>
 
-    <!-- Landing page -->
+    <!-- Landing -->
     <div id="landing-page" class="page">
       <div class="hero-section">
         <div class="hero-content">
@@ -1958,7 +1945,7 @@
       </div>
     </div>
 
-    <!-- login -->
+    <!-- Login -->
     <div id="login-page" class="page hidden">
       <div class="auth-container">
         <div class="auth-box">
@@ -2161,9 +2148,9 @@
       </header>
 
       <div class="dashboard-content">
-        <!-- home dashboard -->
+        <!-- HOME -->
         <div id="dashboard-home-content">
-          <!-- Student dash -->
+          <!-- Student Dashboard -->
           <div id="student-dashboard-view" style="display: none">
             <div
               class="welcome-banner"
@@ -2175,7 +2162,6 @@
                 Welcome back! Here's what is happening with your account today.
               </p>
             </div>
-
             <div class="stats-grid">
               <div class="student-card blue-card">
                 <div class="card-header">
@@ -2242,8 +2228,6 @@
                 <div class="desc">Out of 4 total</div>
               </div>
             </div>
-
-            <!-- Due Assignments Section -->
             <div
               style="
                 display: flex;
@@ -2273,8 +2257,8 @@
                     background: #ef4444;
                     border-radius: 4px;
                   "
-                ></span>
-                Pending Assignments
+                ></span
+                >Pending Assignments
               </h2>
             </div>
             <div
@@ -2284,7 +2268,6 @@
                 grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
               "
             ></div>
-
             <div
               style="
                 display: flex;
@@ -2313,8 +2296,8 @@
                     background: #2563eb;
                     border-radius: 4px;
                   "
-                ></span>
-                Continue Learning
+                ></span
+                >Continue Learning
               </h2>
               <button
                 class="btn btn-outline"
@@ -2335,7 +2318,7 @@
             ></div>
           </div>
 
-          <!-- INSTRUCTOR DASHBOARD -->
+          <!-- Instructor Dashboard -->
           <div id="instructor-dashboard-view" style="display: none">
             <div class="welcome-banner" style="background-color: #0f172a">
               <h1 id="welcome-msg-inst">Dashboard Overview</h1>
@@ -2343,7 +2326,6 @@
                 Welcome back! Here's what is happening with your account today.
               </p>
             </div>
-
             <div class="stats-grid">
               <div class="instructor-card blue-gradient">
                 <div class="card-top">
@@ -2418,7 +2400,6 @@
                 </div>
               </div>
             </div>
-
             <h2
               style="
                 font-size: 22px;
@@ -2463,7 +2444,6 @@
                 </div>
               </button>
             </div>
-
             <div class="submission-list">
               <div class="submission-header">
                 <h2 style="font-size: 20px; font-weight: 800; color: #0f172a">
@@ -2475,7 +2455,6 @@
               </div>
               <div id="instructor-enrollment-requests"></div>
             </div>
-
             <h2
               style="
                 font-size: 22px;
@@ -2495,8 +2474,8 @@
                   background: #2563eb;
                   border-radius: 4px;
                 "
-              ></span>
-              Your Uploaded Courses
+              ></span
+              >Your Uploaded Courses
             </h2>
             <div
               class="continue-learning-grid"
@@ -2504,7 +2483,7 @@
             ></div>
           </div>
 
-          <!-- Admin dashboard -->
+          <!-- Admin Dashboard -->
           <div id="admin-dashboard-view" style="display: none">
             <div class="admin-hero">
               <div class="admin-hero-content">
@@ -2528,7 +2507,6 @@
                 </div>
               </div>
             </div>
-
             <div class="stats-grid">
               <div class="instructor-card blue-gradient">
                 <div class="card-top">
@@ -2625,7 +2603,6 @@
                 </div>
               </div>
             </div>
-
             <div class="admin-action-grid">
               <div
                 class="admin-action-card"
@@ -2647,9 +2624,8 @@
                         <path
                           d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
                         ></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                      </svg>
-                      Manage Users</span
+                        <circle cx="9" cy="7" r="4"></circle></svg
+                      >Manage Users</span
                     ><svg
                       width="20"
                       height="20"
@@ -2662,7 +2638,7 @@
                       <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                   </div>
-                  <div class="aac-desc aac-desc-users">
+                  <div class="aac-desc">
                     Review instructor applications and manage accounts
                   </div>
                 </div>
@@ -2670,7 +2646,6 @@
                   Click to manage all users
                 </div>
               </div>
-
               <div
                 class="admin-action-card"
                 onclick="
@@ -2694,9 +2669,8 @@
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                         <path
                           d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
-                        ></path>
-                      </svg>
-                      Manage Courses</span
+                        ></path></svg
+                      >Manage Courses</span
                     ><svg
                       width="20"
                       height="20"
@@ -2709,7 +2683,7 @@
                       <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                   </div>
-                  <div class="aac-desc aac-desc-courses">
+                  <div class="aac-desc">
                     Review and approve new course submissions
                   </div>
                 </div>
@@ -2718,7 +2692,6 @@
                 </div>
               </div>
             </div>
-
             <div class="admin-activity-section">
               <div class="aas-header">
                 <div class="aas-icon">
@@ -2747,8 +2720,6 @@
                 id="admin-recent-activity-container"
               ></div>
             </div>
-
-            <!-- ALL COMPLAINTS SECTION -->
             <div class="admin-activity-section" style="margin-top: 24px">
               <div class="aas-header" style="margin-bottom: 16px">
                 <div
@@ -2788,7 +2759,7 @@
           </div>
         </div>
 
-        <!-- course browse sections -->
+        <!-- Browse Courses -->
         <div id="student-browse-courses-content" class="hidden">
           <button
             class="btn-back"
@@ -2804,9 +2775,8 @@
               stroke="currentColor"
               stroke-width="2"
             >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            Back to Dashboard
+              <path d="M19 12H5M12 19l-7-7 7-7" /></svg
+            >Back to Dashboard
           </button>
           <div class="settings-header" style="margin-bottom: 30px">
             <h1
@@ -2829,7 +2799,7 @@
           ></div>
         </div>
 
-        <!-- student progress section -->
+        <!-- Student Progress -->
         <div id="student-progress-content" class="hidden">
           <button
             class="btn-back"
@@ -2845,9 +2815,8 @@
               stroke="currentColor"
               stroke-width="2"
             >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            Back to Dashboard
+              <path d="M19 12H5M12 19l-7-7 7-7" /></svg
+            >Back to Dashboard
           </button>
           <div class="progress-page-header">
             <h1>Your Progress</h1>
@@ -2955,8 +2924,9 @@
               </div>
               <div class="cp-meta">
                 <div>
-                  16 of 24 lessons
-                  <span class="streak-badge">🔥 5 day streak</span>
+                  16 of 24 lessons<span class="streak-badge"
+                    >🔥 5 day streak</span
+                  >
                 </div>
               </div>
               <div class="prog-bar-bg">
@@ -2966,7 +2936,7 @@
           </div>
         </div>
 
-        <!-- SECTION: INSTRUCTOR UPLOAD COURSE VIEW -->
+        <!-- Instructor Upload Course -->
         <div id="instructor-upload-course-content" class="hidden">
           <button
             class="btn-back"
@@ -2982,9 +2952,8 @@
               stroke="currentColor"
               stroke-width="2"
             >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            Back to Dashboard
+              <path d="M19 12H5M12 19l-7-7 7-7" /></svg
+            >Back to Dashboard
           </button>
           <div class="upload-course-hero">
             <div class="upload-hero-icon">
@@ -3006,7 +2975,6 @@
               <p>Create and publish a new course</p>
             </div>
           </div>
-
           <div class="settings-card">
             <h3
               style="
@@ -3028,19 +2996,18 @@
                 margin-bottom: 20px;
               "
             />
-
             <div class="form-group" style="width: 100%">
-              <label>Course Title *</label>
-              <input
+              <label>Course Title *</label
+              ><input
                 type="text"
                 placeholder="e.g., Advanced React Patterns"
                 id="uc-title"
               />
             </div>
             <div class="form-group" style="width: 100%">
-              <label>Course Description *</label>
-              <textarea
-                placeholder="Describe what students will learn in this course..."
+              <label>Course Description *</label
+              ><textarea
+                placeholder="Describe what students will learn..."
                 style="min-height: 120px; resize: vertical"
                 id="uc-desc"
               ></textarea>
@@ -3055,8 +3022,8 @@
                 />
               </div>
               <div class="form-group" style="flex: 1; min-width: 200px">
-                <label>Difficulty Level</label>
-                <select id="uc-diff">
+                <label>Difficulty Level</label
+                ><select id="uc-diff">
                   <option>Beginner</option>
                   <option>Intermediate</option>
                   <option>Advanced</option>
@@ -3073,11 +3040,6 @@
               </div>
             </div>
           </div>
-          <div class="settings-card" style="display: none">
-            <input type="file" id="uc-thumbnail-input" class="hidden" />
-            <input type="file" id="uc-video-input" class="hidden" />
-            <input type="file" id="uc-doc-input" class="hidden" />
-          </div>
           <div
             style="
               display: flex;
@@ -3092,11 +3054,7 @@
             >
               Save as Draft
             </button>
-            <button
-              class="btn btn-primary"
-              style="display: flex; align-items: center; gap: 8px"
-              onclick="publishNewCourse()"
-            >
+            <button class="btn btn-primary" onclick="publishNewCourse()">
               <svg
                 width="18"
                 height="18"
@@ -3107,14 +3065,13 @@
               >
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="17 8 12 3 7 8"></polyline>
-                <line x1="12" y1="3" x2="12" y2="15"></line>
-              </svg>
-              Publish Course
+                <line x1="12" y1="3" x2="12" y2="15"></line></svg
+              >Publish Course
             </button>
           </div>
         </div>
 
-        <!-- admin user view -->
+        <!-- Admin Users -->
         <div id="admin-users-content" class="hidden">
           <button
             class="btn-back"
@@ -3130,9 +3087,8 @@
               stroke="currentColor"
               stroke-width="2"
             >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            Back to Dashboard
+              <path d="M19 12H5M12 19l-7-7 7-7" /></svg
+            >Back to Dashboard
           </button>
           <h2
             style="
@@ -3174,7 +3130,7 @@
           <div class="user-grid" id="admin-user-grid-container"></div>
         </div>
 
-        <!-- admin user profile view -->
+        <!-- Admin User Profile -->
         <div id="admin-user-profile-content" class="hidden">
           <button
             class="btn-back"
@@ -3190,14 +3146,13 @@
               stroke="currentColor"
               stroke-width="2"
             >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            Back to Users
+              <path d="M19 12H5M12 19l-7-7 7-7" /></svg
+            >Back to Users
           </button>
           <div id="user-profile-dynamic-content"></div>
         </div>
 
-        <!-- admin courses view-->
+        <!-- Admin Courses -->
         <div id="admin-courses-content" class="hidden">
           <button
             class="btn-back"
@@ -3213,9 +3168,8 @@
               stroke="currentColor"
               stroke-width="2"
             >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            Back to Dashboard
+              <path d="M19 12H5M12 19l-7-7 7-7" /></svg
+            >Back to Dashboard
           </button>
           <div
             class="admin-header"
@@ -3272,6 +3226,7 @@
           <div class="admin-course-grid" id="admin-course-list"></div>
         </div>
 
+        <!-- Notifications -->
         <div id="notifications-content-area" class="hidden">
           <button
             class="btn-back"
@@ -3287,9 +3242,8 @@
               stroke="currentColor"
               stroke-width="2"
             >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            Back to Dashboard
+              <path d="M19 12H5M12 19l-7-7 7-7" /></svg
+            >Back to Dashboard
           </button>
           <div class="settings-header">
             <h1
@@ -3313,7 +3267,7 @@
           ></div>
         </div>
 
-        <!-- settings -->
+        <!-- Settings -->
         <div id="settings-content-area" class="hidden">
           <div class="settings-header">
             <h1
@@ -3330,7 +3284,6 @@
               Manage your account settings and preferences
             </p>
           </div>
-
           <div class="settings-card">
             <h3
               style="
@@ -3355,17 +3308,14 @@
                   Enable dark theme for the platform
                 </p>
               </div>
-              <label class="toggle-switch">
-                <input
+              <label class="toggle-switch"
+                ><input
                   type="checkbox"
                   id="dark-mode-toggle"
-                  onchange="toggleDarkMode(this)"
-                />
-                <span class="slider"></span>
-              </label>
+                  onchange="toggleDarkMode(this)" /><span class="slider"></span
+              ></label>
             </div>
           </div>
-
           <div class="settings-card">
             <h3
               style="
@@ -3436,7 +3386,7 @@
           </div>
         </div>
 
-        <!-- 🔥 COURSE PLAYER (NEW DETAILED VIEW WITH CHAT, FEEDBACK & ASSIGNMENTS) 🔥 -->
+        <!-- Course Player -->
         <div id="course-player-content" class="hidden">
           <button
             class="btn-back"
@@ -3452,11 +3402,9 @@
               stroke="currentColor"
               stroke-width="2"
             >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            Back to Dashboard
+              <path d="M19 12H5M12 19l-7-7 7-7" /></svg
+            >Back to Dashboard
           </button>
-
           <div class="course-player-container">
             <div class="cp-header-area">
               <h1
@@ -3495,11 +3443,9 @@
                 ></div>
               </div>
             </div>
-
             <div class="cp-layout">
-              <!-- Left Side: Video & Content (Lockable Area) -->
               <div id="cp-content-wrapper" style="position: relative">
-                <!-- 🔥 Locked Overlay 🔥 -->
+                <!-- Locked Overlay -->
                 <div
                   id="cp-locked-overlay"
                   class="hidden"
@@ -3569,7 +3515,6 @@
                     course content, chat, assignments, and feedback.
                   </p>
                 </div>
-
                 <div class="cp-video-box">
                   <svg
                     viewBox="0 0 24 24"
@@ -3581,7 +3526,6 @@
                     <polygon points="10 8 16 12 10 16 10 8"></polygon>
                   </svg>
                 </div>
-
                 <div class="cp-lesson-info">
                   <h2
                     style="
@@ -3606,7 +3550,6 @@
                     projects.
                   </p>
                   <div style="display: flex; gap: 15px; flex-wrap: wrap">
-                    <!-- Mark as completed button (hidden for non-students) -->
                     <button
                       id="cp-mark-completed-btn"
                       class="btn btn-primary"
@@ -3622,9 +3565,10 @@
                         style="margin-right: 6px"
                       >
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                      </svg>
-                      Mark as Completed
+                        <polyline
+                          points="22 4 12 14.01 9 11.01"
+                        ></polyline></svg
+                      >Mark as Completed
                     </button>
                     <button
                       id="cp-resource-btn"
@@ -3650,14 +3594,11 @@
                         <polyline points="14 2 14 8 20 8"></polyline>
                         <line x1="12" y1="18" x2="12" y2="12"></line>
                         <line x1="9" y1="15" x2="12" y2="18"></line>
-                        <line x1="15" y1="15" x2="12" y2="18"></line>
-                      </svg>
-                      Download Resources
+                        <line x1="15" y1="15" x2="12" y2="18"></line></svg
+                      >Download Resources
                     </button>
                   </div>
                 </div>
-
-                <!-- Tabs Area -->
                 <div
                   style="
                     background: white;
@@ -3694,9 +3635,8 @@
                         <path
                           d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
                         ></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                      </svg>
-                      Enrolled Students
+                        <circle cx="9" cy="7" r="4"></circle></svg
+                      >Enrolled Students
                     </button>
                     <button
                       class="cp-tab cp-tab-assignments"
@@ -3716,10 +3656,8 @@
                         ></path>
                         <polyline points="14 2 14 8 20 8"></polyline>
                         <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
-                      </svg>
-                      Assignments
+                        <line x1="16" y1="17" x2="8" y2="17"></line></svg
+                      >Assignments
                     </button>
                     <button
                       class="cp-tab cp-tab-chat active"
@@ -3736,9 +3674,8 @@
                       >
                         <path
                           d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-                        ></path>
-                      </svg>
-                      Chat
+                        ></path></svg
+                      >Chat
                     </button>
                     <button
                       class="cp-tab cp-tab-feedback"
@@ -3755,13 +3692,10 @@
                       >
                         <polygon
                           points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-                        ></polygon>
-                      </svg>
-                      Feedback & Complaints
+                        ></polygon></svg
+                      >Feedback &amp; Complaints
                     </button>
                   </div>
-
-                  <!-- Dynamic Chat System -->
                   <div id="cp-chat-area-container">
                     <div class="cp-chat-area" id="cp-chat-messages"></div>
                     <div style="display: flex; gap: 10px; margin-top: 15px">
@@ -3787,19 +3721,12 @@
                       </button>
                     </div>
                   </div>
-
-                  <!-- 🔥 Feedback & Complaint System 🔥 -->
                   <div id="cp-feedback-area-container" class="hidden"></div>
-
-                  <!-- 🔥 Assignments System 🔥 -->
                   <div id="cp-assignments-area-container" class="hidden"></div>
-
-                  <!-- 🔥 Enrolled Students System 🔥 -->
                   <div id="cp-students-area-container" class="hidden"></div>
                 </div>
               </div>
-
-              <!-- Right Side: Lesson List (Always Visible) -->
+              <!-- Lesson List -->
               <div>
                 <div class="lesson-list-box">
                   <div
@@ -3911,7 +3838,6 @@
     <script>
       const API_URL = "https://elms-backend-d7mo.onrender.com";
       let currentUser = null;
-
       const courseGradients = [
         "linear-gradient(135deg, #3b82f6, #1e40af)",
         "linear-gradient(135deg, #10b981, #047857)",
@@ -3919,7 +3845,6 @@
         "linear-gradient(135deg, #8b5cf6, #5b21b6)",
         "linear-gradient(135deg, #ec4899, #be123c)",
       ];
-
       let currentCoursePlayerId = null;
       let currentCourseObj = null;
 
@@ -3929,7 +3854,7 @@
         courses: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>`,
         browse: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`,
         progress: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>`,
-        settings: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>`,
+        settings: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>`,
       };
 
       async function safeFetchJSON(url, options = {}) {
@@ -3972,7 +3897,6 @@
           const dmToggle = document.getElementById("dark-mode-toggle");
           if (dmToggle) dmToggle.checked = true;
         }
-
         try {
           const savedUser = localStorage.getItem("elms_current_user");
           if (savedUser && savedUser !== "undefined") {
@@ -4010,7 +3934,6 @@
           hour: "2-digit",
           minute: "2-digit",
         });
-
         try {
           const res = await fetch(`${API_URL}/notifications`, {
             method: "POST",
@@ -4029,9 +3952,8 @@
               identifier === "admin" &&
               currentUser &&
               currentUser.role === "admin"
-            ) {
+            )
               renderAdminActivity();
-            }
           }
         } catch (e) {}
       }
@@ -4040,9 +3962,8 @@
         try {
           const users = await safeFetchJSON(`${API_URL}/users`);
           for (let u of users) {
-            if (u.status === "Approved") {
+            if (u.status === "Approved")
               await addNotification(u.email, text, color);
-            }
           }
         } catch (e) {}
       }
@@ -4051,19 +3972,15 @@
         if (!currentUser) return;
         let identifier =
           currentUser.role === "admin" ? "admin" : currentUser.email;
-
         let notifs = await fetchNotifications(identifier);
-
         if (
           currentUser.role === "student" ||
           currentUser.role === "instructor"
         ) {
           let globalNotifs = await fetchNotifications("all_users");
-          if (globalNotifs && globalNotifs.length) {
+          if (globalNotifs && globalNotifs.length)
             notifs = notifs.concat(globalNotifs);
-          }
         }
-
         let unreadCount = notifs.filter(
           (n) => n.unread == 1 || n.unread === true || n.unread === "1",
         ).length;
@@ -4078,7 +3995,6 @@
         if (!currentUser) return;
         let identifier =
           currentUser.role === "admin" ? "admin" : currentUser.email;
-
         try {
           await fetch(`${API_URL}/notifications/read`, {
             method: "PUT",
@@ -4095,29 +4011,21 @@
           "admin-recent-activity-container",
         );
         if (!container) return;
-
         const notifs = await fetchNotifications("admin");
-
         if (notifs.length === 0) {
-          container.innerHTML = `<div style="color:#64748b; font-size:14px;">No recent activity.</div>`;
+          container.innerHTML = `<div style="color:#64748b;font-size:14px;">No recent activity.</div>`;
           return;
         }
-
         container.innerHTML = notifs
           .slice(0, 5)
           .map(
             (n) => `
-            <div class="activity-item">
-                <div class="act-dot dot-${n.color || "blue"}"></div>
-                <div>
-                    <div class="act-text">${n.text}</div>
-                    <div class="act-time">${n.date ? n.date + " • " : ""}${n.time || ""}</div>
-                </div>
-            </div>
-        `,
+          <div class="activity-item">
+            <div class="act-dot dot-${n.color || "blue"}"></div>
+            <div><div class="act-text">${n.text}</div><div class="act-time">${n.date ? n.date + " • " : ""}${n.time || ""}</div></div>
+          </div>`,
           )
           .join("");
-
         renderAdminComplaints();
       }
 
@@ -4139,15 +4047,12 @@
               (cp) => `
             <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
-                <span style="font-size:13px;font-weight:700;color:#be123c;background:#fef2f2;padding:3px 10px;border-radius:20px;">
-                  📚 ${cp.course_name || "Unknown Course"}
-                </span>
+                <span style="font-size:13px;font-weight:700;color:#be123c;background:#fef2f2;padding:3px 10px;border-radius:20px;">📚 ${cp.course_name || "Unknown Course"}</span>
                 <span style="font-size:12px;color:#94a3b8;">${cp.date || ""}</span>
               </div>
               <div style="font-size:14px;color:#881337;margin-bottom:8px;line-height:1.5;">${cp.complaint_text}</div>
               <div style="font-size:12px;color:#64748b;">🧑 <b>${cp.user_name || "Unknown"}</b> &nbsp;|&nbsp; ✉️ ${cp.user_email || ""}</div>
-            </div>
-          `,
+            </div>`,
             )
             .join("");
         } catch (e) {
@@ -4158,34 +4063,28 @@
       async function renderNotificationsPage() {
         const container = document.getElementById("notifications-page-list");
         if (!container || !currentUser) return;
-
         let identifier =
           currentUser.role === "admin" ? "admin" : currentUser.email;
         let notifs = await fetchNotifications(identifier);
-
         if (currentUser.role !== "admin") {
           let globalNotifs = await fetchNotifications("all_users");
-          if (globalNotifs && globalNotifs.length) {
+          if (globalNotifs && globalNotifs.length)
             notifs = notifs.concat(globalNotifs).sort((a, b) => b.id - a.id);
-          }
         }
-
         if (notifs.length === 0) {
-          container.innerHTML = `<div style="padding:30px; text-align:center; color:#64748b;">No new notifications.</div>`;
+          container.innerHTML = `<div style="padding:30px;text-align:center;color:#64748b;">No new notifications.</div>`;
           return;
         }
-
         container.innerHTML = notifs
           .map(
             (n) => `
-            <div class="notif-page-item ${n.unread == 1 || n.unread === true || n.unread === "1" ? "unread" : ""}">
-                <div class="notif-icon ${n.color || "blue"}">🔔</div>
-                <div>
-                    <h4 style="font-size:15px; font-weight:700; color:#0f172a; margin-bottom:2px;" class="dm-text">${n.text}</h4>
-                    <p style="font-size:13px; color:#64748b; font-weight:500;" class="dm-desc">${n.date ? n.date + " | " : ""}${n.time || ""}</p>
-                </div>
+          <div class="notif-page-item ${n.unread == 1 || n.unread === true || n.unread === "1" ? "unread" : ""}">
+            <div class="notif-icon ${n.color || "blue"}">🔔</div>
+            <div>
+              <h4 style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:2px;" class="dm-text">${n.text}</h4>
+              <p style="font-size:13px;color:#64748b;font-weight:500;" class="dm-desc">${n.date ? n.date + " | " : ""}${n.time || ""}</p>
             </div>
-        `,
+          </div>`,
           )
           .join("");
       }
@@ -4242,7 +4141,6 @@
       async function updateAdminStats() {
         let users = await safeFetchJSON(`${API_URL}/users`);
         let courses = await safeFetchJSON(`${API_URL}/courses`);
-
         let activeStudents = users.filter(
           (u) => u.role === "student" && u.status === "Approved",
         ).length;
@@ -4263,7 +4161,6 @@
         if (!currentUser) return;
         const courses = await safeFetchJSON(`${API_URL}/courses`);
         const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
         let activeCourses = courses.filter(
           (c) =>
             c.instructor_email === currentUser.email && c.status === "Approved",
@@ -4272,7 +4169,6 @@
           (e) =>
             e.instructor_email === currentUser.email && e.status === "Approved",
         ).length;
-
         const icEl = document.getElementById("inst-course-count");
         const isEl = document.getElementById("inst-student-count");
         if (icEl) icEl.innerText = activeCourses;
@@ -4292,7 +4188,6 @@
         document.getElementById("top-avatar").innerText = user.avatar;
         document.getElementById("top-avatar").style.backgroundColor =
           activeColor;
-
         const adminMsg = document.getElementById("admin-welcome-msg");
         if (adminMsg)
           adminMsg.innerText = `Welcome back, ${user.name.split(" ")[0]}! 👋`;
@@ -4302,30 +4197,25 @@
         const instMsg = document.getElementById("welcome-msg-inst");
         if (instMsg)
           instMsg.innerText = `Welcome back, ${user.name.split(" ")[0]}! 👋`;
-
         document.getElementById("student-dashboard-view").style.display =
           user.role === "student" ? "block" : "none";
         document.getElementById("instructor-dashboard-view").style.display =
           user.role === "instructor" ? "block" : "none";
         document.getElementById("admin-dashboard-view").style.display =
           user.role === "admin" ? "block" : "none";
-
         document
           .querySelectorAll(".dashboard-content > div")
           .forEach((div) => div.classList.add("hidden"));
         document
           .getElementById("dashboard-home-content")
           .classList.remove("hidden");
-
         document.getElementById("set-name").value = user.name;
         document.getElementById("set-email").value = user.email;
         document.getElementById("set-avatar-circle").innerText = user.avatar;
         document.getElementById("set-avatar-circle").style.backgroundColor =
           activeColor;
-
         setupSidebar(user);
         updateNotificationBadge();
-
         if (user.role === "admin") {
           renderAdminActivity();
           renderAdminUsers();
@@ -4348,8 +4238,7 @@
           user.role.toUpperCase();
         const nav = document.getElementById("sidebar-nav");
         let menu = [];
-
-        if (user.role === "student") {
+        if (user.role === "student")
           menu = [
             {
               label: "Dashboard",
@@ -4369,7 +4258,7 @@
             },
             { label: "Settings", icon: navIcons.settings },
           ];
-        } else if (user.role === "admin") {
+        else if (user.role === "admin")
           menu = [
             {
               label: "Dashboard",
@@ -4385,7 +4274,7 @@
             },
             { label: "Settings", icon: navIcons.settings },
           ];
-        } else if (user.role === "instructor") {
+        else if (user.role === "instructor")
           menu = [
             {
               label: "Dashboard",
@@ -4400,15 +4289,10 @@
             },
             { label: "Settings", icon: navIcons.settings },
           ];
-        }
-
         nav.innerHTML = menu
           .map(
-            (item) => `
-            <a class="nav-item ${item.active ? "active" : ""} ${item.class || ""}" onclick="handleNav('${item.label}', this)">
-                ${item.icon} ${item.label}
-            </a>
-        `,
+            (item) =>
+              `<a class="nav-item ${item.active ? "active" : ""} ${item.class || ""}" onclick="handleNav('${item.label}', this)">${item.icon} ${item.label}</a>`,
           )
           .join("");
       }
@@ -4418,30 +4302,26 @@
         const desc = document.getElementById("uc-desc").value;
         const cat = document.getElementById("uc-cat").value;
         const diff = document.getElementById("uc-diff").value;
-
         if (!title)
           return alert("Please enter a course title before publishing.");
         if (!currentUser)
           return alert(
             "User authentication failed. Please log out and log in again.",
           );
-
         const payload = {
-          title: title,
+          title,
           description: desc,
           category: cat,
           difficulty: diff,
           instructorEmail: currentUser.email,
           instructorName: currentUser.name,
         };
-
         try {
           const res = await fetch(`${API_URL}/upload-course`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
-
           if (res.ok) {
             await addNotification(
               "admin",
@@ -4451,12 +4331,10 @@
             alert(
               "Course published successfully. It is currently awaiting administrator approval.",
             );
-
             document.getElementById("uc-title").value = "";
             document.getElementById("uc-desc").value = "";
             document.getElementById("uc-cat").value = "";
             document.getElementById("uc-diff").value = "Beginner";
-
             handleNav("Dashboard", document.querySelector(".nav-item-dash"));
           } else {
             alert("Error saving course to database.");
@@ -4472,36 +4350,27 @@
       async function renderAdminCourses() {
         const container = document.getElementById("admin-course-list");
         if (!container) return;
-
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
-
           if (courses.length === 0) {
             container.innerHTML = `<p style="color:#64748b;">No courses uploaded yet.</p>`;
             updateAdminStats();
             return;
           }
-
-          container.innerHTML = `<p style="color:#64748b; padding:10px;">Loading course analytics...</p>`;
+          container.innerHTML = `<p style="color:#64748b;padding:10px;">Loading course analytics...</p>`;
           let htmlStr = "";
-
           for (let c of courses) {
             const isPending = c.status === "Pending";
             const bgIndex =
               (parseInt(String(c.id).slice(-3)) || 0) % courseGradients.length;
-            let bgStyle = `background: ${courseGradients[bgIndex]}; display:flex; align-items:center; justify-content:center; text-align:center; padding:15px; border-bottom:1px solid #e2e8f0; cursor: pointer;`;
-
+            let bgStyle = `background:${courseGradients[bgIndex]};display:flex;align-items:center;justify-content:center;text-align:center;padding:15px;border-bottom:1px solid #e2e8f0;cursor:pointer;`;
             let complaints = await safeFetchJSON(
               `${API_URL}/course-complaints/${c.id}`,
             );
             let complaintHtml =
               complaints && complaints.length > 0
-                ? `<div style="background:#fef2f2; color:#ef4444; border:1px solid #fecaca; padding:6px 12px; border-radius:8px; font-size:13px; font-weight:700; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                    ${complaints.length} Complaint(s) Received
-                 </div>`
-                : ``;
-
+                ? `<div style="background:#fef2f2;color:#ef4444;border:1px solid #fecaca;padding:6px 12px;border-radius:8px;font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>${complaints.length} Complaint(s) Received</div>`
+                : "";
             let feedbacks = await safeFetchJSON(
               `${API_URL}/course-feedbacks/${c.id}`,
             );
@@ -4513,33 +4382,12 @@
               );
               avgRating = (sum / feedbacks.length).toFixed(1) + " ⭐";
             }
-
-            let thumbHTML = `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; ${bgStyle}" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
-                   <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4>
-              </div>`;
-
+            let thumbHTML = `<div style="height:140px;border-radius:12px;margin-bottom:15px;${bgStyle}" onclick="openCoursePlayer('${c.id}');setTimeout(()=>switchCpTab('feedback'),100);"><h4 style="color:white;font-size:18px;font-weight:800;margin:0;text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4></div>`;
             let actionHTML = isPending
-              ? `<div class="action-container" style="display:flex; gap:12px; margin-top: 15px;">
-                          <button class="btn btn-success" onclick="updateCourseStatusAPI('${c.id}', 'Approved', '${c.instructor_email || ""}', '${c.title.replace(/'/g, "\\'")}')" style="flex: 1; border-radius: 8px;">Approve</button>
-                          <button class="btn btn-primary" onclick="updateCourseStatusAPI('${c.id}', 'Rejected', '${c.instructor_email || ""}', '${c.title.replace(/'/g, "\\'")}')" style="flex: 1; background: #e11d48; border-radius: 8px;">Reject</button>
-                     </div>`
-              : `<button class="btn btn-outline" style="width:100%; border-color:#ddd6fe; color:#4c1d95; margin-top: 15px;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">View Analytics & Complaints</button>`;
-
-            htmlStr += `
-                  <div class="admin-course-card ${isPending ? "border-pen" : "border-pub"}">
-                      ${thumbHTML}
-                      <div class="acc-tags">
-                          <span class="acc-tag ${isPending ? "tag-pen" : "tag-pub"}">${isPending ? "Pending" : "Published"}</span>
-                          <span class="acc-tag tag-cat" style="background:#f0fdf4; color:#16a34a; border-color:#bbf7d0;">Rating: ${avgRating}</span>
-                      </div>
-                      <h3 style="font-size:18px; font-weight:700; color:#312e81; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                      <p style="font-size:14px; color:#7c3aed; font-weight:500; margin-bottom:10px;" class="dm-desc">by ${c.instructor_name}</p>
-                      ${complaintHtml}
-                      ${actionHTML}
-                  </div>
-              `;
+              ? `<div class="action-container" style="display:flex;gap:12px;margin-top:15px;"><button class="btn btn-success" onclick="updateCourseStatusAPI('${c.id}','Approved','${c.instructor_email || ""}','${c.title.replace(/'/g, "\\'")}')">Approve</button><button class="btn btn-primary" onclick="updateCourseStatusAPI('${c.id}','Rejected','${c.instructor_email || ""}','${c.title.replace(/'/g, "\\'")}')">Reject</button></div>`
+              : `<button class="btn btn-outline" style="width:100%;border-color:#ddd6fe;color:#4c1d95;margin-top:15px;" onclick="openCoursePlayer('${c.id}');setTimeout(()=>switchCpTab('feedback'),100);">View Analytics &amp; Complaints</button>`;
+            htmlStr += `<div class="admin-course-card ${isPending ? "border-pen" : "border-pub"}">${thumbHTML}<div class="acc-tags"><span class="acc-tag ${isPending ? "tag-pen" : "tag-pub"}">${isPending ? "Pending" : "Published"}</span><span class="acc-tag tag-cat" style="background:#f0fdf4;color:#16a34a;border-color:#bbf7d0;">Rating: ${avgRating}</span></div><h3 style="font-size:18px;font-weight:700;color:#312e81;margin-bottom:6px;" class="dm-title">${c.title}</h3><p style="font-size:14px;color:#7c3aed;font-weight:500;margin-bottom:10px;" class="dm-desc">by ${c.instructor_name}</p>${complaintHtml}${actionHTML}</div>`;
           }
-
           container.innerHTML = htmlStr;
           updateAdminStats();
         } catch (e) {
@@ -4554,9 +4402,7 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id, status }),
           });
-
           await renderAdminCourses();
-
           if (status === "Approved") {
             await addNotification(
               instructorEmail,
@@ -4579,56 +4425,34 @@
           "student-browse-courses-grid",
         );
         if (!container) return;
-
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
           let approvedCourses = courses.filter((c) => c.status === "Approved");
-
           if (approvedCourses.length === 0) {
             container.innerHTML = `<p style="color:#64748b;">No available courses at the moment.</p>`;
             return;
           }
-
           container.innerHTML = approvedCourses
             .map((c) => {
               const bgIndex =
                 (parseInt(String(c.id).slice(-3)) || 0) %
                 courseGradients.length;
-              let bgStyle = `background: ${courseGradients[bgIndex]}; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; border-bottom:1px solid #e2e8f0; cursor: pointer;`;
-
-              let thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle}" onclick="openCoursePlayer('${c.id}')">
-                     <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                </div>`;
-
+              let bgStyle = `background:${courseGradients[bgIndex]};display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;border-bottom:1px solid #e2e8f0;cursor:pointer;`;
+              let thumbHTML = `<div style="height:160px;border-radius:24px 24px 0 0;${bgStyle}" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white;font-size:22px;font-weight:800;text-shadow:0 2px 4px rgba(0,0,0,0.5);margin:0;">${c.title}</h4></div>`;
               let myEnrollment = enrollments.find(
                 (e) =>
                   e.course_id == c.id && e.student_email === currentUser.email,
               );
               let btnHTML = "";
-
-              if (!myEnrollment) {
-                btnHTML = `<button class="btn btn-primary" style="width:100%; margin-top:15px;" onclick="requestEnrollment('${c.id}', '${c.instructor_email || ""}', '${c.title.replace(/'/g, "\\'")}')">Send Join Request</button>`;
-              } else if (myEnrollment.status === "Pending") {
-                btnHTML = `<button class="btn btn-outline" style="width:100%; margin-top:15px; color:#d97706; border-color:#fde68a; background:#fef3c7;" disabled>Requested (Pending)</button>`;
-              } else {
-                btnHTML = `<button class="btn btn-outline" style="width:100%; margin-top:15px; color:#059669; border-color:#a7f3d0; background:#ecfdf5;" disabled>Already Enrolled</button>`;
-              }
-
-              btnHTML += `<button class="btn btn-outline" style="width:100%; margin-top:10px;" onclick="openCoursePlayer('${c.id}')">View Details</button>`;
-
-              return `
-                    <div class="std-course-card">
-                        ${thumbHTML}
-                        <div class="std-course-card-content">
-                            <h3 style="font-size:18px; font-weight:700; color:#0f172a; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                            <p style="font-size:14px; color:#64748b; margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p>
-                            ${c.description ? `<p style="font-size:13px; color:#64748b; margin-bottom:15px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" class="dm-desc">${c.description}</p>` : ""}
-                            <div style="margin-top:auto;">${btnHTML}</div>
-                        </div>
-                    </div>
-                `;
+              if (!myEnrollment)
+                btnHTML = `<button class="btn btn-primary" style="width:100%;margin-top:15px;" onclick="requestEnrollment('${c.id}','${c.instructor_email || ""}','${c.title.replace(/'/g, "\\'")}')">Send Join Request</button>`;
+              else if (myEnrollment.status === "Pending")
+                btnHTML = `<button class="btn btn-outline" style="width:100%;margin-top:15px;color:#d97706;border-color:#fde68a;background:#fef3c7;" disabled>Requested (Pending)</button>`;
+              else
+                btnHTML = `<button class="btn btn-outline" style="width:100%;margin-top:15px;color:#059669;border-color:#a7f3d0;background:#ecfdf5;" disabled>Already Enrolled</button>`;
+              btnHTML += `<button class="btn btn-outline" style="width:100%;margin-top:10px;" onclick="openCoursePlayer('${c.id}')">View Details</button>`;
+              return `<div class="std-course-card">${thumbHTML}<div class="std-course-card-content"><h3 style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" class="dm-title">${c.title}</h3><p style="font-size:14px;color:#64748b;margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p>${c.description ? `<p style="font-size:13px;color:#64748b;margin-bottom:15px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;" class="dm-desc">${c.description}</p>` : ""}<div style="margin-top:auto;">${btnHTML}</div></div></div>`;
             })
             .join("");
         } catch (e) {
@@ -4643,7 +4467,6 @@
           day: "numeric",
           year: "numeric",
         });
-
         try {
           const res = await fetch(`${API_URL}/enrollments`, {
             method: "POST",
@@ -4657,20 +4480,17 @@
               date: dateStr,
             }),
           });
-
           if (!res.ok) {
             const errData = await res.json();
             alert("Database Error: " + errData.error);
             return;
           }
-
-          if (instructorEmail) {
+          if (instructorEmail)
             await addNotification(
               instructorEmail,
               `${currentUser.name} requested to enroll in your course "${title}".`,
               "orange",
             );
-          }
           alert(
             "Enrollment request has been successfully sent to the instructor.",
           );
@@ -4686,11 +4506,9 @@
           "student-enrolled-courses-grid",
         );
         if (!container) return;
-
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
           let myEnrolledCourses = courses.filter((c) =>
             enrollments.some(
               (e) =>
@@ -4699,40 +4517,20 @@
                 e.status === "Approved",
             ),
           );
-
           document.getElementById("student-active-count").innerText =
             myEnrolledCourses.length;
-
           if (myEnrolledCourses.length === 0) {
-            container.innerHTML = `<p style="color:#64748b; width:100%;">You are not enrolled in any courses yet.</p>`;
+            container.innerHTML = `<p style="color:#64748b;width:100%;">You are not enrolled in any courses yet.</p>`;
             return;
           }
-
           container.innerHTML = myEnrolledCourses
             .map((c) => {
               const bgIndex =
                 (parseInt(String(c.id).slice(-3)) || 0) %
                 courseGradients.length;
-              let bgStyle = `background: ${courseGradients[bgIndex]}; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
-
-              let thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')">
-                     <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                </div>`;
-
-              return `
-                    <div class="std-course-card">
-                        ${thumbHTML}
-                        <div class="std-course-card-content">
-                            <h3 style="font-size:18px; font-weight:700; color:#0f172a; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                            <p style="font-size:14px; color:#64748b; margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p>
-                            <div class="progress-bar-bg" style="margin-top: auto;"><div class="progress-bar-fill" style="width:50%;"></div></div>
-                            <div style="display:flex; justify-content:space-between; color:#64748b; font-size:13px; font-weight:500;">
-                                <span class="dm-desc">50% Complete</span>
-                                <button class="btn btn-outline" style="padding: 4px 12px; font-size: 12px;" onclick="openCoursePlayer('${c.id}')">Continue</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
+              let bgStyle = `background:${courseGradients[bgIndex]};border-bottom:1px solid #e2e8f0;cursor:pointer;`;
+              let thumbHTML = `<div style="height:160px;border-radius:24px 24px 0 0;${bgStyle} display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white;font-size:22px;font-weight:800;text-shadow:0 2px 4px rgba(0,0,0,0.5);margin:0;">${c.title}</h4></div>`;
+              return `<div class="std-course-card">${thumbHTML}<div class="std-course-card-content"><h3 style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" class="dm-title">${c.title}</h3><p style="font-size:14px;color:#64748b;margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p><div class="progress-bar-bg" style="margin-top:auto;"><div class="progress-bar-fill" style="width:50%;"></div></div><div style="display:flex;justify-content:space-between;color:#64748b;font-size:13px;font-weight:500;"><span class="dm-desc">50% Complete</span><button class="btn btn-outline" style="padding:4px 12px;font-size:12px;" onclick="openCoursePlayer('${c.id}')">Continue</button></div></div></div>`;
             })
             .join("");
         } catch (e) {
@@ -4745,21 +4543,17 @@
           "student-due-assignments-grid",
         );
         if (!container) return;
-
         try {
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
           const myEnrollments = enrollments.filter(
             (e) =>
               e.student_email === currentUser.email && e.status === "Approved",
           );
-
           if (myEnrollments.length === 0) {
-            container.innerHTML = `<p style="color:#64748b; width:100%;">No pending assignments.</p>`;
+            container.innerHTML = `<p style="color:#64748b;width:100%;">No pending assignments.</p>`;
             return;
           }
-
           let allPendingAssignments = [];
-
           for (let enr of myEnrollments) {
             const assignments = await safeFetchJSON(
               `${API_URL}/assignments/${enr.course_id}`,
@@ -4767,42 +4561,36 @@
             const submissions = await safeFetchJSON(
               `${API_URL}/assignment-submissions/${enr.course_id}`,
             );
-
             const mySubmissions = submissions.filter(
               (s) => s.student_email === currentUser.email,
             );
             const submittedAssignIds = mySubmissions.map(
               (s) => s.assignment_id,
             );
-
             const pendingForCourse = assignments.filter(
               (a) => !submittedAssignIds.includes(a.id),
             );
-
             pendingForCourse.forEach((a) => {
               a.course_title = enr.course_title;
               allPendingAssignments.push(a);
             });
           }
-
           if (allPendingAssignments.length === 0) {
-            container.innerHTML = `<p style="color:#10b981; width:100%; padding:20px; background:#ecfdf5; border-radius:12px; border:1px solid #a7f3d0; text-align:center; font-weight:600;">🎉 Great job! You have no pending assignments.</p>`;
+            container.innerHTML = `<p style="color:#10b981;width:100%;padding:20px;background:#ecfdf5;border-radius:12px;border:1px solid #a7f3d0;text-align:center;font-weight:600;">🎉 Great job! You have no pending assignments.</p>`;
             return;
           }
-
           container.innerHTML = allPendingAssignments
             .map(
               (a) => `
-                <div class="due-assign-card" style="background:white; border-radius:16px; border:1px solid #fecaca; padding:20px; display:flex; flex-direction:column; gap:10px; border-left:4px solid #ef4444; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                        <h4 class="dm-title" style="font-size:16px; font-weight:700; color:#0f172a; margin:0;">${a.title}</h4>
-                        <span style="background:#fef2f2; color:#ef4444; font-size:11px; font-weight:700; padding:4px 10px; border-radius:50px; border:1px solid #fca5a5;">Due: ${a.due_date}</span>
-                    </div>
-                    <p class="dm-desc" style="font-size:13px; color:#64748b; font-weight:600;">📚 ${a.course_title}</p>
-                    <p class="dm-desc" style="font-size:13px; color:#475569; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${a.description}</p>
-                    <button class="btn btn-outline" style="margin-top:auto; padding:6px 12px; font-size:13px; border-color:#cbd5e1; font-weight:700;" onclick="openCoursePlayer('${a.course_id}'); setTimeout(()=>switchCpTab('assignments'), 500);">Go to Assignment</button>
-                </div>
-            `,
+            <div class="due-assign-card" style="background:white;border-radius:16px;border:1px solid #fecaca;padding:20px;display:flex;flex-direction:column;gap:10px;border-left:4px solid #ef4444;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <h4 class="dm-title" style="font-size:16px;font-weight:700;color:#0f172a;margin:0;">${a.title}</h4>
+                <span style="background:#fef2f2;color:#ef4444;font-size:11px;font-weight:700;padding:4px 10px;border-radius:50px;border:1px solid #fca5a5;">Due: ${a.due_date}</span>
+              </div>
+              <p class="dm-desc" style="font-size:13px;color:#64748b;font-weight:600;">📚 ${a.course_title}</p>
+              <p class="dm-desc" style="font-size:13px;color:#475569;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${a.description}</p>
+              <button class="btn btn-outline" style="margin-top:auto;padding:6px 12px;font-size:13px;border-color:#cbd5e1;font-weight:700;" onclick="openCoursePlayer('${a.course_id}');setTimeout(()=>switchCpTab('assignments'),500);">Go to Assignment</button>
+            </div>`,
             )
             .join("");
         } catch (e) {
@@ -4816,52 +4604,31 @@
           "instructor-live-courses-grid",
         );
         if (!container) return;
-
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
           let myCourses = courses.filter(
             (c) => c.instructor_email === currentUser.email,
           );
-
           if (myCourses.length === 0) {
-            container.innerHTML = `<p style="color:#64748b; width: 100%;">You haven't uploaded any courses yet.</p>`;
+            container.innerHTML = `<p style="color:#64748b;width:100%;">You haven't uploaded any courses yet.</p>`;
             return;
           }
-
           container.innerHTML = myCourses
             .map((c) => {
               const bgIndex =
                 (parseInt(String(c.id).slice(-3)) || 0) %
                 courseGradients.length;
-              let bgStyle = `background: ${courseGradients[bgIndex]}; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
-
-              let thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle}" onclick="openCoursePlayer('${c.id}')">
-                     <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                </div>`;
-
+              let bgStyle = `background:${courseGradients[bgIndex]};display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;border-bottom:1px solid #e2e8f0;cursor:pointer;`;
+              let thumbHTML = `<div style="height:160px;border-radius:24px 24px 0 0;${bgStyle}" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white;font-size:22px;font-weight:800;text-shadow:0 2px 4px rgba(0,0,0,0.5);margin:0;">${c.title}</h4></div>`;
               let studentCount = enrollments.filter(
                 (e) => e.course_id == c.id && e.status === "Approved",
               ).length;
               let statusBadge =
                 c.status === "Approved"
-                  ? `<span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">Live</span>`
-                  : `<span style="background: #fffbeb; color: #d97706; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #fde68a;">Pending</span>`;
-
-              return `
-                  <div class="std-course-card">
-                      ${thumbHTML}
-                      <div class="std-course-card-content">
-                          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px;">
-                              <h3 style="font-size:18px; font-weight:700; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                              ${statusBadge}
-                          </div>
-                          <p style="font-size:14px; color:#2563eb; margin-bottom:10px; font-weight: 600;">Enrolled Students: <span style="background: #eff6ff; padding: 2px 8px; border-radius: 12px; color: #1e40af;">${studentCount}</span></p>
-                          <div style="margin-top:auto;"><button class="btn btn-outline" style="width:100%;" onclick="openCoursePlayer('${c.id}')" ${c.status !== "Approved" ? 'disabled title="Awaiting admin approval"' : ""}>View Details</button></div>
-                      </div>
-                  </div>
-               `;
+                  ? `<span style="background:#ecfdf5;color:#059669;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;border:1px solid #a7f3d0;">Live</span>`
+                  : `<span style="background:#fffbeb;color:#d97706;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;border:1px solid #fde68a;">Pending</span>`;
+              return `<div class="std-course-card">${thumbHTML}<div class="std-course-card-content"><div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;"><h3 style="font-size:18px;font-weight:700;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" class="dm-title">${c.title}</h3>${statusBadge}</div><p style="font-size:14px;color:#2563eb;margin-bottom:10px;font-weight:600;">Enrolled Students: <span style="background:#eff6ff;padding:2px 8px;border-radius:12px;color:#1e40af;">${studentCount}</span></p><div style="margin-top:auto;"><button class="btn btn-outline" style="width:100%;" onclick="openCoursePlayer('${c.id}')" ${c.status !== "Approved" ? 'disabled title="Awaiting admin approval"' : ""}>View Details</button></div></div></div>`;
             })
             .join("");
         } catch (e) {
@@ -4873,48 +4640,41 @@
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
           let selectedCourse = courses.find(
             (c) => String(c.id) === String(courseId),
           );
           if (!selectedCourse) return;
-
           currentCoursePlayerId = courseId;
           currentCourseObj = selectedCourse;
-
           document.getElementById("cp-course-title").innerText =
             selectedCourse.title;
           document.getElementById("cp-course-desc").innerText =
             selectedCourse.description || "Course details.";
-
           const markBtn = document.getElementById("cp-mark-completed-btn");
-          if (markBtn) {
+          if (markBtn)
             markBtn.style.display =
               currentUser.role === "student" ? "inline-flex" : "none";
-          }
-
           const resourceBtn = document.getElementById("cp-resource-btn");
           if (resourceBtn) {
             const isOwner =
               currentUser.role === "instructor" &&
               selectedCourse.instructor_email === currentUser.email;
             if (isOwner) {
-              resourceBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> Upload Resource`;
+              resourceBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> Upload Resource`;
               resourceBtn.onclick = () =>
                 alert("Upload Resource feature coming soon!");
             } else {
-              resourceBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="12" y2="18"></line><line x1="15" y1="15" x2="12" y2="18"></line></svg> Download Resources`;
+              resourceBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="12" y2="18"></line><line x1="15" y1="15" x2="12" y2="18"></line></svg> Download Resources`;
               resourceBtn.onclick = () => alert("Downloading resources...");
             }
           }
-
           let hasAccess = false;
           if (
             currentUser.role === "admin" ||
             selectedCourse.instructor_email === currentUser.email
-          ) {
+          )
             hasAccess = true;
-          } else {
+          else {
             let myEnrollment = enrollments.find(
               (e) =>
                 e.course_id == courseId &&
@@ -4923,23 +4683,19 @@
             );
             if (myEnrollment) hasAccess = true;
           }
-
           const lockedOverlay = document.getElementById("cp-locked-overlay");
           if (hasAccess) {
             lockedOverlay.classList.add("hidden");
             document
               .querySelectorAll(".cp-tab")
               .forEach((t) => (t.style.pointerEvents = "auto"));
-
             const studentsTabBtn = document.getElementById("tab-btn-students");
-            if (studentsTabBtn) {
+            if (studentsTabBtn)
               studentsTabBtn.style.display =
                 currentUser.role === "instructor" ||
                 currentUser.role === "admin"
                   ? "flex"
                   : "none";
-            }
-
             switchCpTab("chat");
           } else {
             lockedOverlay.classList.remove("hidden");
@@ -4947,7 +4703,6 @@
               .querySelectorAll(".cp-tab")
               .forEach((t) => (t.style.pointerEvents = "none"));
           }
-
           handleNav("CoursePlayer", null);
         } catch (e) {
           alert("Could not load course details!");
@@ -4967,11 +4722,9 @@
         document
           .getElementById("cp-students-area-container")
           .classList.add("hidden");
-
         document
           .querySelectorAll(".cp-tab")
           .forEach((t) => t.classList.remove("active"));
-
         if (tabName === "chat") {
           document.querySelector(".cp-tab-chat").classList.add("active");
           document
@@ -4999,61 +4752,42 @@
         }
       }
 
+      // ✅ FIXED: Ban system fully working
       async function setupCourseStudentsUI() {
         const container = document.getElementById("cp-students-area-container");
-        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading students...</div>`;
-
+        container.innerHTML = `<div style="text-align:center;padding:20px;color:#64748b;">Loading students...</div>`;
         try {
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
           const enrolledStudents = enrollments.filter(
             (e) =>
               e.course_id == currentCoursePlayerId && e.status === "Approved",
           );
-
           if (enrolledStudents.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b; background:#f8fafc; border-radius:12px;" class="assignment-card">No students enrolled yet.</div>`;
+            container.innerHTML = `<div style="text-align:center;padding:20px;color:#64748b;background:#f8fafc;border-radius:12px;" class="assignment-card">No students enrolled yet.</div>`;
             return;
           }
-
-          let htmlStr = `<h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Enrolled Students (${enrolledStudents.length})</h3><div style="display:flex; flex-direction:column; gap:10px;">`;
-
-          // 🔥 Fetch dynamic ban requests from API
           const banReqs = await safeFetchJSON(`${API_URL}/ban-requests`);
-
+          let htmlStr = `<h3 style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:15px;" class="dm-title">Enrolled Students (${enrolledStudents.length})</h3><div style="display:flex;flex-direction:column;gap:10px;">`;
           enrolledStudents.forEach((st) => {
             let isRequested = banReqs.some(
               (r) =>
                 r.student_email === st.student_email &&
-                r.course_id == currentCoursePlayerId &&
+                String(r.course_id) === String(currentCoursePlayerId) &&
                 r.status === "Pending",
             );
-
             let actionHtml = "";
             if (currentUser.role === "instructor") {
-              if (isRequested) {
-                actionHtml = `<span style="font-size:12px; color:#d97706; background:#fef3c7; padding:6px 12px; border-radius:20px; font-weight:700;">Ban Requested</span>`;
-              } else {
-                actionHtml = `<button class="btn btn-outline" style="padding:6px 16px; font-size:13px; color:#ef4444; border-color:#fca5a5;" onclick="requestStudentBan('${st.student_email}', '${st.student_name.replace(/'/g, "\\'")}', '${st.course_id}')">Request Ban</button>`;
-              }
+              if (isRequested)
+                actionHtml = `<span style="font-size:12px;color:#d97706;background:#fef3c7;padding:6px 12px;border-radius:20px;font-weight:700;">Ban Requested</span>`;
+              else
+                actionHtml = `<button class="btn btn-outline" style="padding:6px 16px;font-size:13px;color:#ef4444;border-color:#fca5a5;" onclick="requestStudentBan('${st.student_email}','${st.student_name.replace(/'/g, "\\'")}','${st.course_id}')">Request Ban</button>`;
             }
-
-            htmlStr += `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:white; padding:15px; border-radius:12px; border:1px solid #e2e8f0; flex-wrap:wrap; gap:10px;" class="assignment-card">
-                  <div style="display:flex; align-items:center; gap:12px;">
-                    <div style="width:40px; height:40px; border-radius:50%; background:#2563eb; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:16px;">${st.student_name.charAt(0)}</div>
-                    <div>
-                      <div style="font-weight:700; color:#0f172a; font-size:15px;" class="dm-title">${st.student_name}</div>
-                      <div style="font-size:13px; color:#64748b;">${st.student_email}</div>
-                    </div>
-                  </div>
-                  ${actionHtml}
-                </div>
-              `;
+            htmlStr += `<div style="display:flex;justify-content:space-between;align-items:center;background:white;padding:15px;border-radius:12px;border:1px solid #e2e8f0;flex-wrap:wrap;gap:10px;" class="assignment-card"><div style="display:flex;align-items:center;gap:12px;"><div style="width:40px;height:40px;border-radius:50%;background:#2563eb;color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px;">${st.student_name.charAt(0)}</div><div><div style="font-weight:700;color:#0f172a;font-size:15px;" class="dm-title">${st.student_name}</div><div style="font-size:13px;color:#64748b;">${st.student_email}</div></div></div>${actionHtml}</div>`;
           });
           htmlStr += `</div>`;
           container.innerHTML = htmlStr;
         } catch (e) {
-          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load students.</div>`;
+          container.innerHTML = `<div style="text-align:center;color:#ef4444;">Failed to load students.</div>`;
         }
       }
 
@@ -5062,9 +4796,8 @@
           !confirm(`Are you sure you want to request a ban for ${studentName}?`)
         )
           return;
-
         const payload = {
-          course_id: courseId,
+          course_id: String(courseId),
           course_title: document.getElementById("cp-course-title").innerText,
           inst_email: currentUser.email,
           inst_name: currentUser.name,
@@ -5076,18 +4809,16 @@
             year: "numeric",
           }),
         };
-
         try {
           const res = await fetch(`${API_URL}/ban-requests`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
-
           if (res.ok) {
             await addNotification(
               "admin",
-              `⚠️ Ban Request: Instructor ${currentUser.name} requested to ban ${studentName}.`,
+              `⚠️ Ban Request: Instructor ${currentUser.name} has requested to ban student ${studentName} from course "${payload.course_title}".`,
               "red",
             );
             alert("Ban request sent to admin successfully.");
@@ -5106,35 +4837,31 @@
           "admin-ban-requests-container",
         );
         if (!container) return;
-
         const allReqs = await safeFetchJSON(`${API_URL}/ban-requests`);
         let banReqs = allReqs.filter((r) => r.status === "Pending");
-
         if (banReqs.length === 0) {
           container.innerHTML = "";
           return;
         }
-
-        let htmlStr = `<h3 style="color:#e11d48; margin-bottom:15px; font-weight:800; font-size:20px;">⚠️ Pending Ban Requests</h3><div style="display:flex; flex-direction:column; gap:15px; margin-bottom:30px;">`;
-
+        let htmlStr = `<h3 style="color:#e11d48;margin-bottom:15px;font-weight:800;font-size:20px;">⚠️ Pending Ban Requests</h3><div style="display:flex;flex-direction:column;gap:15px;margin-bottom:30px;">`;
         banReqs.forEach((req) => {
-          htmlStr += `
-                <div style="background:#fff1f2; border:1px solid #fecaca; padding:20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
-                   <div style="width: 100%;">
-                      <div style="font-weight:700; color:#be123c; font-size:16px; word-break: break-word;">Ban Request for: ${req.student_name} <span style="font-size:13px; font-weight:500;">(${req.student_email})</span></div>
-                      <div style="font-size:13px; color:#881337; margin-top:5px; font-weight:600; word-break: break-word;">Requested by: Instructor ${req.inst_name} | Course: ${req.course_title}</div>
-                   </div>
-                   <div style="display:flex; gap:10px; width: 100%;">
-                      <button class="btn btn-primary" style="background:#e11d48; flex:1;" onclick="approveBanRequest(${req.id}, '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}')">Approve & Ban</button>
-                      <button class="btn btn-outline" style="border-color:#fca5a5; color:#be123c; background:white; flex:1;" onclick="rejectBanRequest(${req.id}, '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}')">Reject</button>
-                   </div>
-                </div>
-             `;
+          htmlStr += `<div style="background:#fff1f2;border:1px solid #fecaca;padding:20px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;">
+            <div style="width:100%;">
+              <div style="font-weight:700;color:#be123c;font-size:16px;word-break:break-word;">Ban Request for: ${req.student_name} <span style="font-size:13px;font-weight:500;">(${req.student_email})</span></div>
+              <div style="font-size:13px;color:#881337;margin-top:5px;font-weight:600;word-break:break-word;">Requested by: Instructor ${req.inst_name} | Course: ${req.course_title}</div>
+              <div style="font-size:12px;color:#9f1239;margin-top:4px;">Date: ${req.date}</div>
+            </div>
+            <div style="display:flex;gap:10px;width:100%;">
+              <button class="btn btn-primary" style="background:#e11d48;flex:1;" onclick="approveBanRequest(${req.id},'${req.student_email}','${req.inst_email}','${req.student_name.replace(/'/g, "\\'")}')">Approve &amp; Ban</button>
+              <button class="btn btn-outline" style="border-color:#fca5a5;color:#be123c;background:white;flex:1;" onclick="rejectBanRequest(${req.id},'${req.inst_email}','${req.student_name.replace(/'/g, "\\'")}')">Reject</button>
+            </div>
+          </div>`;
         });
-        htmlStr += `</div><hr style="border:0; border-top:1px solid #e2e8f0; margin-bottom:30px;">`;
+        htmlStr += `</div><hr style="border:0;border-top:1px solid #e2e8f0;margin-bottom:30px;">`;
         container.innerHTML = htmlStr;
       }
 
+      // ✅ FIXED: approveBanRequest — proper notifications to both parties, no localStorage dependency
       async function approveBanRequest(
         reqId,
         studentEmail,
@@ -5146,49 +4873,44 @@
         )
           return;
         try {
-          // Update user status
           const res = await fetch(`${API_URL}/update-user-status`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: studentEmail, status: "Banned" }),
           });
-
           if (!res.ok) return alert("Failed to ban user from database.");
-
-          // Update ban request status
           await fetch(`${API_URL}/ban-requests/${reqId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ status: "Approved" }),
           });
-
-          // Update local storage UI
-          let users = JSON.parse(localStorage.getItem("elms_users_db")) || [];
-          users = users.map((u) =>
-            u.email === studentEmail ? { ...u, status: "Banned" } : u,
-          );
-          localStorage.setItem("elms_users_db", JSON.stringify(users));
-
-          // Notify
+          // ✅ Notify student in full English
           await addNotification(
             studentEmail,
-            `🚨 Your account has been banned from the platform by the Admin.`,
+            `🚨 Your account has been banned from the ELMS platform by the Administrator.`,
             "red",
           );
+          // ✅ Notify instructor in full English
           await addNotification(
             instEmail,
-            `✅ Your ban request for ${studentName} was approved.`,
+            `✅ Your ban request for student "${studentName}" has been approved by the Admin. The student has been banned.`,
             "green",
           );
-
-          alert(`User ${studentName} has been banned.`);
-          renderAdminUsers(); // Re-renders table & requests
+          // ✅ Notify admin log
+          await addNotification(
+            "admin",
+            `✅ Ban approved: Student "${studentName}" has been banned from the platform.`,
+            "green",
+          );
+          alert(`User ${studentName} has been successfully banned.`);
+          renderAdminUsers();
         } catch (e) {
           console.error(e);
           alert("Error processing ban request.");
         }
       }
 
+      // ✅ FIXED: rejectBanRequest — proper English notification to instructor
       async function rejectBanRequest(reqId, instEmail, studentName) {
         if (!confirm(`Are you sure you want to REJECT this ban request?`))
           return;
@@ -5198,12 +4920,13 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ status: "Rejected" }),
           });
-
+          // ✅ Notify instructor in full English
           await addNotification(
             instEmail,
-            `❌ Your ban request for ${studentName} was rejected by Admin.`,
+            `❌ Your ban request for student "${studentName}" has been rejected by the Admin.`,
             "red",
           );
+          alert("Ban request has been rejected.");
           renderAdminUsers();
         } catch (e) {
           console.error(e);
@@ -5215,65 +4938,38 @@
           "cp-assignments-area-container",
         );
         let html = "";
-
         if (currentUser.role === "instructor") {
-          html += `
-            <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
-              <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Create New Assignment</h3>
-              <div style="display:flex; flex-direction:column; gap:12px;">
-                 <input type="text" id="assign-title" placeholder="Assignment Title" style="padding:10px 15px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif;">
-                 <textarea id="assign-desc" placeholder="Assignment Instructions..." style="padding:10px 15px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; min-height:80px; resize:vertical;"></textarea>
-                 <div style="display:flex; align-items:center; gap:10px;">
-                    <label style="font-weight:600; font-size:14px; color:#334155;" class="dm-text">Due Date:</label>
-                    <input type="date" id="assign-due" style="padding:8px 12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif;">
-                 </div>
-                 <button class="btn btn-primary" onclick="createAssignment()" style="align-self:flex-start; margin-top:5px;">Upload Assignment</button>
-              </div>
-            </div>
-            <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Uploaded Assignments</h3>
-            <div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>
-          `;
+          html += `<div style="background:white;padding:20px;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:25px;"><h3 style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:15px;" class="dm-title">Create New Assignment</h3><div style="display:flex;flex-direction:column;gap:12px;"><input type="text" id="assign-title" placeholder="Assignment Title" style="padding:10px 15px;border-radius:8px;border:1px solid #cbd5e1;outline:none;font-family:'Inter',sans-serif;"><textarea id="assign-desc" placeholder="Assignment Instructions..." style="padding:10px 15px;border-radius:8px;border:1px solid #cbd5e1;outline:none;font-family:'Inter',sans-serif;min-height:80px;resize:vertical;"></textarea><div style="display:flex;align-items:center;gap:10px;"><label style="font-weight:600;font-size:14px;color:#334155;" class="dm-text">Due Date:</label><input type="date" id="assign-due" style="padding:8px 12px;border-radius:8px;border:1px solid #cbd5e1;outline:none;font-family:'Inter',sans-serif;"></div><button class="btn btn-primary" onclick="createAssignment()" style="align-self:flex-start;margin-top:5px;">Upload Assignment</button></div></div><h3 style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:15px;" class="dm-title">Uploaded Assignments</h3><div id="assign-list" style="display:flex;flex-direction:column;gap:15px;"></div>`;
         } else if (currentUser.role === "student") {
-          html += `
-            <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Course Assignments</h3>
-            <p style="color:#64748b; font-size:14px; margin-bottom:20px;" class="dm-desc">Complete and submit the assignments below.</p>
-            <div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>
-          `;
+          html += `<h3 style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:15px;" class="dm-title">Course Assignments</h3><p style="color:#64748b;font-size:14px;margin-bottom:20px;" class="dm-desc">Complete and submit the assignments below.</p><div id="assign-list" style="display:flex;flex-direction:column;gap:15px;"></div>`;
         } else if (currentUser.role === "admin") {
-          html += `
-            <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">All Assignments</h3>
-            <div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>
-          `;
+          html += `<h3 style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:15px;" class="dm-title">All Assignments</h3><div id="assign-list" style="display:flex;flex-direction:column;gap:15px;"></div>`;
         }
-
         container.innerHTML = html;
         loadAssignments(currentCoursePlayerId);
       }
 
+      // ✅ FIXED: Assignment notification full English
       async function createAssignment() {
         const title = document.getElementById("assign-title").value.trim();
         const desc = document.getElementById("assign-desc").value.trim();
         const due = document.getElementById("assign-due").value;
-
         if (!title || !desc || !due)
           return alert("Please fill all fields for the assignment.");
-
         const now = new Date();
         const dateStr = now.toLocaleDateString("en-US", {
           day: "numeric",
           month: "short",
           year: "numeric",
         });
-
         const payload = {
           course_id: String(currentCoursePlayerId),
-          title: title,
+          title,
           description: desc,
           due_date: due,
           instructor_email: currentUser.email,
           date: dateStr,
         };
-
         try {
           const res = await fetch(`${API_URL}/assignments`, {
             method: "POST",
@@ -5286,15 +4982,17 @@
               (e) =>
                 e.course_id == currentCoursePlayerId && e.status === "Approved",
             );
-
+            const courseTitle = currentCourseObj
+              ? currentCourseObj.title
+              : "your course";
             for (let student of enrolledStudents) {
+              // ✅ Full English notification
               await addNotification(
                 student.student_email,
-                `📚 Notun Assignment: "${title}" dewa hoyeche "${currentCourseObj.title}" course-e.`,
+                `📚 New Assignment: "${title}" has been posted in the course "${courseTitle}". Please submit before the due date.`,
                 "blue",
               );
             }
-
             alert("Assignment uploaded successfully!");
             setupAssignmentsUI();
           } else {
@@ -5307,22 +5005,18 @@
 
       async function loadAssignments(courseId) {
         const container = document.getElementById("assign-list");
-        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading assignments...</div>`;
-
+        container.innerHTML = `<div style="text-align:center;padding:20px;color:#64748b;">Loading assignments...</div>`;
         try {
           const assignments = await safeFetchJSON(
             `${API_URL}/assignments/${courseId}`,
           );
-
           if (assignments.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b; background:#f8fafc; border-radius:12px;" class="assignment-card">No assignments found for this course.</div>`;
+            container.innerHTML = `<div style="text-align:center;padding:20px;color:#64748b;background:#f8fafc;border-radius:12px;" class="assignment-card">No assignments found for this course.</div>`;
             return;
           }
-
           const submissions = await safeFetchJSON(
             `${API_URL}/assignment-submissions/${courseId}`,
           );
-
           let htmlStr = "";
           assignments.forEach((a) => {
             let studentActionHtml = "";
@@ -5332,21 +5026,10 @@
                   s.assignment_id === a.id &&
                   s.student_email === currentUser.email,
               );
-              if (mySub) {
-                studentActionHtml = `
-                       <div style="margin-top:15px; padding:10px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;">
-                          <b style="color:#059669; font-size:13px;">✅ Submitted on ${mySub.date}</b>
-                          <p style="font-size:13px; color:#065f46; margin-top:5px; word-break:break-all;">${mySub.submission_text}</p>
-                       </div>
-                     `;
-              } else {
-                studentActionHtml = `
-                       <div style="margin-top:15px; display:flex; flex-direction:column; align-items:flex-start;">
-                          <textarea id="sub-input-${a.id}" placeholder="Type your answer or paste Google Drive link here..." style="width:100%; min-height:80px; padding:10px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; resize:vertical;" class="submission-box"></textarea>
-                          <button class="btn btn-primary" style="margin-top:8px; padding:8px 16px; font-size:13px;" onclick="submitAssignment(${a.id})">Submit Assignment</button>
-                       </div>
-                     `;
-              }
+              if (mySub)
+                studentActionHtml = `<div style="margin-top:15px;padding:10px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;"><b style="color:#059669;font-size:13px;">✅ Submitted on ${mySub.date}</b><p style="font-size:13px;color:#065f46;margin-top:5px;word-break:break-all;">${mySub.submission_text}</p></div>`;
+              else
+                studentActionHtml = `<div style="margin-top:15px;display:flex;flex-direction:column;align-items:flex-start;"><textarea id="sub-input-${a.id}" placeholder="Type your answer or paste Google Drive link here..." style="width:100%;min-height:80px;padding:10px;border-radius:8px;border:1px solid #cbd5e1;outline:none;font-family:'Inter',sans-serif;resize:vertical;" class="submission-box"></textarea><button class="btn btn-primary" style="margin-top:8px;padding:8px 16px;font-size:13px;" onclick="submitAssignment(${a.id})">Submit Assignment</button></div>`;
             } else if (
               currentUser.role === "instructor" ||
               currentUser.role === "admin"
@@ -5354,56 +5037,23 @@
               let assignSubs = submissions.filter(
                 (s) => s.assignment_id === a.id,
               );
-              studentActionHtml = `
-                    <div style="margin-top:15px; padding-top:15px; border-top:1px solid #e2e8f0;">
-                       <b style="font-size:13px; color:#0f172a;" class="dm-title">Submissions (${assignSubs.length})</b>
-                       <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
-                          ${assignSubs
-                            .map(
-                              (s) => `
-                             <div style="background:#f1f5f9; padding:10px; border-radius:8px;">
-                                <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                                  <span style="font-size:13px; font-weight:700; color:#334155;">${s.student_name}</span>
-                                  <span style="font-size:11px; color:#64748b;">${s.date}</span>
-                                </div>
-                                <div style="font-size:13px; color:#475569; word-break:break-all;">${s.submission_text}</div>
-                             </div>
-                          `,
-                            )
-                            .join("")}
-                          ${assignSubs.length === 0 ? '<div style="font-size:13px; color:#64748b;">No submissions yet.</div>' : ""}
-                       </div>
-                    </div>
-                 `;
+              studentActionHtml = `<div style="margin-top:15px;padding-top:15px;border-top:1px solid #e2e8f0;"><b style="font-size:13px;color:#0f172a;" class="dm-title">Submissions (${assignSubs.length})</b><div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">${assignSubs.map((s) => `<div style="background:#f1f5f9;padding:10px;border-radius:8px;"><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:13px;font-weight:700;color:#334155;">${s.student_name}</span><span style="font-size:11px;color:#64748b;">${s.date}</span></div><div style="font-size:13px;color:#475569;word-break:break-all;">${s.submission_text}</div></div>`).join("")}${assignSubs.length === 0 ? '<div style="font-size:13px;color:#64748b;">No submissions yet.</div>' : ""}</div></div>`;
             }
-
-            htmlStr += `
-                <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:20px;" class="assignment-card">
-                   <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px;">
-                      <h4 style="font-size:16px; font-weight:800; color:#0f172a; margin:0;" class="dm-title">📝 ${a.title}</h4>
-                      <span style="background:#fef2f2; color:#ef4444; border:1px solid #fca5a5; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;">Due: ${a.due_date}</span>
-                   </div>
-                   <p style="font-size:14px; color:#475569; line-height:1.5;" class="dm-desc">${a.description}</p>
-                   ${studentActionHtml}
-                </div>
-             `;
+            htmlStr += `<div style="background:white;border:1px solid #e2e8f0;border-radius:12px;padding:20px;" class="assignment-card"><div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;"><h4 style="font-size:16px;font-weight:800;color:#0f172a;margin:0;" class="dm-title">📝 ${a.title}</h4><span style="background:#fef2f2;color:#ef4444;border:1px solid #fca5a5;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;">Due: ${a.due_date}</span></div><p style="font-size:14px;color:#475569;line-height:1.5;" class="dm-desc">${a.description}</p>${studentActionHtml}</div>`;
           });
-
           container.innerHTML = htmlStr;
         } catch (e) {
-          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load assignments.</div>`;
+          container.innerHTML = `<div style="text-align:center;color:#ef4444;">Failed to load assignments.</div>`;
         }
       }
 
       async function submitAssignment(assignId) {
         const inputEl = document.getElementById(`sub-input-${assignId}`);
         const subText = inputEl.value.trim();
-
         if (!subText)
           return alert(
             "Please type your answer or provide a link before submitting.",
           );
-
         const now = new Date();
         const dateStr =
           now.toLocaleDateString("en-US", {
@@ -5416,7 +5066,6 @@
             hour: "2-digit",
             minute: "2-digit",
           });
-
         const payload = {
           assignment_id: assignId,
           course_id: String(currentCoursePlayerId),
@@ -5425,22 +5074,19 @@
           submission_text: subText,
           date: dateStr,
         };
-
         try {
           const res = await fetch(`${API_URL}/assignment-submissions`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
-
           if (res.ok) {
-            if (currentCourseObj && currentCourseObj.instructor_email) {
+            if (currentCourseObj && currentCourseObj.instructor_email)
               await addNotification(
                 currentCourseObj.instructor_email,
-                `📝 ${currentUser.name} submitted an assignment for "${currentCourseObj.title}"`,
+                `📝 ${currentUser.name} has submitted an assignment for the course "${currentCourseObj.title}".`,
                 "blue",
               );
-            }
             alert("Assignment submitted successfully!");
             loadAssignments(currentCoursePlayerId);
             renderStudentDueAssignments();
@@ -5455,141 +5101,72 @@
       function setupFeedbackUI() {
         const container = document.getElementById("cp-feedback-area-container");
         let html = "";
-
         if (currentUser.role === "student") {
-          html += `
-                  <h3 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 10px;" class="dm-title">Course Feedback</h3>
-                  <div style="display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
-                      <select id="cp-feedback-rating" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; background:#f8fafc; font-weight:600; color:#334155;">
-                          <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
-                          <option value="4">⭐⭐⭐⭐ (4/5)</option>
-                          <option value="3">⭐⭐⭐ (3/5)</option>
-                          <option value="2">⭐⭐ (2/5)</option>
-                          <option value="1">⭐ (1/5)</option>
-                      </select>
-                  </div>
-                  <textarea id="cp-feedback-input" placeholder="Share your thoughts about this course..." style="width: 100%; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 10px; background: #f8fafc; resize: vertical; font-family: 'Inter', sans-serif;"></textarea>
-                  <button class="btn btn-primary" onclick="submitCourseFeedback()" style="margin-bottom: 25px; background: #2563eb; color: white; width: 100%;">Submit Feedback</button>
-
-                  <hr style="border:0; border-top: 1px solid #e2e8f0; margin-bottom: 25px;">
-
-                  <h3 style="font-size: 16px; font-weight: 700; color: #e11d48; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                      Course Complaint
-                  </h3>
-                  <textarea id="cp-complaint-input" placeholder="Describe any issues or concerns with the course..." style="width: 100%; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 10px; background: #f8fafc; resize: vertical; font-family: 'Inter', sans-serif;"></textarea>
-                  <button class="btn" onclick="submitCourseComplaint()" style="background: #e11d48; color: white; width: 100%;">Submit Complaint</button>
-              `;
+          html += `<h3 style="font-size:16px;font-weight:700;color:#0f172a;margin-bottom:10px;" class="dm-title">Course Feedback</h3><div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;"><select id="cp-feedback-rating" style="padding:12px;border-radius:8px;border:1px solid #cbd5e1;outline:none;background:#f8fafc;font-weight:600;color:#334155;"><option value="5">⭐⭐⭐⭐⭐ (5/5)</option><option value="4">⭐⭐⭐⭐ (4/5)</option><option value="3">⭐⭐⭐ (3/5)</option><option value="2">⭐⭐ (2/5)</option><option value="1">⭐ (1/5)</option></select></div><textarea id="cp-feedback-input" placeholder="Share your thoughts about this course..." style="width:100%;min-height:100px;padding:12px;border-radius:8px;border:1px solid #cbd5e1;outline:none;margin-bottom:10px;background:#f8fafc;resize:vertical;font-family:'Inter',sans-serif;"></textarea><button class="btn btn-primary" onclick="submitCourseFeedback()" style="margin-bottom:25px;background:#2563eb;color:white;width:100%;">Submit Feedback</button><hr style="border:0;border-top:1px solid #e2e8f0;margin-bottom:25px;"><h3 style="font-size:16px;font-weight:700;color:#e11d48;margin-bottom:10px;display:flex;align-items:center;gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>Course Complaint</h3><textarea id="cp-complaint-input" placeholder="Describe any issues or concerns with the course..." style="width:100%;min-height:100px;padding:12px;border-radius:8px;border:1px solid #cbd5e1;outline:none;margin-bottom:10px;background:#f8fafc;resize:vertical;font-family:'Inter',sans-serif;"></textarea><button class="btn" onclick="submitCourseComplaint()" style="background:#e11d48;color:white;width:100%;">Submit Complaint</button>`;
         } else if (currentUser.role === "instructor") {
-          html += `
-                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
-                      <h3 style="font-size: 18px; font-weight: 800; color: #0f172a;" class="dm-title">Overall Course Feedback</h3>
-                      <div id="cp-avg-rating-badge" style="background:#fef3c7; color:#d97706; padding:6px 16px; border-radius:50px; font-weight:800; border:1px solid #fde68a;">Average Rating: ...</div>
-                  </div>
-                  <hr style="border:0; border-top: 1px solid #e2e8f0; margin-bottom: 25px;">
-                  <h3 style="font-size: 16px; font-weight: 700; color: #e11d48; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                      Complain against a Student
-                  </h3>
-                  <textarea id="cp-complaint-input" placeholder="Mention the student's name/email and describe the issue..." style="width: 100%; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 10px; background: #f8fafc; resize: vertical; font-family: 'Inter', sans-serif;"></textarea>
-                  <button class="btn" onclick="submitCourseComplaint()" style="background: #e11d48; color: white; width: 100%;">Send to Admin</button>
-              `;
+          html += `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;"><h3 style="font-size:18px;font-weight:800;color:#0f172a;" class="dm-title">Overall Course Feedback</h3><div id="cp-avg-rating-badge" style="background:#fef3c7;color:#d97706;padding:6px 16px;border-radius:50px;font-weight:800;border:1px solid #fde68a;">Average Rating: ...</div></div><hr style="border:0;border-top:1px solid #e2e8f0;margin-bottom:25px;"><h3 style="font-size:16px;font-weight:700;color:#e11d48;margin-bottom:10px;display:flex;align-items:center;gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>Complain against a Student</h3><textarea id="cp-complaint-input" placeholder="Mention the student's name/email and describe the issue..." style="width:100%;min-height:100px;padding:12px;border-radius:8px;border:1px solid #cbd5e1;outline:none;margin-bottom:10px;background:#f8fafc;resize:vertical;font-family:'Inter',sans-serif;"></textarea><button class="btn" onclick="submitCourseComplaint()" style="background:#e11d48;color:white;width:100%;">Send to Admin</button>`;
         } else if (currentUser.role === "admin") {
-          html += `
-                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
-                      <h3 style="font-size: 18px; font-weight: 800; color: #0f172a;" class="dm-title">Overall Course Feedback</h3>
-                      <div id="cp-avg-rating-badge" style="background:#fef3c7; color:#d97706; padding:6px 16px; border-radius:50px; font-weight:800; border:1px solid #fde68a;">Average Rating: ...</div>
-                  </div>
-                  <hr style="border:0; border-top: 1px solid #e2e8f0; margin-bottom: 25px;">
-                  <h3 style="font-size: 18px; font-weight: 800; color: #e11d48; margin-bottom: 15px;" class="dm-title">Course Complaints</h3>
-                  <div id="cp-complaint-list" style="margin-bottom: 30px; display: flex; flex-direction: column; gap: 15px; max-height:250px; overflow-y:auto; padding-right:5px;"></div>
-              `;
+          html += `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;"><h3 style="font-size:18px;font-weight:800;color:#0f172a;" class="dm-title">Overall Course Feedback</h3><div id="cp-avg-rating-badge" style="background:#fef3c7;color:#d97706;padding:6px 16px;border-radius:50px;font-weight:800;border:1px solid #fde68a;">Average Rating: ...</div></div><hr style="border:0;border-top:1px solid #e2e8f0;margin-bottom:25px;"><h3 style="font-size:18px;font-weight:800;color:#e11d48;margin-bottom:15px;" class="dm-title">Course Complaints</h3><div id="cp-complaint-list" style="margin-bottom:30px;display:flex;flex-direction:column;gap:15px;max-height:250px;overflow-y:auto;padding-right:5px;"></div>`;
         }
-
-        html += `<div id="cp-feedback-list" style="margin-top: 30px; display: flex; flex-direction: column; gap: 15px;"></div>`;
+        html += `<div id="cp-feedback-list" style="margin-top:30px;display:flex;flex-direction:column;gap:15px;"></div>`;
         container.innerHTML = html;
-
         loadCourseFeedback(currentCoursePlayerId);
-        if (currentUser.role === "admin") {
+        if (currentUser.role === "admin")
           loadCourseComplaints(currentCoursePlayerId);
-        }
       }
 
       async function loadCourseFeedback(courseId) {
         const container = document.getElementById("cp-feedback-list");
-        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading feedback...</div>`;
-
+        container.innerHTML = `<div style="text-align:center;padding:20px;color:#64748b;">Loading feedback...</div>`;
         try {
           const feedbacks = await safeFetchJSON(
             `${API_URL}/course-feedbacks/${courseId}`,
           );
-
           if (feedbacks.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">No feedback available yet.</div>`;
+            container.innerHTML = `<div style="text-align:center;padding:20px;color:#64748b;">No feedback available yet.</div>`;
             const avgBadge = document.getElementById("cp-avg-rating-badge");
             if (avgBadge) avgBadge.innerHTML = `Average Rating: 0.0/5 ⭐`;
             return;
           }
-
           let totalRating = 0;
           let htmlStr = "";
           feedbacks.forEach((fb) => {
             let ratingVal = fb.rating || 5;
             totalRating += ratingVal;
             let stars = "⭐".repeat(ratingVal);
-            htmlStr += `
-                      <div style="background:white; padding:15px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:10px;" class="fb-item-card">
-                          <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                              <b style="color:#0f172a;" class="dm-title">${fb.user_name}</b>
-                              <span style="font-size:12px; color:#64748b;">${fb.date}</span>
-                          </div>
-                          <div style="font-size:14px; margin-bottom:8px;">${stars}</div>
-                          <div style="color:#334155; font-size:14px;" class="dm-desc">${fb.comment}</div>
-                      </div>
-                  `;
+            htmlStr += `<div style="background:white;padding:15px;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:10px;" class="fb-item-card"><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><b style="color:#0f172a;" class="dm-title">${fb.user_name}</b><span style="font-size:12px;color:#64748b;">${fb.date}</span></div><div style="font-size:14px;margin-bottom:8px;">${stars}</div><div style="color:#334155;font-size:14px;" class="dm-desc">${fb.comment}</div></div>`;
           });
           container.innerHTML = htmlStr;
-
           const avgBadge = document.getElementById("cp-avg-rating-badge");
           if (avgBadge) {
             let avg = (totalRating / feedbacks.length).toFixed(1);
             avgBadge.innerHTML = `Average Rating: ${avg}/5 ⭐`;
           }
         } catch (e) {
-          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load feedback.</div>`;
+          container.innerHTML = `<div style="text-align:center;color:#ef4444;">Failed to load feedback.</div>`;
         }
       }
 
       async function loadCourseComplaints(courseId) {
         const container = document.getElementById("cp-complaint-list");
         if (!container) return;
-        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading complaints...</div>`;
-
+        container.innerHTML = `<div style="text-align:center;padding:20px;color:#64748b;">Loading complaints...</div>`;
         try {
           const complaints = await safeFetchJSON(
             `${API_URL}/course-complaints/${courseId}`,
           );
-
           if (complaints.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding: 15px; color:#64748b; background:#f8fafc; border-radius:8px;">No complaints filed for this course.</div>`;
+            container.innerHTML = `<div style="text-align:center;padding:15px;color:#64748b;background:#f8fafc;border-radius:8px;">No complaints filed for this course.</div>`;
             return;
           }
-
-          let htmlStr = "";
-          complaints.forEach((cp) => {
-            htmlStr += `
-                      <div style="background:#fff1f2; padding:15px; border-radius:12px; border:1px solid #fecdd3; margin-bottom:10px;">
-                          <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                              <b style="color:#be123c;">From: ${cp.user_name} (${cp.user_email})</b>
-                              <span style="font-size:12px; color:#9f1239; font-weight:600;">${cp.date}</span>
-                          </div>
-                          <div style="color:#881337; font-size:14px;">${cp.complaint_text}</div>
-                      </div>
-                  `;
-          });
-          container.innerHTML = htmlStr;
+          container.innerHTML = complaints
+            .map(
+              (cp) =>
+                `<div style="background:#fff1f2;padding:15px;border-radius:12px;border:1px solid #fecdd3;margin-bottom:10px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><b style="color:#be123c;">From: ${cp.user_name} (${cp.user_email})</b><span style="font-size:12px;color:#9f1239;font-weight:600;">${cp.date}</span></div><div style="color:#881337;font-size:14px;">${cp.complaint_text}</div></div>`,
+            )
+            .join("");
         } catch (e) {
-          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load complaints.</div>`;
+          container.innerHTML = `<div style="text-align:center;color:#ef4444;">Failed to load complaints.</div>`;
         }
       }
 
@@ -5598,12 +5175,9 @@
         const comment = document
           .getElementById("cp-feedback-input")
           .value.trim();
-
         if (!comment) return alert("Please write a comment.");
         if (!currentCoursePlayerId) return;
-
         document.getElementById("cp-feedback-input").value = "";
-
         const now = new Date();
         const dateStr = now.toLocaleDateString("en-US", {
           day: "numeric",
@@ -5612,17 +5186,15 @@
         });
         const courseNameText =
           document.getElementById("cp-course-title").innerText;
-
         const payload = {
           course_id: String(currentCoursePlayerId),
           course_name: courseNameText,
           user_name: currentUser.name,
           user_email: currentUser.email,
           rating: parseInt(rating),
-          comment: comment,
+          comment,
           date: dateStr,
         };
-
         try {
           const res = await fetch(`${API_URL}/course-feedbacks`, {
             method: "POST",
@@ -5632,7 +5204,6 @@
             },
             body: JSON.stringify(payload),
           });
-
           if (res.ok) {
             alert(
               "✅ Your feedback has been submitted successfully. Thank you!",
@@ -5659,7 +5230,6 @@
           .value.trim();
         if (!complaint) return alert("Please describe your issue.");
         if (!currentCoursePlayerId) return;
-
         document.getElementById("cp-complaint-input").value = "";
         const now = new Date();
         const dateStr = now.toLocaleDateString("en-US", {
@@ -5669,7 +5239,6 @@
         });
         const courseNameText =
           document.getElementById("cp-course-title").innerText;
-
         const payload = {
           course_id: String(currentCoursePlayerId),
           course_name: courseNameText,
@@ -5678,7 +5247,6 @@
           complaint_text: complaint,
           date: dateStr,
         };
-
         try {
           const res = await fetch(`${API_URL}/course-complaints`, {
             method: "POST",
@@ -5688,11 +5256,10 @@
             },
             body: JSON.stringify(payload),
           });
-
           if (res.ok) {
             await addNotification(
               "admin",
-              `Complaint received for "${courseNameText}" from ${currentUser.name}`,
+              `A complaint has been submitted for the course "${courseNameText}" by ${currentUser.name}.`,
               "red",
             );
             alert(
@@ -5715,8 +5282,7 @@
 
       async function loadCourseChat(courseId) {
         const container = document.getElementById("cp-chat-messages");
-        container.innerHTML = `<div style="text-align:center; color:#64748b; margin-top:20px;">Loading chat messages...</div>`;
-
+        container.innerHTML = `<div style="text-align:center;color:#64748b;margin-top:20px;">Loading chat messages...</div>`;
         try {
           const messages = await safeFetchJSON(
             `${API_URL}/course-chats/${courseId}`,
@@ -5730,39 +5296,26 @@
       function renderChatMessages(messages) {
         const container = document.getElementById("cp-chat-messages");
         if (!messages || messages.length === 0) {
-          container.innerHTML = `<div style="text-align:center; color:#64748b; margin-top:20px;">No messages yet. Be the first to start the conversation!</div>`;
+          container.innerHTML = `<div style="text-align:center;color:#64748b;margin-top:20px;">No messages yet. Be the first to start the conversation!</div>`;
           return;
         }
-
         let htmlStr = "";
         let lastDateRendered = "";
-
         messages.forEach((msg) => {
           const isSelf = msg.user_email === currentUser.email;
-
           let datePart = "Previous";
           let timePart = msg.time;
-
           if (msg.time && msg.time.includes("|")) {
             const parts = msg.time.split("|");
             datePart = parts[0];
             timePart = parts[1];
           }
-
           if (datePart !== lastDateRendered) {
             htmlStr += `<div class="chat-date-header"><span class="chat-date-badge">${datePart}</span></div>`;
             lastDateRendered = datePart;
           }
-
-          htmlStr += `
-                  <div class="chat-msg ${isSelf ? "self" : "other"}">
-                      <div class="chat-name">${isSelf ? "You" : msg.user_name}</div>
-                      <div>${msg.message}</div>
-                      <div class="chat-time">${timePart}</div>
-                  </div>
-              `;
+          htmlStr += `<div class="chat-msg ${isSelf ? "self" : "other"}"><div class="chat-name">${isSelf ? "You" : msg.user_name}</div><div>${msg.message}</div><div class="chat-time">${timePart}</div></div>`;
         });
-
         container.innerHTML = htmlStr;
         container.scrollTop = container.scrollHeight;
       }
@@ -5770,9 +5323,7 @@
       async function sendCourseMessage() {
         const input = document.getElementById("cp-chat-input");
         const text = input.value.trim();
-
         if (!text || !currentCoursePlayerId) return;
-
         input.value = "";
         const now = new Date();
         const dateString = now.toLocaleDateString("en-US", {
@@ -5784,19 +5335,16 @@
           hour: "2-digit",
           minute: "2-digit",
         });
-        const combinedDateTime = `${dateString}|${timeString}`;
         const courseNameText =
           document.getElementById("cp-course-title").innerText;
-
         const msgData = {
           course_id: String(currentCoursePlayerId),
           course_name: courseNameText,
           user_name: currentUser.name,
           user_email: currentUser.email,
           message: text,
-          time: combinedDateTime,
+          time: `${dateString}|${timeString}`,
         };
-
         try {
           await fetch(`${API_URL}/course-chats`, {
             method: "POST",
@@ -5814,7 +5362,6 @@
           "instructor-enrollment-requests",
         );
         if (!container) return;
-
         try {
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
           let myPendingRequests = enrollments.filter(
@@ -5822,33 +5369,29 @@
               e.instructor_email === currentUser.email &&
               e.status === "Pending",
           );
-
           document.getElementById("inst-pending-count").innerText =
             myPendingRequests.length;
-
           if (myPendingRequests.length === 0) {
-            container.innerHTML = `<div style="padding:20px; color:#64748b;">No pending enrollment requests.</div>`;
+            container.innerHTML = `<div style="padding:20px;color:#64748b;">No pending enrollment requests.</div>`;
             return;
           }
-
           container.innerHTML = myPendingRequests
             .map(
               (req) => `
-                <div class="submission-item">
-                    <div>
-                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">
-                            <h3 style="font-size:16px; font-weight:700; color:#0f172a;" class="dm-title">${req.student_name}</h3>
-                            <span style="background:#fef3c7; color:#d97706; padding:2px 8px; border-radius:50px; font-size:11px; font-weight:700; border:1px solid #fde68a;">Pending Join Request</span>
-                        </div>
-                        <p style="color:#334155; font-size:14px; font-weight:500;" class="dm-text">Course: ${req.course_title}</p>
-                        <p style="color:#64748b; font-size:13px;" class="dm-desc">Requested on: ${req.date}</p>
-                    </div>
-                    <div class="action-container" style="display:flex; gap:10px; flex-wrap:wrap;">
-                        <button class="btn btn-primary" style="background:#059669; padding:6px 16px;" onclick="approveEnrollment(${req.id}, '${req.student_email}', '${req.course_title.replace(/'/g, "\\'")}', '${req.student_name.replace(/'/g, "\\'")}')">Approve</button>
-                        <button class="btn btn-primary" style="background:#ef4444; padding:6px 16px;" onclick="rejectEnrollment(${req.id})">Reject</button>
-                    </div>
+            <div class="submission-item">
+              <div>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                  <h3 style="font-size:16px;font-weight:700;color:#0f172a;" class="dm-title">${req.student_name}</h3>
+                  <span style="background:#fef3c7;color:#d97706;padding:2px 8px;border-radius:50px;font-size:11px;font-weight:700;border:1px solid #fde68a;">Pending Join Request</span>
                 </div>
-            `,
+                <p style="color:#334155;font-size:14px;font-weight:500;" class="dm-text">Course: ${req.course_title}</p>
+                <p style="color:#64748b;font-size:13px;" class="dm-desc">Requested on: ${req.date}</p>
+              </div>
+              <div class="action-container" style="display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="btn btn-primary" style="background:#059669;padding:6px 16px;" onclick="approveEnrollment(${req.id},'${req.student_email}','${req.course_title.replace(/'/g, "\\'")}','${req.student_name.replace(/'/g, "\\'")}')">Approve</button>
+                <button class="btn btn-primary" style="background:#ef4444;padding:6px 16px;" onclick="rejectEnrollment(${req.id})">Reject</button>
+              </div>
+            </div>`,
             )
             .join("");
         } catch (e) {
@@ -5868,7 +5411,6 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: reqId, status: "Approved" }),
           });
-
           await addNotification(
             studentEmail,
             `Your request to join "${courseTitle}" has been approved!`,
@@ -5879,7 +5421,6 @@
             `You have approved ${studentName}'s enrollment for "${courseTitle}".`,
             "blue",
           );
-
           renderInstructorRequests();
           updateInstructorStats();
           renderInstructorLiveCourses();
@@ -5902,16 +5443,12 @@
       async function renderAdminUsers() {
         const container = document.getElementById("admin-user-grid-container");
         if (!container) return;
-
         renderAdminBanRequests();
-
         let usersToRender = [];
-
         try {
           const dbUsers = await safeFetchJSON(`${API_URL}/users`);
           let localUsers =
             JSON.parse(localStorage.getItem("elms_users_db")) || [];
-
           usersToRender = dbUsers.map((dbU) => {
             let localU = localUsers.find((l) => l.email === dbU.email);
             return {
@@ -5926,25 +5463,20 @@
           });
           localStorage.setItem("elms_users_db", JSON.stringify(usersToRender));
         } catch (e) {
-          console.log("Using local user DB due to API error");
           usersToRender =
             JSON.parse(localStorage.getItem("elms_users_db")) || [];
         }
-
         if (usersToRender.length === 0) {
-          container.innerHTML = `<p style="color:#64748b; padding:20px;">No users found.</p>`;
+          container.innerHTML = `<p style="color:#64748b;padding:20px;">No users found.</p>`;
           updateAdminStats();
           return;
         }
-
         container.innerHTML = usersToRender
           .map((u) => {
             if (u.role === "admin") return "";
-
             const isPending = u.status === "Pending";
             const isBanned = u.status === "Banned";
             const isApproved = u.status === "Approved";
-
             let cardClass = isPending
               ? "card-pending"
               : isBanned
@@ -5960,50 +5492,16 @@
               : isBanned
                 ? "Banned"
                 : "✓ Approved";
-            let maskedPass = "********";
-
             let actionHTML = "";
-            if (isPending) {
-              actionHTML = `
-                    <div class="action-container" style="display:flex; gap:10px; width:100%;">
-                        <button class="btn btn-primary" onclick="approveUser('${u.email}')" style="flex:1; background:#059669; border-radius:50px; font-weight:700; padding:10px;">Approve</button>
-                        <button class="btn btn-primary" onclick="rejectUser('${u.email}')" style="flex:1; background:#e11d48; border-radius:50px; font-weight:700; padding:10px;">Reject</button>
-                    </div>`;
-            } else if (isApproved) {
-              actionHTML = `
-                    <div class="action-container" style="display:flex; gap:10px; width:100%;">
-                        <button class="btn btn-outline" onclick="viewUserProfile('${u.email}')" style="flex:2; border-radius:50px; font-weight:700; color:#312e81; border:2px solid #f3f0ff; padding:10px;">View Profile</button>
-                        <button class="btn btn-primary" onclick="banUser('${u.email}')" style="flex:1; background:#ef4444; border-radius:50px; font-weight:700; padding:10px;">Ban</button>
-                    </div>`;
-            } else if (isBanned) {
-              actionHTML = `
-                    <div class="action-container" style="display:flex; gap:10px; width:100%;">
-                        <button class="btn btn-outline" onclick="unbanUser('${u.email}')" style="flex:1; border-radius:50px; font-weight:700; color:#059669; border:2px solid #a7f3d0; padding:10px;">Unban</button>
-                        <button class="btn btn-primary" onclick="rejectUser('${u.email}')" style="flex:1; background:#e11d48; border-radius:50px; font-weight:700; padding:10px;">Delete</button>
-                    </div>`;
-            }
-
-            return `
-                <div class="user-card ${cardClass}">
-                    <span class="user-card-badge ${badgeClass}">${badgeText}</span>
-                    <div class="user-card-header">
-                        <div class="user-avatar-large ${u.gradient || "blue-gradient"}">${u.avatar}</div>
-                        <div class="user-main-info">
-                            <h3 style="color:#312e81; font-weight:700; margin-bottom:4px; font-size:18px;" class="dm-title">${u.name}</h3>
-                            <p style="color:#7c3aed; font-size:14px; font-weight:500; word-break: break-all;" class="dm-desc">${u.email}</p>
-                            <p style="color:#ef4444; font-size:13px; font-weight:700; margin-top:4px;" class="dm-desc">🔑 Pass: ${maskedPass}</p>
-                        </div>
-                    </div>
-                    <div class="info-tag-row" style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
-                        <span style="background:${u.role === "instructor" ? "#eff6ff" : "#f0fdf4"}; color:${u.role === "instructor" ? "#2563eb" : "#059669"}; padding:5px 12px; border-radius:20px; font-size:12px; font-weight:600; border:1px solid ${u.role === "instructor" ? "#dbeafe" : "#dcfce7"}; text-transform: capitalize;">${u.role}</span>
-                        <span style="color:#7c3aed; font-size:12px; display:flex; align-items:center;" class="dm-desc">Joined: ${u.date}</span>
-                    </div>
-                    ${actionHTML}
-                </div>
-                `;
+            if (isPending)
+              actionHTML = `<div class="action-container" style="display:flex;gap:10px;width:100%;"><button class="btn btn-primary" onclick="approveUser('${u.email}')" style="flex:1;background:#059669;border-radius:50px;font-weight:700;padding:10px;">Approve</button><button class="btn btn-primary" onclick="rejectUser('${u.email}')" style="flex:1;background:#e11d48;border-radius:50px;font-weight:700;padding:10px;">Reject</button></div>`;
+            else if (isApproved)
+              actionHTML = `<div class="action-container" style="display:flex;gap:10px;width:100%;"><button class="btn btn-outline" onclick="viewUserProfile('${u.email}')" style="flex:2;border-radius:50px;font-weight:700;color:#312e81;border:2px solid #f3f0ff;padding:10px;">View Profile</button><button class="btn btn-primary" onclick="banUser('${u.email}')" style="flex:1;background:#ef4444;border-radius:50px;font-weight:700;padding:10px;">Ban</button></div>`;
+            else if (isBanned)
+              actionHTML = `<div class="action-container" style="display:flex;gap:10px;width:100%;"><button class="btn btn-outline" onclick="unbanUser('${u.email}')" style="flex:1;border-radius:50px;font-weight:700;color:#059669;border:2px solid #a7f3d0;padding:10px;">Unban</button><button class="btn btn-primary" onclick="rejectUser('${u.email}')" style="flex:1;background:#e11d48;border-radius:50px;font-weight:700;padding:10px;">Delete</button></div>`;
+            return `<div class="user-card ${cardClass}"><span class="user-card-badge ${badgeClass}">${badgeText}</span><div class="user-card-header"><div class="user-avatar-large ${u.gradient || "blue-gradient"}">${u.avatar}</div><div class="user-main-info"><h3 style="color:#312e81;font-weight:700;margin-bottom:4px;font-size:18px;" class="dm-title">${u.name}</h3><p style="color:#7c3aed;font-size:14px;font-weight:500;word-break:break-all;" class="dm-desc">${u.email}</p></div></div><div class="info-tag-row" style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;"><span style="background:${u.role === "instructor" ? "#eff6ff" : "#f0fdf4"};color:${u.role === "instructor" ? "#2563eb" : "#059669"};padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid ${u.role === "instructor" ? "#dbeafe" : "#dcfce7"};text-transform:capitalize;">${u.role}</span><span style="color:#7c3aed;font-size:12px;display:flex;align-items:center;" class="dm-desc">Joined: ${u.date}</span></div>${actionHTML}</div>`;
           })
           .join("");
-
         updateAdminStats();
       }
 
@@ -6011,28 +5509,21 @@
         let users = JSON.parse(localStorage.getItem("elms_users_db"));
         let user = users.find((u) => u.email === email);
         if (!user) return;
-
-        let maskedPass = "********";
-
         document
           .querySelectorAll(".dashboard-content > div")
           .forEach((div) => div.classList.add("hidden"));
         document
           .getElementById("admin-user-profile-content")
           .classList.remove("hidden");
-
         const container = document.getElementById(
           "user-profile-dynamic-content",
         );
-        container.innerHTML = `<div style="text-align:center; padding: 40px; color: #64748b;">Loading profile data...</div>`;
-
+        container.innerHTML = `<div style="text-align:center;padding:40px;color:#64748b;">Loading profile data...</div>`;
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
           let roleSpecificContent = "";
           let courseCount = 0;
-
           if (user.role === "student") {
             let userEnrollments = enrollments.filter(
               (e) => e.student_email === email && e.status === "Approved",
@@ -6041,7 +5532,6 @@
               userEnrollments.some((e) => e.course_id == c.id),
             );
             courseCount = enrolledCourses.length;
-
             let coursesHtml =
               enrolledCourses.length > 0
                 ? enrolledCourses
@@ -6049,34 +5539,17 @@
                       const bgIndex =
                         (parseInt(String(c.id).slice(-3)) || 0) %
                         courseGradients.length;
-                      let bgStyle = `background: ${courseGradients[bgIndex]}; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; border-bottom:1px solid #e2e8f0; cursor: pointer;`;
-
-                      return `
-                      <div class="std-course-card">
-                          <div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle}" onclick="openCoursePlayer('${c.id}')">
-                               <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                          </div>
-                          <div class="std-course-card-content">
-                              <h3 style="font-size:18px; font-weight:700; color:#0f172a; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                              <p style="font-size:14px; color:#64748b; margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p>
-                              <div style="margin-top:auto;"><button class="btn btn-outline" style="width:100%;" onclick="openCoursePlayer('${c.id}')">View Course</button></div>
-                          </div>
-                      </div>
-                  `;
+                      let bgStyle = `background:${courseGradients[bgIndex]};display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;border-bottom:1px solid #e2e8f0;cursor:pointer;`;
+                      return `<div class="std-course-card"><div style="height:160px;border-radius:24px 24px 0 0;${bgStyle}" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white;font-size:22px;font-weight:800;text-shadow:0 2px 4px rgba(0,0,0,0.5);margin:0;">${c.title}</h4></div><div class="std-course-card-content"><h3 style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:10px;" class="dm-title">${c.title}</h3><p style="font-size:14px;color:#64748b;margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p><div style="margin-top:auto;"><button class="btn btn-outline" style="width:100%;" onclick="openCoursePlayer('${c.id}')">View Course</button></div></div></div>`;
                     })
                     .join("")
-                : `<div style="grid-column: 1 / -1; padding: 20px; text-align: center; color: #64748b; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">No courses enrolled yet.</div>`;
-
-            roleSpecificContent = `
-                        <h3 style="font-size:20px; font-weight:700; color:#0f172a; margin-top:30px; margin-bottom:15px;" class="dm-title">Enrolled Courses</h3>
-                        <div class="continue-learning-grid">${coursesHtml}</div>
-                    `;
+                : `<div style="grid-column:1/-1;padding:20px;text-align:center;color:#64748b;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;">No courses enrolled yet.</div>`;
+            roleSpecificContent = `<h3 style="font-size:20px;font-weight:700;color:#0f172a;margin-top:30px;margin-bottom:15px;" class="dm-title">Enrolled Courses</h3><div class="continue-learning-grid">${coursesHtml}</div>`;
           } else {
             let publishedCourses = courses.filter(
               (c) => c.instructor_email === email,
             );
             courseCount = publishedCourses.length;
-
             let coursesHtml =
               publishedCourses.length > 0
                 ? publishedCourses
@@ -6084,63 +5557,20 @@
                       const bgIndex =
                         (parseInt(String(c.id).slice(-3)) || 0) %
                         courseGradients.length;
-                      let bgStyle = `background: ${courseGradients[bgIndex]}; display:flex; align-items:center; justify-content:center; text-align:center; padding:15px; border-bottom:1px solid #e2e8f0; cursor: pointer;`;
+                      let bgStyle = `background:${courseGradients[bgIndex]};display:flex;align-items:center;justify-content:center;text-align:center;padding:15px;border-bottom:1px solid #e2e8f0;cursor:pointer;`;
                       let statusBadge =
                         c.status === "Approved"
-                          ? `<span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">Live</span>`
-                          : `<span style="background: #fffbeb; color: #d97706; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #fde68a;">Pending</span>`;
-
-                      return `
-                      <div class="admin-course-card ${c.status === "Pending" ? "border-pen" : "border-pub"}">
-                          <div style="height: 140px; border-radius: 12px; margin-bottom: 15px; ${bgStyle}" onclick="openCoursePlayer('${c.id}')">
-                               <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4>
-                          </div>
-                          <div class="acc-tags" style="margin-bottom:10px;">
-                              ${statusBadge}
-                              <span class="acc-tag tag-cat" style="margin-left:8px;">${c.category || "General"}</span>
-                          </div>
-                          <h3 style="font-size:18px; font-weight:700; color:#312e81; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                          <button class="btn btn-outline" style="width:100%; margin-top: auto;" onclick="openCoursePlayer('${c.id}')">View Details</button>
-                      </div>
-                  `;
+                          ? `<span style="background:#ecfdf5;color:#059669;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;border:1px solid #a7f3d0;">Live</span>`
+                          : `<span style="background:#fffbeb;color:#d97706;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;border:1px solid #fde68a;">Pending</span>`;
+                      return `<div class="admin-course-card ${c.status === "Pending" ? "border-pen" : "border-pub"}"><div style="height:140px;border-radius:12px;margin-bottom:15px;${bgStyle}" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white;font-size:18px;font-weight:800;margin:0;text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4></div><div class="acc-tags" style="margin-bottom:10px;">${statusBadge}<span class="acc-tag tag-cat" style="margin-left:8px;">${c.category || "General"}</span></div><h3 style="font-size:18px;font-weight:700;color:#312e81;margin-bottom:6px;" class="dm-title">${c.title}</h3><button class="btn btn-outline" style="width:100%;margin-top:auto;" onclick="openCoursePlayer('${c.id}')">View Details</button></div>`;
                     })
                     .join("")
-                : `<div style="grid-column: 1 / -1; padding: 20px; text-align: center; color: #64748b; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">No courses published yet.</div>`;
-
-            roleSpecificContent = `
-                        <h3 style="font-size:20px; font-weight:700; color:#0f172a; margin-top:30px; margin-bottom:15px;" class="dm-title">Published Courses</h3>
-                        <div class="admin-course-grid">${coursesHtml}</div>
-                    `;
+                : `<div style="grid-column:1/-1;padding:20px;text-align:center;color:#64748b;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;">No courses published yet.</div>`;
+            roleSpecificContent = `<h3 style="font-size:20px;font-weight:700;color:#0f172a;margin-top:30px;margin-bottom:15px;" class="dm-title">Published Courses</h3><div class="admin-course-grid">${coursesHtml}</div>`;
           }
-
-          container.innerHTML = `
-                    <div class="settings-card" style="margin-bottom:0;">
-                        <div class="user-card-header" style="align-items:center; border-bottom:1px solid #f1f5f9; padding-bottom:20px; margin-bottom:20px;">
-                            <div class="user-avatar-large ${user.gradient}" style="width:80px; height:80px; font-size:32px;">${user.avatar}</div>
-                            <div class="user-main-info">
-                                <h2 style="color:#312e81; font-weight:800; font-size:24px; margin-bottom:4px;" class="dm-title">${user.name}</h2>
-                                <p style="color:#64748b; font-size:15px; font-weight:500;" class="dm-desc">${user.email}</p>
-                                <p style="color:#ef4444; font-size:14px; font-weight:700; margin-top:4px;" class="dm-desc">🔑 Pass: ${maskedPass}</p>
-                                <div style="margin-top:10px; display:flex; gap:10px;">
-                                    <span style="background:${user.role === "instructor" ? "#eff6ff" : "#f0fdf4"}; color:${user.role === "instructor" ? "#2563eb" : "#059669"}; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid ${user.role === "instructor" ? "#dbeafe" : "#dcfce7"}; text-transform: capitalize;">${user.role}</span>
-                                    <span style="background:#f8fafc; border:1px solid #e2e8f0; color:#475569; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600;">Joined: ${user.date}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px; margin-bottom: 0;">
-                            <div class="p-stat-card p-stat-card-blue" style="min-height: auto; padding: 15px;">
-                                <div class="p-card-top" style="margin-bottom: 10px;">
-                                    <h3 style="font-size: 13px;">${user.role === "student" ? "Enrolled Courses" : "Active Courses"}</h3>
-                                </div>
-                                <div class="val" style="font-size: 24px;">${courseCount}</div>
-                            </div>
-                        </div>
-                    </div>
-                    ${roleSpecificContent}
-                `;
+          container.innerHTML = `<div class="settings-card" style="margin-bottom:0;"><div class="user-card-header" style="align-items:center;border-bottom:1px solid #f1f5f9;padding-bottom:20px;margin-bottom:20px;"><div class="user-avatar-large ${user.gradient}" style="width:80px;height:80px;font-size:32px;">${user.avatar}</div><div class="user-main-info"><h2 style="color:#312e81;font-weight:800;font-size:24px;margin-bottom:4px;" class="dm-title">${user.name}</h2><p style="color:#64748b;font-size:15px;font-weight:500;" class="dm-desc">${user.email}</p><div style="margin-top:10px;display:flex;gap:10px;"><span style="background:${user.role === "instructor" ? "#eff6ff" : "#f0fdf4"};color:${user.role === "instructor" ? "#2563eb" : "#059669"};padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid ${user.role === "instructor" ? "#dbeafe" : "#dcfce7"};text-transform:capitalize;">${user.role}</span><span style="background:#f8fafc;border:1px solid #e2e8f0;color:#475569;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;">Joined: ${user.date}</span></div></div></div><div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:0;"><div class="p-stat-card p-stat-card-blue" style="min-height:auto;padding:15px;"><div class="p-card-top" style="margin-bottom:10px;"><h3 style="font-size:13px;">${user.role === "student" ? "Enrolled Courses" : "Active Courses"}</h3></div><div class="val" style="font-size:24px;">${courseCount}</div></div></div></div>${roleSpecificContent}`;
         } catch (e) {
-          container.innerHTML = `<div style="text-align:center; padding: 40px; color: #ef4444;">Failed to load user profile details from database.</div>`;
-          console.error("Profile load error:", e);
+          container.innerHTML = `<div style="text-align:center;padding:40px;color:#ef4444;">Failed to load user profile details from database.</div>`;
         }
       }
 
@@ -6149,22 +5579,19 @@
           const res = await fetch(`${API_URL}/update-user-status`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: email, status: "Approved" }),
+            body: JSON.stringify({ email, status: "Approved" }),
           });
-
           if (!res.ok) {
             alert(
               "Database update failed. Please check your backend connection.",
             );
             return;
           }
-
           let users = JSON.parse(localStorage.getItem("elms_users_db")) || [];
           users = users.map((u) =>
             u.email === email ? { ...u, status: "Approved" } : u,
           );
           localStorage.setItem("elms_users_db", JSON.stringify(users));
-
           await renderAdminUsers();
           await addNotification(
             email,
@@ -6173,7 +5600,6 @@
           );
           alert(`User ${email} has been successfully approved.`);
         } catch (e) {
-          console.error("API error: ", e);
           alert("Connection error. Unable to reach the backend server.");
         }
       }
@@ -6184,24 +5610,20 @@
           const res = await fetch(`${API_URL}/update-user-status`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: email, status: "Banned" }),
+            body: JSON.stringify({ email, status: "Banned" }),
           });
-
           if (!res.ok) {
             alert("Database update failed.");
             return;
           }
-
           let users = JSON.parse(localStorage.getItem("elms_users_db")) || [];
           users = users.map((u) =>
             u.email === email ? { ...u, status: "Banned" } : u,
           );
           localStorage.setItem("elms_users_db", JSON.stringify(users));
-
           await renderAdminUsers();
           alert(`User ${email} has been successfully banned.`);
         } catch (e) {
-          console.error(e);
           alert("A connection error occurred.");
         }
       }
@@ -6212,24 +5634,20 @@
           const res = await fetch(`${API_URL}/update-user-status`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: email, status: "Approved" }),
+            body: JSON.stringify({ email, status: "Approved" }),
           });
-
           if (!res.ok) {
             alert("Database update failed.");
             return;
           }
-
           let users = JSON.parse(localStorage.getItem("elms_users_db")) || [];
           users = users.map((u) =>
             u.email === email ? { ...u, status: "Approved" } : u,
           );
           localStorage.setItem("elms_users_db", JSON.stringify(users));
-
           await renderAdminUsers();
           alert(`User ${email} has been successfully unbanned.`);
         } catch (e) {
-          console.error(e);
           alert("A connection error occurred.");
         }
       }
@@ -6240,9 +5658,8 @@
           const res = await fetch(`${API_URL}/delete-account`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: email }),
+            body: JSON.stringify({ email }),
           });
-
           if (res.ok) {
             let users = JSON.parse(localStorage.getItem("elms_users_db"));
             users = users.filter((u) => u.email !== email);
@@ -6261,31 +5678,23 @@
           const email = document.getElementById("login-email").value;
           const rawPassword = document.getElementById("login-password").value;
           const errorDiv = document.getElementById("login-error");
-
           errorDiv.style.backgroundColor = "#fef2f2";
           errorDiv.style.color = "#ef4444";
           errorDiv.style.border = "none";
           errorDiv.innerHTML = "";
-
           try {
             const res = await fetch(`${API_URL}/login`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email: email, password: rawPassword }),
+              body: JSON.stringify({ email, password: rawPassword }),
             });
-
             const data = await res.json();
-
             if (res.ok) {
               if (
                 data.user.role !== "admin" &&
                 data.user.status === "Pending"
               ) {
-                errorDiv.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                  <span style="font-size:16px;"><b>Pending Approval</b></span>
-                  <span style="font-size:13px;">The administrator has not yet approved your account. Please wait for approval.</span>
-              </div>`;
+                errorDiv.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span style="font-size:16px;"><b>Pending Approval</b></span><span style="font-size:13px;">The administrator has not yet approved your account. Please wait for approval.</span></div>`;
                 errorDiv.style.backgroundColor = "#fffbeb";
                 errorDiv.style.color = "#d97706";
                 errorDiv.style.border = "1px solid #fde68a";
@@ -6293,18 +5702,13 @@
                 return;
               }
               if (data.user.status === "Banned") {
-                errorDiv.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                  <span style="font-size:16px;"><b>Account Suspended</b></span>
-                  <span style="font-size:13px;">Your account has been suspended by the administrator.</span>
-              </div>`;
+                errorDiv.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg><span style="font-size:16px;"><b>Account Suspended</b></span><span style="font-size:13px;">Your account has been suspended by the administrator.</span></div>`;
                 errorDiv.style.backgroundColor = "#fef2f2";
                 errorDiv.style.color = "#ef4444";
                 errorDiv.style.border = "1px solid #fca5a5";
                 errorDiv.style.display = "block";
                 return;
               }
-
               currentUser = data.user;
               localStorage.setItem(
                 "elms_current_user",
@@ -6330,7 +5734,6 @@
           e.preventDefault();
           const errorDiv = document.getElementById("signup-error");
           const rawPassword = document.getElementById("signup-password").value;
-
           const payload = {
             name: document.getElementById("signup-name").value,
             email: document.getElementById("signup-email").value,
@@ -6341,16 +5744,13 @@
               .value.charAt(0)
               .toUpperCase(),
           };
-
           try {
             const res = await fetch(`${API_URL}/signup`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(payload),
             });
-
             const data = await res.json();
-
             if (res.ok) {
               let localUsers = JSON.parse(
                 localStorage.getItem("elms_users_db") || "[]",
@@ -6376,15 +5776,13 @@
                   JSON.stringify(localUsers),
                 );
               }
-
               const roleColor =
                 payload.role === "instructor" ? "blue" : "green";
               await addNotification(
                 "admin",
-                `${payload.name} requested ${payload.role} access`,
+                `${payload.name} has requested ${payload.role} access on ELMS.`,
                 roleColor,
               );
-
               errorDiv.style.display = "none";
               alert(
                 "Account created successfully. An administrator must approve your account before you can log in.",
@@ -6407,7 +5805,6 @@
         if (!currentUser) return;
         const newName = document.getElementById("set-name").value;
         const newAvatar = newName.charAt(0).toUpperCase();
-
         try {
           await fetch(`${API_URL}/update-profile`, {
             method: "PUT",
@@ -6419,12 +5816,10 @@
             }),
           });
         } catch (err) {}
-
         alert("Profile updated successfully!");
         currentUser.name = newName;
         currentUser.avatar = newAvatar;
         localStorage.setItem("elms_current_user", JSON.stringify(currentUser));
-
         let users = JSON.parse(localStorage.getItem("elms_users_db")) || [];
         users = users.map((u) =>
           u.email === currentUser.email
@@ -6432,7 +5827,6 @@
             : u,
         );
         localStorage.setItem("elms_users_db", JSON.stringify(users));
-
         location.reload();
       }
 
@@ -6446,11 +5840,9 @@
             body: JSON.stringify({ email: currentUser.email }),
           });
         } catch (err) {}
-
         let users = JSON.parse(localStorage.getItem("elms_users_db")) || [];
         users = users.filter((u) => u.email !== currentUser.email);
         localStorage.setItem("elms_users_db", JSON.stringify(users));
-
         alert("Your account has been successfully deleted.");
         logout();
       }

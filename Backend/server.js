@@ -90,7 +90,6 @@ db.getConnection((err, connection) => {
       )
     `);
 
-    // 🔥 ASSIGNMENTS TABLES 🔥
     connection.query(`
       CREATE TABLE IF NOT EXISTS assignments (
         id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100) NOT NULL,
@@ -102,6 +101,20 @@ db.getConnection((err, connection) => {
       CREATE TABLE IF NOT EXISTS assignment_submissions (
         id INT AUTO_INCREMENT PRIMARY KEY, assignment_id INT NOT NULL, course_id VARCHAR(100),
         student_email VARCHAR(100), student_name VARCHAR(100), submission_text TEXT, \`date\` VARCHAR(50)
+      )
+    `);
+
+    connection.query(`
+      CREATE TABLE IF NOT EXISTS ban_requests (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        course_id VARCHAR(100),
+        course_title VARCHAR(255),
+        inst_email VARCHAR(100),
+        inst_name VARCHAR(100),
+        student_email VARCHAR(100),
+        student_name VARCHAR(100),
+        status VARCHAR(50) DEFAULT 'Pending',
+        \`date\` VARCHAR(50)
       )
     `);
 
@@ -150,14 +163,10 @@ app.post("/login", (req, res) => {
   );
 });
 
-// 🔥 ENHANCED PROFILE UPDATE (Safe Multi-Table Update) 🔥
 app.put("/update-profile", async (req, res) => {
   const { name, avatar, email } = req.body;
-
   try {
     const promiseDb = db.promise();
-
-    // Using Promise based queries to securely ensure ALL tables are updated sequentially
     await promiseDb.query(
       "UPDATE users SET name = ?, avatar = ? WHERE email = ?",
       [name, avatar, email],
@@ -186,7 +195,6 @@ app.put("/update-profile", async (req, res) => {
       "UPDATE assignment_submissions SET student_name = ? WHERE student_email = ?",
       [name, email],
     );
-
     res
       .status(200)
       .json({ message: "Profile and related records updated successfully" });
@@ -276,6 +284,7 @@ app.get("/enrollments", (req, res) => {
     res.status(200).json(data);
   });
 });
+
 app.post("/enrollments", (req, res) => {
   const {
     course_id,
@@ -303,6 +312,7 @@ app.post("/enrollments", (req, res) => {
     },
   );
 });
+
 app.put("/enrollments/status", (req, res) => {
   db.query(
     "UPDATE enrollments SET status = ? WHERE id = ?",
@@ -313,6 +323,7 @@ app.put("/enrollments/status", (req, res) => {
         : res.status(200).json({ message: "Status updated" }),
   );
 });
+
 app.delete("/enrollments/:id", (req, res) => {
   db.query("DELETE FROM enrollments WHERE id = ?", [req.params.id], (err) =>
     err
@@ -332,13 +343,14 @@ app.get("/course-chats/:courseId", (req, res) => {
         : res.status(200).json(data),
   );
 });
+
 app.post("/course-chats", (req, res) => {
   const { course_id, course_name, user_name, user_email, message, time } =
     req.body;
   if (!message || !course_id)
     return res.status(400).json({ error: "Missing fields" });
   db.query(
-    "INSERT INTO course_chats (course_id, course_name, user_name, user_email, message, \`time\`) VALUES (?, ?, ?, ?, ?, ?)",
+    "INSERT INTO course_chats (course_id, course_name, user_name, user_email, message, `time`) VALUES (?, ?, ?, ?, ?, ?)",
     [
       String(course_id),
       String(course_name),
@@ -365,6 +377,7 @@ app.get("/course-feedbacks/:courseId", (req, res) => {
         : res.status(200).json(data),
   );
 });
+
 app.post("/course-feedbacks", (req, res) => {
   const {
     course_id,
@@ -376,7 +389,7 @@ app.post("/course-feedbacks", (req, res) => {
     date,
   } = req.body;
   db.query(
-    "INSERT INTO feedbacks (course_id, course_name, user_name, user_email, rating, comment, \`date\`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    "INSERT INTO feedbacks (course_id, course_name, user_name, user_email, rating, comment, `date`) VALUES (?, ?, ?, ?, ?, ?, ?)",
     [
       String(course_id),
       String(course_name || ""),
@@ -392,6 +405,7 @@ app.post("/course-feedbacks", (req, res) => {
         : res.status(200).json({ message: "Feedback submitted!" }),
   );
 });
+
 app.get("/all-complaints", (req, res) => {
   db.query("SELECT * FROM complaints ORDER BY id DESC", (err, data) =>
     err
@@ -399,6 +413,7 @@ app.get("/all-complaints", (req, res) => {
       : res.status(200).json(data),
   );
 });
+
 app.get("/course-complaints/:courseId", (req, res) => {
   db.query(
     "SELECT * FROM complaints WHERE course_id = ? ORDER BY id DESC",
@@ -409,6 +424,7 @@ app.get("/course-complaints/:courseId", (req, res) => {
         : res.status(200).json(data),
   );
 });
+
 app.post("/course-complaints", (req, res) => {
   const {
     course_id,
@@ -419,7 +435,7 @@ app.post("/course-complaints", (req, res) => {
     date,
   } = req.body;
   db.query(
-    "INSERT INTO complaints (course_id, course_name, user_name, user_email, complaint_text, \`date\`) VALUES (?, ?, ?, ?, ?, ?)",
+    "INSERT INTO complaints (course_id, course_name, user_name, user_email, complaint_text, `date`) VALUES (?, ?, ?, ?, ?, ?)",
     [
       String(course_id),
       String(course_name || ""),
@@ -446,11 +462,12 @@ app.get("/assignments/:courseId", (req, res) => {
         : res.status(200).json(data),
   );
 });
+
 app.post("/assignments", (req, res) => {
   const { course_id, title, description, due_date, instructor_email, date } =
     req.body;
   db.query(
-    "INSERT INTO assignments (course_id, title, description, due_date, instructor_email, \`date\`) VALUES (?, ?, ?, ?, ?, ?)",
+    "INSERT INTO assignments (course_id, title, description, due_date, instructor_email, `date`) VALUES (?, ?, ?, ?, ?, ?)",
     [
       String(course_id),
       String(title),
@@ -465,6 +482,7 @@ app.post("/assignments", (req, res) => {
         : res.status(200).json({ message: "Assignment created!" }),
   );
 });
+
 app.get("/assignment-submissions/:courseId", (req, res) => {
   db.query(
     "SELECT * FROM assignment_submissions WHERE course_id = ? ORDER BY id DESC",
@@ -475,6 +493,7 @@ app.get("/assignment-submissions/:courseId", (req, res) => {
         : res.status(200).json(data),
   );
 });
+
 app.post("/assignment-submissions", (req, res) => {
   const {
     assignment_id,
@@ -485,7 +504,7 @@ app.post("/assignment-submissions", (req, res) => {
     date,
   } = req.body;
   db.query(
-    "INSERT INTO assignment_submissions (assignment_id, course_id, student_email, student_name, submission_text, \`date\`) VALUES (?, ?, ?, ?, ?, ?)",
+    "INSERT INTO assignment_submissions (assignment_id, course_id, student_email, student_name, submission_text, `date`) VALUES (?, ?, ?, ?, ?, ?)",
     [
       assignment_id,
       String(course_id),
@@ -512,10 +531,11 @@ app.get("/notifications/:identifier", (req, res) => {
         : res.status(200).json(data),
   );
 });
+
 app.post("/notifications", (req, res) => {
   const { identifier, text, color, date, time } = req.body;
   db.query(
-    "INSERT INTO notifications (identifier, text, color, \`date\`, \`time\`, unread) VALUES (?, ?, ?, ?, ?, 1)",
+    "INSERT INTO notifications (identifier, text, color, `date`, `time`, unread) VALUES (?, ?, ?, ?, ?, 1)",
     [identifier, text, color, date, time],
     (err) =>
       err
@@ -523,6 +543,7 @@ app.post("/notifications", (req, res) => {
         : res.status(200).json({ message: "Added" }),
   );
 });
+
 app.put("/notifications/read", (req, res) => {
   db.query(
     "UPDATE notifications SET unread = 0 WHERE identifier = ?",
@@ -531,6 +552,54 @@ app.put("/notifications/read", (req, res) => {
       if (err) return res.status(500).json({ error: err.message });
       res.status(200).json({ message: "Marked" });
     },
+  );
+});
+
+// --- BAN REQUEST APIs ---
+app.get("/ban-requests", (req, res) => {
+  db.query("SELECT * FROM ban_requests ORDER BY id DESC", (err, data) =>
+    err
+      ? res.status(500).json({ error: err.message })
+      : res.status(200).json(data),
+  );
+});
+
+app.post("/ban-requests", (req, res) => {
+  const {
+    course_id,
+    course_title,
+    inst_email,
+    inst_name,
+    student_email,
+    student_name,
+    date,
+  } = req.body;
+  db.query(
+    "INSERT INTO ban_requests (course_id, course_title, inst_email, inst_name, student_email, student_name, status, `date`) VALUES (?, ?, ?, ?, ?, ?, 'Pending', ?)",
+    [
+      course_id,
+      course_title,
+      inst_email,
+      inst_name,
+      student_email,
+      student_name,
+      date,
+    ],
+    (err) =>
+      err
+        ? res.status(500).json({ error: err.message })
+        : res.status(200).json({ message: "Ban request submitted" }),
+  );
+});
+
+app.put("/ban-requests/:id", (req, res) => {
+  db.query(
+    "UPDATE ban_requests SET status = ? WHERE id = ?",
+    [req.body.status, req.params.id],
+    (err) =>
+      err
+        ? res.status(500).json({ error: err.message })
+        : res.status(200).json({ message: "Ban request updated" }),
   );
 });
 
