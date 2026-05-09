@@ -5017,15 +5017,14 @@
 
           let htmlStr = `<h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Enrolled Students (${enrolledStudents.length})</h3><div style="display:flex; flex-direction:column; gap:10px;">`;
 
-          let banReqs = JSON.parse(
-            localStorage.getItem("elms_ban_requests") || "[]",
-          );
+          // 🔥 Fetch dynamic ban requests from API
+          const banReqs = await safeFetchJSON(`${API_URL}/ban-requests`);
 
           enrolledStudents.forEach((st) => {
             let isRequested = banReqs.some(
               (r) =>
-                r.studentEmail === st.student_email &&
-                r.courseId == currentCoursePlayerId &&
+                r.student_email === st.student_email &&
+                r.course_id == currentCoursePlayerId &&
                 r.status === "Pending",
             );
 
@@ -5064,39 +5063,52 @@
         )
           return;
 
-        let banReqs = JSON.parse(
-          localStorage.getItem("elms_ban_requests") || "[]",
-        );
-        banReqs.push({
-          id: Date.now(),
-          courseId: courseId,
-          courseTitle: document.getElementById("cp-course-title").innerText,
-          instEmail: currentUser.email,
-          instName: currentUser.name,
-          studentEmail: studentEmail,
-          studentName: studentName,
-          status: "Pending",
-          date: new Date().toLocaleDateString(),
-        });
-        localStorage.setItem("elms_ban_requests", JSON.stringify(banReqs));
+        const payload = {
+          course_id: courseId,
+          course_title: document.getElementById("cp-course-title").innerText,
+          inst_email: currentUser.email,
+          inst_name: currentUser.name,
+          student_email: studentEmail,
+          student_name: studentName,
+          date: new Date().toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+        };
 
-        await addNotification(
-          "admin",
-          `⚠️ Ban Request: Instructor ${currentUser.name} requested to ban ${studentName}.`,
-          "red",
-        );
-        alert("Ban request sent to admin successfully.");
-        setupCourseStudentsUI();
+        try {
+          const res = await fetch(`${API_URL}/ban-requests`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          if (res.ok) {
+            await addNotification(
+              "admin",
+              `⚠️ Ban Request: Instructor ${currentUser.name} requested to ban ${studentName}.`,
+              "red",
+            );
+            alert("Ban request sent to admin successfully.");
+            setupCourseStudentsUI();
+          } else {
+            alert("Failed to send ban request.");
+          }
+        } catch (e) {
+          console.error(e);
+          alert("Database connection error.");
+        }
       }
 
-      function renderAdminBanRequests() {
+      async function renderAdminBanRequests() {
         const container = document.getElementById(
           "admin-ban-requests-container",
         );
         if (!container) return;
-        let banReqs = JSON.parse(
-          localStorage.getItem("elms_ban_requests") || "[]",
-        ).filter((r) => r.status === "Pending");
+
+        const allReqs = await safeFetchJSON(`${API_URL}/ban-requests`);
+        let banReqs = allReqs.filter((r) => r.status === "Pending");
 
         if (banReqs.length === 0) {
           container.innerHTML = "";
@@ -5108,13 +5120,13 @@
         banReqs.forEach((req) => {
           htmlStr += `
                 <div style="background:#fff1f2; border:1px solid #fecaca; padding:20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
-                   <div>
-                      <div style="font-weight:700; color:#be123c; font-size:16px;">Ban Request for: ${req.studentName} <span style="font-size:13px; font-weight:500;">(${req.studentEmail})</span></div>
-                      <div style="font-size:13px; color:#881337; margin-top:5px; font-weight:600;">Requested by: Instructor ${req.instName} | Course: ${req.courseTitle}</div>
+                   <div style="width: 100%;">
+                      <div style="font-weight:700; color:#be123c; font-size:16px; word-break: break-word;">Ban Request for: ${req.student_name} <span style="font-size:13px; font-weight:500;">(${req.student_email})</span></div>
+                      <div style="font-size:13px; color:#881337; margin-top:5px; font-weight:600; word-break: break-word;">Requested by: Instructor ${req.inst_name} | Course: ${req.course_title}</div>
                    </div>
-                   <div style="display:flex; gap:10px;">
-                      <button class="btn btn-primary" style="background:#e11d48;" onclick="approveBanRequest(${req.id}, '${req.studentEmail}', '${req.instEmail}', '${req.studentName.replace(/'/g, "\\'")}')">Approve & Ban</button>
-                      <button class="btn btn-outline" style="border-color:#fca5a5; color:#be123c; background:white;" onclick="rejectBanRequest(${req.id}, '${req.instEmail}', '${req.studentName.replace(/'/g, "\\'")}')">Reject Request</button>
+                   <div style="display:flex; gap:10px; width: 100%;">
+                      <button class="btn btn-primary" style="background:#e11d48; flex:1;" onclick="approveBanRequest(${req.id}, '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}')">Approve & Ban</button>
+                      <button class="btn btn-outline" style="border-color:#fca5a5; color:#be123c; background:white; flex:1;" onclick="rejectBanRequest(${req.id}, '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}')">Reject</button>
                    </div>
                 </div>
              `;
@@ -5134,6 +5146,7 @@
         )
           return;
         try {
+          // Update user status
           const res = await fetch(`${API_URL}/update-user-status`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -5142,18 +5155,21 @@
 
           if (!res.ok) return alert("Failed to ban user from database.");
 
+          // Update ban request status
+          await fetch(`${API_URL}/ban-requests/${reqId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: "Approved" }),
+          });
+
+          // Update local storage UI
           let users = JSON.parse(localStorage.getItem("elms_users_db")) || [];
           users = users.map((u) =>
             u.email === studentEmail ? { ...u, status: "Banned" } : u,
           );
           localStorage.setItem("elms_users_db", JSON.stringify(users));
 
-          let banReqs = JSON.parse(
-            localStorage.getItem("elms_ban_requests") || "[]",
-          );
-          banReqs = banReqs.filter((r) => r.id !== reqId);
-          localStorage.setItem("elms_ban_requests", JSON.stringify(banReqs));
-
+          // Notify
           await addNotification(
             studentEmail,
             `🚨 Your account has been banned from the platform by the Admin.`,
@@ -5166,7 +5182,7 @@
           );
 
           alert(`User ${studentName} has been banned.`);
-          renderAdminUsers();
+          renderAdminUsers(); // Re-renders table & requests
         } catch (e) {
           console.error(e);
           alert("Error processing ban request.");
@@ -5174,18 +5190,24 @@
       }
 
       async function rejectBanRequest(reqId, instEmail, studentName) {
-        let banReqs = JSON.parse(
-          localStorage.getItem("elms_ban_requests") || "[]",
-        );
-        banReqs = banReqs.filter((r) => r.id !== reqId);
-        localStorage.setItem("elms_ban_requests", JSON.stringify(banReqs));
+        if (!confirm(`Are you sure you want to REJECT this ban request?`))
+          return;
+        try {
+          await fetch(`${API_URL}/ban-requests/${reqId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: "Rejected" }),
+          });
 
-        await addNotification(
-          instEmail,
-          `❌ Your ban request for ${studentName} was rejected by Admin.`,
-          "red",
-        );
-        renderAdminUsers();
+          await addNotification(
+            instEmail,
+            `❌ Your ban request for ${studentName} was rejected by Admin.`,
+            "red",
+          );
+          renderAdminUsers();
+        } catch (e) {
+          console.error(e);
+        }
       }
 
       function setupAssignmentsUI() {

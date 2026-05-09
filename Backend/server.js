@@ -3,8 +3,6 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const crypto = require("crypto");
 
-require("dotenv").config();
-
 const app = express();
 
 process.on("uncaughtException", (err) =>
@@ -29,11 +27,10 @@ const hashPassword = (password) => {
 };
 
 const db = mysql.createPool({
-  host: process.env.MYSQLHOST,
-  user: process.env.MYSQLUSER,
-  password: process.env.MYSQLPASSWORD,
-  database: process.env.MYSQLDATABASE,
-  port: process.env.MYSQLPORT,
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "elms_db",
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -102,6 +99,15 @@ db.getConnection((err, connection) => {
       CREATE TABLE IF NOT EXISTS assignment_submissions (
         id INT AUTO_INCREMENT PRIMARY KEY, assignment_id INT NOT NULL, course_id VARCHAR(100),
         student_email VARCHAR(100), student_name VARCHAR(100), submission_text TEXT, \`date\` VARCHAR(50)
+      )
+    `);
+
+    // 🔥 BAN REQUESTS TABLE 🔥
+    connection.query(`
+      CREATE TABLE IF NOT EXISTS ban_requests (
+        id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100), course_title VARCHAR(255),
+        inst_email VARCHAR(100), inst_name VARCHAR(100), student_email VARCHAR(100),
+        student_name VARCHAR(100), status VARCHAR(50) DEFAULT 'Pending', \`date\` VARCHAR(50)
       )
     `);
 
@@ -246,15 +252,10 @@ app.post("/upload-course", (req, res) => {
 });
 
 app.get("/courses", (req, res) => {
-  db.query(
-    `SELECT c.*, COALESCE(u.name, c.instructor_name) AS instructor_name
-     FROM courses c
-     LEFT JOIN users u ON u.email = c.instructor_email
-     ORDER BY c.id DESC`,
-    (err, data) =>
-      err
-        ? res.status(500).json({ error: err.message })
-        : res.status(200).json(data),
+  db.query("SELECT * FROM courses ORDER BY id DESC", (err, data) =>
+    err
+      ? res.status(500).json({ error: err.message })
+      : res.status(200).json(data),
   );
 });
 
@@ -501,6 +502,55 @@ app.post("/assignment-submissions", (req, res) => {
   );
 });
 
+// --- BAN REQUEST APIs ---
+app.get("/ban-requests", (req, res) => {
+  db.query("SELECT * FROM ban_requests ORDER BY id DESC", (err, data) =>
+    err
+      ? res.status(500).json({ error: err.message })
+      : res.status(200).json(data),
+  );
+});
+
+app.post("/ban-requests", (req, res) => {
+  const {
+    course_id,
+    course_title,
+    inst_email,
+    inst_name,
+    student_email,
+    student_name,
+    date,
+  } = req.body;
+  db.query(
+    "INSERT INTO ban_requests (course_id, course_title, inst_email, inst_name, student_email, student_name, \`date\`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    [
+      String(course_id),
+      String(course_title),
+      String(inst_email),
+      String(inst_name),
+      String(student_email),
+      String(student_name),
+      String(date),
+    ],
+    (err) =>
+      err
+        ? res.status(500).json({ error: err.message })
+        : res.status(200).json({ message: "Ban request submitted!" }),
+  );
+});
+
+app.put("/ban-requests/:id", (req, res) => {
+  const { status } = req.body;
+  db.query(
+    "UPDATE ban_requests SET status = ? WHERE id = ?",
+    [status, req.params.id],
+    (err) =>
+      err
+        ? res.status(500).json({ error: err.message })
+        : res.status(200).json({ message: "Ban request updated!" }),
+  );
+});
+
 // --- NOTIFICATION APIs ---
 app.get("/notifications/:identifier", (req, res) => {
   db.query(
@@ -540,11 +590,9 @@ app.use((req, res) =>
   }),
 );
 
-const PORT = process.env.PORT || 5005;
-
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(5005, "0.0.0.0", () => {
   console.log("=========================================");
-  console.log(`🚀 SERVER RUNNING ON PORT ${PORT}`);
-  console.log("✅ Railway MySQL Connected");
+  console.log("🚀 SERVER VERSION FINAL RUNNING on port 5005");
+  console.log("✅ Assignments, Feedback & Complaints Verified");
   console.log("=========================================");
 });
