@@ -29,6 +29,10 @@
       .hidden {
         display: none !important;
       }
+      img,
+      svg {
+        max-width: 100%;
+      }
 
       .btn {
         padding: 10px 24px;
@@ -1687,6 +1691,7 @@
         border-left-color: #ef4444 !important;
       }
 
+      /* 🔥 COMPREHENSIVE RESPONSIVE STYLES 🔥 */
       @media (max-width: 1200px) {
         .dashboard-content {
           padding: 30px;
@@ -1695,23 +1700,20 @@
       @media (max-width: 992px) {
         .stats-grid,
         .prog-stats-grid {
-          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         }
         .user-grid,
         .admin-course-grid {
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        }
-        .continue-learning-grid,
-        .admin-action-grid {
-          grid-template-columns: 1fr;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         }
         .cp-layout {
           grid-template-columns: 1fr;
+          gap: 20px;
         }
       }
       @media (max-width: 768px) {
         .navbar {
-          padding: 12px 16px;
+          padding: 12px 20px;
         }
         .profile-info {
           display: none;
@@ -1732,6 +1734,13 @@
         }
         .hero-content h1 {
           font-size: 36px;
+          margin-bottom: 15px;
+        }
+        .hero-content p {
+          font-size: 16px;
+          margin-bottom: 25px;
+          margin-left: auto;
+          margin-right: auto;
         }
         .hero-buttons {
           justify-content: center;
@@ -1740,6 +1749,13 @@
         }
         .hero-buttons .btn {
           width: 100%;
+          justify-content: center;
+        }
+        .hero-image-box {
+          height: 250px;
+        }
+        .hero-image-box h2 {
+          font-size: 28px;
         }
         .auth-box {
           padding: 30px 20px;
@@ -1751,11 +1767,16 @@
         .admin-hero,
         .upload-course-hero {
           padding: 24px 20px;
+          flex-direction: column;
+          text-align: center;
         }
         .welcome-banner h1,
         .admin-hero h1,
         .upload-hero-text h1 {
           font-size: 24px;
+        }
+        .admin-hero-content {
+          flex-direction: column;
         }
         .stats-grid,
         .user-grid,
@@ -1806,6 +1827,28 @@
         .upload-hero-icon {
           display: none;
         }
+        .cp-video-box {
+          height: 250px;
+        }
+        .cp-lesson-info .btn {
+          width: 100%;
+          justify-content: center;
+          margin-bottom: 10px;
+        }
+        .nav-item {
+          padding: 12px 16px;
+          font-size: 14px;
+        }
+        .due-assign-card {
+          text-align: center;
+          align-items: center;
+        }
+        .due-assign-card > div {
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+          width: 100%;
+        }
       }
       @media (max-width: 480px) {
         .prog-stats-grid {
@@ -1837,6 +1880,22 @@
         .admin-hero-content {
           flex-direction: column;
           text-align: center;
+        }
+        .cp-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 5px;
+        }
+        .activity-item {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+        .act-dot {
+          display: none;
+        }
+        .card-header h3 {
+          font-size: 14px;
         }
       }
     </style>
@@ -3111,6 +3170,7 @@
               <option>Banned Only</option>
             </select>
           </div>
+          <div id="admin-ban-requests-container"></div>
           <div class="user-grid" id="admin-user-grid-container"></div>
         </div>
 
@@ -3618,6 +3678,27 @@
                   </h3>
                   <div class="cp-tabs">
                     <button
+                      id="tab-btn-students"
+                      class="cp-tab cp-tab-students"
+                      onclick="switchCpTab('students')"
+                      style="display: none; align-items: center; gap: 8px"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
+                        ></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                      </svg>
+                      Enrolled Students
+                    </button>
+                    <button
                       class="cp-tab cp-tab-assignments"
                       onclick="switchCpTab('assignments')"
                       style="display: flex; align-items: center; gap: 8px"
@@ -3712,6 +3793,9 @@
 
                   <!-- 🔥 Assignments System 🔥 -->
                   <div id="cp-assignments-area-container" class="hidden"></div>
+
+                  <!-- 🔥 Enrolled Students System 🔥 -->
+                  <div id="cp-students-area-container" class="hidden"></div>
                 </div>
               </div>
 
@@ -4846,6 +4930,16 @@
             document
               .querySelectorAll(".cp-tab")
               .forEach((t) => (t.style.pointerEvents = "auto"));
+
+            const studentsTabBtn = document.getElementById("tab-btn-students");
+            if (studentsTabBtn) {
+              studentsTabBtn.style.display =
+                currentUser.role === "instructor" ||
+                currentUser.role === "admin"
+                  ? "flex"
+                  : "none";
+            }
+
             switchCpTab("chat");
           } else {
             lockedOverlay.classList.remove("hidden");
@@ -4870,6 +4964,9 @@
         document
           .getElementById("cp-assignments-area-container")
           .classList.add("hidden");
+        document
+          .getElementById("cp-students-area-container")
+          .classList.add("hidden");
 
         document
           .querySelectorAll(".cp-tab")
@@ -4893,7 +4990,202 @@
             .getElementById("cp-assignments-area-container")
             .classList.remove("hidden");
           setupAssignmentsUI();
+        } else if (tabName === "students") {
+          document.querySelector(".cp-tab-students").classList.add("active");
+          document
+            .getElementById("cp-students-area-container")
+            .classList.remove("hidden");
+          setupCourseStudentsUI();
         }
+      }
+
+      async function setupCourseStudentsUI() {
+        const container = document.getElementById("cp-students-area-container");
+        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading students...</div>`;
+
+        try {
+          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          const enrolledStudents = enrollments.filter(
+            (e) =>
+              e.course_id == currentCoursePlayerId && e.status === "Approved",
+          );
+
+          if (enrolledStudents.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b; background:#f8fafc; border-radius:12px;" class="assignment-card">No students enrolled yet.</div>`;
+            return;
+          }
+
+          let htmlStr = `<h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Enrolled Students (${enrolledStudents.length})</h3><div style="display:flex; flex-direction:column; gap:10px;">`;
+
+          let banReqs = JSON.parse(
+            localStorage.getItem("elms_ban_requests") || "[]",
+          );
+
+          enrolledStudents.forEach((st) => {
+            let isRequested = banReqs.some(
+              (r) =>
+                r.studentEmail === st.student_email &&
+                r.courseId == currentCoursePlayerId &&
+                r.status === "Pending",
+            );
+
+            let actionHtml = "";
+            if (currentUser.role === "instructor") {
+              if (isRequested) {
+                actionHtml = `<span style="font-size:12px; color:#d97706; background:#fef3c7; padding:6px 12px; border-radius:20px; font-weight:700;">Ban Requested</span>`;
+              } else {
+                actionHtml = `<button class="btn btn-outline" style="padding:6px 16px; font-size:13px; color:#ef4444; border-color:#fca5a5;" onclick="requestStudentBan('${st.student_email}', '${st.student_name.replace(/'/g, "\\'")}', '${st.course_id}')">Request Ban</button>`;
+              }
+            }
+
+            htmlStr += `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:white; padding:15px; border-radius:12px; border:1px solid #e2e8f0; flex-wrap:wrap; gap:10px;" class="assignment-card">
+                  <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="width:40px; height:40px; border-radius:50%; background:#2563eb; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:16px;">${st.student_name.charAt(0)}</div>
+                    <div>
+                      <div style="font-weight:700; color:#0f172a; font-size:15px;" class="dm-title">${st.student_name}</div>
+                      <div style="font-size:13px; color:#64748b;">${st.student_email}</div>
+                    </div>
+                  </div>
+                  ${actionHtml}
+                </div>
+              `;
+          });
+          htmlStr += `</div>`;
+          container.innerHTML = htmlStr;
+        } catch (e) {
+          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load students.</div>`;
+        }
+      }
+
+      async function requestStudentBan(studentEmail, studentName, courseId) {
+        if (
+          !confirm(`Are you sure you want to request a ban for ${studentName}?`)
+        )
+          return;
+
+        let banReqs = JSON.parse(
+          localStorage.getItem("elms_ban_requests") || "[]",
+        );
+        banReqs.push({
+          id: Date.now(),
+          courseId: courseId,
+          courseTitle: document.getElementById("cp-course-title").innerText,
+          instEmail: currentUser.email,
+          instName: currentUser.name,
+          studentEmail: studentEmail,
+          studentName: studentName,
+          status: "Pending",
+          date: new Date().toLocaleDateString(),
+        });
+        localStorage.setItem("elms_ban_requests", JSON.stringify(banReqs));
+
+        await addNotification(
+          "admin",
+          `⚠️ Ban Request: Instructor ${currentUser.name} requested to ban ${studentName}.`,
+          "red",
+        );
+        alert("Ban request sent to admin successfully.");
+        setupCourseStudentsUI();
+      }
+
+      function renderAdminBanRequests() {
+        const container = document.getElementById(
+          "admin-ban-requests-container",
+        );
+        if (!container) return;
+        let banReqs = JSON.parse(
+          localStorage.getItem("elms_ban_requests") || "[]",
+        ).filter((r) => r.status === "Pending");
+
+        if (banReqs.length === 0) {
+          container.innerHTML = "";
+          return;
+        }
+
+        let htmlStr = `<h3 style="color:#e11d48; margin-bottom:15px; font-weight:800; font-size:20px;">⚠️ Pending Ban Requests</h3><div style="display:flex; flex-direction:column; gap:15px; margin-bottom:30px;">`;
+
+        banReqs.forEach((req) => {
+          htmlStr += `
+                <div style="background:#fff1f2; border:1px solid #fecaca; padding:20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
+                   <div>
+                      <div style="font-weight:700; color:#be123c; font-size:16px;">Ban Request for: ${req.studentName} <span style="font-size:13px; font-weight:500;">(${req.studentEmail})</span></div>
+                      <div style="font-size:13px; color:#881337; margin-top:5px; font-weight:600;">Requested by: Instructor ${req.instName} | Course: ${req.courseTitle}</div>
+                   </div>
+                   <div style="display:flex; gap:10px;">
+                      <button class="btn btn-primary" style="background:#e11d48;" onclick="approveBanRequest(${req.id}, '${req.studentEmail}', '${req.instEmail}', '${req.studentName.replace(/'/g, "\\'")}')">Approve & Ban</button>
+                      <button class="btn btn-outline" style="border-color:#fca5a5; color:#be123c; background:white;" onclick="rejectBanRequest(${req.id}, '${req.instEmail}', '${req.studentName.replace(/'/g, "\\'")}')">Reject Request</button>
+                   </div>
+                </div>
+             `;
+        });
+        htmlStr += `</div><hr style="border:0; border-top:1px solid #e2e8f0; margin-bottom:30px;">`;
+        container.innerHTML = htmlStr;
+      }
+
+      async function approveBanRequest(
+        reqId,
+        studentEmail,
+        instEmail,
+        studentName,
+      ) {
+        if (
+          !confirm(`Are you sure you want to permanently BAN ${studentName}?`)
+        )
+          return;
+        try {
+          const res = await fetch(`${API_URL}/update-user-status`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: studentEmail, status: "Banned" }),
+          });
+
+          if (!res.ok) return alert("Failed to ban user from database.");
+
+          let users = JSON.parse(localStorage.getItem("elms_users_db")) || [];
+          users = users.map((u) =>
+            u.email === studentEmail ? { ...u, status: "Banned" } : u,
+          );
+          localStorage.setItem("elms_users_db", JSON.stringify(users));
+
+          let banReqs = JSON.parse(
+            localStorage.getItem("elms_ban_requests") || "[]",
+          );
+          banReqs = banReqs.filter((r) => r.id !== reqId);
+          localStorage.setItem("elms_ban_requests", JSON.stringify(banReqs));
+
+          await addNotification(
+            studentEmail,
+            `🚨 Your account has been banned from the platform by the Admin.`,
+            "red",
+          );
+          await addNotification(
+            instEmail,
+            `✅ Your ban request for ${studentName} was approved.`,
+            "green",
+          );
+
+          alert(`User ${studentName} has been banned.`);
+          renderAdminUsers();
+        } catch (e) {
+          console.error(e);
+          alert("Error processing ban request.");
+        }
+      }
+
+      async function rejectBanRequest(reqId, instEmail, studentName) {
+        let banReqs = JSON.parse(
+          localStorage.getItem("elms_ban_requests") || "[]",
+        );
+        banReqs = banReqs.filter((r) => r.id !== reqId);
+        localStorage.setItem("elms_ban_requests", JSON.stringify(banReqs));
+
+        await addNotification(
+          instEmail,
+          `❌ Your ban request for ${studentName} was rejected by Admin.`,
+          "red",
+        );
+        renderAdminUsers();
       }
 
       function setupAssignmentsUI() {
@@ -5027,7 +5319,7 @@
                      `;
               } else {
                 studentActionHtml = `
-                       <div style="margin-top:15px;">
+                       <div style="margin-top:15px; display:flex; flex-direction:column; align-items:flex-start;">
                           <textarea id="sub-input-${a.id}" placeholder="Type your answer or paste Google Drive link here..." style="width:100%; min-height:80px; padding:10px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; resize:vertical;" class="submission-box"></textarea>
                           <button class="btn btn-primary" style="margin-top:8px; padding:8px 16px; font-size:13px;" onclick="submitAssignment(${a.id})">Submit Assignment</button>
                        </div>
@@ -5155,7 +5447,7 @@
                       </select>
                   </div>
                   <textarea id="cp-feedback-input" placeholder="Share your thoughts about this course..." style="width: 100%; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 10px; background: #f8fafc; resize: vertical; font-family: 'Inter', sans-serif;"></textarea>
-                  <button class="btn btn-primary" onclick="submitCourseFeedback()" style="margin-bottom: 25px; background: #2563eb; color: white;">Submit Feedback</button>
+                  <button class="btn btn-primary" onclick="submitCourseFeedback()" style="margin-bottom: 25px; background: #2563eb; color: white; width: 100%;">Submit Feedback</button>
 
                   <hr style="border:0; border-top: 1px solid #e2e8f0; margin-bottom: 25px;">
 
@@ -5164,7 +5456,7 @@
                       Course Complaint
                   </h3>
                   <textarea id="cp-complaint-input" placeholder="Describe any issues or concerns with the course..." style="width: 100%; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 10px; background: #f8fafc; resize: vertical; font-family: 'Inter', sans-serif;"></textarea>
-                  <button class="btn" onclick="submitCourseComplaint()" style="background: #e11d48; color: white;">Submit Complaint</button>
+                  <button class="btn" onclick="submitCourseComplaint()" style="background: #e11d48; color: white; width: 100%;">Submit Complaint</button>
               `;
         } else if (currentUser.role === "instructor") {
           html += `
@@ -5178,7 +5470,7 @@
                       Complain against a Student
                   </h3>
                   <textarea id="cp-complaint-input" placeholder="Mention the student's name/email and describe the issue..." style="width: 100%; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 10px; background: #f8fafc; resize: vertical; font-family: 'Inter', sans-serif;"></textarea>
-                  <button class="btn" onclick="submitCourseComplaint()" style="background: #e11d48; color: white;">Send to Admin</button>
+                  <button class="btn" onclick="submitCourseComplaint()" style="background: #e11d48; color: white; width: 100%;">Send to Admin</button>
               `;
         } else if (currentUser.role === "admin") {
           html += `
@@ -5529,7 +5821,7 @@
                         <p style="color:#334155; font-size:14px; font-weight:500;" class="dm-text">Course: ${req.course_title}</p>
                         <p style="color:#64748b; font-size:13px;" class="dm-desc">Requested on: ${req.date}</p>
                     </div>
-                    <div class="action-container" style="display:flex; gap:10px;">
+                    <div class="action-container" style="display:flex; gap:10px; flex-wrap:wrap;">
                         <button class="btn btn-primary" style="background:#059669; padding:6px 16px;" onclick="approveEnrollment(${req.id}, '${req.student_email}', '${req.course_title.replace(/'/g, "\\'")}', '${req.student_name.replace(/'/g, "\\'")}')">Approve</button>
                         <button class="btn btn-primary" style="background:#ef4444; padding:6px 16px;" onclick="rejectEnrollment(${req.id})">Reject</button>
                     </div>
@@ -5588,6 +5880,8 @@
       async function renderAdminUsers() {
         const container = document.getElementById("admin-user-grid-container");
         if (!container) return;
+
+        renderAdminBanRequests();
 
         let usersToRender = [];
 
