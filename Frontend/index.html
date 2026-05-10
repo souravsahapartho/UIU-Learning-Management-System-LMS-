@@ -5376,11 +5376,23 @@
                   s.assignment_id === a.id &&
                   s.student_email === currentUser.email,
               );
+
+              let studentGradeHtml = "";
+              if (mySub && mySub.marks !== null && mySub.marks !== undefined) {
+                studentGradeHtml = `
+                     <div style="margin-top:10px; background:#f0fdf4; padding:8px; border-radius:6px; border:1px solid #bbf7d0;">
+                       <div style="color:#16a34a; font-weight:700; font-size:13px;">Graded: ${mySub.marks}/10</div>
+                       ${mySub.instructor_comment ? `<div style="color:#065f46; font-size:12px; margin-top:4px;">Instructor Comment: ${mySub.instructor_comment}</div>` : ""}
+                     </div>
+                   `;
+              }
+
               if (mySub) {
                 studentActionHtml = `
                        <div style="margin-top:15px; padding:10px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;">
                           <b style="color:#059669; font-size:13px;">✅ Submitted on ${mySub.date}</b>
                           <p style="font-size:13px; color:#065f46; margin-top:5px; word-break:break-all;">${mySub.submission_text}</p>
+                          ${studentGradeHtml}
                        </div>
                      `;
               } else {
@@ -5403,17 +5415,38 @@
                        <b style="font-size:13px; color:#0f172a;" class="dm-title">Submissions (${assignSubs.length})</b>
                        <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
                           ${assignSubs
-                            .map(
-                              (s) => `
+                            .map((s) => {
+                              let gradeHtml = "";
+                              if (s.marks !== null && s.marks !== undefined) {
+                                gradeHtml = `
+                                   <div style="margin-top:10px; background:#f0fdf4; padding:8px; border-radius:6px; border:1px solid #bbf7d0;">
+                                     <div style="color:#16a34a; font-weight:700; font-size:13px;">Marks: ${s.marks}/10</div>
+                                     ${s.instructor_comment ? `<div style="color:#065f46; font-size:12px; margin-top:4px;">Comment: ${s.instructor_comment}</div>` : ""}
+                                   </div>
+                                 `;
+                              } else if (currentUser.role === "instructor") {
+                                gradeHtml = `
+                                   <div style="margin-top:10px; display:flex; flex-direction:column; gap:6px;">
+                                     <input type="number" id="grade-marks-${s.id}" placeholder="Marks (out of 10)" min="0" max="10" style="padding:6px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px; width:120px;">
+                                     <input type="text" id="grade-comment-${s.id}" placeholder="Add a comment..." style="padding:6px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px; width:100%;">
+                                     <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; align-self:flex-start;" onclick="gradeSubmission(${s.id}, '${s.student_email}')">Submit Grade</button>
+                                   </div>
+                                 `;
+                              } else {
+                                gradeHtml = `<div style="margin-top:10px; color:#d97706; font-size:12px; font-weight:600;">Not graded yet</div>`;
+                              }
+
+                              return `
                              <div style="background:#f1f5f9; padding:10px; border-radius:8px; word-wrap: break-word;">
                                 <div style="display:flex; justify-content:space-between; margin-bottom:4px; flex-wrap: wrap;">
                                   <span style="font-size:13px; font-weight:700; color:#334155;">${s.student_name}</span>
                                   <span style="font-size:11px; color:#64748b;">${s.date}</span>
                                 </div>
                                 <div style="font-size:13px; color:#475569; word-break:break-all;">${s.submission_text}</div>
+                                ${gradeHtml}
                              </div>
-                          `,
-                            )
+                             `;
+                            })
                             .join("")}
                           ${assignSubs.length === 0 ? '<div style="font-size:13px; color:#64748b;">No submissions yet.</div>' : ""}
                        </div>
@@ -5493,6 +5526,48 @@
           }
         } catch (e) {
           console.error(e);
+        }
+      }
+
+      async function gradeSubmission(subId, studentEmail) {
+        const marksInput = document.getElementById(
+          `grade-marks-${subId}`,
+        ).value;
+        const commentInput = document
+          .getElementById(`grade-comment-${subId}`)
+          .value.trim();
+
+        if (marksInput === "" || marksInput < 0 || marksInput > 10) {
+          return alert("Please enter valid marks between 0 and 10.");
+        }
+
+        try {
+          const res = await fetch(
+            `${API_URL}/assignment-submissions/${subId}/grade`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                marks: parseInt(marksInput),
+                instructor_comment: commentInput,
+              }),
+            },
+          );
+
+          if (res.ok) {
+            await addNotification(
+              studentEmail,
+              `✅ Your assignment has been graded. Marks: ${marksInput}/10`,
+              "green",
+            );
+            alert("Grade submitted successfully!");
+            loadAssignments(currentCoursePlayerId);
+          } else {
+            alert("Failed to submit grade.");
+          }
+        } catch (e) {
+          console.error(e);
+          alert("Database connection error.");
         }
       }
 

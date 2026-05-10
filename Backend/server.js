@@ -53,7 +53,6 @@ db.getConnection((err, connection) => {
       )
     `);
 
-    // 🔥 UPDATED: Added total_lessons column to handle dynamic module generation
     connection.query(`
       CREATE TABLE IF NOT EXISTS courses (
         id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), description TEXT,
@@ -106,10 +105,12 @@ db.getConnection((err, connection) => {
       )
     `);
 
+    // 🔥 UPDATED: Added marks and instructor_comment columns
     connection.query(`
       CREATE TABLE IF NOT EXISTS assignment_submissions (
         id INT AUTO_INCREMENT PRIMARY KEY, assignment_id INT NOT NULL, course_id VARCHAR(100),
-        student_email VARCHAR(100), student_name VARCHAR(100), submission_text TEXT, \`date\` VARCHAR(50)
+        student_email VARCHAR(100), student_name VARCHAR(100), submission_text TEXT, \`date\` VARCHAR(50),
+        marks INT DEFAULT NULL, instructor_comment TEXT DEFAULT NULL
       )
     `);
 
@@ -514,6 +515,19 @@ app.post("/assignment-submissions", (req, res) => {
   );
 });
 
+// 🔥 NEW API: Update Submission with Grade and Comment 🔥
+app.put("/assignment-submissions/:id/grade", (req, res) => {
+  const { marks, instructor_comment } = req.body;
+  db.query(
+    "UPDATE assignment_submissions SET marks = ?, instructor_comment = ? WHERE id = ?",
+    [marks, instructor_comment, req.params.id],
+    (err) =>
+      err
+        ? res.status(500).json({ error: err.message })
+        : res.status(200).json({ message: "Graded successfully!" }),
+  );
+});
+
 // --- BAN REQUEST APIs (Instructor to Admin) ---
 app.get("/ban-requests", (req, res) => {
   db.query("SELECT * FROM ban_requests ORDER BY id DESC", (err, data) =>
@@ -533,18 +547,17 @@ app.post("/ban-requests", (req, res) => {
     student_name,
     date,
   } = req.body;
+
   db.query(
     "SELECT * FROM ban_requests WHERE course_id = ? AND student_email = ? AND status = 'Pending'",
     [String(course_id), String(student_email)],
     (err, data) => {
       if (err) return res.status(500).json({ error: err.message });
       if (data.length > 0)
-        return res
-          .status(400)
-          .json({
-            error:
-              "A pending request already exists for this student in this course.",
-          });
+        return res.status(400).json({
+          error:
+            "A pending request already exists for this student in this course.",
+        });
 
       db.query(
         "INSERT INTO ban_requests (course_id, course_title, inst_email, inst_name, student_email, student_name, `date`) VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -665,11 +678,9 @@ app.put("/notifications/read", (req, res) => {
 });
 
 app.use((req, res) =>
-  res
-    .status(404)
-    .json({
-      error: `API route not found on backend: ${req.method} ${req.url}`,
-    }),
+  res.status(404).json({
+    error: `API route not found on backend: ${req.method} ${req.url}`,
+  }),
 );
 
 const PORT = process.env.PORT || 5005;
