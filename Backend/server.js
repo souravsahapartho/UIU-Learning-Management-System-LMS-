@@ -26,11 +26,14 @@ const hashPassword = (password) => {
   return crypto.createHash("sha256").update(String(password)).digest("hex");
 };
 
+require("dotenv").config();
+
 const db = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "elms_db",
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  port: process.env.MYSQLPORT,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -527,12 +530,10 @@ app.post("/ban-requests", (req, res) => {
     (err, data) => {
       if (err) return res.status(500).json({ error: err.message });
       if (data.length > 0)
-        return res
-          .status(400)
-          .json({
-            error:
-              "A pending request already exists for this student in this course.",
-          });
+        return res.status(400).json({
+          error:
+            "A pending request already exists for this student in this course.",
+        });
 
       db.query(
         "INSERT INTO ban_requests (course_id, course_title, inst_email, inst_name, student_email, student_name, `date`) VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -653,16 +654,13 @@ app.put("/notifications/read", (req, res) => {
 });
 
 app.use((req, res) =>
-  res
-    .status(404)
-    .json({
-      error: `API route not found on backend: ${req.method} ${req.url}`,
-    }),
+  res.status(404).json({
+    error: `API route not found on backend: ${req.method} ${req.url}`,
+  }),
 );
 
-app.listen(5005, "0.0.0.0", () => {
-  console.log("=========================================");
-  console.log("🚀 FULL SERVER VERSION RUNNING on port 5005");
-  console.log("✅ All APIs and Ban Request Engine Active");
-  console.log("=========================================");
+const PORT = process.env.PORT || 5005;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 SERVER RUNNING ON PORT ${PORT}`);
 });
