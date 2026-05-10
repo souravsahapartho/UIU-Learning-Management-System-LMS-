@@ -101,16 +101,17 @@ db.getConnection((err, connection) => {
     connection.query(`
       CREATE TABLE IF NOT EXISTS assignments (
         id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100) NOT NULL,
-        title VARCHAR(255), description TEXT, due_date VARCHAR(50), instructor_email VARCHAR(100), \`date\` VARCHAR(50)
+        title VARCHAR(255), description TEXT, due_date VARCHAR(50), instructor_email VARCHAR(100), \`date\` VARCHAR(50),
+        course_name VARCHAR(255) DEFAULT NULL
       )
     `);
 
-    // 🔥 UPDATED: Added marks and instructor_comment columns
     connection.query(`
       CREATE TABLE IF NOT EXISTS assignment_submissions (
         id INT AUTO_INCREMENT PRIMARY KEY, assignment_id INT NOT NULL, course_id VARCHAR(100),
         student_email VARCHAR(100), student_name VARCHAR(100), submission_text TEXT, \`date\` VARCHAR(50),
-        marks INT DEFAULT NULL, instructor_comment TEXT DEFAULT NULL
+        marks INT DEFAULT NULL, instructor_comment TEXT DEFAULT NULL,
+        course_name VARCHAR(255) DEFAULT NULL, assignment_title VARCHAR(255) DEFAULT NULL
       )
     `);
 
@@ -461,12 +462,12 @@ app.get("/assignments/:courseId", (req, res) => {
   );
 });
 app.post("/assignments", (req, res) => {
-  const { course_id, title, description, due_date, instructor_email, date } =
-    req.body;
+  const { course_id, course_name, title, description, due_date, instructor_email, date } = req.body;
   db.query(
-    "INSERT INTO assignments (course_id, title, description, due_date, instructor_email, `date`) VALUES (?, ?, ?, ?, ?, ?)",
+    "INSERT INTO assignments (course_id, course_name, title, description, due_date, instructor_email, `date`) VALUES (?, ?, ?, ?, ?, ?, ?)",
     [
       String(course_id),
+      String(course_name || ""),
       String(title),
       String(description),
       String(due_date),
@@ -492,17 +493,21 @@ app.get("/assignment-submissions/:courseId", (req, res) => {
 app.post("/assignment-submissions", (req, res) => {
   const {
     assignment_id,
+    assignment_title,
     course_id,
+    course_name,
     student_email,
     student_name,
     submission_text,
     date,
   } = req.body;
   db.query(
-    "INSERT INTO assignment_submissions (assignment_id, course_id, student_email, student_name, submission_text, `date`) VALUES (?, ?, ?, ?, ?, ?)",
+    "INSERT INTO assignment_submissions (assignment_id, assignment_title, course_id, course_name, student_email, student_name, submission_text, `date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
     [
       assignment_id,
+      String(assignment_title || ""),
       String(course_id),
+      String(course_name || ""),
       String(student_email),
       String(student_name),
       String(submission_text),
@@ -515,7 +520,7 @@ app.post("/assignment-submissions", (req, res) => {
   );
 });
 
-// 🔥 NEW API: Update Submission with Grade and Comment 🔥
+// 🔥 UPDATE API: Grade and Comment Submission 🔥
 app.put("/assignment-submissions/:id/grade", (req, res) => {
   const { marks, instructor_comment } = req.body;
   db.query(
@@ -524,7 +529,7 @@ app.put("/assignment-submissions/:id/grade", (req, res) => {
     (err) =>
       err
         ? res.status(500).json({ error: err.message })
-        : res.status(200).json({ message: "Graded successfully!" }),
+        : res.status(200).json({ message: "Graded successfully!" })
   );
 });
 
@@ -555,8 +560,7 @@ app.post("/ban-requests", (req, res) => {
       if (err) return res.status(500).json({ error: err.message });
       if (data.length > 0)
         return res.status(400).json({
-          error:
-            "A pending request already exists for this student in this course.",
+          error: "A pending request already exists for this student in this course.",
         });
 
       db.query(
@@ -678,9 +682,11 @@ app.put("/notifications/read", (req, res) => {
 });
 
 app.use((req, res) =>
-  res.status(404).json({
-    error: `API route not found on backend: ${req.method} ${req.url}`,
-  }),
+  res
+    .status(404)
+    .json({
+      error: `API route not found on backend: ${req.method} ${req.url}`,
+    }),
 );
 
 const PORT = process.env.PORT || 5005;
