@@ -3,8 +3,6 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const crypto = require("crypto");
 
-require("dotenv").config();
-
 const app = express();
 
 process.on("uncaughtException", (err) =>
@@ -29,11 +27,10 @@ const hashPassword = (password) => {
 };
 
 const db = mysql.createPool({
-  host: process.env.MYSQLHOST,
-  user: process.env.MYSQLUSER,
-  password: process.env.MYSQLPASSWORD,
-  database: process.env.MYSQLDATABASE,
-  port: process.env.MYSQLPORT,
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "elms_db",
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -44,6 +41,14 @@ db.getConnection((err, connection) => {
     console.error("❌ DB Connection Failed. Make sure XAMPP MySQL is running.");
   } else {
     console.log("✅ MySQL Connected Successfully!");
+
+    connection.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), email VARCHAR(100) UNIQUE,
+        password VARCHAR(255), role VARCHAR(50) DEFAULT 'student',
+        avatar VARCHAR(10) DEFAULT 'U', status VARCHAR(50) DEFAULT 'Pending'
+      )
+    `);
 
     connection.query(`
       CREATE TABLE IF NOT EXISTS courses (
@@ -106,15 +111,9 @@ db.getConnection((err, connection) => {
 
     connection.query(`
       CREATE TABLE IF NOT EXISTS ban_requests (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        course_id VARCHAR(100),
-        course_title VARCHAR(255),
-        inst_email VARCHAR(100),
-        inst_name VARCHAR(100),
-        student_email VARCHAR(100),
-        student_name VARCHAR(100),
-        status VARCHAR(50) DEFAULT 'Pending',
-        \`date\` VARCHAR(50)
+        id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100), course_title VARCHAR(255),
+        inst_email VARCHAR(100), inst_name VARCHAR(100), student_email VARCHAR(100),
+        student_name VARCHAR(100), status VARCHAR(50) DEFAULT 'Pending', \`date\` VARCHAR(50)
       )
     `);
 
@@ -163,6 +162,7 @@ app.post("/login", (req, res) => {
   );
 });
 
+// 🔥 ENHANCED PROFILE UPDATE (Multi-Table Update) 🔥
 app.put("/update-profile", async (req, res) => {
   const { name, avatar, email } = req.body;
   try {
@@ -244,7 +244,7 @@ app.post("/upload-course", (req, res) => {
     instructorName,
   } = req.body;
   db.query(
-    `INSERT INTO courses (title, description, category, difficulty, instructor_email, instructor_name, status) VALUES (?, ?, ?, ?, ?, ?, 'Pending')`,
+    "INSERT INTO courses (title, description, category, difficulty, instructor_email, instructor_name, status) VALUES (?, ?, ?, ?, ?, ?, 'Pending')",
     [title, description, category, difficulty, instructorEmail, instructorName],
     (err) =>
       err
@@ -254,15 +254,10 @@ app.post("/upload-course", (req, res) => {
 });
 
 app.get("/courses", (req, res) => {
-  db.query(
-    `SELECT c.*, COALESCE(u.name, c.instructor_name) AS instructor_name
-     FROM courses c
-     LEFT JOIN users u ON u.email = c.instructor_email
-     ORDER BY c.id DESC`,
-    (err, data) =>
-      err
-        ? res.status(500).json({ error: err.message })
-        : res.status(200).json(data),
+  db.query("SELECT * FROM courses ORDER BY id DESC", (err, data) =>
+    err
+      ? res.status(500).json({ error: err.message })
+      : res.status(200).json(data),
   );
 });
 
@@ -284,7 +279,6 @@ app.get("/enrollments", (req, res) => {
     res.status(200).json(data);
   });
 });
-
 app.post("/enrollments", (req, res) => {
   const {
     course_id,
@@ -294,10 +288,8 @@ app.post("/enrollments", (req, res) => {
     instructor_email,
     date,
   } = req.body;
-  const sql =
-    "INSERT INTO enrollments (course_id, course_title, student_email, student_name, instructor_email, status, `date`) VALUES (?, ?, ?, ?, ?, 'Pending', ?)";
   db.query(
-    sql,
+    "INSERT INTO enrollments (course_id, course_title, student_email, student_name, instructor_email, status, `date`) VALUES (?, ?, ?, ?, ?, 'Pending', ?)",
     [
       course_id,
       course_title,
@@ -312,7 +304,6 @@ app.post("/enrollments", (req, res) => {
     },
   );
 });
-
 app.put("/enrollments/status", (req, res) => {
   db.query(
     "UPDATE enrollments SET status = ? WHERE id = ?",
@@ -323,7 +314,6 @@ app.put("/enrollments/status", (req, res) => {
         : res.status(200).json({ message: "Status updated" }),
   );
 });
-
 app.delete("/enrollments/:id", (req, res) => {
   db.query("DELETE FROM enrollments WHERE id = ?", [req.params.id], (err) =>
     err
@@ -343,7 +333,6 @@ app.get("/course-chats/:courseId", (req, res) => {
         : res.status(200).json(data),
   );
 });
-
 app.post("/course-chats", (req, res) => {
   const { course_id, course_name, user_name, user_email, message, time } =
     req.body;
@@ -377,7 +366,6 @@ app.get("/course-feedbacks/:courseId", (req, res) => {
         : res.status(200).json(data),
   );
 });
-
 app.post("/course-feedbacks", (req, res) => {
   const {
     course_id,
@@ -405,7 +393,6 @@ app.post("/course-feedbacks", (req, res) => {
         : res.status(200).json({ message: "Feedback submitted!" }),
   );
 });
-
 app.get("/all-complaints", (req, res) => {
   db.query("SELECT * FROM complaints ORDER BY id DESC", (err, data) =>
     err
@@ -413,7 +400,6 @@ app.get("/all-complaints", (req, res) => {
       : res.status(200).json(data),
   );
 });
-
 app.get("/course-complaints/:courseId", (req, res) => {
   db.query(
     "SELECT * FROM complaints WHERE course_id = ? ORDER BY id DESC",
@@ -424,7 +410,6 @@ app.get("/course-complaints/:courseId", (req, res) => {
         : res.status(200).json(data),
   );
 });
-
 app.post("/course-complaints", (req, res) => {
   const {
     course_id,
@@ -462,7 +447,6 @@ app.get("/assignments/:courseId", (req, res) => {
         : res.status(200).json(data),
   );
 });
-
 app.post("/assignments", (req, res) => {
   const { course_id, title, description, due_date, instructor_email, date } =
     req.body;
@@ -482,7 +466,6 @@ app.post("/assignments", (req, res) => {
         : res.status(200).json({ message: "Assignment created!" }),
   );
 });
-
 app.get("/assignment-submissions/:courseId", (req, res) => {
   db.query(
     "SELECT * FROM assignment_submissions WHERE course_id = ? ORDER BY id DESC",
@@ -493,7 +476,6 @@ app.get("/assignment-submissions/:courseId", (req, res) => {
         : res.status(200).json(data),
   );
 });
-
 app.post("/assignment-submissions", (req, res) => {
   const {
     assignment_id,
@@ -520,42 +502,7 @@ app.post("/assignment-submissions", (req, res) => {
   );
 });
 
-// --- NOTIFICATION APIs ---
-app.get("/notifications/:identifier", (req, res) => {
-  db.query(
-    "SELECT * FROM notifications WHERE identifier = ? ORDER BY id DESC",
-    [req.params.identifier],
-    (err, data) =>
-      err
-        ? res.status(500).json({ error: err.message })
-        : res.status(200).json(data),
-  );
-});
-
-app.post("/notifications", (req, res) => {
-  const { identifier, text, color, date, time } = req.body;
-  db.query(
-    "INSERT INTO notifications (identifier, text, color, `date`, `time`, unread) VALUES (?, ?, ?, ?, ?, 1)",
-    [identifier, text, color, date, time],
-    (err) =>
-      err
-        ? res.status(500).json({ error: err.message })
-        : res.status(200).json({ message: "Added" }),
-  );
-});
-
-app.put("/notifications/read", (req, res) => {
-  db.query(
-    "UPDATE notifications SET unread = 0 WHERE identifier = ?",
-    [req.body.identifier],
-    (err) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.status(200).json({ message: "Marked" });
-    },
-  );
-});
-
-// --- BAN REQUEST APIs ---
+// --- BAN REQUEST APIs (Instructor to Admin) ---
 app.get("/ban-requests", (req, res) => {
   db.query("SELECT * FROM ban_requests ORDER BY id DESC", (err, data) =>
     err
@@ -575,42 +522,147 @@ app.post("/ban-requests", (req, res) => {
     date,
   } = req.body;
   db.query(
-    "INSERT INTO ban_requests (course_id, course_title, inst_email, inst_name, student_email, student_name, status, `date`) VALUES (?, ?, ?, ?, ?, ?, 'Pending', ?)",
-    [
-      course_id,
-      course_title,
-      inst_email,
-      inst_name,
-      student_email,
-      student_name,
-      date,
-    ],
-    (err) =>
-      err
-        ? res.status(500).json({ error: err.message })
-        : res.status(200).json({ message: "Ban request submitted" }),
+    "SELECT * FROM ban_requests WHERE course_id = ? AND student_email = ? AND status = 'Pending'",
+    [String(course_id), String(student_email)],
+    (err, data) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (data.length > 0)
+        return res
+          .status(400)
+          .json({
+            error:
+              "A pending request already exists for this student in this course.",
+          });
+
+      db.query(
+        "INSERT INTO ban_requests (course_id, course_title, inst_email, inst_name, student_email, student_name, `date`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        [
+          String(course_id),
+          String(course_title),
+          String(inst_email),
+          String(inst_name),
+          String(student_email),
+          String(student_name),
+          String(date),
+        ],
+        (err) =>
+          err
+            ? res.status(500).json({ error: err.message })
+            : res.status(200).json({ message: "Ban request submitted!" }),
+      );
+    },
   );
 });
 
-app.put("/ban-requests/:id", (req, res) => {
+app.put("/ban-requests/:id", async (req, res) => {
+  const { status, studentEmail, instEmail, studentName, courseId } = req.body;
+  const promiseDb = db.promise();
+  const now = new Date();
+  const dateStr = now.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+  const timeStr = now.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  try {
+    await promiseDb.query("UPDATE ban_requests SET status = ? WHERE id = ?", [
+      status,
+      req.params.id,
+    ]);
+
+    if (status === "Approved") {
+      await promiseDb.query(
+        "UPDATE enrollments SET status = 'Banned' WHERE student_email = ? AND course_id = ?",
+        [studentEmail, courseId],
+      );
+      await promiseDb.query(
+        "INSERT INTO notifications (identifier, text, color, `date`, `time`, unread) VALUES (?, ?, ?, ?, ?, 1)",
+        [
+          studentEmail,
+          "You have been removed and banned from a specific course by admin approval.",
+          "red",
+          dateStr,
+          timeStr,
+        ],
+      );
+      await promiseDb.query(
+        "INSERT INTO notifications (identifier, text, color, `date`, `time`, unread) VALUES (?, ?, ?, ?, ?, 1)",
+        [
+          instEmail,
+          `Your ban request for ${studentName} was approved. They have been removed from your course.`,
+          "green",
+          dateStr,
+          timeStr,
+        ],
+      );
+    } else if (status === "Rejected") {
+      await promiseDb.query(
+        "INSERT INTO notifications (identifier, text, color, `date`, `time`, unread) VALUES (?, ?, ?, ?, ?, 1)",
+        [
+          instEmail,
+          `Your ban request for ${studentName} has been rejected by the admin.`,
+          "red",
+          dateStr,
+          timeStr,
+        ],
+      );
+    }
+
+    res.status(200).json({ message: `Ban request ${status} successfully!` });
+  } catch (err) {
+    console.error("Ban Request Processing Error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- NOTIFICATION APIs ---
+app.get("/notifications/:identifier", (req, res) => {
   db.query(
-    "UPDATE ban_requests SET status = ? WHERE id = ?",
-    [req.body.status, req.params.id],
+    "SELECT * FROM notifications WHERE identifier = ? ORDER BY id DESC",
+    [req.params.identifier],
+    (err, data) =>
+      err
+        ? res.status(500).json({ error: err.message })
+        : res.status(200).json(data),
+  );
+});
+app.post("/notifications", (req, res) => {
+  const { identifier, text, color, date, time } = req.body;
+  db.query(
+    "INSERT INTO notifications (identifier, text, color, `date`, `time`, unread) VALUES (?, ?, ?, ?, ?, 1)",
+    [identifier, text, color, date, time],
     (err) =>
       err
         ? res.status(500).json({ error: err.message })
-        : res.status(200).json({ message: "Ban request updated" }),
+        : res.status(200).json({ message: "Added" }),
+  );
+});
+app.put("/notifications/read", (req, res) => {
+  db.query(
+    "UPDATE notifications SET unread = 0 WHERE identifier = ?",
+    [req.body.identifier],
+    (err) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.status(200).json({ message: "Marked" });
+    },
   );
 });
 
 app.use((req, res) =>
-  res.status(404).json({
-    error: `API route not found on backend: ${req.method} ${req.url}`,
-  }),
+  res
+    .status(404)
+    .json({
+      error: `API route not found on backend: ${req.method} ${req.url}`,
+    }),
 );
 
-const PORT = process.env.PORT || 5005;
-
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 SERVER RUNNING ON PORT ${PORT}`);
+app.listen(5005, "0.0.0.0", () => {
+  console.log("=========================================");
+  console.log("🚀 FULL SERVER VERSION RUNNING on port 5005");
+  console.log("✅ All APIs and Ban Request Engine Active");
+  console.log("=========================================");
 });
