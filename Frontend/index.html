@@ -1770,6 +1770,7 @@
         border-left-color: #ef4444 !important;
       }
 
+      /* 🔥 COMPREHENSIVE RESPONSIVE STYLES 🔥 */
       @media (max-width: 1200px) {
         .dashboard-content {
           padding: 30px;
@@ -2716,9 +2717,7 @@
                   </div>
                 </div>
                 <div class="number" id="admin-stat-pending">0</div>
-                <div style="font-size: 13px; opacity: 0.8">
-                  Awaiting approval
-                </div>
+                <div style="font-size: 13px; opacity: 0.8">Actions Needed</div>
               </div>
             </div>
 
@@ -3252,6 +3251,8 @@
             "
           >
             <select
+              id="admin-user-filter"
+              onchange="renderAdminUsers()"
               style="
                 border: none;
                 font-weight: 700;
@@ -3261,10 +3262,10 @@
                 background: transparent;
               "
             >
-              <option>All Users</option>
-              <option>Pending Only</option>
-              <option>Approved Only</option>
-              <option>Banned Only</option>
+              <option value="All Users">All Users</option>
+              <option value="Pending Only">Pending Only</option>
+              <option value="Approved Only">Approved Only</option>
+              <option value="Banned Only">Banned Only</option>
             </select>
           </div>
           <div id="admin-ban-requests-container"></div>
@@ -3912,105 +3913,8 @@
 
               <!-- Right Side: Lesson List (Always Visible) -->
               <div>
-                <div class="lesson-list-box">
-                  <div
-                    style="
-                      padding: 20px 24px;
-                      border-bottom: 1px solid #e2e8f0;
-                      font-weight: 800;
-                      font-size: 18px;
-                      color: #0f172a;
-                    "
-                  >
-                    Course Content
-                  </div>
-                  <div class="lesson-item completed">
-                    <div class="lesson-circle">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="3"
-                      >
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                      </svg>
-                    </div>
-                    <div>
-                      <div
-                        style="
-                          font-weight: 600;
-                          font-size: 15px;
-                          color: #0f172a;
-                        "
-                      >
-                        Course Introduction
-                      </div>
-                      <div
-                        style="font-size: 13px; color: #64748b; margin-top: 4px"
-                      >
-                        10 min
-                      </div>
-                    </div>
-                  </div>
-                  <div class="lesson-item active">
-                    <div class="lesson-circle"></div>
-                    <div>
-                      <div
-                        style="
-                          font-weight: 600;
-                          font-size: 15px;
-                          color: #0f172a;
-                        "
-                      >
-                        Core Fundamentals
-                      </div>
-                      <div
-                        style="font-size: 13px; color: #64748b; margin-top: 4px"
-                      >
-                        30 min
-                      </div>
-                    </div>
-                  </div>
-                  <div class="lesson-item">
-                    <div class="lesson-circle"></div>
-                    <div>
-                      <div
-                        style="
-                          font-weight: 600;
-                          font-size: 15px;
-                          color: #0f172a;
-                        "
-                      >
-                        Advanced Concepts
-                      </div>
-                      <div
-                        style="font-size: 13px; color: #64748b; margin-top: 4px"
-                      >
-                        35 min
-                      </div>
-                    </div>
-                  </div>
-                  <div class="lesson-item">
-                    <div class="lesson-circle"></div>
-                    <div>
-                      <div
-                        style="
-                          font-weight: 600;
-                          font-size: 15px;
-                          color: #0f172a;
-                        "
-                      >
-                        Building Your First Project
-                      </div>
-                      <div
-                        style="font-size: 13px; color: #64748b; margin-top: 4px"
-                      >
-                        45 min
-                      </div>
-                    </div>
-                  </div>
+                <div class="lesson-list-box" id="cp-lesson-list-box">
+                  <!-- Dynamic Modules Render Here -->
                 </div>
               </div>
             </div>
@@ -4357,9 +4261,13 @@
         let activeStudents = users.filter(
           (u) => u.role === "student" && u.status === "Approved",
         ).length;
-        let pendingReviews = courses.filter(
+        let pendingCoursesCount = courses.filter(
           (c) => c.status === "Pending",
         ).length;
+        let pendingUsersCount = users.filter(
+          (u) => u.status === "Pending",
+        ).length;
+
         const uEl = document.getElementById("admin-stat-users");
         const cEl = document.getElementById("admin-stat-courses");
         const sEl = document.getElementById("admin-stat-students");
@@ -4367,7 +4275,7 @@
         if (uEl) uEl.innerText = users.length;
         if (cEl) cEl.innerText = courses.length;
         if (sEl) sEl.innerText = activeStudents;
-        if (pEl) pEl.innerText = pendingReviews;
+        if (pEl) pEl.innerText = pendingCoursesCount + pendingUsersCount;
       }
 
       async function updateInstructorStats() {
@@ -4383,11 +4291,18 @@
           (e) =>
             e.instructor_email === currentUser.email && e.status === "Approved",
         ).length;
+        let pendingEnrollments = enrollments.filter(
+          (e) =>
+            e.instructor_email === currentUser.email && e.status === "Pending",
+        ).length;
 
         const icEl = document.getElementById("inst-course-count");
         const isEl = document.getElementById("inst-student-count");
+        const ipEl = document.getElementById("inst-pending-count");
+
         if (icEl) icEl.innerText = activeCourses;
         if (isEl) isEl.innerText = totalStudents;
+        if (ipEl) ipEl.innerText = pendingEnrollments;
       }
 
       function setupDashboard(user) {
@@ -4529,6 +4444,8 @@
         const desc = document.getElementById("uc-desc").value;
         const cat = document.getElementById("uc-cat").value;
         const diff = document.getElementById("uc-diff").value;
+        const totalLessons =
+          parseInt(document.getElementById("uc-lessons").value) || 4;
 
         if (!title)
           return alert("Please enter a course title before publishing.");
@@ -4544,6 +4461,7 @@
           difficulty: diff,
           instructorEmail: currentUser.email,
           instructorName: currentUser.name,
+          total_lessons: totalLessons,
         };
 
         try {
@@ -4567,6 +4485,7 @@
             document.getElementById("uc-desc").value = "";
             document.getElementById("uc-cat").value = "";
             document.getElementById("uc-diff").value = "Beginner";
+            document.getElementById("uc-lessons").value = "";
 
             handleNav("Dashboard", document.querySelector(".nav-item-dash"));
           } else {
@@ -4586,6 +4505,7 @@
 
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
+          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
 
           if (courses.length === 0) {
             container.innerHTML = `<p style="color:#64748b;">No courses uploaded yet.</p>`;
@@ -4601,6 +4521,10 @@
             const bgIndex =
               (parseInt(String(c.id).slice(-3)) || 0) % courseGradients.length;
             let bgStyle = `background: ${courseGradients[bgIndex]}; display:flex; align-items:center; justify-content:center; text-align:center; padding:15px; border-bottom:1px solid #e2e8f0; cursor: pointer;`;
+
+            let enrolledCount = enrollments.filter(
+              (e) => e.course_id == c.id && e.status === "Approved",
+            ).length;
 
             let complaints = await safeFetchJSON(
               `${API_URL}/course-complaints/${c.id}`,
@@ -4642,6 +4566,7 @@
                       <div class="acc-tags">
                           <span class="acc-tag ${isPending ? "tag-pen" : "tag-pub"}">${isPending ? "Pending" : "Published"}</span>
                           <span class="acc-tag tag-cat" style="background:#f0fdf4; color:#16a34a; border-color:#bbf7d0;">Rating: ${avgRating}</span>
+                          <span class="acc-tag" style="background:#eff6ff; color:#1e40af; border-color:#bfdbfe;">Enrolled: ${enrolledCount}</span>
                       </div>
                       <h3 style="font-size:18px; font-weight:700; color:#312e81; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
                       <p style="font-size:14px; color:#7c3aed; font-weight:500; margin-bottom:10px;" class="dm-desc">by ${c.instructor_name}</p>
@@ -4980,6 +4905,38 @@
         }
       }
 
+      function renderDynamicLessons(total) {
+        const container = document.getElementById("cp-lesson-list-box");
+        if (!container) return;
+        let html = `<div style="padding: 20px 24px; border-bottom: 1px solid #e2e8f0; font-weight: 800; font-size: 18px; color: #0f172a;">Course Content (${total} Modules)</div>`;
+        for (let i = 1; i <= total; i++) {
+          let isCompleted = i === 1;
+          let isActive = i === 2;
+          let stateClass = isCompleted ? "completed" : isActive ? "active" : "";
+          let circleContent = isCompleted
+            ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+            : ``;
+          let title =
+            i === 1
+              ? "Course Introduction"
+              : i === total
+                ? "Final Assessment & Project"
+                : `Core Concept Module ${i}`;
+          let time = 10 + i * 5 + " min";
+
+          html += `
+              <div class="lesson-item ${stateClass}">
+                <div class="lesson-circle">${circleContent}</div>
+                <div>
+                  <div style="font-weight: 600; font-size: 15px; color: #0f172a;">${title}</div>
+                  <div style="font-size: 13px; color: #64748b; margin-top: 4px">${time}</div>
+                </div>
+              </div>
+            `;
+        }
+        container.innerHTML = html;
+      }
+
       async function openCoursePlayer(courseId) {
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
@@ -4997,6 +4954,8 @@
             selectedCourse.title;
           document.getElementById("cp-course-desc").innerText =
             selectedCourse.description || "Course details.";
+
+          renderDynamicLessons(selectedCourse.total_lessons || 4);
 
           const markBtn = document.getElementById("cp-mark-completed-btn");
           if (markBtn) {
@@ -5375,7 +5334,7 @@
             for (let student of enrolledStudents) {
               await addNotification(
                 student.student_email,
-                `📚 Notun Assignment: "${title}" dewa hoyeche "${currentCourseObj.title}" course-e.`,
+                `📚 New Assignment: "${title}" has been added to the course "${currentCourseObj.title}".`,
                 "blue",
               );
             }
@@ -5997,6 +5956,10 @@
           let localUsers =
             JSON.parse(localStorage.getItem("elms_users_db")) || [];
 
+          // Make filtering functional
+          const filterValue =
+            document.getElementById("admin-user-filter").value;
+
           usersToRender = dbUsers.map((dbU) => {
             let localU = localUsers.find((l) => l.email === dbU.email);
             return {
@@ -6009,15 +5972,29 @@
                   : new Date().toLocaleDateString(),
             };
           });
-          localStorage.setItem("elms_users_db", JSON.stringify(usersToRender));
+
+          if (filterValue === "Pending Only") {
+            usersToRender = usersToRender.filter((u) => u.status === "Pending");
+          } else if (filterValue === "Approved Only") {
+            usersToRender = usersToRender.filter(
+              (u) => u.status === "Approved",
+            );
+          } else if (filterValue === "Banned Only") {
+            usersToRender = usersToRender.filter((u) => u.status === "Banned");
+          }
+
+          localStorage.setItem("elms_users_db", JSON.stringify(dbUsers)); // Update base cache
         } catch (e) {
           console.log("Using local user DB due to API error");
           usersToRender =
             JSON.parse(localStorage.getItem("elms_users_db")) || [];
         }
 
-        if (usersToRender.length === 0) {
-          container.innerHTML = `<p style="color:#64748b; padding:20px;">No users found.</p>`;
+        if (
+          usersToRender.length === 0 ||
+          (usersToRender.length === 1 && usersToRender[0].role === "admin")
+        ) {
+          container.innerHTML = `<p style="color:#64748b; padding:20px;">No users found for this filter.</p>`;
           updateAdminStats();
           return;
         }

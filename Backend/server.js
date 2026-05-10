@@ -41,7 +41,7 @@ const db = mysql.createPool({
 
 db.getConnection((err, connection) => {
   if (err) {
-    console.error("❌ DB Connection Failed. Make sure XAMPP MySQL is running.");
+    console.error("❌ DB Connection Failed. Make sure your MySQL is running.");
   } else {
     console.log("✅ MySQL Connected Successfully!");
 
@@ -53,11 +53,12 @@ db.getConnection((err, connection) => {
       )
     `);
 
+    // 🔥 UPDATED: Added total_lessons column to handle dynamic module generation
     connection.query(`
       CREATE TABLE IF NOT EXISTS courses (
         id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), description TEXT,
         category VARCHAR(100), difficulty VARCHAR(50), instructor_email VARCHAR(100),
-        instructor_name VARCHAR(100), status VARCHAR(50) DEFAULT 'Pending'
+        instructor_name VARCHAR(100), total_lessons INT DEFAULT 4, status VARCHAR(50) DEFAULT 'Pending'
       )
     `);
 
@@ -165,7 +166,6 @@ app.post("/login", (req, res) => {
   );
 });
 
-// 🔥 ENHANCED PROFILE UPDATE (Multi-Table Update) 🔥
 app.put("/update-profile", async (req, res) => {
   const { name, avatar, email } = req.body;
   try {
@@ -245,10 +245,19 @@ app.post("/upload-course", (req, res) => {
     difficulty,
     instructorEmail,
     instructorName,
+    total_lessons,
   } = req.body;
   db.query(
-    "INSERT INTO courses (title, description, category, difficulty, instructor_email, instructor_name, status) VALUES (?, ?, ?, ?, ?, ?, 'Pending')",
-    [title, description, category, difficulty, instructorEmail, instructorName],
+    "INSERT INTO courses (title, description, category, difficulty, instructor_email, instructor_name, total_lessons, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending')",
+    [
+      title,
+      description,
+      category,
+      difficulty,
+      instructorEmail,
+      instructorName,
+      total_lessons || 4,
+    ],
     (err) =>
       err
         ? res.status(500).json({ error: err.message })
@@ -530,10 +539,12 @@ app.post("/ban-requests", (req, res) => {
     (err, data) => {
       if (err) return res.status(500).json({ error: err.message });
       if (data.length > 0)
-        return res.status(400).json({
-          error:
-            "A pending request already exists for this student in this course.",
-        });
+        return res
+          .status(400)
+          .json({
+            error:
+              "A pending request already exists for this student in this course.",
+          });
 
       db.query(
         "INSERT INTO ban_requests (course_id, course_title, inst_email, inst_name, student_email, student_name, `date`) VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -654,9 +665,11 @@ app.put("/notifications/read", (req, res) => {
 });
 
 app.use((req, res) =>
-  res.status(404).json({
-    error: `API route not found on backend: ${req.method} ${req.url}`,
-  }),
+  res
+    .status(404)
+    .json({
+      error: `API route not found on backend: ${req.method} ${req.url}`,
+    }),
 );
 
 const PORT = process.env.PORT || 5005;
