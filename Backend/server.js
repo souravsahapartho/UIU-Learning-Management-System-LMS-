@@ -462,7 +462,15 @@ app.get("/assignments/:courseId", (req, res) => {
   );
 });
 app.post("/assignments", (req, res) => {
-  const { course_id, course_name, title, description, due_date, instructor_email, date } = req.body;
+  const {
+    course_id,
+    course_name,
+    title,
+    description,
+    due_date,
+    instructor_email,
+    date,
+  } = req.body;
   db.query(
     "INSERT INTO assignments (course_id, course_name, title, description, due_date, instructor_email, `date`) VALUES (?, ?, ?, ?, ?, ?, ?)",
     [
@@ -529,7 +537,7 @@ app.put("/assignment-submissions/:id/grade", (req, res) => {
     (err) =>
       err
         ? res.status(500).json({ error: err.message })
-        : res.status(200).json({ message: "Graded successfully!" })
+        : res.status(200).json({ message: "Graded successfully!" }),
   );
 });
 
@@ -560,7 +568,8 @@ app.post("/ban-requests", (req, res) => {
       if (err) return res.status(500).json({ error: err.message });
       if (data.length > 0)
         return res.status(400).json({
-          error: "A pending request already exists for this student in this course.",
+          error:
+            "A pending request already exists for this student in this course.",
         });
 
       db.query(
@@ -682,11 +691,9 @@ app.put("/notifications/read", (req, res) => {
 });
 
 app.use((req, res) =>
-  res
-    .status(404)
-    .json({
-      error: `API route not found on backend: ${req.method} ${req.url}`,
-    }),
+  res.status(404).json({
+    error: `API route not found on backend: ${req.method} ${req.url}`,
+  }),
 );
 
 const PORT = process.env.PORT || 5005;
