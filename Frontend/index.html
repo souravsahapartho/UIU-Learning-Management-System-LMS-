@@ -2910,9 +2910,7 @@
               Manage and track student progress
             </p>
           </div>
-          <div class="prog-stats-grid" id="inst-students-stats">
-            <!-- Rendered dynamically -->
-          </div>
+          <div class="prog-stats-grid" id="inst-students-stats"></div>
           <div class="admin-search" style="margin-bottom: 20px">
             <svg
               width="20"
@@ -2953,9 +2951,7 @@
             <div
               id="instructor-students-list"
               style="display: flex; flex-direction: column"
-            >
-              <!-- List items dynamically rendered -->
-            </div>
+            ></div>
           </div>
         </div>
 
@@ -3983,7 +3979,7 @@
         browse: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`,
         progress: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>`,
         notifications: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>`,
-        settings: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>`,
+        settings: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>`,
       };
 
       async function safeFetchJSON(url, options = {}) {
@@ -4381,34 +4377,41 @@
 
       function setupDashboard(user) {
         currentUser = user;
+
+        // 🔥 Safety check for old or corrupted accounts (Solves login crash)
+        const safeName = user.name || "User";
+        const safeRole = user.role || "student";
+        const safeAvatar = user.avatar || "U";
+
         const roleColors = {
           student: "#0ea5e9",
           instructor: "#0f172a",
           admin: "#7c3aed",
         };
-        const activeColor = roleColors[user.role] || "#0ea5e9";
-        document.getElementById("top-name").innerText = user.name;
-        document.getElementById("top-role").innerText = user.role;
-        document.getElementById("top-avatar").innerText = user.avatar;
+        const activeColor = roleColors[safeRole] || "#0ea5e9";
+
+        document.getElementById("top-name").innerText = safeName;
+        document.getElementById("top-role").innerText = safeRole;
+        document.getElementById("top-avatar").innerText = safeAvatar;
         document.getElementById("top-avatar").style.backgroundColor =
           activeColor;
 
         const adminMsg = document.getElementById("admin-welcome-msg");
         if (adminMsg)
-          adminMsg.innerText = `Welcome back, ${user.name.split(" ")[0]}! 👋`;
+          adminMsg.innerText = `Welcome back, ${safeName.split(" ")[0]}! 👋`;
         const studentMsg = document.getElementById("welcome-msg-student");
         if (studentMsg)
-          studentMsg.innerText = `Welcome back, ${user.name.split(" ")[0]}! 👋`;
+          studentMsg.innerText = `Welcome back, ${safeName.split(" ")[0]}! 👋`;
         const instMsg = document.getElementById("welcome-msg-inst");
         if (instMsg)
-          instMsg.innerText = `Welcome back, ${user.name.split(" ")[0]}! 👋`;
+          instMsg.innerText = `Welcome back, ${safeName.split(" ")[0]}! 👋`;
 
         document.getElementById("student-dashboard-view").style.display =
-          user.role === "student" ? "block" : "none";
+          safeRole === "student" ? "block" : "none";
         document.getElementById("instructor-dashboard-view").style.display =
-          user.role === "instructor" ? "block" : "none";
+          safeRole === "instructor" ? "block" : "none";
         document.getElementById("admin-dashboard-view").style.display =
-          user.role === "admin" ? "block" : "none";
+          safeRole === "admin" ? "block" : "none";
 
         document
           .querySelectorAll(".dashboard-content > div")
@@ -4417,25 +4420,30 @@
           .getElementById("dashboard-home-content")
           .classList.remove("hidden");
 
-        document.getElementById("set-name").value = user.name;
-        document.getElementById("set-email").value = user.email;
-        document.getElementById("set-avatar-circle").innerText = user.avatar;
+        document.getElementById("set-name").value = safeName;
+        document.getElementById("set-email").value = user.email || "";
+        document.getElementById("set-avatar-circle").innerText = safeAvatar;
         document.getElementById("set-avatar-circle").style.backgroundColor =
           activeColor;
 
-        setupSidebar(user);
+        setupSidebar({
+          ...user,
+          name: safeName,
+          role: safeRole,
+          avatar: safeAvatar,
+        });
         updateNotificationBadge();
 
-        if (user.role === "admin") {
+        if (safeRole === "admin") {
           renderAdminActivity();
           renderAdminUsers();
           renderAdminCourses();
           updateAdminStats();
-        } else if (user.role === "instructor") {
+        } else if (safeRole === "instructor") {
           renderInstructorRequests();
           updateInstructorStats();
           renderInstructorLiveCourses();
-        } else if (user.role === "student") {
+        } else if (safeRole === "student") {
           renderStudentEnrolledCourses();
           renderStudentDueAssignments();
         }
@@ -5228,11 +5236,18 @@
             return;
           }
 
-          let htmlStr = `<h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Enrolled Students (${enrolledStudents.length})</h3><div style="display:flex; flex-direction:column; gap:10px;">`;
+          let htmlStr = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <h3 style="font-size: 18px; font-weight: 700; color: #0f172a;" class="dm-title">Enrolled Students (${enrolledStudents.length})</h3>
+                    <p style="font-size: 13px; color: #64748b;" class="dm-desc">Manage and track student progress</p>
+                </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:10px;">`;
 
           const banReqs = await safeFetchJSON(`${API_URL}/ban-requests`);
 
-          enrolledStudents.forEach((st) => {
+          enrolledStudents.forEach((st, index) => {
             let isRequested = banReqs.some(
               (r) =>
                 r.student_email === st.student_email &&
@@ -5249,17 +5264,52 @@
               }
             }
 
+            const bgIndex = index % courseGradients.length;
+            const bgStyle = `background: ${courseGradients[bgIndex]};`;
+            const progressMock = Math.floor(Math.random() * 50) + 50;
+            const completedMock = Math.floor(Math.random() * 3) + 1;
+
             htmlStr += `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:white; padding:15px; border-radius:12px; border:1px solid #e2e8f0; flex-wrap:wrap; gap:10px;" class="assignment-card">
-                  <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; width:100%;">
-                    <div style="width:40px; height:40px; border-radius:50%; background:#2563eb; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:16px;">${st.student_name.charAt(0)}</div>
-                    <div>
-                      <div style="font-weight:700; color:#0f172a; font-size:15px;" class="dm-title">${st.student_name}</div>
-                      <div style="font-size:13px; color:#64748b; word-break:break-all;">${st.student_email}</div>
-                    </div>
+                <div style="display:flex; align-items:center; justify-content:space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
+                  
+                  <div style="display: flex; align-items: center; gap: 15px; min-width: 250px;">
+                      <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0;">${st.student_name.charAt(0)}</div>
+                      <div>
+                          <div style="display: flex; align-items: center; gap: 8px;">
+                              <h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.student_name}</h4>
+                              <span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">active</span>
+                          </div>
+                          <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                              ${st.student_email}
+                          </div>
+                      </div>
                   </div>
-                  <div style="margin-top:5px; width:100%;">
-                    ${actionHtml}
+                  
+                  <div style="display: flex; gap: 30px; flex-wrap: wrap; flex: 1;">
+                      <div>
+                          <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Enrolled</div>
+                          <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">1</div>
+                      </div>
+                      <div>
+                          <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg> Completed</div>
+                          <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${completedMock}</div>
+                      </div>
+                      <div>
+                          <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> Progress</div>
+                          <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${progressMock}%</div>
+                      </div>
+                  </div>
+
+                  <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                      <div style="text-align: right;">
+                          <div style="font-size: 11px; color: #94a3b8;">Enrolled on</div>
+                          <div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.date}</div>
+                      </div>
+                      <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px; white-space: nowrap;" onclick="alert('Student detail view coming soon!')">View Details</button>
+                        ${actionHtml}
+                      </div>
                   </div>
                 </div>
               `;
@@ -5280,6 +5330,7 @@
 
         try {
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+
           let myEnrollments = enrollments.filter(
             (e) =>
               e.instructor_email === currentUser.email &&
@@ -6246,7 +6297,7 @@
         .getElementById("login-form")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
-          const email = document.getElementById("login-email").value;
+          const email = document.getElementById("login-email").value.trim();
           const rawPassword = document.getElementById("login-password").value;
           const errorDiv = document.getElementById("login-error");
 
@@ -6255,6 +6306,9 @@
           errorDiv.style.border = "none";
           errorDiv.innerHTML = "";
 
+          let data = null;
+          let isSuccess = false;
+
           try {
             const res = await fetch(`${API_URL}/login`, {
               method: "POST",
@@ -6262,52 +6316,62 @@
               body: JSON.stringify({ email: email, password: rawPassword }),
             });
 
-            const data = await res.json();
+            data = await res.json();
+            isSuccess = res.ok;
+          } catch (err) {
+            console.error("Login fetch failed:", err);
+            errorDiv.innerText =
+              "Server Error: Backend is unreachable. Check your connection or wait 1 minute for server to wake up.";
+            errorDiv.style.display = "block";
+            return;
+          }
 
-            if (res.ok) {
-              if (
-                data.user.role !== "admin" &&
-                data.user.status === "Pending"
-              ) {
-                errorDiv.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
+          if (isSuccess && data && data.user) {
+            const user = data.user;
+            if (user.role !== "admin" && user.status === "Pending") {
+              errorDiv.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                   <span style="font-size:16px;"><b>Pending Approval</b></span>
                   <span style="font-size:13px;">The administrator has not yet approved your account. Please wait for approval.</span>
               </div>`;
-                errorDiv.style.backgroundColor = "#fffbeb";
-                errorDiv.style.color = "#d97706";
-                errorDiv.style.border = "1px solid #fde68a";
-                errorDiv.style.display = "block";
-                return;
-              }
-              if (data.user.status === "Banned") {
-                errorDiv.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
+              errorDiv.style.backgroundColor = "#fffbeb";
+              errorDiv.style.color = "#d97706";
+              errorDiv.style.border = "1px solid #fde68a";
+              errorDiv.style.display = "block";
+              return;
+            }
+            if (user.status === "Banned") {
+              errorDiv.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                   <span style="font-size:16px;"><b>Account Suspended</b></span>
                   <span style="font-size:13px;">Your account has been suspended by the administrator.</span>
               </div>`;
-                errorDiv.style.backgroundColor = "#fef2f2";
-                errorDiv.style.color = "#ef4444";
-                errorDiv.style.border = "1px solid #fca5a5";
-                errorDiv.style.display = "block";
-                return;
-              }
+              errorDiv.style.backgroundColor = "#fef2f2";
+              errorDiv.style.color = "#ef4444";
+              errorDiv.style.border = "1px solid #fca5a5";
+              errorDiv.style.display = "block";
+              return;
+            }
 
-              currentUser = data.user;
-              localStorage.setItem(
-                "elms_current_user",
-                JSON.stringify(currentUser),
-              );
-              setupDashboard(data.user);
+            currentUser = user;
+            localStorage.setItem(
+              "elms_current_user",
+              JSON.stringify(currentUser),
+            );
+
+            try {
+              setupDashboard(user);
               errorDiv.style.display = "none";
               navigateTo("dashboard");
-            } else {
-              errorDiv.innerText = data.error || "Invalid email or password";
+            } catch (uiErr) {
+              console.error("Dashboard Setup Error:", uiErr);
+              errorDiv.innerText =
+                "Error loading dashboard. Your old account data might be missing some fields.";
               errorDiv.style.display = "block";
             }
-          } catch (err) {
+          } else {
             errorDiv.innerText =
-              "Server Error: The backend server is not reachable. Please try again later.";
+              data && data.error ? data.error : "Invalid email or password";
             errorDiv.style.display = "block";
           }
         });
@@ -6385,8 +6449,11 @@
               errorDiv.style.display = "block";
             }
           } catch (err) {
+            console.error("Signup fetch failed:", err);
             errorDiv.innerText =
-              "Server Error: The backend server is not reachable. Please try again later.";
+              "Server Error: Backend is sleeping or unreachable. Please wait 1 minute and try again. (" +
+              err.message +
+              ")";
             errorDiv.style.display = "block";
           }
         });
