@@ -209,6 +209,35 @@ app.put("/update-profile", async (req, res) => {
   }
 });
 
+// 🔥 NEW API: Update Password 🔥
+app.put("/update-password", (req, res) => {
+  const { email, oldPassword, newPassword } = req.body;
+  const oldEncrypted = hashPassword(oldPassword || "");
+  const newEncrypted = hashPassword(newPassword || "");
+
+  db.query(
+    "SELECT * FROM users WHERE email = ? AND (password = ? OR password = ?)",
+    [email, oldEncrypted, oldPassword],
+    (err, data) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      if (data.length > 0) {
+        db.query(
+          "UPDATE users SET password = ? WHERE email = ?",
+          [newEncrypted, email],
+          (updateErr) => {
+            if (updateErr)
+              return res.status(500).json({ error: updateErr.message });
+            res.status(200).json({ message: "Password updated successfully" });
+          },
+        );
+      } else {
+        res.status(401).json({ error: "Incorrect current password" });
+      }
+    },
+  );
+});
+
 app.delete("/delete-account", (req, res) => {
   db.query("DELETE FROM users WHERE email = ?", [req.body.email], (err) =>
     err
@@ -528,7 +557,6 @@ app.post("/assignment-submissions", (req, res) => {
   );
 });
 
-// 🔥 UPDATE API: Grade and Comment Submission 🔥
 app.put("/assignment-submissions/:id/grade", (req, res) => {
   const { marks, instructor_comment } = req.body;
   db.query(
@@ -541,7 +569,7 @@ app.put("/assignment-submissions/:id/grade", (req, res) => {
   );
 });
 
-// --- BAN REQUEST APIs (Instructor to Admin) ---
+// --- BAN REQUEST APIs ---
 app.get("/ban-requests", (req, res) => {
   db.query("SELECT * FROM ban_requests ORDER BY id DESC", (err, data) =>
     err

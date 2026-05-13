@@ -3541,6 +3541,53 @@
               Save Changes
             </button>
           </div>
+
+          <!-- 🔥 NEW: Change Password Section 🔥 -->
+          <div class="settings-card">
+            <h3
+              style="
+                font-size: 18px;
+                font-weight: 700;
+                color: #0f172a;
+                margin-bottom: 5px;
+              "
+            >
+              Change Password
+            </h3>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 15px">
+              Update your account password
+            </p>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap">
+              <div class="form-group" style="flex: 1; min-width: 100%">
+                <label>Current Password</label>
+                <input
+                  type="password"
+                  id="set-old-password"
+                  placeholder="Enter current password"
+                />
+              </div>
+              <div class="form-group" style="flex: 1; min-width: 200px">
+                <label>New Password</label>
+                <input
+                  type="password"
+                  id="set-new-password"
+                  placeholder="Enter new password"
+                />
+              </div>
+              <div class="form-group" style="flex: 1; min-width: 200px">
+                <label>Confirm New Password</label>
+                <input
+                  type="password"
+                  id="set-confirm-password"
+                  placeholder="Confirm new password"
+                />
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="changePassword()">
+              Update Password
+            </button>
+          </div>
+
           <div class="settings-card" style="border-color: #fca5a5">
             <h3
               style="
@@ -6297,8 +6344,6 @@
         .getElementById("login-form")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
-          console.log("API URL:", API_URL);
-          console.log("Trying login to:", `${API_URL}/login`);
           const email = document.getElementById("login-email").value.trim();
           const rawPassword = document.getElementById("login-password").value;
           const errorDiv = document.getElementById("login-error");
@@ -6491,6 +6536,47 @@
         localStorage.setItem("elms_users_db", JSON.stringify(users));
 
         location.reload();
+      }
+
+      async function changePassword() {
+        if (!currentUser) return;
+        const oldPassword = document.getElementById("set-old-password").value;
+        const newPassword = document.getElementById("set-new-password").value;
+        const confirmPassword = document.getElementById(
+          "set-confirm-password",
+        ).value;
+
+        if (!oldPassword || !newPassword || !confirmPassword) {
+          return alert("Please fill in all password fields.");
+        }
+        if (newPassword !== confirmPassword) {
+          return alert("New passwords do not match.");
+        }
+
+        try {
+          const res = await fetch(`${API_URL}/update-password`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: currentUser.email,
+              oldPassword: oldPassword,
+              newPassword: newPassword,
+            }),
+          });
+
+          const data = await res.json();
+          if (res.ok) {
+            alert("Password updated successfully!");
+            document.getElementById("set-old-password").value = "";
+            document.getElementById("set-new-password").value = "";
+            document.getElementById("set-confirm-password").value = "";
+          } else {
+            alert(data.error || "Failed to update password.");
+          }
+        } catch (error) {
+          console.error(error);
+          alert("Connection error while updating password.");
+        }
       }
 
       async function deleteAccount() {
