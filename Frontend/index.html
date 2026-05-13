@@ -6297,6 +6297,8 @@
         .getElementById("login-form")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
+          console.log("API URL:", API_URL);
+          console.log("Trying login to:", `${API_URL}/login`);
           const email = document.getElementById("login-email").value.trim();
           const rawPassword = document.getElementById("login-password").value;
           const errorDiv = document.getElementById("login-error");
