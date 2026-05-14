@@ -4338,14 +4338,14 @@
           .slice(0, 5)
           .map(
             (n) => `
-            <div class="activity-item">
-                <div class="act-dot dot-${n.color || "blue"}"></div>
-                <div>
-                    <div class="act-text">${n.text}</div>
-                    <div class="act-time">${n.date ? n.date + " • " : ""}${n.time || ""}</div>
-                </div>
-            </div>
-        `,
+                  <div class="activity-item">
+                      <div class="act-dot dot-${n.color || "blue"}"></div>
+                      <div>
+                          <div class="act-text">${n.text}</div>
+                          <div class="act-time">${n.date ? n.date + " • " : ""}${n.time || ""}</div>
+                      </div>
+                  </div>
+              `,
           )
           .join("");
 
@@ -4368,15 +4368,15 @@
           container.innerHTML = allComplaints
             .map(
               (cp) => `
-            <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
-                <span style="font-size:13px;font-weight:700;color:#be123c;background:#fef2f2;padding:3px 10px;border-radius:20px;">📚 ${cp.course_name || "Unknown Course"}</span>
-                <span style="font-size:12px;color:#94a3b8;">${cp.date || ""}</span>
-              </div>
-              <div style="font-size:14px;color:#881337;margin-bottom:8px;line-height:1.5;">${cp.complaint_text}</div>
-              <div style="font-size:12px;color:#64748b;">🧑 <b>${cp.user_name || "Unknown"}</b> &nbsp;|&nbsp; ✉️ ${cp.user_email || ""}</div>
-            </div>
-          `,
+                  <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
+                      <span style="font-size:13px;font-weight:700;color:#be123c;background:#fef2f2;padding:3px 10px;border-radius:20px;">📚 ${cp.course_name || "Unknown Course"}</span>
+                      <span style="font-size:12px;color:#94a3b8;">${cp.date || ""}</span>
+                    </div>
+                    <div style="font-size:14px;color:#881337;margin-bottom:8px;line-height:1.5;">${cp.complaint_text}</div>
+                    <div style="font-size:12px;color:#64748b;">🧑 <b>${cp.user_name || "Unknown"}</b> &nbsp;|&nbsp; ✉️ ${cp.user_email || ""}</div>
+                  </div>
+                `,
             )
             .join("");
         } catch (e) {
@@ -4407,14 +4407,14 @@
         container.innerHTML = notifs
           .map(
             (n) => `
-            <div class="notif-page-item ${n.unread == 1 || n.unread === true || n.unread === "1" ? "unread" : ""}">
-                <div class="notif-icon ${n.color || "blue"}">🔔</div>
-                <div>
-                    <h4 style="font-size:15px; font-weight:700; color:#0f172a; margin-bottom:2px;" class="dm-text">${n.text}</h4>
-                    <p style="font-size:13px; color:#64748b; font-weight:500;" class="dm-desc">${n.date ? n.date + " | " : ""}${n.time || ""}</p>
-                </div>
-            </div>
-        `,
+                  <div class="notif-page-item ${n.unread == 1 || n.unread === true || n.unread === "1" ? "unread" : ""}">
+                      <div class="notif-icon ${n.color || "blue"}">🔔</div>
+                      <div>
+                          <h4 style="font-size:15px; font-weight:700; color:#0f172a; margin-bottom:2px;" class="dm-text">${n.text}</h4>
+                          <p style="font-size:13px; color:#64748b; font-weight:500;" class="dm-desc">${n.date ? n.date + " | " : ""}${n.time || ""}</p>
+                      </div>
+                  </div>
+              `,
           )
           .join("");
       }
@@ -4735,19 +4735,19 @@
           .join("");
 
         const btmHtml = `
-          <div style="padding: 20px; border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 10px;">
-            <div style="background-color: #f1f5f9; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px;">
-              <div style="width: 34px; height: 34px; border-radius: 50%; background-color: #0f172a; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">${user.avatar}</div>
-              <div style="overflow: hidden; text-align: left;">
-                <div style="font-weight: 700; font-size: 14px; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${user.name}</div>
-                <div style="font-size: 12px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${user.email}</div>
-              </div>
-            </div>
-            <button style="color: #ef4444; display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; background: transparent; border: none; padding: 8px 4px; font-size: 15px;" onclick="logout()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transform: rotate(180deg);"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Logout
-            </button>
-          </div>
-        `;
+                <div style="padding: 20px; border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 10px;">
+                  <div style="background-color: #f1f5f9; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 34px; height: 34px; border-radius: 50%; background-color: #0f172a; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">${user.avatar}</div>
+                    <div style="overflow: hidden; text-align: left;">
+                      <div style="font-weight: 700; font-size: 14px; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${user.name}</div>
+                      <div style="font-size: 12px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${user.email}</div>
+                    </div>
+                  </div>
+                  <button style="color: #ef4444; display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; background: transparent; border: none; padding: 8px 4px; font-size: 15px;" onclick="logout()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transform: rotate(180deg);"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Logout
+                  </button>
+                </div>
+              `;
         document.getElementById("sidebar-bottom").innerHTML = btmHtml;
       }
 
@@ -4815,12 +4815,18 @@
 
             handleNav("Dashboard", document.querySelector(".nav-item-dash"));
           } else {
-            alert("Error saving course to database.");
+            const errData = await res
+              .json()
+              .catch(() => ({ error: "Unknown server error" }));
+            alert(
+              "Error: " +
+                (errData.error || "Unknown error") +
+                "\nStatus: " +
+                res.status,
+            );
           }
         } catch (e) {
-          alert(
-            "Database connection failed. Please ensure the backend is running.",
-          );
+          alert("Network Error: " + e.message);
         } finally {
           publishBtn.innerHTML = originalText;
           publishBtn.disabled = false;
@@ -4860,9 +4866,9 @@
             let complaintHtml =
               complaints && complaints.length > 0
                 ? `<div style="background:#fef2f2; color:#ef4444; border:1px solid #fecaca; padding:6px 12px; border-radius:8px; font-size:13px; font-weight:700; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                    ${complaints.length} Complaint(s) Received
-                 </div>`
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                          ${complaints.length} Complaint(s) Received
+                       </div>`
                 : ``;
 
             let feedbacks = await safeFetchJSON(
@@ -4880,37 +4886,37 @@
             let thumbHTML = "";
             if (c.thumbnail_url) {
               thumbHTML = `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
-                   <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border-radius: 12px; padding: 20px;">
-                       <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4>
-                   </div>
-              </div>`;
+                         <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border-radius: 12px; padding: 20px;">
+                             <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4>
+                         </div>
+                    </div>`;
             } else {
               thumbHTML = `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; ${bgStyle}" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
-                   <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4>
-              </div>`;
+                         <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4>
+                    </div>`;
             }
 
             let actionHTML = isPending
               ? `<div class="action-container" style="display:flex; gap:12px; margin-top: 15px; flex-wrap:wrap;">
-                          <button class="btn btn-success" onclick="updateCourseStatusAPI('${c.id}', 'Approved', '${c.instructor_email || ""}', '${c.title.replace(/'/g, "\\'")}')" style="flex: 1; border-radius: 8px;">Approve</button>
-                          <button class="btn btn-primary" onclick="updateCourseStatusAPI('${c.id}', 'Rejected', '${c.instructor_email || ""}', '${c.title.replace(/'/g, "\\'")}')" style="flex: 1; background: #e11d48; border-radius: 8px;">Reject</button>
-                     </div>`
+                                <button class="btn btn-success" onclick="updateCourseStatusAPI('${c.id}', 'Approved', '${c.instructor_email || ""}', '${c.title.replace(/'/g, "\\'")}')" style="flex: 1; border-radius: 8px;">Approve</button>
+                                <button class="btn btn-primary" onclick="updateCourseStatusAPI('${c.id}', 'Rejected', '${c.instructor_email || ""}', '${c.title.replace(/'/g, "\\'")}')" style="flex: 1; background: #e11d48; border-radius: 8px;">Reject</button>
+                           </div>`
               : `<button class="btn btn-outline" style="width:100%; border-color:#ddd6fe; color:#4c1d95; margin-top: 15px;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">View Analytics & Complaints</button>`;
 
             htmlStr += `
-                  <div class="admin-course-card ${isPending ? "border-pen" : "border-pub"}">
-                      ${thumbHTML}
-                      <div class="acc-tags">
-                          <span class="acc-tag ${isPending ? "tag-pen" : "tag-pub"}">${isPending ? "Pending" : "Published"}</span>
-                          <span class="acc-tag tag-cat" style="background:#f0fdf4; color:#16a34a; border-color:#bbf7d0;">Rating: ${avgRating}</span>
-                          <span class="acc-tag" style="background:#eff6ff; color:#1e40af; border-color:#bfdbfe;">Enrolled: ${enrolledCount}</span>
-                      </div>
-                      <h3 style="font-size:18px; font-weight:700; color:#312e81; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                      <p style="font-size:14px; color:#7c3aed; font-weight:500; margin-bottom:10px;" class="dm-desc">by ${c.instructor_name}</p>
-                      ${complaintHtml}
-                      <div style="margin-top:auto;">${actionHTML}</div>
-                  </div>
-              `;
+                        <div class="admin-course-card ${isPending ? "border-pen" : "border-pub"}">
+                            ${thumbHTML}
+                            <div class="acc-tags">
+                                <span class="acc-tag ${isPending ? "tag-pen" : "tag-pub"}">${isPending ? "Pending" : "Published"}</span>
+                                <span class="acc-tag tag-cat" style="background:#f0fdf4; color:#16a34a; border-color:#bbf7d0;">Rating: ${avgRating}</span>
+                                <span class="acc-tag" style="background:#eff6ff; color:#1e40af; border-color:#bfdbfe;">Enrolled: ${enrolledCount}</span>
+                            </div>
+                            <h3 style="font-size:18px; font-weight:700; color:#312e81; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
+                            <p style="font-size:14px; color:#7c3aed; font-weight:500; margin-bottom:10px;" class="dm-desc">by ${c.instructor_name}</p>
+                            ${complaintHtml}
+                            <div style="margin-top:auto;">${actionHTML}</div>
+                        </div>
+                    `;
           }
 
           container.innerHTML = htmlStr;
@@ -4972,14 +4978,14 @@
               let thumbHTML = "";
               if (c.thumbnail_url) {
                 thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')">
-                     <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
-                         <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                     </div>
-                </div>`;
+                           <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                               <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
+                           </div>
+                      </div>`;
               } else {
                 thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle}" onclick="openCoursePlayer('${c.id}')">
-                     <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                </div>`;
+                           <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
+                      </div>`;
               }
 
               let myEnrollment = enrollments.find(
@@ -4999,16 +5005,16 @@
               btnHTML += `<button class="btn btn-outline" style="width:100%; margin-top:10px;" onclick="openCoursePlayer('${c.id}')">View Details</button>`;
 
               return `
-                    <div class="std-course-card">
-                        ${thumbHTML}
-                        <div class="std-course-card-content">
-                            <h3 style="font-size:18px; font-weight:700; color:#0f172a; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                            <p style="font-size:14px; color:#64748b; margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p>
-                            ${c.description ? `<p style="font-size:13px; color:#64748b; margin-bottom:15px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" class="dm-desc">${c.description}</p>` : ""}
-                            <div style="margin-top:auto;">${btnHTML}</div>
-                        </div>
-                    </div>
-                `;
+                          <div class="std-course-card">
+                              ${thumbHTML}
+                              <div class="std-course-card-content">
+                                  <h3 style="font-size:18px; font-weight:700; color:#0f172a; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
+                                  <p style="font-size:14px; color:#64748b; margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p>
+                                  ${c.description ? `<p style="font-size:13px; color:#64748b; margin-bottom:15px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" class="dm-desc">${c.description}</p>` : ""}
+                                  <div style="margin-top:auto;">${btnHTML}</div>
+                              </div>
+                          </div>
+                      `;
             })
             .join("");
         } catch (e) {
@@ -5097,30 +5103,30 @@
               let thumbHTML = "";
               if (c.thumbnail_url) {
                 thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')">
-                     <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
-                         <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                     </div>
-                </div>`;
+                           <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                               <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
+                           </div>
+                      </div>`;
               } else {
                 thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')">
-                     <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                </div>`;
+                           <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
+                      </div>`;
               }
 
               return `
-                    <div class="std-course-card">
-                        ${thumbHTML}
-                        <div class="std-course-card-content">
-                            <h3 style="font-size:18px; font-weight:700; color:#0f172a; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                            <p style="font-size:14px; color:#64748b; margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p>
-                            <div class="progress-bar-bg" style="margin-top: auto;"><div class="progress-bar-fill" style="width:50%;"></div></div>
-                            <div style="display:flex; justify-content:space-between; color:#64748b; font-size:13px; font-weight:500;">
-                                <span class="dm-desc">50% Complete</span>
-                                <button class="btn btn-outline" style="padding: 4px 12px; font-size: 12px;" onclick="openCoursePlayer('${c.id}')">Continue</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                          <div class="std-course-card">
+                              ${thumbHTML}
+                              <div class="std-course-card-content">
+                                  <h3 style="font-size:18px; font-weight:700; color:#0f172a; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
+                                  <p style="font-size:14px; color:#64748b; margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p>
+                                  <div class="progress-bar-bg" style="margin-top: auto;"><div class="progress-bar-fill" style="width:50%;"></div></div>
+                                  <div style="display:flex; justify-content:space-between; color:#64748b; font-size:13px; font-weight:500;">
+                                      <span class="dm-desc">50% Complete</span>
+                                      <button class="btn btn-outline" style="padding: 4px 12px; font-size: 12px;" onclick="openCoursePlayer('${c.id}')">Continue</button>
+                                  </div>
+                              </div>
+                          </div>
+                      `;
             })
             .join("");
         } catch (e) {
@@ -5181,16 +5187,16 @@
           container.innerHTML = allPendingAssignments
             .map(
               (a) => `
-                <div class="due-assign-card" style="background:white; border-radius:16px; border:1px solid #fecaca; padding:20px; display:flex; flex-direction:column; gap:10px; border-left:4px solid #ef4444; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); width: 100%;">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
-                        <h4 class="dm-title" style="font-size:16px; font-weight:700; color:#0f172a; margin:0;">${a.title}</h4>
-                        <span style="background:#fef2f2; color:#ef4444; font-size:11px; font-weight:700; padding:4px 10px; border-radius:50px; border:1px solid #fca5a5;">Due: ${a.due_date}</span>
-                    </div>
-                    <p class="dm-desc" style="font-size:13px; color:#64748b; font-weight:600;">📚 ${a.course_title}</p>
-                    <p class="dm-desc" style="font-size:13px; color:#475569; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${a.description}</p>
-                    <button class="btn btn-outline" style="margin-top:auto; padding:6px 12px; font-size:13px; border-color:#cbd5e1; font-weight:700;" onclick="openCoursePlayer('${a.course_id}'); setTimeout(()=>switchCpTab('assignments'), 500);">Go to Assignment</button>
-                </div>
-            `,
+                      <div class="due-assign-card" style="background:white; border-radius:16px; border:1px solid #fecaca; padding:20px; display:flex; flex-direction:column; gap:10px; border-left:4px solid #ef4444; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); width: 100%;">
+                          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+                              <h4 class="dm-title" style="font-size:16px; font-weight:700; color:#0f172a; margin:0;">${a.title}</h4>
+                              <span style="background:#fef2f2; color:#ef4444; font-size:11px; font-weight:700; padding:4px 10px; border-radius:50px; border:1px solid #fca5a5;">Due: ${a.due_date}</span>
+                          </div>
+                          <p class="dm-desc" style="font-size:13px; color:#64748b; font-weight:600;">📚 ${a.course_title}</p>
+                          <p class="dm-desc" style="font-size:13px; color:#475569; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${a.description}</p>
+                          <button class="btn btn-outline" style="margin-top:auto; padding:6px 12px; font-size:13px; border-color:#cbd5e1; font-weight:700;" onclick="openCoursePlayer('${a.course_id}'); setTimeout(()=>switchCpTab('assignments'), 500);">Go to Assignment</button>
+                      </div>
+                  `,
             )
             .join("");
         } catch (e) {
@@ -5227,14 +5233,14 @@
               let thumbHTML = "";
               if (c.thumbnail_url) {
                 thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')">
-                     <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
-                         <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                     </div>
-                </div>`;
+                           <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                               <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
+                           </div>
+                      </div>`;
               } else {
                 thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')">
-                     <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                </div>`;
+                           <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
+                      </div>`;
               }
 
               let studentCount = enrollments.filter(
@@ -5246,18 +5252,18 @@
                   : `<span style="background: #fffbeb; color: #d97706; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #fde68a;">Pending</span>`;
 
               return `
-                  <div class="std-course-card">
-                      ${thumbHTML}
-                      <div class="std-course-card-content">
-                          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px;">
-                              <h3 style="font-size:18px; font-weight:700; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                              ${statusBadge}
-                          </div>
-                          <p style="font-size:14px; color:#2563eb; margin-bottom:10px; font-weight: 600;">Enrolled Students: <span style="background: #eff6ff; padding: 2px 8px; border-radius: 12px; color: #1e40af;">${studentCount}</span></p>
-                          <div style="margin-top:auto;"><button class="btn btn-outline" style="width:100%;" onclick="openCoursePlayer('${c.id}')" ${c.status !== "Approved" ? 'disabled title="Awaiting admin approval"' : ""}>View Details</button></div>
-                      </div>
-                  </div>
-               `;
+                        <div class="std-course-card">
+                            ${thumbHTML}
+                            <div class="std-course-card-content">
+                                <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px;">
+                                    <h3 style="font-size:18px; font-weight:700; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
+                                    ${statusBadge}
+                                </div>
+                                <p style="font-size:14px; color:#2563eb; margin-bottom:10px; font-weight: 600;">Enrolled Students: <span style="background: #eff6ff; padding: 2px 8px; border-radius: 12px; color: #1e40af;">${studentCount}</span></p>
+                                <div style="margin-top:auto;"><button class="btn btn-outline" style="width:100%;" onclick="openCoursePlayer('${c.id}')" ${c.status !== "Approved" ? 'disabled title="Awaiting admin approval"' : ""}>View Details</button></div>
+                            </div>
+                        </div>
+                     `;
             })
             .join("");
         } catch (e) {
@@ -5285,14 +5291,14 @@
           let time = 10 + i * 5 + " min";
 
           html += `
-              <div class="lesson-item ${stateClass}">
-                <div class="lesson-circle">${circleContent}</div>
-                <div>
-                  <div style="font-weight: 600; font-size: 15px; color: #0f172a;">${title}</div>
-                  <div style="font-size: 13px; color: #64748b; margin-top: 4px">${time}</div>
-                </div>
-              </div>
-            `;
+                    <div class="lesson-item ${stateClass}">
+                      <div class="lesson-circle">${circleContent}</div>
+                      <div>
+                        <div style="font-weight: 600; font-size: 15px; color: #0f172a;">${title}</div>
+                        <div style="font-size: 13px; color: #64748b; margin-top: 4px">${time}</div>
+                      </div>
+                    </div>
+                  `;
         }
         container.innerHTML = html;
       }
@@ -5341,19 +5347,19 @@
           const videoBox = document.querySelector(".cp-video-box");
           if (selectedCourse.video_url) {
             videoBox.innerHTML = `
-                  <video controls style="width:100%; height:100%; border-radius:16px; object-fit: cover; background:#000;">
-                      <source src="${selectedCourse.video_url}" type="video/mp4">
-                      Your browser does not support the video tag.
-                  </video>
-              `;
+                        <video controls style="width:100%; height:100%; border-radius:16px; object-fit: cover; background:#000;">
+                            <source src="${selectedCourse.video_url}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    `;
           } else {
             videoBox.innerHTML = `
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polygon points="10 8 16 12 10 16 10 8"></polygon>
-                  </svg>
-                  <p style="position:absolute; bottom:20px; color:#94a3b8; font-size: 13px;">No video uploaded</p>
-              `;
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                        </svg>
+                        <p style="position:absolute; bottom:20px; color:#94a3b8; font-size: 13px;">No video uploaded</p>
+                    `;
           }
 
           let hasAccess = false;
@@ -5463,13 +5469,13 @@
           }
 
           let htmlStr = `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-                <div>
-                    <h3 style="font-size: 18px; font-weight: 700; color: #0f172a;" class="dm-title">Enrolled Students (${enrolledStudents.length})</h3>
-                    <p style="font-size: 13px; color: #64748b;" class="dm-desc">Manage and track student progress</p>
-                </div>
-            </div>
-            <div style="display:flex; flex-direction:column; gap:10px;">`;
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                      <div>
+                          <h3 style="font-size: 18px; font-weight: 700; color: #0f172a;" class="dm-title">Enrolled Students (${enrolledStudents.length})</h3>
+                          <p style="font-size: 13px; color: #64748b;" class="dm-desc">Manage and track student progress</p>
+                      </div>
+                  </div>
+                  <div style="display:flex; flex-direction:column; gap:10px;">`;
 
           const banReqs = await safeFetchJSON(`${API_URL}/ban-requests`);
 
@@ -5495,46 +5501,46 @@
             const completedMock = Math.floor(Math.random() * 3) + 1;
 
             htmlStr += `
-                <div style="display:flex; align-items:center; justify-content:space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
-                  <div style="display: flex; align-items: center; gap: 15px; min-width: 250px;">
-                      <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0;">${st.student_name.charAt(0)}</div>
-                      <div>
-                          <div style="display: flex; align-items: center; gap: 8px;">
-                              <h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.student_name}</h4>
-                              <span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">active</span>
-                          </div>
-                          <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc">
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                              ${st.student_email}
-                          </div>
+                      <div style="display:flex; align-items:center; justify-content:space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
+                        <div style="display: flex; align-items: center; gap: 15px; min-width: 250px;">
+                            <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0;">${st.student_name.charAt(0)}</div>
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.student_name}</h4>
+                                    <span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">active</span>
+                                </div>
+                                <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                    ${st.student_email}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 30px; flex-wrap: wrap; flex: 1;">
+                            <div>
+                                <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Enrolled</div>
+                                <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">1</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg> Completed</div>
+                                <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${completedMock}</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> Progress</div>
+                                <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${progressMock}%</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                            <div style="text-align: right;">
+                                <div style="font-size: 11px; color: #94a3b8;">Enrolled on</div>
+                                <div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.date}</div>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                              <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px; white-space: nowrap;" onclick="alert('Student detail view coming soon!')">View Details</button>
+                              ${actionHtml}
+                            </div>
+                        </div>
                       </div>
-                  </div>
-                  <div style="display: flex; gap: 30px; flex-wrap: wrap; flex: 1;">
-                      <div>
-                          <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Enrolled</div>
-                          <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">1</div>
-                      </div>
-                      <div>
-                          <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg> Completed</div>
-                          <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${completedMock}</div>
-                      </div>
-                      <div>
-                          <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> Progress</div>
-                          <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${progressMock}%</div>
-                      </div>
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-                      <div style="text-align: right;">
-                          <div style="font-size: 11px; color: #94a3b8;">Enrolled on</div>
-                          <div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.date}</div>
-                      </div>
-                      <div style="display: flex; gap: 10px;">
-                        <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px; white-space: nowrap;" onclick="alert('Student detail view coming soon!')">View Details</button>
-                        ${actionHtml}
-                      </div>
-                  </div>
-                </div>
-              `;
+                    `;
           });
           htmlStr += `</div>`;
           container.innerHTML = htmlStr;
@@ -5581,23 +5587,23 @@
           let certificates = Math.floor(instGlobalStudents.length * 0.3);
 
           statsContainer.innerHTML = `
-                <div class="p-stat-card" style="border-left: 4px solid #3b82f6;">
-                  <div class="val" style="color: #0f172a; font-size: 28px;" class="dm-title">${instGlobalStudents.length}</div>
-                  <div class="desc">Total Students</div>
-                </div>
-                <div class="p-stat-card" style="border-left: 4px solid #10b981;">
-                  <div class="val" style="color: #0f172a; font-size: 28px;" class="dm-title">${activeThisWeek}</div>
-                  <div class="desc">Active This Week</div>
-                </div>
-                <div class="p-stat-card" style="border-left: 4px solid #f59e0b;">
-                  <div class="val" style="color: #0f172a; font-size: 28px;" class="dm-title">${avgCompletion}%</div>
-                  <div class="desc">Avg. Completion</div>
-                </div>
-                <div class="p-stat-card" style="border-left: 4px solid #8b5cf6;">
-                  <div class="val" style="color: #0f172a; font-size: 28px;" class="dm-title">${certificates}</div>
-                  <div class="desc">Certificates Issued</div>
-                </div>
-            `;
+                      <div class="p-stat-card" style="border-left: 4px solid #3b82f6;">
+                        <div class="val" style="color: #0f172a; font-size: 28px;" class="dm-title">${instGlobalStudents.length}</div>
+                        <div class="desc">Total Students</div>
+                      </div>
+                      <div class="p-stat-card" style="border-left: 4px solid #10b981;">
+                        <div class="val" style="color: #0f172a; font-size: 28px;" class="dm-title">${activeThisWeek}</div>
+                        <div class="desc">Active This Week</div>
+                      </div>
+                      <div class="p-stat-card" style="border-left: 4px solid #f59e0b;">
+                        <div class="val" style="color: #0f172a; font-size: 28px;" class="dm-title">${avgCompletion}%</div>
+                        <div class="desc">Avg. Completion</div>
+                      </div>
+                      <div class="p-stat-card" style="border-left: 4px solid #8b5cf6;">
+                        <div class="val" style="color: #0f172a; font-size: 28px;" class="dm-title">${certificates}</div>
+                        <div class="desc">Certificates Issued</div>
+                      </div>
+                  `;
 
           displayInstStudents(instGlobalStudents);
         } catch (e) {
@@ -5624,34 +5630,34 @@
             const progress = Math.floor(Math.random() * 50) + 50;
 
             return `
-                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
-                    <div style="display: flex; align-items: center; gap: 15px; min-width: 250px;">
-                        <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0;">${st.name.charAt(0)}</div>
-                        <div>
-                            <div style="display: flex; align-items: center; gap: 8px;"><h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.name}</h4>${statusBadge}</div>
-                            <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>${st.email}</div>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 30px; flex-wrap: wrap; flex: 1;">
-                        <div>
-                            <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Enrolled</div>
-                            <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${st.enrolledCount}</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg> Completed</div>
-                            <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${completedMock}</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> Progress</div>
-                            <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${progress}%</div>
-                        </div>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Last active</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.lastActive}</div></div>
-                        <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px;" onclick="alert('Detailed student view coming soon!')">View Details</button>
-                    </div>
-                 </div>
-              `;
+                       <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
+                          <div style="display: flex; align-items: center; gap: 15px; min-width: 250px;">
+                              <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0;">${st.name.charAt(0)}</div>
+                              <div>
+                                  <div style="display: flex; align-items: center; gap: 8px;"><h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.name}</h4>${statusBadge}</div>
+                                  <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>${st.email}</div>
+                              </div>
+                          </div>
+                          <div style="display: flex; gap: 30px; flex-wrap: wrap; flex: 1;">
+                              <div>
+                                  <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Enrolled</div>
+                                  <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${st.enrolledCount}</div>
+                              </div>
+                              <div>
+                                  <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg> Completed</div>
+                                  <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${completedMock}</div>
+                              </div>
+                              <div>
+                                  <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> Progress</div>
+                                  <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${progress}%</div>
+                              </div>
+                          </div>
+                          <div style="display: flex; align-items: center; gap: 20px;">
+                              <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Last active</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.lastActive}</div></div>
+                              <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px;" onclick="alert('Detailed student view coming soon!')">View Details</button>
+                          </div>
+                       </div>
+                    `;
           })
           .join("");
 
@@ -5740,17 +5746,17 @@
           let htmlStr = `<h3 style="color:#e11d48; margin-bottom:15px; font-weight:800; font-size:20px;">⚠️ Pending Ban Requests</h3><div style="display:flex; flex-direction:column; gap:15px; margin-bottom:30px;">`;
           banReqs.forEach((req) => {
             htmlStr += `
-                    <div style="background:#fff1f2; border:1px solid #fecaca; padding:20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
-                       <div style="width: 100%;">
-                          <div style="font-weight:700; color:#be123c; font-size:16px; word-break: break-word;">Ban Request for: ${req.student_name} <span style="font-size:13px; font-weight:500;">(${req.student_email})</span></div>
-                          <div style="font-size:13px; color:#881337; margin-top:5px; font-weight:600; word-break: break-word;">Requested by: Instructor ${req.inst_name} | Course: ${req.course_title}</div>
-                       </div>
-                       <div style="display:flex; gap:10px; width: 100%;">
-                          <button class="btn btn-primary" style="background:#e11d48; flex:1;" onclick="processBanRequest(${req.id}, 'Approved', '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}', '${req.course_id}')">Approve & Remove</button>
-                          <button class="btn btn-outline" style="border-color:#fca5a5; color:#be123c; background:white; flex:1;" onclick="processBanRequest(${req.id}, 'Rejected', '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}', '${req.course_id}')">Reject</button>
-                       </div>
-                    </div>
-                 `;
+                          <div style="background:#fff1f2; border:1px solid #fecaca; padding:20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
+                             <div style="width: 100%;">
+                                <div style="font-weight:700; color:#be123c; font-size:16px; word-break: break-word;">Ban Request for: ${req.student_name} <span style="font-size:13px; font-weight:500;">(${req.student_email})</span></div>
+                                <div style="font-size:13px; color:#881337; margin-top:5px; font-weight:600; word-break: break-word;">Requested by: Instructor ${req.inst_name} | Course: ${req.course_title}</div>
+                             </div>
+                             <div style="display:flex; gap:10px; width: 100%;">
+                                <button class="btn btn-primary" style="background:#e11d48; flex:1;" onclick="processBanRequest(${req.id}, 'Approved', '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}', '${req.course_id}')">Approve & Remove</button>
+                                <button class="btn btn-outline" style="border-color:#fca5a5; color:#be123c; background:white; flex:1;" onclick="processBanRequest(${req.id}, 'Rejected', '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}', '${req.course_id}')">Reject</button>
+                             </div>
+                          </div>
+                       `;
           });
           htmlStr += `</div><hr style="border:0; border-top:1px solid #e2e8f0; margin-bottom:30px;">`;
           container.innerHTML = htmlStr;
@@ -5807,32 +5813,32 @@
 
         if (currentUser.role === "instructor") {
           html += `
-            <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
-              <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Create New Assignment</h3>
-              <div style="display:flex; flex-direction:column; gap:12px;">
-                 <input type="text" id="assign-title" placeholder="Assignment Title" style="padding:10px 15px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif;">
-                 <textarea id="assign-desc" placeholder="Assignment Instructions..." style="padding:10px 15px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; min-height:80px; resize:vertical;"></textarea>
-                 <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                    <label style="font-weight:600; font-size:14px; color:#334155;" class="dm-text">Due Date:</label>
-                    <input type="date" id="assign-due" style="padding:8px 12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; flex:1;">
-                 </div>
-                 <button class="btn btn-primary" onclick="createAssignment()" style="margin-top:5px; width: 100%;">Upload Assignment</button>
-              </div>
-            </div>
-            <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Uploaded Assignments</h3>
-            <div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>
-          `;
+                  <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
+                    <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Create New Assignment</h3>
+                    <div style="display:flex; flex-direction:column; gap:12px;">
+                       <input type="text" id="assign-title" placeholder="Assignment Title" style="padding:10px 15px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif;">
+                       <textarea id="assign-desc" placeholder="Assignment Instructions..." style="padding:10px 15px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; min-height:80px; resize:vertical;"></textarea>
+                       <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                          <label style="font-weight:600; font-size:14px; color:#334155;" class="dm-text">Due Date:</label>
+                          <input type="date" id="assign-due" style="padding:8px 12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; flex:1;">
+                       </div>
+                       <button class="btn btn-primary" onclick="createAssignment()" style="margin-top:5px; width: 100%;">Upload Assignment</button>
+                    </div>
+                  </div>
+                  <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Uploaded Assignments</h3>
+                  <div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>
+                `;
         } else if (currentUser.role === "student") {
           html += `
-            <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Course Assignments</h3>
-            <p style="color:#64748b; font-size:14px; margin-bottom:20px;" class="dm-desc">Complete and submit the assignments below.</p>
-            <div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>
-          `;
+                  <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Course Assignments</h3>
+                  <p style="color:#64748b; font-size:14px; margin-bottom:20px;" class="dm-desc">Complete and submit the assignments below.</p>
+                  <div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>
+                `;
         } else if (currentUser.role === "admin") {
           html += `
-            <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">All Assignments</h3>
-            <div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>
-          `;
+                  <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">All Assignments</h3>
+                  <div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>
+                `;
         }
 
         container.innerHTML = html;
@@ -5922,28 +5928,28 @@
               let studentGradeHtml = "";
               if (mySub && mySub.marks !== null && mySub.marks !== undefined) {
                 studentGradeHtml = `
-                     <div style="margin-top:10px; background:#f0fdf4; padding:8px; border-radius:6px; border:1px solid #bbf7d0;">
-                       <div style="color:#16a34a; font-weight:700; font-size:13px;">Graded: ${mySub.marks}/10</div>
-                       ${mySub.instructor_comment ? `<div style="color:#065f46; font-size:12px; margin-top:4px;">Instructor Comment: ${mySub.instructor_comment}</div>` : ""}
-                     </div>
-                   `;
+                           <div style="margin-top:10px; background:#f0fdf4; padding:8px; border-radius:6px; border:1px solid #bbf7d0;">
+                             <div style="color:#16a34a; font-weight:700; font-size:13px;">Graded: ${mySub.marks}/10</div>
+                             ${mySub.instructor_comment ? `<div style="color:#065f46; font-size:12px; margin-top:4px;">Instructor Comment: ${mySub.instructor_comment}</div>` : ""}
+                           </div>
+                         `;
               }
 
               if (mySub) {
                 studentActionHtml = `
-                       <div style="margin-top:15px; padding:10px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;">
-                          <b style="color:#059669; font-size:13px;">✅ Submitted on ${mySub.date}</b>
-                          <p style="font-size:13px; color:#065f46; margin-top:5px; word-break:break-all;">${mySub.submission_text}</p>
-                          ${studentGradeHtml}
-                       </div>
-                     `;
+                             <div style="margin-top:15px; padding:10px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;">
+                                <b style="color:#059669; font-size:13px;">✅ Submitted on ${mySub.date}</b>
+                                <p style="font-size:13px; color:#065f46; margin-top:5px; word-break:break-all;">${mySub.submission_text}</p>
+                                ${studentGradeHtml}
+                             </div>
+                           `;
               } else {
                 studentActionHtml = `
-                       <div style="margin-top:15px; display:flex; flex-direction:column; align-items:flex-start; width: 100%;">
-                          <textarea id="sub-input-${a.id}" placeholder="Type your answer or paste Google Drive link here..." style="width:100%; min-height:80px; padding:10px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; resize:vertical; box-sizing: border-box;" class="submission-box"></textarea>
-                          <button class="btn btn-primary" style="margin-top:8px; padding:8px 16px; font-size:13px; width: 100%;" onclick="submitAssignment(${a.id})">Submit Assignment</button>
-                       </div>
-                     `;
+                             <div style="margin-top:15px; display:flex; flex-direction:column; align-items:flex-start; width: 100%;">
+                                <textarea id="sub-input-${a.id}" placeholder="Type your answer or paste Google Drive link here..." style="width:100%; min-height:80px; padding:10px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; resize:vertical; box-sizing: border-box;" class="submission-box"></textarea>
+                                <button class="btn btn-primary" style="margin-top:8px; padding:8px 16px; font-size:13px; width: 100%;" onclick="submitAssignment(${a.id})">Submit Assignment</button>
+                             </div>
+                           `;
               }
             } else if (
               currentUser.role === "instructor" ||
@@ -5953,80 +5959,85 @@
                 (s) => s.assignment_id === a.id,
               );
               studentActionHtml = `
-                    <div style="margin-top:15px; padding-top:15px; border-top:1px solid #e2e8f0;">
-                       <b style="font-size:13px; color:#0f172a;" class="dm-title">Submissions (${assignSubs.length})</b>
-                       <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
-                          ${assignSubs
-                            .map((s) => {
-                              let gradeHtml = "";
-                              if (currentUser.role === "instructor") {
-                                let currentMarks =
-                                  s.marks !== null && s.marks !== undefined
-                                    ? s.marks
-                                    : "";
-                                let currentComment = s.instructor_comment
-                                  ? s.instructor_comment
-                                  : "";
-                                let isGraded =
-                                  s.marks !== null && s.marks !== undefined;
-                                let btnText = isGraded
-                                  ? "Update Grade"
-                                  : "Submit Grade";
-                                let statusBadge = isGraded
-                                  ? `<span style="color:#059669; font-weight:bold; font-size:12px; margin-bottom:4px; display:inline-block;">✅ Already Graded (${s.marks}/10)</span>`
-                                  : "";
+                          <div style="margin-top:15px; padding-top:15px; border-top:1px solid #e2e8f0;">
+                             <b style="font-size:13px; color:#0f172a;" class="dm-title">Submissions (${assignSubs.length})</b>
+                             <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+                                ${assignSubs
+                                  .map((s) => {
+                                    let gradeHtml = "";
+                                    if (currentUser.role === "instructor") {
+                                      let currentMarks =
+                                        s.marks !== null &&
+                                        s.marks !== undefined
+                                          ? s.marks
+                                          : "";
+                                      let currentComment = s.instructor_comment
+                                        ? s.instructor_comment
+                                        : "";
+                                      let isGraded =
+                                        s.marks !== null &&
+                                        s.marks !== undefined;
+                                      let btnText = isGraded
+                                        ? "Update Grade"
+                                        : "Submit Grade";
+                                      let statusBadge = isGraded
+                                        ? `<span style="color:#059669; font-weight:bold; font-size:12px; margin-bottom:4px; display:inline-block;">✅ Already Graded (${s.marks}/10)</span>`
+                                        : "";
 
-                                gradeHtml = `
-                                   <div style="margin-top:10px; display:flex; flex-direction:column; gap:6px; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
-                                     ${statusBadge}
-                                     <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                                       <input type="number" id="grade-marks-${s.id}" placeholder="Marks (0-10)" min="0" max="10" value="${currentMarks}" style="padding:6px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px; width:120px;">
-                                       <input type="text" id="grade-comment-${s.id}" placeholder="Instructor comment..." value="${currentComment}" style="padding:6px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px; flex:1; min-width:150px;">
-                                     </div>
-                                     <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; align-self:flex-start; margin-top:4px;" onclick="gradeSubmission(${s.id}, '${s.student_email}', ${isGraded})">${btnText}</button>
+                                      gradeHtml = `
+                                         <div style="margin-top:10px; display:flex; flex-direction:column; gap:6px; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                                           ${statusBadge}
+                                           <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                                             <input type="number" id="grade-marks-${s.id}" placeholder="Marks (0-10)" min="0" max="10" value="${currentMarks}" style="padding:6px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px; width:120px;">
+                                             <input type="text" id="grade-comment-${s.id}" placeholder="Instructor comment..." value="${currentComment}" style="padding:6px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px; flex:1; min-width:150px;">
+                                           </div>
+                                           <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; align-self:flex-start; margin-top:4px;" onclick="gradeSubmission(${s.id}, '${s.student_email}', ${isGraded})">${btnText}</button>
+                                         </div>
+                                       `;
+                                    } else {
+                                      if (
+                                        s.marks !== null &&
+                                        s.marks !== undefined
+                                      ) {
+                                        gradeHtml = `
+                                             <div style="margin-top:10px; background:#f0fdf4; padding:8px; border-radius:6px; border:1px solid #bbf7d0;">
+                                               <div style="color:#16a34a; font-weight:700; font-size:13px;">Marks: ${s.marks}/10</div>
+                                               ${s.instructor_comment ? `<div style="color:#065f46; font-size:12px; margin-top:4px;">Comment: ${s.instructor_comment}</div>` : ""}
+                                             </div>
+                                           `;
+                                      } else {
+                                        gradeHtml = `<div style="margin-top:10px; color:#d97706; font-size:12px; font-weight:600;">Not graded yet</div>`;
+                                      }
+                                    }
+
+                                    return `
+                                   <div style="background:#f1f5f9; padding:10px; border-radius:8px; word-wrap: break-word;">
+                                      <div style="display:flex; justify-content:space-between; margin-bottom:4px; flex-wrap: wrap;">
+                                        <span style="font-size:13px; font-weight:700; color:#334155;">${s.student_name}</span>
+                                        <span style="font-size:11px; color:#64748b;">${s.date}</span>
+                                      </div>
+                                      <div style="font-size:13px; color:#475569; word-break:break-all;">${s.submission_text}</div>
+                                      ${gradeHtml}
                                    </div>
-                                 `;
-                              } else {
-                                if (s.marks !== null && s.marks !== undefined) {
-                                  gradeHtml = `
-                                       <div style="margin-top:10px; background:#f0fdf4; padding:8px; border-radius:6px; border:1px solid #bbf7d0;">
-                                         <div style="color:#16a34a; font-weight:700; font-size:13px;">Marks: ${s.marks}/10</div>
-                                         ${s.instructor_comment ? `<div style="color:#065f46; font-size:12px; margin-top:4px;">Comment: ${s.instructor_comment}</div>` : ""}
-                                       </div>
-                                     `;
-                                } else {
-                                  gradeHtml = `<div style="margin-top:10px; color:#d97706; font-size:12px; font-weight:600;">Not graded yet</div>`;
-                                }
-                              }
-
-                              return `
-                             <div style="background:#f1f5f9; padding:10px; border-radius:8px; word-wrap: break-word;">
-                                <div style="display:flex; justify-content:space-between; margin-bottom:4px; flex-wrap: wrap;">
-                                  <span style="font-size:13px; font-weight:700; color:#334155;">${s.student_name}</span>
-                                  <span style="font-size:11px; color:#64748b;">${s.date}</span>
-                                </div>
-                                <div style="font-size:13px; color:#475569; word-break:break-all;">${s.submission_text}</div>
-                                ${gradeHtml}
+                                   `;
+                                  })
+                                  .join("")}
+                                ${assignSubs.length === 0 ? '<div style="font-size:13px; color:#64748b;">No submissions yet.</div>' : ""}
                              </div>
-                             `;
-                            })
-                            .join("")}
-                          ${assignSubs.length === 0 ? '<div style="font-size:13px; color:#64748b;">No submissions yet.</div>' : ""}
-                       </div>
-                    </div>
-                 `;
+                          </div>
+                       `;
             }
 
             htmlStr += `
-                <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:20px;" class="assignment-card">
-                   <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px; flex-wrap: wrap; gap: 10px;">
-                      <h4 style="font-size:16px; font-weight:800; color:#0f172a; margin:0;" class="dm-title">📝 ${a.title}</h4>
-                      <span style="background:#fef2f2; color:#ef4444; border:1px solid #fca5a5; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;">Due: ${a.due_date}</span>
-                   </div>
-                   <p style="font-size:14px; color:#475569; line-height:1.5; word-wrap: break-word;" class="dm-desc">${a.description}</p>
-                   ${studentActionHtml}
-                </div>
-             `;
+                      <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:20px;" class="assignment-card">
+                         <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px; flex-wrap: wrap; gap: 10px;">
+                            <h4 style="font-size:16px; font-weight:800; color:#0f172a; margin:0;" class="dm-title">📝 ${a.title}</h4>
+                            <span style="background:#fef2f2; color:#ef4444; border:1px solid #fca5a5; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;">Due: ${a.due_date}</span>
+                         </div>
+                         <p style="font-size:14px; color:#475569; line-height:1.5; word-wrap: break-word;" class="dm-desc">${a.description}</p>
+                         ${studentActionHtml}
+                      </div>
+                   `;
           });
 
           container.innerHTML = htmlStr;
@@ -6140,52 +6151,52 @@
 
         if (currentUser.role === "student") {
           html += `
-                  <h3 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 10px;" class="dm-title">Course Feedback</h3>
-                  <div style="display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
-                      <select id="cp-feedback-rating" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; background:#f8fafc; font-weight:600; color:#334155; width: 100%;">
-                          <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
-                          <option value="4">⭐⭐⭐⭐ (4/5)</option>
-                          <option value="3">⭐⭐⭐ (3/5)</option>
-                          <option value="2">⭐⭐ (2/5)</option>
-                          <option value="1">⭐ (1/5)</option>
-                      </select>
-                  </div>
-                  <textarea id="cp-feedback-input" placeholder="Share your thoughts about this course..." style="width: 100%; box-sizing: border-box; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 10px; background: #f8fafc; resize: vertical; font-family: 'Inter', sans-serif;"></textarea>
-                  <button class="btn btn-primary" onclick="submitCourseFeedback()" style="margin-bottom: 25px; background: #2563eb; color: white; width: 100%;">Submit Feedback</button>
+                        <h3 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 10px;" class="dm-title">Course Feedback</h3>
+                        <div style="display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
+                            <select id="cp-feedback-rating" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; background:#f8fafc; font-weight:600; color:#334155; width: 100%;">
+                                <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                                <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                                <option value="3">⭐⭐⭐ (3/5)</option>
+                                <option value="2">⭐⭐ (2/5)</option>
+                                <option value="1">⭐ (1/5)</option>
+                            </select>
+                        </div>
+                        <textarea id="cp-feedback-input" placeholder="Share your thoughts about this course..." style="width: 100%; box-sizing: border-box; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 10px; background: #f8fafc; resize: vertical; font-family: 'Inter', sans-serif;"></textarea>
+                        <button class="btn btn-primary" onclick="submitCourseFeedback()" style="margin-bottom: 25px; background: #2563eb; color: white; width: 100%;">Submit Feedback</button>
 
-                  <hr style="border:0; border-top: 1px solid #e2e8f0; margin-bottom: 25px;">
+                        <hr style="border:0; border-top: 1px solid #e2e8f0; margin-bottom: 25px;">
 
-                  <h3 style="font-size: 16px; font-weight: 700; color: #e11d48; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                      Course Complaint
-                  </h3>
-                  <textarea id="cp-complaint-input" placeholder="Describe any issues or concerns with the course..." style="width: 100%; box-sizing: border-box; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 10px; background: #f8fafc; resize: vertical; font-family: 'Inter', sans-serif;"></textarea>
-                  <button class="btn" onclick="submitCourseComplaint()" style="background: #e11d48; color: white; width: 100%;">Submit Complaint</button>
-              `;
+                        <h3 style="font-size: 16px; font-weight: 700; color: #e11d48; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            Course Complaint
+                        </h3>
+                        <textarea id="cp-complaint-input" placeholder="Describe any issues or concerns with the course..." style="width: 100%; box-sizing: border-box; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 10px; background: #f8fafc; resize: vertical; font-family: 'Inter', sans-serif;"></textarea>
+                        <button class="btn" onclick="submitCourseComplaint()" style="background: #e11d48; color: white; width: 100%;">Submit Complaint</button>
+                    `;
         } else if (currentUser.role === "instructor") {
           html += `
-                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
-                      <h3 style="font-size: 18px; font-weight: 800; color: #0f172a;" class="dm-title">Overall Course Feedback</h3>
-                      <div id="cp-avg-rating-badge" style="background:#fef3c7; color:#d97706; padding:6px 16px; border-radius:50px; font-weight:800; border:1px solid #fde68a;">Average Rating: ...</div>
-                  </div>
-                  <hr style="border:0; border-top: 1px solid #e2e8f0; margin-bottom: 25px;">
-                  <h3 style="font-size: 16px; font-weight: 700; color: #e11d48; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                      Complain against a Student
-                  </h3>
-                  <textarea id="cp-complaint-input" placeholder="Mention the student's name/email and describe the issue..." style="width: 100%; box-sizing: border-box; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 10px; background: #f8fafc; resize: vertical; font-family: 'Inter', sans-serif;"></textarea>
-                  <button class="btn" onclick="submitCourseComplaint()" style="background: #e11d48; color: white; width: 100%;">Send to Admin</button>
-              `;
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+                            <h3 style="font-size: 18px; font-weight: 800; color: #0f172a;" class="dm-title">Overall Course Feedback</h3>
+                            <div id="cp-avg-rating-badge" style="background:#fef3c7; color:#d97706; padding:6px 16px; border-radius:50px; font-weight:800; border:1px solid #fde68a;">Average Rating: ...</div>
+                        </div>
+                        <hr style="border:0; border-top: 1px solid #e2e8f0; margin-bottom: 25px;">
+                        <h3 style="font-size: 16px; font-weight: 700; color: #e11d48; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            Complain against a Student
+                        </h3>
+                        <textarea id="cp-complaint-input" placeholder="Mention the student's name/email and describe the issue..." style="width: 100%; box-sizing: border-box; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 10px; background: #f8fafc; resize: vertical; font-family: 'Inter', sans-serif;"></textarea>
+                        <button class="btn" onclick="submitCourseComplaint()" style="background: #e11d48; color: white; width: 100%;">Send to Admin</button>
+                    `;
         } else if (currentUser.role === "admin") {
           html += `
-                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
-                      <h3 style="font-size: 18px; font-weight: 800; color: #0f172a;" class="dm-title">Overall Course Feedback</h3>
-                      <div id="cp-avg-rating-badge" style="background:#fef3c7; color:#d97706; padding:6px 16px; border-radius:50px; font-weight:800; border:1px solid #fde68a;">Average Rating: ...</div>
-                  </div>
-                  <hr style="border:0; border-top: 1px solid #e2e8f0; margin-bottom: 25px;">
-                  <h3 style="font-size: 18px; font-weight: 800; color: #e11d48; margin-bottom: 15px;" class="dm-title">Course Complaints</h3>
-                  <div id="cp-complaint-list" style="margin-bottom: 30px; display: flex; flex-direction: column; gap: 15px; max-height:250px; overflow-y:auto; padding-right:5px;"></div>
-              `;
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+                            <h3 style="font-size: 18px; font-weight: 800; color: #0f172a;" class="dm-title">Overall Course Feedback</h3>
+                            <div id="cp-avg-rating-badge" style="background:#fef3c7; color:#d97706; padding:6px 16px; border-radius:50px; font-weight:800; border:1px solid #fde68a;">Average Rating: ...</div>
+                        </div>
+                        <hr style="border:0; border-top: 1px solid #e2e8f0; margin-bottom: 25px;">
+                        <h3 style="font-size: 18px; font-weight: 800; color: #e11d48; margin-bottom: 15px;" class="dm-title">Course Complaints</h3>
+                        <div id="cp-complaint-list" style="margin-bottom: 30px; display: flex; flex-direction: column; gap: 15px; max-height:250px; overflow-y:auto; padding-right:5px;"></div>
+                    `;
         }
 
         html += `<div id="cp-feedback-list" style="margin-top: 30px; display: flex; flex-direction: column; gap: 15px;"></div>`;
@@ -6220,15 +6231,15 @@
             totalRating += ratingVal;
             let stars = "⭐".repeat(ratingVal);
             htmlStr += `
-                      <div style="background:white; padding:15px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:10px; word-wrap: break-word;" class="fb-item-card">
-                          <div style="display:flex; justify-content:space-between; margin-bottom:5px; flex-wrap: wrap;">
-                              <b style="color:#0f172a;" class="dm-title">${fb.user_name}</b>
-                              <span style="font-size:12px; color:#64748b;">${fb.date}</span>
-                          </div>
-                          <div style="font-size:14px; margin-bottom:8px;">${stars}</div>
-                          <div style="color:#334155; font-size:14px;" class="dm-desc">${fb.comment}</div>
-                      </div>
-                  `;
+                            <div style="background:white; padding:15px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:10px; word-wrap: break-word;" class="fb-item-card">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:5px; flex-wrap: wrap;">
+                                    <b style="color:#0f172a;" class="dm-title">${fb.user_name}</b>
+                                    <span style="font-size:12px; color:#64748b;">${fb.date}</span>
+                                </div>
+                                <div style="font-size:14px; margin-bottom:8px;">${stars}</div>
+                                <div style="color:#334155; font-size:14px;" class="dm-desc">${fb.comment}</div>
+                            </div>
+                        `;
           });
           container.innerHTML = htmlStr;
 
@@ -6260,14 +6271,14 @@
           let htmlStr = "";
           complaints.forEach((cp) => {
             htmlStr += `
-                      <div style="background:#fff1f2; padding:15px; border-radius:12px; border:1px solid #fecdd3; margin-bottom:10px; word-wrap: break-word;">
-                          <div style="display:flex; justify-content:space-between; margin-bottom:8px; flex-wrap: wrap;">
-                              <b style="color:#be123c;">From: ${cp.user_name} <br> <span style="font-size: 11px;">(${cp.user_email})</span></b>
-                              <span style="font-size:12px; color:#9f1239; font-weight:600;">${cp.date}</span>
-                          </div>
-                          <div style="color:#881337; font-size:14px;">${cp.complaint_text}</div>
-                      </div>
-                  `;
+                            <div style="background:#fff1f2; padding:15px; border-radius:12px; border:1px solid #fecdd3; margin-bottom:10px; word-wrap: break-word;">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:8px; flex-wrap: wrap;">
+                                    <b style="color:#be123c;">From: ${cp.user_name} <br> <span style="font-size: 11px;">(${cp.user_email})</span></b>
+                                    <span style="font-size:12px; color:#9f1239; font-weight:600;">${cp.date}</span>
+                                </div>
+                                <div style="color:#881337; font-size:14px;">${cp.complaint_text}</div>
+                            </div>
+                        `;
           });
           container.innerHTML = htmlStr;
         } catch (e) {
@@ -6437,12 +6448,12 @@
           }
 
           htmlStr += `
-                  <div class="chat-msg ${isSelf ? "self" : "other"}">
-                      <div class="chat-name">${isSelf ? "You" : msg.user_name}</div>
-                      <div>${msg.message}</div>
-                      <div class="chat-time">${timePart}</div>
-                  </div>
-              `;
+                        <div class="chat-msg ${isSelf ? "self" : "other"}">
+                            <div class="chat-name">${isSelf ? "You" : msg.user_name}</div>
+                            <div>${msg.message}</div>
+                            <div class="chat-time">${timePart}</div>
+                        </div>
+                    `;
         });
 
         container.innerHTML = htmlStr;
@@ -6528,10 +6539,10 @@
             const user = data.user;
             if (user.role !== "admin" && user.status === "Pending") {
               errorDiv.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                  <span style="font-size:16px;"><b>Pending Approval</b></span>
-                  <span style="font-size:13px;">The administrator has not yet approved your account. Please wait for approval.</span>
-              </div>`;
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <span style="font-size:16px;"><b>Pending Approval</b></span>
+                        <span style="font-size:13px;">The administrator has not yet approved your account. Please wait for approval.</span>
+                    </div>`;
               errorDiv.style.backgroundColor = "#fffbeb";
               errorDiv.style.color = "#d97706";
               errorDiv.style.border = "1px solid #fde68a";
@@ -6540,10 +6551,10 @@
             }
             if (user.status === "Banned") {
               errorDiv.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                  <span style="font-size:16px;"><b>Account Suspended</b></span>
-                  <span style="font-size:13px;">Your account has been suspended by the administrator.</span>
-              </div>`;
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                        <span style="font-size:16px;"><b>Account Suspended</b></span>
+                        <span style="font-size:13px;">Your account has been suspended by the administrator.</span>
+                    </div>`;
               errorDiv.style.backgroundColor = "#fef2f2";
               errorDiv.style.color = "#ef4444";
               errorDiv.style.border = "1px solid #fca5a5";
