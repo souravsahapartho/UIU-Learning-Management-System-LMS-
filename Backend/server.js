@@ -2,6 +2,11 @@ const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 const crypto = require("crypto");
+const multer = require("multer");
+const { v2: cloudinary } = require("cloudinary");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+
+require("dotenv").config();
 
 const app = express();
 
@@ -26,8 +31,37 @@ const hashPassword = (password) => {
   return crypto.createHash("sha256").update(String(password)).digest("hex");
 };
 
-require("dotenv").config();
+// --- CLOUDINARY CONFIGURATION ---
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
+// --- MULTER STORAGE SETUP ---
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: async (req, file) => {
+    // Video asle course_videos folder e, image asle course_images folder e jabe
+    if (file.mimetype.includes("video")) {
+      return {
+        folder: "elms/course_videos",
+        resource_type: "video",
+        allowed_formats: ["mp4", "webm", "mov", "mkv"],
+      };
+    } else {
+      return {
+        folder: "elms/course_images",
+        resource_type: "image",
+        allowed_formats: ["jpg", "png", "jpeg", "webp"],
+      };
+    }
+  },
+});
+
+const upload = multer({ storage: storage });
+
+// --- DATABASE CONNECTION ---
 const db = mysql.createPool({
   host: process.env.MYSQLHOST,
   user: process.env.MYSQLUSER,
@@ -57,9 +91,20 @@ db.getConnection((err, connection) => {
       CREATE TABLE IF NOT EXISTS courses (
         id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), description TEXT,
         category VARCHAR(100), difficulty VARCHAR(50), instructor_email VARCHAR(100),
-        instructor_name VARCHAR(100), total_lessons INT DEFAULT 4, status VARCHAR(50) DEFAULT 'Pending'
+        instructor_name VARCHAR(100), total_lessons INT DEFAULT 4, status VARCHAR(50) DEFAULT 'Pending',
+        thumbnail_url VARCHAR(500) DEFAULT NULL, video_url VARCHAR(500) DEFAULT NULL
       )
     `);
+
+    // Safely add new columns to existing courses table if they don't exist
+    connection.query(
+      "ALTER TABLE courses ADD COLUMN thumbnail_url VARCHAR(500) DEFAULT NULL",
+      () => {},
+    );
+    connection.query(
+      "ALTER TABLE courses ADD COLUMN video_url VARCHAR(500) DEFAULT NULL",
+      () => {},
+    );
 
     connection.query(`
       CREATE TABLE IF NOT EXISTS course_chats (
@@ -209,7 +254,6 @@ app.put("/update-profile", async (req, res) => {
   }
 });
 
-// 🔥 NEW API: Update Password 🔥
 app.put("/update-password", (req, res) => {
   const { email, oldPassword, newPassword } = req.body;
   const oldEncrypted = hashPassword(oldPassword || "");
@@ -267,34 +311,59 @@ app.put("/update-user-status", (req, res) => {
   );
 });
 
-// --- COURSE APIs ---
-app.post("/upload-course", (req, res) => {
-  const {
-    title,
-    description,
-    category,
-    difficulty,
-    instructorEmail,
-    instructorName,
-    total_lessons,
-  } = req.body;
-  db.query(
-    "INSERT INTO courses (title, description, category, difficulty, instructor_email, instructor_name, total_lessons, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending')",
-    [
+// --- COURSE APIs WITH CLOUDINARY UPLOAD ---
+app.post(
+  "/upload-course",
+  upload.fields([
+    { name: "thumbnail", maxCount: 1 },
+    { name: "video", maxCount: 1 },
+  ]),
+  (req, res) => {
+    const {
       title,
       description,
       category,
       difficulty,
       instructorEmail,
       instructorName,
-      total_lessons || 4,
-    ],
-    (err) =>
-      err
-        ? res.status(500).json({ error: err.message })
-        : res.status(200).json({ message: "Saved" }),
-  );
-});
+      total_lessons,
+    } = req.body;
+
+    const thumbnailUrl =
+      req.files && req.files["thumbnail"]
+        ? req.files["thumbnail"][0].path
+        : null;
+    const videoUrl =
+      req.files && req.files["video"] ? req.files["video"][0].path : null;
+
+    db.query(
+      `INSERT INTO courses (
+      title, description, category, difficulty, instructor_email, instructor_name, total_lessons, status, thumbnail_url, video_url
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending', ?, ?)`,
+      [
+        title,
+        description,
+        category,
+        difficulty,
+        instructorEmail,
+        instructorName,
+        total_lessons || 4,
+        thumbnailUrl,
+        videoUrl,
+      ],
+      (err) =>
+        err
+          ? res.status(500).json({ error: err.message })
+          : res
+              .status(200)
+              .json({
+                message: "Saved successfully with media",
+                thumbnail: thumbnailUrl,
+                video: videoUrl,
+              }),
+    );
+  },
+);
 
 app.get("/courses", (req, res) => {
   db.query("SELECT * FROM courses ORDER BY id DESC", (err, data) =>
@@ -322,6 +391,7 @@ app.get("/enrollments", (req, res) => {
     res.status(200).json(data);
   });
 });
+
 app.post("/enrollments", (req, res) => {
   const {
     course_id,
@@ -347,6 +417,7 @@ app.post("/enrollments", (req, res) => {
     },
   );
 });
+
 app.put("/enrollments/status", (req, res) => {
   db.query(
     "UPDATE enrollments SET status = ? WHERE id = ?",
@@ -357,6 +428,7 @@ app.put("/enrollments/status", (req, res) => {
         : res.status(200).json({ message: "Status updated" }),
   );
 });
+
 app.delete("/enrollments/:id", (req, res) => {
   db.query("DELETE FROM enrollments WHERE id = ?", [req.params.id], (err) =>
     err
@@ -376,6 +448,7 @@ app.get("/course-chats/:courseId", (req, res) => {
         : res.status(200).json(data),
   );
 });
+
 app.post("/course-chats", (req, res) => {
   const { course_id, course_name, user_name, user_email, message, time } =
     req.body;
@@ -409,6 +482,7 @@ app.get("/course-feedbacks/:courseId", (req, res) => {
         : res.status(200).json(data),
   );
 });
+
 app.post("/course-feedbacks", (req, res) => {
   const {
     course_id,
@@ -436,6 +510,7 @@ app.post("/course-feedbacks", (req, res) => {
         : res.status(200).json({ message: "Feedback submitted!" }),
   );
 });
+
 app.get("/all-complaints", (req, res) => {
   db.query("SELECT * FROM complaints ORDER BY id DESC", (err, data) =>
     err
@@ -443,6 +518,7 @@ app.get("/all-complaints", (req, res) => {
       : res.status(200).json(data),
   );
 });
+
 app.get("/course-complaints/:courseId", (req, res) => {
   db.query(
     "SELECT * FROM complaints WHERE course_id = ? ORDER BY id DESC",
@@ -453,6 +529,7 @@ app.get("/course-complaints/:courseId", (req, res) => {
         : res.status(200).json(data),
   );
 });
+
 app.post("/course-complaints", (req, res) => {
   const {
     course_id,
@@ -490,6 +567,7 @@ app.get("/assignments/:courseId", (req, res) => {
         : res.status(200).json(data),
   );
 });
+
 app.post("/assignments", (req, res) => {
   const {
     course_id,
@@ -517,6 +595,7 @@ app.post("/assignments", (req, res) => {
         : res.status(200).json({ message: "Assignment created!" }),
   );
 });
+
 app.get("/assignment-submissions/:courseId", (req, res) => {
   db.query(
     "SELECT * FROM assignment_submissions WHERE course_id = ? ORDER BY id DESC",
@@ -527,6 +606,7 @@ app.get("/assignment-submissions/:courseId", (req, res) => {
         : res.status(200).json(data),
   );
 });
+
 app.post("/assignment-submissions", (req, res) => {
   const {
     assignment_id,
@@ -696,6 +776,7 @@ app.get("/notifications/:identifier", (req, res) => {
         : res.status(200).json(data),
   );
 });
+
 app.post("/notifications", (req, res) => {
   const { identifier, text, color, date, time } = req.body;
   db.query(
@@ -707,6 +788,7 @@ app.post("/notifications", (req, res) => {
         : res.status(200).json({ message: "Added" }),
   );
 });
+
 app.put("/notifications/read", (req, res) => {
   db.query(
     "UPDATE notifications SET unread = 0 WHERE identifier = ?",

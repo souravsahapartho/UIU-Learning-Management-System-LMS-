@@ -10,7 +10,6 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-
     <style>
       * {
         margin: 0;
@@ -1152,7 +1151,6 @@
         color: #64748b;
         font-weight: 500;
       }
-
       .prog-section-card {
         background: white;
         border-radius: 20px;
@@ -1227,7 +1225,6 @@
         display: inline-block;
         margin-top: 5px;
       }
-
       .settings-card {
         background: white;
         border-radius: 16px;
@@ -1306,7 +1303,6 @@
       input:checked + .slider:before {
         transform: translateX(20px);
       }
-
       .notif-page-item {
         display: flex;
         align-items: flex-start;
@@ -1487,7 +1483,6 @@
         font-weight: 600;
         color: #64748b;
       }
-
       .lesson-list-box {
         background: white;
         border-radius: 16px;
@@ -1526,7 +1521,6 @@
         background: #2563eb;
         border-color: #2563eb;
       }
-
       .cp-layout {
         display: grid;
         grid-template-columns: 2.5fr 1fr;
@@ -2561,8 +2555,8 @@
                   background: #2563eb;
                   border-radius: 4px;
                 "
-              ></span>
-              Your Uploaded Courses
+              ></span
+              >Your Uploaded Courses
             </h2>
             <div
               class="continue-learning-grid"
@@ -2714,7 +2708,8 @@
                         <circle cx="9" cy="7" r="4"></circle>
                       </svg>
                       Manage Users</span
-                    ><svg
+                    >
+                    <svg
                       width="20"
                       height="20"
                       viewBox="0 0 24 24"
@@ -2761,7 +2756,8 @@
                         ></path>
                       </svg>
                       Manage Courses</span
-                    ><svg
+                    >
+                    <svg
                       width="20"
                       height="20"
                       viewBox="0 0 24 24"
@@ -3199,11 +3195,51 @@
               </div>
             </div>
           </div>
-          <div class="settings-card" style="display: none">
-            <input type="file" id="uc-thumbnail-input" class="hidden" />
-            <input type="file" id="uc-video-input" class="hidden" />
+
+          <div class="settings-card">
+            <h3
+              style="
+                font-size: 18px;
+                font-weight: 700;
+                color: #0f172a;
+                margin-bottom: 4px;
+              "
+            >
+              Course Media
+            </h3>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 20px">
+              Upload a thumbnail and introductory video to Cloudinary
+            </p>
+            <hr
+              style="
+                border: 0;
+                border-top: 1px solid #e2e8f0;
+                margin-bottom: 20px;
+              "
+            />
+            <div style="display: flex; gap: 20px; flex-wrap: wrap">
+              <div class="form-group" style="flex: 1; min-width: 200px">
+                <label>Course Thumbnail (Image)</label>
+                <input
+                  type="file"
+                  id="uc-thumbnail-input"
+                  accept="image/jpeg, image/png, image/jpg"
+                  style="padding: 10px; background: white"
+                />
+              </div>
+              <div class="form-group" style="flex: 1; min-width: 200px">
+                <label>Course Video (MP4)</label>
+                <input
+                  type="file"
+                  id="uc-video-input"
+                  accept="video/mp4, video/webm, video/mkv"
+                  style="padding: 10px; background: white"
+                />
+              </div>
+            </div>
             <input type="file" id="uc-doc-input" class="hidden" />
           </div>
+
           <div
             style="
               display: flex;
@@ -3542,7 +3578,6 @@
             </button>
           </div>
 
-          <!-- 🔥 NEW: Change Password Section 🔥 -->
           <div class="settings-card">
             <h3
               style="
@@ -3783,7 +3818,6 @@
                     projects.
                   </p>
                   <div style="display: flex; gap: 15px; flex-wrap: wrap">
-                    <!-- Mark as completed button (hidden for non-students) -->
                     <button
                       id="cp-mark-completed-btn"
                       class="btn btn-primary"
@@ -4002,6 +4036,109 @@
     </div>
 
     <script>
+      // Ei function ti apnar notun course upload korar jonno (Image + Video shoho)
+      // Apnar index.html e Publish button er onclick e ei function ti call korben:
+      // <button onclick="publishCourseWithMedia()">Publish Course</button>
+
+      async function publishCourseWithMedia() {
+        const title = document.getElementById("uc-title").value.trim();
+        const desc = document.getElementById("uc-desc").value.trim();
+        const cat = document.getElementById("uc-cat").value.trim();
+        const diff = document.getElementById("uc-diff").value;
+        const totalLessons =
+          parseInt(document.getElementById("uc-lessons").value) || 4;
+
+        const thumbnailInput = document.getElementById("uc-thumbnail-input");
+        const videoInput = document.getElementById("uc-video-input");
+
+        if (!title)
+          return alert("Please enter a course title before publishing.");
+        if (!currentUser)
+          return alert(
+            "User authentication failed. Please log out and log in again.",
+          );
+
+        // FormData toiri kora hocche karon amra file pathabo
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("description", desc);
+        formData.append("category", cat);
+        formData.append("difficulty", diff);
+        formData.append("instructorEmail", currentUser.email);
+        formData.append("instructorName", currentUser.name);
+        formData.append("total_lessons", totalLessons);
+
+        // File jodi select kora hoy tahole FormData te add kora
+        if (thumbnailInput && thumbnailInput.files[0]) {
+          formData.append("thumbnail", thumbnailInput.files[0]);
+        }
+        if (videoInput && videoInput.files[0]) {
+          formData.append("video", videoInput.files[0]);
+        }
+
+        // Button er text change kore loading state dekhano
+        const publishBtn = document.querySelector(
+          "#instructor-upload-course-content .btn-primary",
+        );
+        let originalText = "Publish Course";
+        if (publishBtn) {
+          originalText = publishBtn.innerHTML;
+          publishBtn.innerHTML =
+            "⏳ Uploading Media to Cloudinary... Please wait (This may take a few minutes for videos)";
+          publishBtn.disabled = true;
+        }
+
+        try {
+          // API call to the backend
+          const res = await fetch(`${API_URL}/upload-course-with-media`, {
+            method: "POST",
+            body: formData, // JSON er bodole FormData pathano hocche
+          });
+
+          if (res.ok) {
+            // Notification pathano
+            if (typeof addNotification === "function") {
+              await addNotification(
+                "admin",
+                `New course "${title}" with media submitted for review by ${currentUser.name}`,
+                "purple",
+              );
+            }
+
+            alert(
+              "Course published successfully! Images and videos have been uploaded. It is currently awaiting administrator approval.",
+            );
+
+            // Input field gulo khali kora
+            document.getElementById("uc-title").value = "";
+            document.getElementById("uc-desc").value = "";
+            document.getElementById("uc-cat").value = "";
+            document.getElementById("uc-diff").value = "Beginner";
+            document.getElementById("uc-lessons").value = "";
+            if (thumbnailInput) thumbnailInput.value = "";
+            if (videoInput) videoInput.value = "";
+
+            // Dashboard e back kora
+            if (typeof handleNav === "function") {
+              handleNav("Dashboard", document.querySelector(".nav-item-dash"));
+            }
+          } else {
+            const errData = await res.json();
+            alert("Error saving course: " + (errData.error || "Unknown error"));
+          }
+        } catch (e) {
+          console.error(e);
+          alert(
+            "Database/Network connection failed. Please ensure the backend is running properly.",
+          );
+        } finally {
+          // Button er text ager obosthay firiye ana
+          if (publishBtn) {
+            publishBtn.innerHTML = originalText;
+            publishBtn.disabled = false;
+          }
+        }
+      }
       const API_URL = "https://elms-backend-d7mo.onrender.com";
       let currentUser = null;
 
@@ -4032,22 +4169,15 @@
       async function safeFetchJSON(url, options = {}) {
         try {
           const res = await fetch(url, options);
-          if (!res.ok) {
-            console.error(`Fetch Error [${res.status}] for URL:`, url);
-            return [];
-          }
+          if (!res.ok) return [];
           const contentType = res.headers.get("content-type");
           if (contentType && contentType.includes("application/json")) {
             const data = await res.json();
-            if (data && data.error) {
-              console.error("API Error Response:", data.error);
-              return [];
-            }
+            if (data && data.error) return [];
             return data;
           }
           return [];
         } catch (e) {
-          console.warn("API Fetch Exception:", e);
           return [];
         }
       }
@@ -4137,9 +4267,8 @@
         try {
           const users = await safeFetchJSON(`${API_URL}/users`);
           for (let u of users) {
-            if (u.status === "Approved") {
+            if (u.status === "Approved")
               await addNotification(u.email, text, color);
-            }
           }
         } catch (e) {}
       }
@@ -4148,7 +4277,6 @@
         if (!currentUser) return;
         let identifier =
           currentUser.role === "admin" ? "admin" : currentUser.email;
-
         let notifs = await fetchNotifications(identifier);
 
         if (
@@ -4156,9 +4284,8 @@
           currentUser.role === "instructor"
         ) {
           let globalNotifs = await fetchNotifications("all_users");
-          if (globalNotifs && globalNotifs.length) {
+          if (globalNotifs && globalNotifs.length)
             notifs = notifs.concat(globalNotifs);
-          }
         }
 
         let unreadCount = notifs.filter(
@@ -4243,9 +4370,7 @@
               (cp) => `
             <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
-                <span style="font-size:13px;font-weight:700;color:#be123c;background:#fef2f2;padding:3px 10px;border-radius:20px;">
-                  📚 ${cp.course_name || "Unknown Course"}
-                </span>
+                <span style="font-size:13px;font-weight:700;color:#be123c;background:#fef2f2;padding:3px 10px;border-radius:20px;">📚 ${cp.course_name || "Unknown Course"}</span>
                 <span style="font-size:12px;color:#94a3b8;">${cp.date || ""}</span>
               </div>
               <div style="font-size:14px;color:#881337;margin-bottom:8px;line-height:1.5;">${cp.complaint_text}</div>
@@ -4352,9 +4477,7 @@
             const courseGrid = document.getElementById(
               "instructor-live-courses-grid",
             );
-            if (courseGrid) {
-              courseGrid.scrollIntoView({ behavior: "smooth" });
-            }
+            if (courseGrid) courseGrid.scrollIntoView({ behavior: "smooth" });
           } else if (label === "Dashboard") {
             if (currentUser.role === "instructor")
               document.getElementById(
@@ -4425,7 +4548,6 @@
       function setupDashboard(user) {
         currentUser = user;
 
-        // 🔥 Safety check for old or corrupted accounts (Solves login crash)
         const safeName = user.name || "User";
         const safeRole = user.role || "student";
         const safeAvatar = user.avatar || "U";
@@ -4487,7 +4609,6 @@
           renderAdminCourses();
           updateAdminStats();
         } else if (safeRole === "instructor") {
-          renderInstructorRequests();
           updateInstructorStats();
           renderInstructorLiveCourses();
         } else if (safeRole === "student") {
@@ -4609,28 +4730,21 @@
             let badgeHtml = item.badge
               ? `<span class="notification-badge" style="display: none; position: static; margin-left: auto;" id="sidebar-notif-badge">0</span>`
               : "";
-            return `
-            <a class="nav-item ${item.active ? "active" : ""} ${item.class || ""}" onclick="handleNav('${item.label}', this)">
-                ${item.icon} ${item.label} ${badgeHtml}
-            </a>
-            `;
+            return `<a class="nav-item ${item.active ? "active" : ""} ${item.class || ""}" onclick="handleNav('${item.label}', this)">${item.icon} ${item.label} ${badgeHtml}</a>`;
           })
           .join("");
 
         const btmHtml = `
           <div style="padding: 20px; border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 10px;">
             <div style="background-color: #f1f5f9; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px;">
-              <div style="width: 34px; height: 34px; border-radius: 50%; background-color: #0f172a; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">
-                ${user.avatar}
-              </div>
+              <div style="width: 34px; height: 34px; border-radius: 50%; background-color: #0f172a; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">${user.avatar}</div>
               <div style="overflow: hidden; text-align: left;">
                 <div style="font-weight: 700; font-size: 14px; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${user.name}</div>
                 <div style="font-size: 12px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${user.email}</div>
               </div>
             </div>
             <button style="color: #ef4444; display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; background: transparent; border: none; padding: 8px 4px; font-size: 15px;" onclick="logout()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transform: rotate(180deg);"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-              Logout
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transform: rotate(180deg);"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Logout
             </button>
           </div>
         `;
@@ -4645,6 +4759,10 @@
         const totalLessons =
           parseInt(document.getElementById("uc-lessons").value) || 4;
 
+        const thumbnailFile =
+          document.getElementById("uc-thumbnail-input").files[0];
+        const videoFile = document.getElementById("uc-video-input").files[0];
+
         if (!title)
           return alert("Please enter a course title before publishing.");
         if (!currentUser)
@@ -4652,21 +4770,29 @@
             "User authentication failed. Please log out and log in again.",
           );
 
-        const payload = {
-          title: title,
-          description: desc,
-          category: cat,
-          difficulty: diff,
-          instructorEmail: currentUser.email,
-          instructorName: currentUser.name,
-          total_lessons: totalLessons,
-        };
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("description", desc);
+        formData.append("category", cat);
+        formData.append("difficulty", diff);
+        formData.append("instructorEmail", currentUser.email);
+        formData.append("instructorName", currentUser.name);
+        formData.append("total_lessons", totalLessons);
+
+        if (thumbnailFile) formData.append("thumbnail", thumbnailFile);
+        if (videoFile) formData.append("video", videoFile);
+
+        const publishBtn = document.querySelector(
+          "#instructor-upload-course-content .btn-primary",
+        );
+        const originalText = publishBtn.innerHTML;
+        publishBtn.innerHTML = "⏳ Uploading... Please wait";
+        publishBtn.disabled = true;
 
         try {
           const res = await fetch(`${API_URL}/upload-course`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
+            body: formData,
           });
 
           if (res.ok) {
@@ -4684,16 +4810,20 @@
             document.getElementById("uc-cat").value = "";
             document.getElementById("uc-diff").value = "Beginner";
             document.getElementById("uc-lessons").value = "";
+            document.getElementById("uc-thumbnail-input").value = "";
+            document.getElementById("uc-video-input").value = "";
 
             handleNav("Dashboard", document.querySelector(".nav-item-dash"));
           } else {
             alert("Error saving course to database.");
           }
         } catch (e) {
-          console.error(e);
           alert(
             "Database connection failed. Please ensure the backend is running.",
           );
+        } finally {
+          publishBtn.innerHTML = originalText;
+          publishBtn.disabled = false;
         }
       }
 
@@ -4747,9 +4877,18 @@
               avgRating = (sum / feedbacks.length).toFixed(1) + " ⭐";
             }
 
-            let thumbHTML = `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; ${bgStyle}" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
+            let thumbHTML = "";
+            if (c.thumbnail_url) {
+              thumbHTML = `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
+                   <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border-radius: 12px; padding: 20px;">
+                       <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4>
+                   </div>
+              </div>`;
+            } else {
+              thumbHTML = `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; ${bgStyle}" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
                    <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4>
               </div>`;
+            }
 
             let actionHTML = isPending
               ? `<div class="action-container" style="display:flex; gap:12px; margin-top: 15px; flex-wrap:wrap;">
@@ -4788,9 +4927,7 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id, status }),
           });
-
           await renderAdminCourses();
-
           if (status === "Approved") {
             await addNotification(
               instructorEmail,
@@ -4832,9 +4969,18 @@
                 courseGradients.length;
               let bgStyle = `background: ${courseGradients[bgIndex]}; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; border-bottom:1px solid #e2e8f0; cursor: pointer;`;
 
-              let thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle}" onclick="openCoursePlayer('${c.id}')">
+              let thumbHTML = "";
+              if (c.thumbnail_url) {
+                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')">
+                     <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                         <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
+                     </div>
+                </div>`;
+              } else {
+                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle}" onclick="openCoursePlayer('${c.id}')">
                      <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
                 </div>`;
+              }
 
               let myEnrollment = enrollments.find(
                 (e) =>
@@ -4910,7 +5056,6 @@
           );
           renderStudentBrowseCourses();
         } catch (e) {
-          console.error(e);
           alert("Failed to send request. Is the backend running?");
         }
       }
@@ -4949,9 +5094,18 @@
                 courseGradients.length;
               let bgStyle = `background: ${courseGradients[bgIndex]}; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
 
-              let thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')">
+              let thumbHTML = "";
+              if (c.thumbnail_url) {
+                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')">
+                     <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                         <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
+                     </div>
+                </div>`;
+              } else {
+                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')">
                      <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
                 </div>`;
+              }
 
               return `
                     <div class="std-course-card">
@@ -5040,7 +5194,6 @@
             )
             .join("");
         } catch (e) {
-          console.error(e);
           container.innerHTML = `<p style="color:#ef4444;">Failed to load assignments.</p>`;
         }
       }
@@ -5071,9 +5224,18 @@
                 courseGradients.length;
               let bgStyle = `background: ${courseGradients[bgIndex]}; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
 
-              let thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle}" onclick="openCoursePlayer('${c.id}')">
+              let thumbHTML = "";
+              if (c.thumbnail_url) {
+                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')">
+                     <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                         <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
+                     </div>
+                </div>`;
+              } else {
+                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')">
                      <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
                 </div>`;
+              }
 
               let studentCount = enrollments.filter(
                 (e) => e.course_id == c.id && e.status === "Approved",
@@ -5176,6 +5338,24 @@
             }
           }
 
+          const videoBox = document.querySelector(".cp-video-box");
+          if (selectedCourse.video_url) {
+            videoBox.innerHTML = `
+                  <video controls style="width:100%; height:100%; border-radius:16px; object-fit: cover; background:#000;">
+                      <source src="${selectedCourse.video_url}" type="video/mp4">
+                      Your browser does not support the video tag.
+                  </video>
+              `;
+          } else {
+            videoBox.innerHTML = `
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                  </svg>
+                  <p style="position:absolute; bottom:20px; color:#94a3b8; font-size: 13px;">No video uploaded</p>
+              `;
+          }
+
           let hasAccess = false;
           if (
             currentUser.role === "admin" ||
@@ -5235,7 +5415,6 @@
         document
           .getElementById("cp-students-area-container")
           .classList.add("hidden");
-
         document
           .querySelectorAll(".cp-tab")
           .forEach((t) => t.classList.remove("active"));
@@ -5301,7 +5480,6 @@
                 r.course_id == currentCoursePlayerId &&
                 r.status === "Pending",
             );
-
             let actionHtml = "";
             if (currentUser.role === "instructor") {
               if (isRequested) {
@@ -5318,7 +5496,6 @@
 
             htmlStr += `
                 <div style="display:flex; align-items:center; justify-content:space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
-                  
                   <div style="display: flex; align-items: center; gap: 15px; min-width: 250px;">
                       <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0;">${st.student_name.charAt(0)}</div>
                       <div>
@@ -5332,7 +5509,6 @@
                           </div>
                       </div>
                   </div>
-                  
                   <div style="display: flex; gap: 30px; flex-wrap: wrap; flex: 1;">
                       <div>
                           <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Enrolled</div>
@@ -5347,7 +5523,6 @@
                           <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${progressMock}%</div>
                       </div>
                   </div>
-
                   <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
                       <div style="text-align: right;">
                           <div style="font-size: 11px; color: #94a3b8;">Enrolled on</div>
@@ -5377,7 +5552,6 @@
 
         try {
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
           let myEnrollments = enrollments.filter(
             (e) =>
               e.instructor_email === currentUser.email &&
@@ -5402,7 +5576,6 @@
           });
 
           instGlobalStudents = Array.from(studentMap.values());
-
           let activeThisWeek = Math.floor(instGlobalStudents.length * 0.8);
           let avgCompletion = 72;
           let certificates = Math.floor(instGlobalStudents.length * 0.3);
@@ -5447,7 +5620,6 @@
               st.status === "active"
                 ? `<span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">active</span>`
                 : `<span style="background: #f1f5f9; color: #64748b; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #cbd5e1;">inactive</span>`;
-
             const completedMock = Math.floor(Math.random() * 3) + 1;
             const progress = Math.floor(Math.random() * 50) + 50;
 
@@ -5456,17 +5628,10 @@
                     <div style="display: flex; align-items: center; gap: 15px; min-width: 250px;">
                         <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0;">${st.name.charAt(0)}</div>
                         <div>
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.name}</h4>
-                                ${statusBadge}
-                            </div>
-                            <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                                ${st.email}
-                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;"><h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.name}</h4>${statusBadge}</div>
+                            <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>${st.email}</div>
                         </div>
                     </div>
-                    
                     <div style="display: flex; gap: 30px; flex-wrap: wrap; flex: 1;">
                         <div>
                             <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Enrolled</div>
@@ -5481,12 +5646,8 @@
                             <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${progress}%</div>
                         </div>
                     </div>
-
                     <div style="display: flex; align-items: center; gap: 20px;">
-                        <div style="text-align: right;">
-                            <div style="font-size: 11px; color: #94a3b8;">Last active</div>
-                            <div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.lastActive}</div>
-                        </div>
+                        <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Last active</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.lastActive}</div></div>
                         <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px;" onclick="alert('Detailed student view coming soon!')">View Details</button>
                     </div>
                  </div>
@@ -5537,9 +5698,7 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
-
           const data = await res.json();
-
           if (res.ok) {
             await addNotification(
               "admin",
@@ -5559,7 +5718,6 @@
             alert(data.error || "Failed to send ban request.");
           }
         } catch (e) {
-          console.error(e);
           alert("Database connection error.");
         }
       }
@@ -5580,7 +5738,6 @@
           }
 
           let htmlStr = `<h3 style="color:#e11d48; margin-bottom:15px; font-weight:800; font-size:20px;">⚠️ Pending Ban Requests</h3><div style="display:flex; flex-direction:column; gap:15px; margin-bottom:30px;">`;
-
           banReqs.forEach((req) => {
             htmlStr += `
                     <div style="background:#fff1f2; border:1px solid #fecaca; padding:20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
@@ -5598,7 +5755,6 @@
           htmlStr += `</div><hr style="border:0; border-top:1px solid #e2e8f0; margin-bottom:30px;">`;
           container.innerHTML = htmlStr;
         } catch (e) {
-          console.error("Failed to load ban requests", e);
           container.innerHTML = "";
         }
       }
@@ -5639,7 +5795,6 @@
           alert(`Ban request ${actionStatus.toLowerCase()} successfully.`);
           renderAdminUsers();
         } catch (e) {
-          console.error(e);
           alert("Error processing ban request.");
         }
       }
@@ -5720,7 +5875,6 @@
               (e) =>
                 e.course_id == currentCoursePlayerId && e.status === "Approved",
             );
-
             for (let student of enrolledStudents) {
               await addNotification(
                 student.student_email,
@@ -5728,7 +5882,6 @@
                 "blue",
               );
             }
-
             alert("Assignment uploaded successfully!");
             setupAssignmentsUI();
           } else {
@@ -5756,8 +5909,8 @@
           const submissions = await safeFetchJSON(
             `${API_URL}/assignment-submissions/${courseId}`,
           );
-
           let htmlStr = "";
+
           assignments.forEach((a) => {
             let studentActionHtml = "";
             if (currentUser.role === "student") {
@@ -5766,7 +5919,6 @@
                   s.assignment_id === a.id &&
                   s.student_email === currentUser.email,
               );
-
               let studentGradeHtml = "";
               if (mySub && mySub.marks !== null && mySub.marks !== undefined) {
                 studentGradeHtml = `
@@ -5822,7 +5974,7 @@
                                   : "Submit Grade";
                                 let statusBadge = isGraded
                                   ? `<span style="color:#059669; font-weight:bold; font-size:12px; margin-bottom:4px; display:inline-block;">✅ Already Graded (${s.marks}/10)</span>`
-                                  : ``;
+                                  : "";
 
                                 gradeHtml = `
                                    <div style="margin-top:10px; display:flex; flex-direction:column; gap:6px; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
@@ -5978,7 +6130,6 @@
             alert("Failed to submit grade.");
           }
         } catch (e) {
-          console.error(e);
           alert("Database connection error.");
         }
       }
