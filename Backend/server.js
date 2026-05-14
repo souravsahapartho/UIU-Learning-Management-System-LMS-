@@ -73,128 +73,51 @@ const db = mysql.createPool({
   queueLimit: 0,
 });
 
-db.getConnection((err, connection) => {
+// Test Connection
+db.query("SELECT 1", (err) => {
   if (err) {
-    console.error("❌ DB Connection Failed. Make sure your MySQL is running.");
+    console.error(
+      "❌ DB Connection Failed. Make sure your MySQL is running.",
+      err.message,
+    );
   } else {
     console.log("✅ MySQL Connected Successfully!");
-
-    connection.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), email VARCHAR(100) UNIQUE,
-        password VARCHAR(255), role VARCHAR(50) DEFAULT 'student',
-        avatar VARCHAR(10) DEFAULT 'U', status VARCHAR(50) DEFAULT 'Pending'
-      )
-    `);
-
-    connection.query(`
-      CREATE TABLE IF NOT EXISTS courses (
-        id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), description TEXT,
-        category VARCHAR(100), difficulty VARCHAR(50), instructor_email VARCHAR(100),
-        instructor_name VARCHAR(100), total_lessons INT DEFAULT 4, status VARCHAR(50) DEFAULT 'Pending',
-        thumbnail_url VARCHAR(500) DEFAULT NULL, video_url VARCHAR(500) DEFAULT NULL
-      )
-    `);
-
-    // Safely add new columns to existing courses table with proper error handling
-    const alterQuery = (query, colName) => {
-      connection.query(query, (error) => {
-        if (error) {
-          if (error.code === "ER_DUP_FIELDNAME") {
-            console.log(
-              `✅ Column '${colName}' already exists in courses table.`,
-            );
-          } else {
-            console.error(
-              `❌ Error adding column '${colName}':`,
-              error.message,
-            );
-          }
-        } else {
-          console.log(
-            `✅ Column '${colName}' added successfully to courses table.`,
-          );
-        }
-      });
-    };
-
-    alterQuery(
-      "ALTER TABLE courses ADD COLUMN total_lessons INT DEFAULT 4",
-      "total_lessons",
-    );
-    alterQuery(
-      "ALTER TABLE courses ADD COLUMN thumbnail_url VARCHAR(500) DEFAULT NULL",
-      "thumbnail_url",
-    );
-    alterQuery(
-      "ALTER TABLE courses ADD COLUMN video_url VARCHAR(500) DEFAULT NULL",
-      "video_url",
-    );
-
-    connection.query(`
-      CREATE TABLE IF NOT EXISTS course_chats (
-        id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100) NOT NULL,
-        course_name VARCHAR(255), user_name VARCHAR(100), user_email VARCHAR(100),
-        message TEXT, \`time\` VARCHAR(50)
-      )
-    `);
-
-    connection.query(`
-      CREATE TABLE IF NOT EXISTS enrollments (
-        id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100), course_title VARCHAR(255),
-        student_email VARCHAR(100), student_name VARCHAR(100), instructor_email VARCHAR(100),
-        status VARCHAR(50) DEFAULT 'Pending', \`date\` VARCHAR(50)
-      )
-    `);
-
-    connection.query(`
-      CREATE TABLE IF NOT EXISTS notifications (
-        id INT AUTO_INCREMENT PRIMARY KEY, identifier VARCHAR(100), text TEXT,
-        color VARCHAR(50), \`date\` VARCHAR(50), \`time\` VARCHAR(50), unread TINYINT(1) DEFAULT 1
-      )
-    `);
-
-    connection.query(`
-      CREATE TABLE IF NOT EXISTS feedbacks (
-        id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100) NOT NULL,
-        course_name VARCHAR(255), user_name VARCHAR(100), user_email VARCHAR(100), rating INT, comment TEXT, \`date\` VARCHAR(50)
-      )
-    `);
-
-    connection.query(`
-      CREATE TABLE IF NOT EXISTS complaints (
-        id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100) NOT NULL,
-        course_name VARCHAR(255), user_name VARCHAR(100), user_email VARCHAR(100), complaint_text TEXT, \`date\` VARCHAR(50)
-      )
-    `);
-
-    connection.query(`
-      CREATE TABLE IF NOT EXISTS assignments (
-        id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100) NOT NULL,
-        title VARCHAR(255), description TEXT, due_date VARCHAR(50), instructor_email VARCHAR(100), \`date\` VARCHAR(50),
-        course_name VARCHAR(255) DEFAULT NULL
-      )
-    `);
-
-    connection.query(`
-      CREATE TABLE IF NOT EXISTS assignment_submissions (
-        id INT AUTO_INCREMENT PRIMARY KEY, assignment_id INT NOT NULL, course_id VARCHAR(100),
-        student_email VARCHAR(100), student_name VARCHAR(100), submission_text TEXT, \`date\` VARCHAR(50),
-        marks INT DEFAULT NULL, instructor_comment TEXT DEFAULT NULL,
-        course_name VARCHAR(255) DEFAULT NULL, assignment_title VARCHAR(255) DEFAULT NULL
-      )
-    `);
-
-    connection.query(`
-      CREATE TABLE IF NOT EXISTS ban_requests (
-        id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100), course_title VARCHAR(255),
-        inst_email VARCHAR(100), inst_name VARCHAR(100), student_email VARCHAR(100),
-        student_name VARCHAR(100), status VARCHAR(50) DEFAULT 'Pending', \`date\` VARCHAR(50)
-      )
-    `);
-
-    connection.release();
   }
+});
+
+// Initializing Tables
+const tableQueries = [
+  `CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), email VARCHAR(100) UNIQUE, password VARCHAR(255), role VARCHAR(50) DEFAULT 'student', avatar VARCHAR(10) DEFAULT 'U', status VARCHAR(50) DEFAULT 'Pending')`,
+  `CREATE TABLE IF NOT EXISTS courses (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), description TEXT, category VARCHAR(100), difficulty VARCHAR(50), instructor_email VARCHAR(100), instructor_name VARCHAR(100), total_lessons INT DEFAULT 4, status VARCHAR(50) DEFAULT 'Pending', thumbnail_url VARCHAR(500) DEFAULT NULL, video_url VARCHAR(500) DEFAULT NULL)`,
+  `CREATE TABLE IF NOT EXISTS course_chats (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100) NOT NULL, course_name VARCHAR(255), user_name VARCHAR(100), user_email VARCHAR(100), message TEXT, \`time\` VARCHAR(50))`,
+  `CREATE TABLE IF NOT EXISTS enrollments (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100), course_title VARCHAR(255), student_email VARCHAR(100), student_name VARCHAR(100), instructor_email VARCHAR(100), status VARCHAR(50) DEFAULT 'Pending', \`date\` VARCHAR(50))`,
+  `CREATE TABLE IF NOT EXISTS notifications (id INT AUTO_INCREMENT PRIMARY KEY, identifier VARCHAR(100), text TEXT, color VARCHAR(50), \`date\` VARCHAR(50), \`time\` VARCHAR(50), unread TINYINT(1) DEFAULT 1)`,
+  `CREATE TABLE IF NOT EXISTS feedbacks (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100) NOT NULL, course_name VARCHAR(255), user_name VARCHAR(100), user_email VARCHAR(100), rating INT, comment TEXT, \`date\` VARCHAR(50))`,
+  `CREATE TABLE IF NOT EXISTS complaints (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100) NOT NULL, course_name VARCHAR(255), user_name VARCHAR(100), user_email VARCHAR(100), complaint_text TEXT, \`date\` VARCHAR(50))`,
+  `CREATE TABLE IF NOT EXISTS assignments (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100) NOT NULL, title VARCHAR(255), description TEXT, due_date VARCHAR(50), instructor_email VARCHAR(100), \`date\` VARCHAR(50), course_name VARCHAR(255) DEFAULT NULL)`,
+  `CREATE TABLE IF NOT EXISTS assignment_submissions (id INT AUTO_INCREMENT PRIMARY KEY, assignment_id INT NOT NULL, course_id VARCHAR(100), student_email VARCHAR(100), student_name VARCHAR(100), submission_text TEXT, \`date\` VARCHAR(50), marks INT DEFAULT NULL, instructor_comment TEXT DEFAULT NULL, course_name VARCHAR(255) DEFAULT NULL, assignment_title VARCHAR(255) DEFAULT NULL)`,
+  `CREATE TABLE IF NOT EXISTS ban_requests (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100), course_title VARCHAR(255), inst_email VARCHAR(100), inst_name VARCHAR(100), student_email VARCHAR(100), student_name VARCHAR(100), status VARCHAR(50) DEFAULT 'Pending', \`date\` VARCHAR(50))`,
+];
+
+tableQueries.forEach((query) => {
+  db.query(query, (err) => {
+    if (err) console.error("🔥 Table Init Error:", err.message);
+  });
+});
+
+// Safely add missing columns to courses table
+const alterQueries = [
+  "ALTER TABLE courses ADD COLUMN total_lessons INT DEFAULT 4",
+  "ALTER TABLE courses ADD COLUMN thumbnail_url VARCHAR(500) DEFAULT NULL",
+  "ALTER TABLE courses ADD COLUMN video_url VARCHAR(500) DEFAULT NULL",
+];
+
+alterQueries.forEach((query) => {
+  db.query(query, (err) => {
+    if (err && err.code !== "ER_DUP_FIELDNAME") {
+      console.error("🔥 Alter Table Error:", err.message);
+    }
+  });
 });
 
 app.get("/", (req, res) => res.json({ message: "Backend API is active." }));
@@ -387,15 +310,15 @@ app.post(
       title, description, category, difficulty, instructor_email, instructor_name, total_lessons, status, thumbnail_url, video_url
     ) VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending', ?, ?)`,
       [
-        title,
-        description,
-        category,
-        difficulty,
-        instructorEmail,
-        instructorName,
-        total_lessons || 4,
-        thumbnailUrl,
-        videoUrl,
+        title !== undefined ? title : null,
+        description !== undefined ? description : null,
+        category !== undefined ? category : null,
+        difficulty !== undefined ? difficulty : null,
+        instructorEmail !== undefined ? instructorEmail : null,
+        instructorName !== undefined ? instructorName : null,
+        total_lessons ? parseInt(total_lessons) : 4,
+        thumbnailUrl !== undefined ? thumbnailUrl : null,
+        videoUrl !== undefined ? videoUrl : null,
       ],
       (err) => {
         if (err) {
