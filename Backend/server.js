@@ -98,6 +98,10 @@ db.getConnection((err, connection) => {
 
     // Safely add new columns to existing courses table if they don't exist
     connection.query(
+      "ALTER TABLE courses ADD COLUMN total_lessons INT DEFAULT 4",
+      () => {},
+    );
+    connection.query(
       "ALTER TABLE courses ADD COLUMN thumbnail_url VARCHAR(500) DEFAULT NULL",
       () => {},
     );
