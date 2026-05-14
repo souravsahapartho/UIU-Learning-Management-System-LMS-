@@ -400,6 +400,78 @@ app.post(
   },
 );
 
+// Edit Course API Endpoint
+app.put(
+  "/update-course/:id",
+  (req, res, next) => {
+    const uploadMiddleware = upload.fields([
+      { name: "thumbnail", maxCount: 1 },
+      { name: "video", maxCount: 1 },
+    ]);
+
+    uploadMiddleware(req, res, (err) => {
+      if (err) {
+        console.error("🔥 Cloudinary/Multer Error (Edit Course):", err.message);
+        return res
+          .status(500)
+          .json({ error: "File upload failed: " + err.message });
+      }
+      next();
+    });
+  },
+  (req, res) => {
+    const courseId = req.params.id;
+    const { title, description, category, difficulty, total_lessons } =
+      req.body;
+
+    const thumbnailUrl =
+      req.files && req.files["thumbnail"]
+        ? req.files["thumbnail"][0].path
+        : null;
+    const videoUrl =
+      req.files && req.files["video"] ? req.files["video"][0].path : null;
+
+    let updateQuery =
+      "UPDATE courses SET title = ?, description = ?, category = ?, difficulty = ?, total_lessons = ?";
+    let queryParams = [
+      title,
+      description,
+      category,
+      difficulty,
+      parseInt(total_lessons) || 4,
+    ];
+
+    if (thumbnailUrl) {
+      updateQuery += ", thumbnail_url = ?";
+      queryParams.push(thumbnailUrl);
+    }
+
+    if (videoUrl) {
+      updateQuery += ", video_url = ?";
+      queryParams.push(videoUrl);
+    }
+
+    updateQuery += " WHERE id = ?";
+    queryParams.push(courseId);
+
+    db.query(updateQuery, queryParams, (err) => {
+      if (err) {
+        console.error("🔥 Database Update Error:", err.message);
+        return res
+          .status(500)
+          .json({ error: "Database error: " + err.message });
+      }
+      res
+        .status(200)
+        .json({
+          message: "Course updated successfully",
+          thumbnail: thumbnailUrl,
+          video: videoUrl,
+        });
+    });
+  },
+);
+
 app.get("/courses", (req, res) => {
   db.query("SELECT * FROM courses ORDER BY id DESC", (err, data) =>
     err

@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ELMS - Educational Learning Management System</title>
+    <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="elms_favicon.jpg?v=2" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
@@ -1977,6 +1978,7 @@
     </style>
   </head>
   <body>
+    <!-- nav -->
     <nav class="navbar" id="main-nav">
       <div class="logo" onclick="navigateTo('landing')">
         <span>ELMS</span> Platform
@@ -1994,6 +1996,7 @@
       </div>
     </nav>
 
+    <!-- Landing page -->
     <div id="landing-page" class="page">
       <div class="hero-section">
         <div class="hero-content">
@@ -2032,6 +2035,7 @@
       </div>
     </div>
 
+    <!-- login -->
     <div id="login-page" class="page hidden">
       <div class="auth-container">
         <div class="auth-box">
@@ -2062,6 +2066,7 @@
       </div>
     </div>
 
+    <!-- Signup -->
     <div id="signup-page" class="page hidden">
       <div class="auth-container">
         <div class="auth-box">
@@ -2105,6 +2110,7 @@
       </div>
     </div>
 
+    <!-- Sidebar -->
     <div
       class="sidebar-overlay"
       id="sidebar-overlay"
@@ -2140,6 +2146,7 @@
       <div id="sidebar-bottom"></div>
     </aside>
 
+    <!-- Dashboard -->
     <div id="dashboard-page" class="page hidden">
       <header class="navbar" style="position: sticky; top: 0">
         <div class="left-nav-container">
@@ -2223,6 +2230,7 @@
       </header>
 
       <div class="dashboard-content">
+        <!-- home dashboard -->
         <div id="dashboard-home-content">
           <!-- Student dash -->
           <div id="student-dashboard-view" style="display: none">
@@ -2304,6 +2312,7 @@
               </div>
             </div>
 
+            <!-- Due Assignments Section -->
             <div
               style="
                 display: flex;
@@ -2706,6 +2715,17 @@
                       </svg>
                       Manage Users</span
                     >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      style="opacity: 0.7"
+                    >
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
                   </div>
                   <div class="aac-desc aac-desc-users">
                     Review instructor applications and manage accounts
@@ -2743,6 +2763,17 @@
                       </svg>
                       Manage Courses</span
                     >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      style="opacity: 0.7"
+                    >
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
                   </div>
                   <div class="aac-desc aac-desc-courses">
                     Review and approve new course submissions
@@ -2783,6 +2814,7 @@
               ></div>
             </div>
 
+            <!-- ALL COMPLAINTS SECTION -->
             <div class="admin-activity-section" style="margin-top: 24px">
               <div class="aas-header" style="margin-bottom: 16px">
                 <div
@@ -2822,7 +2854,7 @@
           </div>
         </div>
 
-        <!-- Browse courses -->
+        <!-- student browse sections -->
         <div id="student-browse-courses-content" class="hidden">
           <button
             class="btn-back"
@@ -2863,7 +2895,7 @@
           ></div>
         </div>
 
-        <!-- Instructor Students View -->
+        <!-- 🔥 NEW: INSTRUCTOR STUDENTS VIEW 🔥 -->
         <div id="instructor-students-content" class="hidden">
           <div class="settings-header" style="margin-bottom: 30px">
             <h1
@@ -2925,7 +2957,7 @@
           </div>
         </div>
 
-        <!-- Student progress -->
+        <!-- student progress section -->
         <div id="student-progress-content" class="hidden">
           <button
             class="btn-back"
@@ -3230,6 +3262,7 @@
             </button>
             <button
               class="btn btn-primary"
+              id="btn-submit-upload"
               style="display: flex; align-items: center; gap: 8px"
               onclick="publishNewCourse()"
             >
@@ -3246,6 +3279,200 @@
                 <line x1="12" y1="3" x2="12" y2="15"></line>
               </svg>
               Publish Course
+            </button>
+          </div>
+        </div>
+
+        <!-- Instructor EDIT Course View -->
+        <div id="instructor-edit-course-content" class="hidden">
+          <button
+            class="btn-back"
+            onclick="
+              handleNav('Dashboard', document.querySelector('.nav-item-dash'))
+            "
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Dashboard
+          </button>
+          <div
+            class="upload-course-hero"
+            style="
+              background: linear-gradient(135deg, #10b981, #059669);
+              box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.3);
+            "
+          >
+            <div class="upload-hero-icon">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <path
+                  d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                ></path>
+                <path
+                  d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                ></path>
+              </svg>
+            </div>
+            <div class="upload-hero-text">
+              <h1>Edit Course</h1>
+              <p>Update your course details and media</p>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <h3
+              style="
+                font-size: 18px;
+                font-weight: 700;
+                color: #0f172a;
+                margin-bottom: 4px;
+              "
+            >
+              Course Information
+            </h3>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 20px">
+              Update details about your course
+            </p>
+            <hr
+              style="
+                border: 0;
+                border-top: 1px solid #e2e8f0;
+                margin-bottom: 20px;
+              "
+            />
+
+            <input type="hidden" id="ec-id" />
+            <div class="form-group" style="width: 100%">
+              <label>Course Title *</label>
+              <input type="text" id="ec-title" />
+            </div>
+            <div class="form-group" style="width: 100%">
+              <label>Course Description *</label>
+              <textarea
+                style="min-height: 120px; resize: vertical"
+                id="ec-desc"
+              ></textarea>
+            </div>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap">
+              <div class="form-group" style="flex: 1; min-width: 200px">
+                <label>Category</label><input type="text" id="ec-cat" />
+              </div>
+              <div class="form-group" style="flex: 1; min-width: 200px">
+                <label>Difficulty Level</label>
+                <select id="ec-diff">
+                  <option>Beginner</option>
+                  <option>Intermediate</option>
+                  <option>Advanced</option>
+                </select>
+              </div>
+              <div class="form-group" style="flex: 1; min-width: 200px">
+                <label>Total Lessons</label
+                ><input type="number" id="ec-lessons" min="1" />
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <h3
+              style="
+                font-size: 18px;
+                font-weight: 700;
+                color: #0f172a;
+                margin-bottom: 4px;
+              "
+            >
+              Course Media
+            </h3>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 20px">
+              Upload new files only if you want to replace the existing ones
+            </p>
+            <hr
+              style="
+                border: 0;
+                border-top: 1px solid #e2e8f0;
+                margin-bottom: 20px;
+              "
+            />
+            <div style="display: flex; gap: 20px; flex-wrap: wrap">
+              <div class="form-group" style="flex: 1; min-width: 200px">
+                <label>Replace Thumbnail (Image)</label>
+                <input
+                  type="file"
+                  id="ec-thumbnail-input"
+                  accept="image/jpeg, image/png, image/jpg"
+                  style="padding: 10px; background: white"
+                />
+              </div>
+              <div class="form-group" style="flex: 1; min-width: 200px">
+                <label>Replace Video (MP4)</label>
+                <input
+                  type="file"
+                  id="ec-video-input"
+                  accept="video/mp4, video/webm, video/mkv"
+                  style="padding: 10px; background: white"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              justify-content: flex-end;
+              gap: 15px;
+              margin-bottom: 40px;
+              flex-wrap: wrap;
+            "
+          >
+            <button
+              class="btn btn-outline"
+              style="border-color: #cbd5e1; color: #334155; background: white"
+              onclick="
+                handleNav('Dashboard', document.querySelector('.nav-item-dash'))
+              "
+            >
+              Cancel
+            </button>
+            <button
+              class="btn btn-primary"
+              id="btn-submit-edit"
+              style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: #10b981;
+              "
+              onclick="submitEditCourse()"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+                ></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
+              Update Course
             </button>
           </div>
         </div>
@@ -3973,7 +4200,6 @@
       </div>
     </div>
 
-    <!-- MAIN JAVASCRIPT LOGIC -->
     <script>
       const API_URL = "https://elms-backend-d7mo.onrender.com";
       let currentUser = null;
@@ -3992,16 +4218,22 @@
       async function safeFetchJSON(url, options = {}) {
         try {
           const res = await fetch(url, options);
-          if (!res.ok) return [];
+          if (!res.ok) {
+            console.error(`Fetch Error [${res.status}] for URL:`, url);
+            return [];
+          }
           const contentType = res.headers.get("content-type");
           if (contentType && contentType.includes("application/json")) {
             const data = await res.json();
-            if (data && data.error) return [];
+            if (data && data.error) {
+              console.error("API Error Response:", data.error);
+              return [];
+            }
             return data;
           }
           return [];
         } catch (e) {
-          console.warn("API Error:", e);
+          console.warn("API Fetch Exception:", e);
           return [];
         }
       }
@@ -4024,17 +4256,21 @@
           if (dmToggle) dmToggle.checked = true;
         }
 
-        const savedUser = localStorage.getItem("elms_current_user");
-        if (savedUser && savedUser !== "undefined") {
-          currentUser = JSON.parse(savedUser);
-          setupDashboard(currentUser);
-          navigateTo("dashboard");
-        } else {
+        try {
+          const savedUser = localStorage.getItem("elms_current_user");
+          if (savedUser && savedUser !== "undefined") {
+            currentUser = JSON.parse(savedUser);
+            setupDashboard(currentUser);
+            navigateTo("dashboard");
+          } else {
+            navigateTo("landing");
+          }
+        } catch (e) {
+          localStorage.removeItem("elms_current_user");
           navigateTo("landing");
         }
       });
 
-      // NOTIFICATIONS
       async function fetchNotifications(identifier) {
         try {
           const res = await fetch(`${API_URL}/notifications/${identifier}`);
@@ -4057,8 +4293,9 @@
           hour: "2-digit",
           minute: "2-digit",
         });
+
         try {
-          await fetch(`${API_URL}/notifications`, {
+          const res = await fetch(`${API_URL}/notifications`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -4069,7 +4306,16 @@
               time: timeStr,
             }),
           });
-          updateNotificationBadge();
+          if (res.ok) {
+            updateNotificationBadge();
+            if (
+              identifier === "admin" &&
+              currentUser &&
+              currentUser.role === "admin"
+            ) {
+              renderAdminActivity();
+            }
+          }
         } catch (e) {}
       }
 
@@ -4107,12 +4353,19 @@
           badge.innerText = unreadCount;
           badge.style.display = unreadCount > 0 ? "flex" : "none";
         }
+
+        const sidebarBadge = document.getElementById("sidebar-notif-badge");
+        if (sidebarBadge) {
+          sidebarBadge.innerText = unreadCount;
+          sidebarBadge.style.display = unreadCount > 0 ? "flex" : "none";
+        }
       }
 
       async function markAllAsRead() {
         if (!currentUser) return;
         let identifier =
           currentUser.role === "admin" ? "admin" : currentUser.email;
+
         try {
           await fetch(`${API_URL}/notifications/read`, {
             method: "PUT",
@@ -4120,14 +4373,71 @@
             body: JSON.stringify({ identifier, role: currentUser.role }),
           });
           await updateNotificationBadge();
-          if (
-            document
-              .getElementById("notifications-content-area")
-              .classList.contains("hidden") === false
-          ) {
-            await renderNotificationsPage();
-          }
+          await renderNotificationsPage();
         } catch (e) {}
+      }
+
+      async function renderAdminActivity() {
+        const container = document.getElementById(
+          "admin-recent-activity-container",
+        );
+        if (!container) return;
+
+        const notifs = await fetchNotifications("admin");
+
+        if (notifs.length === 0) {
+          container.innerHTML = `<div style="color:#64748b; font-size:14px;">No recent activity.</div>`;
+          return;
+        }
+
+        container.innerHTML = notifs
+          .slice(0, 5)
+          .map(
+            (n) => `
+            <div class="activity-item">
+                <div class="act-dot dot-${n.color || "blue"}"></div>
+                <div>
+                    <div class="act-text">${n.text}</div>
+                    <div class="act-time">${n.date ? n.date + " • " : ""}${n.time || ""}</div>
+                </div>
+            </div>
+        `,
+          )
+          .join("");
+
+        renderAdminComplaints();
+      }
+
+      async function renderAdminComplaints() {
+        const container = document.getElementById(
+          "admin-all-complaints-container",
+        );
+        if (!container) return;
+        try {
+          const allComplaints = await safeFetchJSON(
+            `${API_URL}/all-complaints`,
+          );
+          if (!allComplaints || allComplaints.length === 0) {
+            container.innerHTML = `<div style="text-align:center;padding:20px;color:#64748b;background:#f8fafc;border-radius:8px;">No complaints filed yet.</div>`;
+            return;
+          }
+          container.innerHTML = allComplaints
+            .map(
+              (cp) => `
+            <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
+                <span style="font-size:13px;font-weight:700;color:#be123c;background:#fef2f2;padding:3px 10px;border-radius:20px;">📚 ${cp.course_name || "Unknown Course"}</span>
+                <span style="font-size:12px;color:#94a3b8;">${cp.date || ""}</span>
+              </div>
+              <div style="font-size:14px;color:#881337;margin-bottom:8px;line-height:1.5;">${cp.complaint_text}</div>
+              <div style="font-size:12px;color:#64748b;">🧑 <b>${cp.user_name || "Unknown"}</b> &nbsp;|&nbsp; ✉️ ${cp.user_email || ""}</div>
+            </div>
+          `,
+            )
+            .join("");
+        } catch (e) {
+          container.innerHTML = `<div style="color:#ef4444;padding:12px;">Failed to load complaints.</div>`;
+        }
       }
 
       async function renderNotificationsPage() {
@@ -4140,8 +4450,9 @@
 
         if (currentUser.role !== "admin") {
           let globalNotifs = await fetchNotifications("all_users");
-          if (globalNotifs && globalNotifs.length)
+          if (globalNotifs && globalNotifs.length) {
             notifs = notifs.concat(globalNotifs).sort((a, b) => b.id - a.id);
+          }
         }
 
         if (notifs.length === 0) {
@@ -4164,7 +4475,6 @@
           .join("");
       }
 
-      // NAVIGATION
       function navigateTo(pageId) {
         document
           .querySelectorAll(".page")
@@ -4195,10 +4505,12 @@
               ? "admin-courses-content"
               : "dashboard-home-content",
           "Upload Course": "instructor-upload-course-content",
+          "Edit Course": "instructor-edit-course-content",
           "Browse Courses": "student-browse-courses-content",
           Progress: "student-progress-content",
           Settings: "settings-content-area",
           Notifications: "notifications-content-area",
+          AdminUserProfile: "admin-user-profile-content",
           CoursePlayer: "course-player-content",
           Students: "instructor-students-content",
         };
@@ -4211,9 +4523,11 @@
         const target = contentSections[label];
         if (target) {
           document.getElementById(target).classList.remove("hidden");
+
           if (label === "Notifications") renderNotificationsPage();
           if (label === "Browse Courses") renderStudentBrowseCourses();
           if (label === "Students") renderInstructorStudents();
+
           if (label === "Courses" && currentUser.role === "instructor") {
             document.getElementById("instructor-dashboard-view").style.display =
               "block";
@@ -4237,9 +4551,295 @@
         if (window.innerWidth < 1024 && el) toggleSidebar();
       }
 
-      // DASHBOARD SETUP
+      async function updateAdminStats() {
+        let users = await safeFetchJSON(`${API_URL}/users`);
+        let courses = await safeFetchJSON(`${API_URL}/courses`);
+
+        let activeStudents = users.filter(
+          (u) => u.role === "student" && u.status === "Approved",
+        ).length;
+        let pendingCoursesCount = courses.filter(
+          (c) => c.status === "Pending",
+        ).length;
+        let pendingUsersCount = users.filter(
+          (u) => u.status === "Pending",
+        ).length;
+
+        const uEl = document.getElementById("admin-stat-users");
+        const cEl = document.getElementById("admin-stat-courses");
+        const sEl = document.getElementById("admin-stat-students");
+        const pEl = document.getElementById("admin-stat-pending");
+        if (uEl) uEl.innerText = users.length;
+        if (cEl) cEl.innerText = courses.length;
+        if (sEl) sEl.innerText = activeStudents;
+        if (pEl) pEl.innerText = pendingCoursesCount + pendingUsersCount;
+      }
+
+      async function updateInstructorStats() {
+        if (!currentUser) return;
+        const courses = await safeFetchJSON(`${API_URL}/courses`);
+        const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+
+        let activeCourses = courses.filter(
+          (c) =>
+            c.instructor_email === currentUser.email && c.status === "Approved",
+        ).length;
+        let totalStudents = enrollments.filter(
+          (e) =>
+            e.instructor_email === currentUser.email && e.status === "Approved",
+        ).length;
+        let pendingEnrollments = enrollments.filter(
+          (e) =>
+            e.instructor_email === currentUser.email && e.status === "Pending",
+        ).length;
+
+        const icEl = document.getElementById("inst-course-count");
+        const isEl = document.getElementById("inst-student-count");
+        const ipEl = document.getElementById("inst-pending-count");
+
+        if (icEl) icEl.innerText = activeCourses;
+        if (isEl) isEl.innerText = totalStudents;
+        if (ipEl) ipEl.innerText = pendingEnrollments;
+      }
+
+      async function renderInstructorRequests() {
+        const container = document.getElementById(
+          "instructor-enrollment-requests",
+        );
+        if (!container) return;
+        container.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">Loading requests...</div>`;
+
+        try {
+          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          const pendingReqs = enrollments.filter(
+            (e) =>
+              e.instructor_email === currentUser.email &&
+              e.status === "Pending",
+          );
+
+          if (pendingReqs.length === 0) {
+            container.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b; background: #f8fafc;">No pending enrollment requests.</div>`;
+            return;
+          }
+
+          let htmlStr = "";
+          pendingReqs.forEach((req) => {
+            htmlStr += `
+              <div class="submission-item">
+                <div>
+                  <div style="font-weight: 700; color: #0f172a; font-size: 15px;">
+                    ${req.student_name} <span style="font-weight: 500; color: #64748b; font-size: 13px;">(${req.student_email})</span>
+                  </div>
+                  <div style="font-size: 13px; color: #2563eb; margin-top: 4px; font-weight: 600;">
+                    Course: ${req.course_title}
+                  </div>
+                  <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">
+                    Requested on: ${req.date}
+                  </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                  <button class="btn btn-success" style="padding: 6px 16px; font-size: 13px;" onclick="processEnrollment(${req.id}, 'Approved', '${req.student_email}', '${req.course_title.replace(/'/g, "\\'")}', '${req.student_name.replace(/'/g, "\\'")}')">Approve</button>
+                  <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px; border-color: #fca5a5; color: #ef4444;" onclick="processEnrollment(${req.id}, 'Rejected', '${req.student_email}', '${req.course_title.replace(/'/g, "\\'")}', '${req.student_name.replace(/'/g, "\\'")}')">Reject</button>
+                </div>
+              </div>
+            `;
+          });
+          container.innerHTML = htmlStr;
+        } catch (e) {
+          container.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to load requests.</div>`;
+        }
+      }
+
+      async function processEnrollment(
+        id,
+        status,
+        studentEmail,
+        courseTitle,
+        studentName,
+      ) {
+        if (
+          !confirm(
+            `Are you sure you want to ${status.toLowerCase()} ${studentName}'s enrollment?`,
+          )
+        )
+          return;
+
+        try {
+          const res = await fetch(`${API_URL}/enrollments/status`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id, status }),
+          });
+
+          if (res.ok) {
+            const color = status === "Approved" ? "green" : "red";
+            const text =
+              status === "Approved"
+                ? `🎉 Your enrollment for "${courseTitle}" has been approved!`
+                : `❌ Your enrollment request for "${courseTitle}" was rejected.`;
+
+            await addNotification(studentEmail, text, color);
+
+            alert(`Enrollment ${status.toLowerCase()} successfully!`);
+            renderInstructorRequests();
+            updateInstructorStats();
+          } else {
+            alert("Failed to update enrollment status.");
+          }
+        } catch (e) {
+          console.error(e);
+          alert("Database connection error.");
+        }
+      }
+
+      // EDIT COURSE
+      async function openEditCourse(courseId) {
+        try {
+          const courses = await safeFetchJSON(`${API_URL}/courses`);
+          const course = courses.find((c) => String(c.id) === String(courseId));
+          if (!course) return alert("Course not found!");
+
+          document.getElementById("ec-id").value = course.id;
+          document.getElementById("ec-title").value = course.title || "";
+          document.getElementById("ec-desc").value = course.description || "";
+          document.getElementById("ec-cat").value = course.category || "";
+          document.getElementById("ec-diff").value =
+            course.difficulty || "Beginner";
+          document.getElementById("ec-lessons").value =
+            course.total_lessons || 4;
+
+          handleNav("Edit Course", null);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async function submitEditCourse() {
+        const id = document.getElementById("ec-id").value;
+        const title = document.getElementById("ec-title").value.trim();
+        const desc = document.getElementById("ec-desc").value.trim();
+        const cat = document.getElementById("ec-cat").value.trim();
+        const diff = document.getElementById("ec-diff").value;
+        const totalLessons =
+          parseInt(document.getElementById("ec-lessons").value) || 4;
+
+        const thumbnailFile =
+          document.getElementById("ec-thumbnail-input").files[0];
+        const videoFile = document.getElementById("ec-video-input").files[0];
+
+        if (!title) return alert("Please enter a course title.");
+
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("description", desc);
+        formData.append("category", cat);
+        formData.append("difficulty", diff);
+        formData.append("total_lessons", totalLessons);
+
+        if (thumbnailFile) formData.append("thumbnail", thumbnailFile);
+        if (videoFile) formData.append("video", videoFile);
+
+        const publishBtn = document.getElementById("btn-submit-edit");
+        const originalText = publishBtn.innerHTML;
+        publishBtn.innerHTML = "⏳ Updating... Please wait";
+        publishBtn.disabled = true;
+
+        try {
+          const res = await fetch(`${API_URL}/update-course/${id}`, {
+            method: "PUT",
+            body: formData,
+          });
+
+          if (res.ok) {
+            alert("Course updated successfully!");
+            document.getElementById("ec-thumbnail-input").value = "";
+            document.getElementById("ec-video-input").value = "";
+            handleNav("Dashboard", document.querySelector(".nav-item-dash"));
+          } else {
+            const err = await res.json();
+            alert("Error updating course: " + (err.error || "Unknown error"));
+          }
+        } catch (e) {
+          alert("Network connection failed.");
+        } finally {
+          publishBtn.innerHTML = originalText;
+          publishBtn.disabled = false;
+        }
+      }
+
+      async function renderInstructorLiveCourses() {
+        const container = document.getElementById(
+          "instructor-live-courses-grid",
+        );
+        if (!container) return;
+
+        try {
+          const courses = await safeFetchJSON(`${API_URL}/courses`);
+          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+
+          let myCourses = courses.filter(
+            (c) => c.instructor_email === currentUser.email,
+          );
+
+          if (myCourses.length === 0) {
+            container.innerHTML = `<p style="color:#64748b; width: 100%;">You haven't uploaded any courses yet.</p>`;
+            return;
+          }
+
+          container.innerHTML = myCourses
+            .map((c) => {
+              const bgIndex =
+                (parseInt(String(c.id).slice(-3)) || 0) %
+                courseGradients.length;
+              let bgStyle = `background: ${courseGradients[bgIndex]}; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
+
+              let thumbHTML = "";
+              if (c.thumbnail_url) {
+                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')">
+                     <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                         <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
+                     </div>
+                </div>`;
+              } else {
+                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')">
+                     <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
+                </div>`;
+              }
+
+              let studentCount = enrollments.filter(
+                (e) => e.course_id == c.id && e.status === "Approved",
+              ).length;
+              let statusBadge =
+                c.status === "Approved"
+                  ? `<span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">Live</span>`
+                  : `<span style="background: #fffbeb; color: #d97706; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #fde68a;">Pending</span>`;
+
+              return `
+                  <div class="std-course-card">
+                      ${thumbHTML}
+                      <div class="std-course-card-content">
+                          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px;">
+                              <h3 style="font-size:18px; font-weight:700; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
+                              ${statusBadge}
+                          </div>
+                          <p style="font-size:14px; color:#2563eb; margin-bottom:10px; font-weight: 600;">Enrolled Students: <span style="background: #eff6ff; padding: 2px 8px; border-radius: 12px; color: #1e40af;">${studentCount}</span></p>
+                          <div style="margin-top:auto; display: flex; flex-direction: column; gap: 8px;">
+                              <button class="btn btn-outline" style="width:100%;" onclick="openCoursePlayer('${c.id}')" ${c.status !== "Approved" ? 'disabled title="Awaiting admin approval"' : ""}>View Details</button>
+                              <button class="btn btn-outline" style="width:100%; border-color:#10b981; color:#059669;" onclick="openEditCourse('${c.id}')">Edit Course</button>
+                          </div>
+                      </div>
+                  </div>
+               `;
+            })
+            .join("");
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
       function setupDashboard(user) {
         currentUser = user;
+
         const safeName = user.name || "User";
         const safeRole = user.role || "student";
         const safeAvatar = user.avatar || "U";
@@ -5522,217 +6122,6 @@
         }
       }
 
-      async function setupCourseStudentsUI() {
-        const container = document.getElementById("cp-students-area-container");
-        if (!container) return;
-        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading students...</div>`;
-        try {
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-          const enrolledStudents = enrollments.filter(
-            (e) =>
-              e.course_id == currentCoursePlayerId && e.status === "Approved",
-          );
-          if (enrolledStudents.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b; background:#f8fafc; border-radius:12px;" class="assignment-card">No students enrolled yet.</div>`;
-            return;
-          }
-
-          let htmlStr = `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;"><div><h3 style="font-size: 18px; font-weight: 700; color: #0f172a;" class="dm-title">Enrolled Students (${enrolledStudents.length})</h3><p style="font-size: 13px; color: #64748b;" class="dm-desc">Manage and track student progress</p></div></div><div style="display:flex; flex-direction:column; gap:10px;">`;
-          const banReqs = await safeFetchJSON(`${API_URL}/ban-requests`);
-
-          enrolledStudents.forEach((st, index) => {
-            let isRequested = banReqs.some(
-              (r) =>
-                r.student_email === st.student_email &&
-                r.course_id == currentCoursePlayerId &&
-                r.status === "Pending",
-            );
-            let actionHtml = "";
-            if (currentUser.role === "instructor") {
-              if (isRequested)
-                actionHtml = `<span style="font-size:12px; color:#d97706; background:#fef3c7; padding:6px 12px; border-radius:20px; font-weight:700; white-space: nowrap;">Ban Requested</span>`;
-              else
-                actionHtml = `<button class="btn btn-outline" style="padding:6px 16px; font-size:13px; color:#ef4444; border-color:#fca5a5; white-space: nowrap;" onclick="requestStudentBan('${st.student_email}', '${st.student_name.replace(/'/g, "\\'")}', '${st.course_id}')">Request Ban</button>`;
-            }
-
-            const bgIndex = index % courseGradients.length;
-            const bgStyle = `background: ${courseGradients[bgIndex]};`;
-            htmlStr += `
-                <div style="display:flex; align-items:center; justify-content:space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
-                  <div style="display: flex; align-items: center; gap: 15px; min-width: 250px;">
-                      <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0;">${st.student_name.charAt(0)}</div>
-                      <div>
-                          <div style="display: flex; align-items: center; gap: 8px;"><h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.student_name}</h4><span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">active</span></div>
-                          <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc">${st.student_email}</div>
-                      </div>
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 20px;">
-                      <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Enrolled on</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.date}</div></div>
-                      <div style="display: flex; gap: 10px;">${actionHtml}</div>
-                  </div>
-                </div>`;
-          });
-          htmlStr += `</div>`;
-          container.innerHTML = htmlStr;
-        } catch (e) {
-          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load students.</div>`;
-        }
-      }
-
-      function setupAssignmentsUI() {
-        const container = document.getElementById(
-          "cp-assignments-area-container",
-        );
-        if (!container) return;
-        let html = "";
-        if (currentUser.role === "instructor") {
-          html += `
-            <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
-              <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Create New Assignment</h3>
-              <div style="display:flex; flex-direction:column; gap:12px;">
-                 <input type="text" id="assign-title" placeholder="Assignment Title" style="padding:10px 15px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif;">
-                 <textarea id="assign-desc" placeholder="Assignment Instructions..." style="padding:10px 15px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; min-height:80px; resize:vertical;"></textarea>
-                 <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                    <label style="font-weight:600; font-size:14px; color:#334155;" class="dm-text">Due Date:</label>
-                    <input type="date" id="assign-due" style="padding:8px 12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; flex:1;">
-                 </div>
-                 <button class="btn btn-primary" onclick="createAssignment()" style="margin-top:5px; width: 100%;">Upload Assignment</button>
-              </div>
-            </div>
-            <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Uploaded Assignments</h3>
-            <div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>`;
-        } else if (currentUser.role === "student") {
-          html += `<h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Course Assignments</h3><p style="color:#64748b; font-size:14px; margin-bottom:20px;" class="dm-desc">Complete and submit the assignments below.</p><div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>`;
-        } else if (currentUser.role === "admin") {
-          html += `<h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">All Assignments</h3><div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>`;
-        }
-        container.innerHTML = html;
-        loadAssignments(currentCoursePlayerId);
-      }
-
-      async function createAssignment() {
-        const title = document.getElementById("assign-title").value.trim();
-        const desc = document.getElementById("assign-desc").value.trim();
-        const due = document.getElementById("assign-due").value;
-        if (!title || !desc || !due)
-          return alert("Please fill all fields for the assignment.");
-        const dateStr = new Date().toLocaleDateString("en-US", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        });
-        const payload = {
-          course_id: String(currentCoursePlayerId),
-          title: title,
-          description: desc,
-          due_date: due,
-          instructor_email: currentUser.email,
-          date: dateStr,
-        };
-        try {
-          const res = await fetch(`${API_URL}/assignments`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-          if (res.ok) {
-            alert("Assignment uploaded successfully!");
-            setupAssignmentsUI();
-          } else {
-            alert("Failed to upload assignment.");
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
-      async function loadAssignments(courseId) {
-        const container = document.getElementById("assign-list");
-        if (!container) return;
-        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading assignments...</div>`;
-        try {
-          const assignments = await safeFetchJSON(
-            `${API_URL}/assignments/${courseId}`,
-          );
-          if (assignments.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b; background:#f8fafc; border-radius:12px;" class="assignment-card">No assignments found for this course.</div>`;
-            return;
-          }
-          const submissions = await safeFetchJSON(
-            `${API_URL}/assignment-submissions/${courseId}`,
-          );
-          let htmlStr = "";
-          assignments.forEach((a) => {
-            let studentActionHtml = "";
-            if (currentUser.role === "student") {
-              let mySub = submissions.find(
-                (s) =>
-                  s.assignment_id === a.id &&
-                  s.student_email === currentUser.email,
-              );
-              if (mySub) {
-                let gradeHtml =
-                  mySub.marks != null
-                    ? `<div style="margin-top:10px; color:#16a34a; font-weight:700;">Graded: ${mySub.marks}/10</div>`
-                    : "";
-                studentActionHtml = `<div style="margin-top:15px; padding:10px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;"><b style="color:#059669; font-size:13px;">✅ Submitted on ${mySub.date}</b>${gradeHtml}</div>`;
-              } else {
-                studentActionHtml = `<div style="margin-top:15px; display:flex; flex-direction:column; align-items:flex-start; width: 100%;"><textarea id="sub-input-${a.id}" placeholder="Type your answer or paste Google Drive link here..." style="width:100%; min-height:80px; padding:10px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; resize:vertical; box-sizing: border-box;" class="submission-box"></textarea><button class="btn btn-primary" style="margin-top:8px; padding:8px 16px; font-size:13px; width: 100%;" onclick="submitAssignment(${a.id})">Submit Assignment</button></div>`;
-              }
-            } else if (
-              currentUser.role === "instructor" ||
-              currentUser.role === "admin"
-            ) {
-              let assignSubs = submissions.filter(
-                (s) => s.assignment_id === a.id,
-              );
-              studentActionHtml = `<div style="margin-top:15px; padding-top:15px; border-top:1px solid #e2e8f0;"><b style="font-size:13px; color:#0f172a;" class="dm-title">Submissions (${assignSubs.length})</b></div>`;
-            }
-            htmlStr += `<div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:20px;" class="assignment-card"><div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px; flex-wrap: wrap; gap: 10px;"><h4 style="font-size:16px; font-weight:800; color:#0f172a; margin:0;" class="dm-title">📝 ${a.title}</h4><span style="background:#fef2f2; color:#ef4444; border:1px solid #fca5a5; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;">Due: ${a.due_date}</span></div><p style="font-size:14px; color:#475569; line-height:1.5; word-wrap: break-word;" class="dm-desc">${a.description}</p>${studentActionHtml}</div>`;
-          });
-          container.innerHTML = htmlStr;
-        } catch (e) {
-          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load assignments.</div>`;
-        }
-      }
-
-      async function submitAssignment(assignId) {
-        const inputEl = document.getElementById(`sub-input-${assignId}`);
-        const subText = inputEl.value.trim();
-        if (!subText)
-          return alert(
-            "Please type your answer or provide a link before submitting.",
-          );
-        const dateStr = new Date().toLocaleDateString("en-US", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        });
-        const payload = {
-          assignment_id: assignId,
-          course_id: String(currentCoursePlayerId),
-          student_email: currentUser.email,
-          student_name: currentUser.name,
-          submission_text: subText,
-          date: dateStr,
-        };
-        try {
-          const res = await fetch(`${API_URL}/assignment-submissions`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-          if (res.ok) {
-            alert("Assignment submitted successfully!");
-            loadAssignments(currentCoursePlayerId);
-          } else {
-            alert("Failed to submit assignment.");
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
       function setupFeedbackUI() {
         const container = document.getElementById("cp-feedback-area-container");
         if (!container) return;
@@ -5793,32 +6182,6 @@
             avgBadge.innerHTML = `Average Rating: ${(totalRating / feedbacks.length).toFixed(1)}/5 ⭐`;
         } catch (e) {
           container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load feedback.</div>`;
-        }
-      }
-
-      async function loadCourseComplaints(courseId) {
-        const container = document.getElementById("cp-complaint-list");
-        if (!container) return;
-        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading complaints...</div>`;
-        try {
-          const complaints = await safeFetchJSON(
-            `${API_URL}/course-complaints/${courseId}`,
-          );
-          if (complaints.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding: 15px; color:#64748b; background:#f8fafc; border-radius:8px;">No complaints filed.</div>`;
-            return;
-          }
-          container.innerHTML = complaints
-            .map(
-              (cp) => `
-            <div style="background:#fff1f2; padding:15px; border-radius:12px; border:1px solid #fecdd3; margin-bottom:10px;">
-              <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><b style="color:#be123c;">From: ${cp.user_name}</b><span style="font-size:12px; color:#9f1239;">${cp.date}</span></div>
-              <div style="color:#881337; font-size:14px;">${cp.complaint_text}</div>
-            </div>`,
-            )
-            .join("");
-        } catch (e) {
-          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load complaints.</div>`;
         }
       }
 
