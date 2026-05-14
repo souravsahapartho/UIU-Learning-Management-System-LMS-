@@ -96,18 +96,39 @@ db.getConnection((err, connection) => {
       )
     `);
 
-    // Safely add new columns to existing courses table if they don't exist
-    connection.query(
+    // Safely add new columns to existing courses table with proper error handling
+    const alterQuery = (query, colName) => {
+      connection.query(query, (error) => {
+        if (error) {
+          if (error.code === "ER_DUP_FIELDNAME") {
+            console.log(
+              `✅ Column '${colName}' already exists in courses table.`,
+            );
+          } else {
+            console.error(
+              `❌ Error adding column '${colName}':`,
+              error.message,
+            );
+          }
+        } else {
+          console.log(
+            `✅ Column '${colName}' added successfully to courses table.`,
+          );
+        }
+      });
+    };
+
+    alterQuery(
       "ALTER TABLE courses ADD COLUMN total_lessons INT DEFAULT 4",
-      () => {},
+      "total_lessons",
     );
-    connection.query(
+    alterQuery(
       "ALTER TABLE courses ADD COLUMN thumbnail_url VARCHAR(500) DEFAULT NULL",
-      () => {},
+      "thumbnail_url",
     );
-    connection.query(
+    alterQuery(
       "ALTER TABLE courses ADD COLUMN video_url VARCHAR(500) DEFAULT NULL",
-      () => {},
+      "video_url",
     );
 
     connection.query(`
@@ -316,12 +337,26 @@ app.put("/update-user-status", (req, res) => {
 });
 
 // --- COURSE APIs WITH CLOUDINARY UPLOAD ---
+
+// Wrapping multer so we can catch errors easily
 app.post(
   "/upload-course",
-  upload.fields([
-    { name: "thumbnail", maxCount: 1 },
-    { name: "video", maxCount: 1 },
-  ]),
+  (req, res, next) => {
+    const uploadMiddleware = upload.fields([
+      { name: "thumbnail", maxCount: 1 },
+      { name: "video", maxCount: 1 },
+    ]);
+
+    uploadMiddleware(req, res, (err) => {
+      if (err) {
+        console.error("🔥 Cloudinary/Multer Error:", err.message);
+        return res
+          .status(500)
+          .json({ error: "File upload failed: " + err.message });
+      }
+      next();
+    });
+  },
   (req, res) => {
     const {
       title,
@@ -340,6 +375,13 @@ app.post(
     const videoUrl =
       req.files && req.files["video"] ? req.files["video"][0].path : null;
 
+    console.log("➡️ Received Course Upload Data:", {
+      title,
+      instructorEmail,
+      thumbnailUrl,
+      videoUrl,
+    });
+
     db.query(
       `INSERT INTO courses (
       title, description, category, difficulty, instructor_email, instructor_name, total_lessons, status, thumbnail_url, video_url
@@ -355,16 +397,21 @@ app.post(
         thumbnailUrl,
         videoUrl,
       ],
-      (err) =>
-        err
-          ? res.status(500).json({ error: err.message })
-          : res
-              .status(200)
-              .json({
-                message: "Saved successfully with media",
-                thumbnail: thumbnailUrl,
-                video: videoUrl,
-              }),
+      (err) => {
+        if (err) {
+          console.error("🔥 Database Insert Error:", err.message);
+          return res
+            .status(500)
+            .json({ error: "Database error: " + err.message });
+        }
+        res
+          .status(200)
+          .json({
+            message: "Saved successfully with media",
+            thumbnail: thumbnailUrl,
+            video: videoUrl,
+          });
+      },
     );
   },
 );
