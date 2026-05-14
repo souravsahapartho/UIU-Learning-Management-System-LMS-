@@ -5511,15 +5511,10 @@
                           <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${progressMock}%</div>
                       </div>
                   </div>
-                  <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-                      <div style="text-align: right;">
-                          <div style="font-size: 11px; color: #94a3b8;">Enrolled on</div>
-                          <div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.date}</div>
-                      </div>
-                      <div style="display: flex; gap: 10px;">
-                        <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px; white-space: nowrap;" onclick="alert('Student detail view coming soon!')">View Details</button>
-                        ${actionHtml}
-                      </div>
+                  <div style="display: flex; align-items: center; gap: 20px;">
+                      <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Last active</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.lastActive}</div></div>
+                      <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px;" onclick="alert('Detailed student view coming soon!')">View Details</button>
+                      ${actionHtml}
                   </div>
                 </div>
               `;
@@ -6120,6 +6115,104 @@
         } catch (e) {
           alert("Database connection error.");
         }
+      }
+
+      async function updateProfile() {
+        if (!currentUser) return;
+        const newName = document.getElementById("set-name").value;
+        const newAvatar = newName.charAt(0).toUpperCase();
+
+        try {
+          await fetch(`${API_URL}/update-profile`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: currentUser.email,
+              name: newName,
+              avatar: newAvatar,
+            }),
+          });
+        } catch (err) {}
+
+        alert("Profile updated successfully!");
+        currentUser.name = newName;
+        currentUser.avatar = newAvatar;
+        localStorage.setItem("elms_current_user", JSON.stringify(currentUser));
+
+        let users = JSON.parse(localStorage.getItem("elms_users_db")) || [];
+        users = users.map((u) =>
+          u.email === currentUser.email
+            ? { ...u, name: newName, avatar: newAvatar }
+            : u,
+        );
+        localStorage.setItem("elms_users_db", JSON.stringify(users));
+
+        location.reload();
+      }
+
+      async function changePassword() {
+        if (!currentUser) return;
+        const oldPassword = document.getElementById("set-old-password").value;
+        const newPassword = document.getElementById("set-new-password").value;
+        const confirmPassword = document.getElementById(
+          "set-confirm-password",
+        ).value;
+
+        if (!oldPassword || !newPassword || !confirmPassword) {
+          return alert("Please fill in all password fields.");
+        }
+        if (newPassword !== confirmPassword) {
+          return alert("New passwords do not match.");
+        }
+
+        try {
+          const res = await fetch(`${API_URL}/update-password`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: currentUser.email,
+              oldPassword: oldPassword,
+              newPassword: newPassword,
+            }),
+          });
+
+          const data = await res.json();
+          if (res.ok) {
+            alert("Password updated successfully!");
+            document.getElementById("set-old-password").value = "";
+            document.getElementById("set-new-password").value = "";
+            document.getElementById("set-confirm-password").value = "";
+          } else {
+            alert(data.error || "Failed to update password.");
+          }
+        } catch (error) {
+          console.error(error);
+          alert("Connection error while updating password.");
+        }
+      }
+
+      async function deleteAccount() {
+        if (!currentUser) return;
+        if (!confirm("Are you sure you want to delete your account?")) return;
+        try {
+          await fetch(`${API_URL}/delete-account`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: currentUser.email }),
+          });
+        } catch (err) {}
+
+        let users = JSON.parse(localStorage.getItem("elms_users_db")) || [];
+        users = users.filter((u) => u.email !== currentUser.email);
+        localStorage.setItem("elms_users_db", JSON.stringify(users));
+
+        alert("Your account has been successfully deleted.");
+        logout();
+      }
+
+      function logout() {
+        localStorage.removeItem("elms_current_user");
+        location.reload();
       }
 
       function documentReady() {
