@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ELMS - Educational Learning Management System</title>
-    <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="elms_favicon.jpg?v=2" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
@@ -1978,7 +1977,6 @@
     </style>
   </head>
   <body>
-    <!-- nav -->
     <nav class="navbar" id="main-nav">
       <div class="logo" onclick="navigateTo('landing')">
         <span>ELMS</span> Platform
@@ -1996,7 +1994,6 @@
       </div>
     </nav>
 
-    <!-- Landing page -->
     <div id="landing-page" class="page">
       <div class="hero-section">
         <div class="hero-content">
@@ -2035,7 +2032,6 @@
       </div>
     </div>
 
-    <!-- login -->
     <div id="login-page" class="page hidden">
       <div class="auth-container">
         <div class="auth-box">
@@ -2066,7 +2062,6 @@
       </div>
     </div>
 
-    <!-- Signup -->
     <div id="signup-page" class="page hidden">
       <div class="auth-container">
         <div class="auth-box">
@@ -2110,7 +2105,6 @@
       </div>
     </div>
 
-    <!-- Sidebar -->
     <div
       class="sidebar-overlay"
       id="sidebar-overlay"
@@ -2146,7 +2140,6 @@
       <div id="sidebar-bottom"></div>
     </aside>
 
-    <!-- Dashboard -->
     <div id="dashboard-page" class="page hidden">
       <header class="navbar" style="position: sticky; top: 0">
         <div class="left-nav-container">
@@ -2230,7 +2223,6 @@
       </header>
 
       <div class="dashboard-content">
-        <!-- home dashboard -->
         <div id="dashboard-home-content">
           <!-- Student dash -->
           <div id="student-dashboard-view" style="display: none">
@@ -2312,7 +2304,6 @@
               </div>
             </div>
 
-            <!-- Due Assignments Section -->
             <div
               style="
                 display: flex;
@@ -2715,17 +2706,6 @@
                       </svg>
                       Manage Users</span
                     >
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      style="opacity: 0.7"
-                    >
-                      <path d="M5 12h14M12 5l7 7-7 7" />
-                    </svg>
                   </div>
                   <div class="aac-desc aac-desc-users">
                     Review instructor applications and manage accounts
@@ -2763,17 +2743,6 @@
                       </svg>
                       Manage Courses</span
                     >
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      style="opacity: 0.7"
-                    >
-                      <path d="M5 12h14M12 5l7 7-7 7" />
-                    </svg>
                   </div>
                   <div class="aac-desc aac-desc-courses">
                     Review and approve new course submissions
@@ -2814,7 +2783,6 @@
               ></div>
             </div>
 
-            <!-- ALL COMPLAINTS SECTION -->
             <div class="admin-activity-section" style="margin-top: 24px">
               <div class="aas-header" style="margin-bottom: 16px">
                 <div
@@ -2854,7 +2822,7 @@
           </div>
         </div>
 
-        <!-- student browse sections -->
+        <!-- Browse courses -->
         <div id="student-browse-courses-content" class="hidden">
           <button
             class="btn-back"
@@ -2895,7 +2863,7 @@
           ></div>
         </div>
 
-        <!-- 🔥 NEW: INSTRUCTOR STUDENTS VIEW 🔥 -->
+        <!-- Instructor Students View -->
         <div id="instructor-students-content" class="hidden">
           <div class="settings-header" style="margin-bottom: 30px">
             <h1
@@ -2957,7 +2925,7 @@
           </div>
         </div>
 
-        <!-- student progress section -->
+        <!-- Student progress -->
         <div id="student-progress-content" class="hidden">
           <button
             class="btn-back"
@@ -3094,7 +3062,7 @@
           </div>
         </div>
 
-        <!-- SECTION: INSTRUCTOR UPLOAD COURSE VIEW -->
+        <!-- Instructor Upload Course View -->
         <div id="instructor-upload-course-content" class="hidden">
           <button
             class="btn-back"
@@ -3243,7 +3211,6 @@
                 />
               </div>
             </div>
-            <input type="file" id="uc-doc-input" class="hidden" />
           </div>
 
           <div
@@ -3283,7 +3250,7 @@
           </div>
         </div>
 
-        <!-- admin user view -->
+        <!-- admin views -->
         <div id="admin-users-content" class="hidden">
           <button
             class="btn-back"
@@ -3345,30 +3312,6 @@
           <div class="user-grid" id="admin-user-grid-container"></div>
         </div>
 
-        <!-- admin user profile view -->
-        <div id="admin-user-profile-content" class="hidden">
-          <button
-            class="btn-back"
-            onclick="
-              handleNav('Users', document.querySelector('.nav-item-users'))
-            "
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            Back to Users
-          </button>
-          <div id="user-profile-dynamic-content"></div>
-        </div>
-
-        <!-- admin courses view-->
         <div id="admin-courses-content" class="hidden">
           <button
             class="btn-back"
@@ -3443,6 +3386,7 @@
           <div class="admin-course-grid" id="admin-course-list"></div>
         </div>
 
+        <!-- Notifications -->
         <div id="notifications-content-area" class="hidden">
           <button
             class="btn-back"
@@ -3484,7 +3428,7 @@
           ></div>
         </div>
 
-        <!-- settings -->
+        <!-- Settings -->
         <div id="settings-content-area" class="hidden">
           <div class="settings-header">
             <h1
@@ -3662,7 +3606,7 @@
           </div>
         </div>
 
-        <!-- 🔥 COURSE PLAYER (NEW DETAILED VIEW WITH CHAT, FEEDBACK & ASSIGNMENTS) 🔥 -->
+        <!-- 🔥 COURSE PLAYER 🔥 -->
         <div id="course-player-content" class="hidden">
           <button
             class="btn-back"
@@ -3723,9 +3667,8 @@
             </div>
 
             <div class="cp-layout">
-              <!-- Left Side: Video & Content (Lockable Area) -->
               <div id="cp-content-wrapper" style="position: relative">
-                <!-- 🔥 Locked Overlay 🔥 -->
+                <!-- Locked Overlay -->
                 <div
                   id="cp-locked-overlay"
                   class="hidden"
@@ -3797,17 +3740,7 @@
                   </p>
                 </div>
 
-                <div class="cp-video-box">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polygon points="10 8 16 12 10 16 10 8"></polygon>
-                  </svg>
-                </div>
+                <div class="cp-video-box"></div>
 
                 <div class="cp-lesson-info">
                   <h2
@@ -3883,7 +3816,6 @@
                   </div>
                 </div>
 
-                <!-- Tabs Area -->
                 <div
                   style="
                     background: white;
@@ -3987,7 +3919,6 @@
                     </button>
                   </div>
 
-                  <!-- Dynamic Chat System -->
                   <div id="cp-chat-area-container">
                     <div class="cp-chat-area" id="cp-chat-messages"></div>
                     <div
@@ -4027,22 +3958,14 @@
                     </div>
                   </div>
 
-                  <!-- 🔥 Feedback & Complaint System 🔥 -->
                   <div id="cp-feedback-area-container" class="hidden"></div>
-
-                  <!-- 🔥 Assignments System 🔥 -->
                   <div id="cp-assignments-area-container" class="hidden"></div>
-
-                  <!-- 🔥 Enrolled Students System 🔥 -->
                   <div id="cp-students-area-container" class="hidden"></div>
                 </div>
               </div>
 
-              <!-- Right Side: Lesson List (Always Visible) -->
               <div>
-                <div class="lesson-list-box" id="cp-lesson-list-box">
-                  <!-- Dynamic Modules Render Here -->
-                </div>
+                <div class="lesson-list-box" id="cp-lesson-list-box"></div>
               </div>
             </div>
           </div>
@@ -4050,9 +3973,13 @@
       </div>
     </div>
 
+    <!-- MAIN JAVASCRIPT LOGIC -->
     <script>
       const API_URL = "https://elms-backend-d7mo.onrender.com";
       let currentUser = null;
+      let currentCoursePlayerId = null;
+      let currentCourseObj = null;
+      let instGlobalStudents = [];
 
       const courseGradients = [
         "linear-gradient(135deg, #3b82f6, #1e40af)",
@@ -4062,41 +3989,19 @@
         "linear-gradient(135deg, #ec4899, #be123c)",
       ];
 
-      let currentCoursePlayerId = null;
-      let currentCourseObj = null;
-      let instGlobalStudents = [];
-
-      const navIcons = {
-        dashboard: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>`,
-        users: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>`,
-        courses: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>`,
-        upload: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>`,
-        students: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>`,
-        browse: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`,
-        progress: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>`,
-        notifications: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>`,
-        settings: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>`,
-      };
-
       async function safeFetchJSON(url, options = {}) {
         try {
           const res = await fetch(url, options);
-          if (!res.ok) {
-            console.error(`Fetch Error [${res.status}] for URL:`, url);
-            return [];
-          }
+          if (!res.ok) return [];
           const contentType = res.headers.get("content-type");
           if (contentType && contentType.includes("application/json")) {
             const data = await res.json();
-            if (data && data.error) {
-              console.error("API Error Response:", data.error);
-              return [];
-            }
+            if (data && data.error) return [];
             return data;
           }
           return [];
         } catch (e) {
-          console.warn("API Fetch Exception:", e);
+          console.warn("API Error:", e);
           return [];
         }
       }
@@ -4119,21 +4024,17 @@
           if (dmToggle) dmToggle.checked = true;
         }
 
-        try {
-          const savedUser = localStorage.getItem("elms_current_user");
-          if (savedUser && savedUser !== "undefined") {
-            currentUser = JSON.parse(savedUser);
-            setupDashboard(currentUser);
-            navigateTo("dashboard");
-          } else {
-            navigateTo("landing");
-          }
-        } catch (e) {
-          localStorage.removeItem("elms_current_user");
+        const savedUser = localStorage.getItem("elms_current_user");
+        if (savedUser && savedUser !== "undefined") {
+          currentUser = JSON.parse(savedUser);
+          setupDashboard(currentUser);
+          navigateTo("dashboard");
+        } else {
           navigateTo("landing");
         }
       });
 
+      // NOTIFICATIONS
       async function fetchNotifications(identifier) {
         try {
           const res = await fetch(`${API_URL}/notifications/${identifier}`);
@@ -4156,9 +4057,8 @@
           hour: "2-digit",
           minute: "2-digit",
         });
-
         try {
-          const res = await fetch(`${API_URL}/notifications`, {
+          await fetch(`${API_URL}/notifications`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -4169,16 +4069,7 @@
               time: timeStr,
             }),
           });
-          if (res.ok) {
-            updateNotificationBadge();
-            if (
-              identifier === "admin" &&
-              currentUser &&
-              currentUser.role === "admin"
-            ) {
-              renderAdminActivity();
-            }
-          }
+          updateNotificationBadge();
         } catch (e) {}
       }
 
@@ -4216,19 +4107,12 @@
           badge.innerText = unreadCount;
           badge.style.display = unreadCount > 0 ? "flex" : "none";
         }
-
-        const sidebarBadge = document.getElementById("sidebar-notif-badge");
-        if (sidebarBadge) {
-          sidebarBadge.innerText = unreadCount;
-          sidebarBadge.style.display = unreadCount > 0 ? "flex" : "none";
-        }
       }
 
       async function markAllAsRead() {
         if (!currentUser) return;
         let identifier =
           currentUser.role === "admin" ? "admin" : currentUser.email;
-
         try {
           await fetch(`${API_URL}/notifications/read`, {
             method: "PUT",
@@ -4236,71 +4120,14 @@
             body: JSON.stringify({ identifier, role: currentUser.role }),
           });
           await updateNotificationBadge();
-          await renderNotificationsPage();
-        } catch (e) {}
-      }
-
-      async function renderAdminActivity() {
-        const container = document.getElementById(
-          "admin-recent-activity-container",
-        );
-        if (!container) return;
-
-        const notifs = await fetchNotifications("admin");
-
-        if (notifs.length === 0) {
-          container.innerHTML = `<div style="color:#64748b; font-size:14px;">No recent activity.</div>`;
-          return;
-        }
-
-        container.innerHTML = notifs
-          .slice(0, 5)
-          .map(
-            (n) => `
-            <div class="activity-item">
-                <div class="act-dot dot-${n.color || "blue"}"></div>
-                <div>
-                    <div class="act-text">${n.text}</div>
-                    <div class="act-time">${n.date ? n.date + " • " : ""}${n.time || ""}</div>
-                </div>
-            </div>
-        `,
-          )
-          .join("");
-
-        renderAdminComplaints();
-      }
-
-      async function renderAdminComplaints() {
-        const container = document.getElementById(
-          "admin-all-complaints-container",
-        );
-        if (!container) return;
-        try {
-          const allComplaints = await safeFetchJSON(
-            `${API_URL}/all-complaints`,
-          );
-          if (!allComplaints || allComplaints.length === 0) {
-            container.innerHTML = `<div style="text-align:center;padding:20px;color:#64748b;background:#f8fafc;border-radius:8px;">No complaints filed yet.</div>`;
-            return;
+          if (
+            document
+              .getElementById("notifications-content-area")
+              .classList.contains("hidden") === false
+          ) {
+            await renderNotificationsPage();
           }
-          container.innerHTML = allComplaints
-            .map(
-              (cp) => `
-            <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
-                <span style="font-size:13px;font-weight:700;color:#be123c;background:#fef2f2;padding:3px 10px;border-radius:20px;">📚 ${cp.course_name || "Unknown Course"}</span>
-                <span style="font-size:12px;color:#94a3b8;">${cp.date || ""}</span>
-              </div>
-              <div style="font-size:14px;color:#881337;margin-bottom:8px;line-height:1.5;">${cp.complaint_text}</div>
-              <div style="font-size:12px;color:#64748b;">🧑 <b>${cp.user_name || "Unknown"}</b> &nbsp;|&nbsp; ✉️ ${cp.user_email || ""}</div>
-            </div>
-          `,
-            )
-            .join("");
-        } catch (e) {
-          container.innerHTML = `<div style="color:#ef4444;padding:12px;">Failed to load complaints.</div>`;
-        }
+        } catch (e) {}
       }
 
       async function renderNotificationsPage() {
@@ -4313,9 +4140,8 @@
 
         if (currentUser.role !== "admin") {
           let globalNotifs = await fetchNotifications("all_users");
-          if (globalNotifs && globalNotifs.length) {
+          if (globalNotifs && globalNotifs.length)
             notifs = notifs.concat(globalNotifs).sort((a, b) => b.id - a.id);
-          }
         }
 
         if (notifs.length === 0) {
@@ -4338,6 +4164,7 @@
           .join("");
       }
 
+      // NAVIGATION
       function navigateTo(pageId) {
         document
           .querySelectorAll(".page")
@@ -4372,7 +4199,6 @@
           Progress: "student-progress-content",
           Settings: "settings-content-area",
           Notifications: "notifications-content-area",
-          AdminUserProfile: "admin-user-profile-content",
           CoursePlayer: "course-player-content",
           Students: "instructor-students-content",
         };
@@ -4385,11 +4211,9 @@
         const target = contentSections[label];
         if (target) {
           document.getElementById(target).classList.remove("hidden");
-
           if (label === "Notifications") renderNotificationsPage();
           if (label === "Browse Courses") renderStudentBrowseCourses();
           if (label === "Students") renderInstructorStudents();
-
           if (label === "Courses" && currentUser.role === "instructor") {
             document.getElementById("instructor-dashboard-view").style.display =
               "block";
@@ -4413,150 +4237,9 @@
         if (window.innerWidth < 1024 && el) toggleSidebar();
       }
 
-      async function updateAdminStats() {
-        let users = await safeFetchJSON(`${API_URL}/users`);
-        let courses = await safeFetchJSON(`${API_URL}/courses`);
-
-        let activeStudents = users.filter(
-          (u) => u.role === "student" && u.status === "Approved",
-        ).length;
-        let pendingCoursesCount = courses.filter(
-          (c) => c.status === "Pending",
-        ).length;
-        let pendingUsersCount = users.filter(
-          (u) => u.status === "Pending",
-        ).length;
-
-        const uEl = document.getElementById("admin-stat-users");
-        const cEl = document.getElementById("admin-stat-courses");
-        const sEl = document.getElementById("admin-stat-students");
-        const pEl = document.getElementById("admin-stat-pending");
-        if (uEl) uEl.innerText = users.length;
-        if (cEl) cEl.innerText = courses.length;
-        if (sEl) sEl.innerText = activeStudents;
-        if (pEl) pEl.innerText = pendingCoursesCount + pendingUsersCount;
-      }
-
-      async function updateInstructorStats() {
-        if (!currentUser) return;
-        const courses = await safeFetchJSON(`${API_URL}/courses`);
-        const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
-        let activeCourses = courses.filter(
-          (c) =>
-            c.instructor_email === currentUser.email && c.status === "Approved",
-        ).length;
-        let totalStudents = enrollments.filter(
-          (e) =>
-            e.instructor_email === currentUser.email && e.status === "Approved",
-        ).length;
-        let pendingEnrollments = enrollments.filter(
-          (e) =>
-            e.instructor_email === currentUser.email && e.status === "Pending",
-        ).length;
-
-        const icEl = document.getElementById("inst-course-count");
-        const isEl = document.getElementById("inst-student-count");
-        const ipEl = document.getElementById("inst-pending-count");
-
-        if (icEl) icEl.innerText = activeCourses;
-        if (isEl) isEl.innerText = totalStudents;
-        if (ipEl) ipEl.innerText = pendingEnrollments;
-      }
-
-      async function renderInstructorRequests() {
-        const container = document.getElementById(
-          "instructor-enrollment-requests",
-        );
-        if (!container) return;
-        container.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">Loading requests...</div>`;
-
-        try {
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-          const pendingReqs = enrollments.filter(
-            (e) =>
-              e.instructor_email === currentUser.email &&
-              e.status === "Pending",
-          );
-
-          if (pendingReqs.length === 0) {
-            container.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b; background: #f8fafc;">No pending enrollment requests.</div>`;
-            return;
-          }
-
-          let htmlStr = "";
-          pendingReqs.forEach((req) => {
-            htmlStr += `
-              <div class="submission-item">
-                <div>
-                  <div style="font-weight: 700; color: #0f172a; font-size: 15px;">
-                    ${req.student_name} <span style="font-weight: 500; color: #64748b; font-size: 13px;">(${req.student_email})</span>
-                  </div>
-                  <div style="font-size: 13px; color: #2563eb; margin-top: 4px; font-weight: 600;">
-                    Course: ${req.course_title}
-                  </div>
-                  <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">
-                    Requested on: ${req.date}
-                  </div>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                  <button class="btn btn-success" style="padding: 6px 16px; font-size: 13px;" onclick="processEnrollment(${req.id}, 'Approved', '${req.student_email}', '${req.course_title.replace(/'/g, "\\'")}', '${req.student_name.replace(/'/g, "\\'")}')">Approve</button>
-                  <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px; border-color: #fca5a5; color: #ef4444;" onclick="processEnrollment(${req.id}, 'Rejected', '${req.student_email}', '${req.course_title.replace(/'/g, "\\'")}', '${req.student_name.replace(/'/g, "\\'")}')">Reject</button>
-                </div>
-              </div>
-            `;
-          });
-          container.innerHTML = htmlStr;
-        } catch (e) {
-          container.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to load requests.</div>`;
-        }
-      }
-
-      async function processEnrollment(
-        id,
-        status,
-        studentEmail,
-        courseTitle,
-        studentName,
-      ) {
-        if (
-          !confirm(
-            `Are you sure you want to ${status.toLowerCase()} ${studentName}'s enrollment?`,
-          )
-        )
-          return;
-
-        try {
-          const res = await fetch(`${API_URL}/enrollments/status`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id, status }),
-          });
-
-          if (res.ok) {
-            const color = status === "Approved" ? "green" : "red";
-            const text =
-              status === "Approved"
-                ? `🎉 Your enrollment for "${courseTitle}" has been approved!`
-                : `❌ Your enrollment request for "${courseTitle}" was rejected.`;
-
-            await addNotification(studentEmail, text, color);
-
-            alert(`Enrollment ${status.toLowerCase()} successfully!`);
-            renderInstructorRequests();
-            updateInstructorStats();
-          } else {
-            alert("Failed to update enrollment status.");
-          }
-        } catch (e) {
-          console.error(e);
-          alert("Database connection error.");
-        }
-      }
-
+      // DASHBOARD SETUP
       function setupDashboard(user) {
         currentUser = user;
-
         const safeName = user.name || "User";
         const safeRole = user.role || "student";
         const safeAvatar = user.avatar || "U";
@@ -4574,7 +4257,7 @@
         const topAvatarEl = document.getElementById("top-avatar");
         const setAvatarEl = document.getElementById("set-avatar-circle");
 
-        if (safeAvatar.startsWith("http")) {
+        if (safeAvatar && safeAvatar.startsWith("http")) {
           const imgHtml = `<img src="${safeAvatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
           if (topAvatarEl) {
             topAvatarEl.innerHTML = imgHtml;
@@ -4664,29 +4347,29 @@
           menu = [
             {
               label: "Dashboard",
-              icon: navIcons.dashboard,
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>',
               active: true,
               class: "nav-item-dash",
             },
             {
               label: "Browse Courses",
-              icon: navIcons.browse,
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
               class: "nav-item-browse",
             },
             {
               label: "Progress",
-              icon: navIcons.progress,
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>',
               class: "nav-item-progress",
             },
             {
               label: "Notifications",
-              icon: navIcons.notifications,
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>',
               class: "nav-item-notif",
               badge: true,
             },
             {
               label: "Settings",
-              icon: navIcons.settings,
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>',
               class: "nav-item-settings",
             },
           ];
@@ -4694,25 +4377,29 @@
           menu = [
             {
               label: "Dashboard",
-              icon: navIcons.dashboard,
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>',
               active: true,
               class: "nav-item-dash",
             },
-            { label: "Users", icon: navIcons.users, class: "nav-item-users" },
+            {
+              label: "Users",
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>',
+              class: "nav-item-users",
+            },
             {
               label: "Courses",
-              icon: navIcons.courses,
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>',
               class: "nav-item-courses",
             },
             {
               label: "Notifications",
-              icon: navIcons.notifications,
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>',
               class: "nav-item-notif",
               badge: true,
             },
             {
               label: "Settings",
-              icon: navIcons.settings,
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>',
               class: "nav-item-settings",
             },
           ];
@@ -4720,34 +4407,34 @@
           menu = [
             {
               label: "Dashboard",
-              icon: navIcons.dashboard,
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>',
               active: true,
               class: "nav-item-dash",
             },
             {
               label: "Courses",
-              icon: navIcons.courses,
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>',
               class: "nav-item-courses",
             },
             {
               label: "Upload Course",
-              icon: navIcons.upload,
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>',
               class: "nav-item-upload",
             },
             {
               label: "Students",
-              icon: navIcons.students,
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>',
               class: "nav-item-students",
             },
             {
               label: "Notifications",
-              icon: navIcons.notifications,
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>',
               class: "nav-item-notif",
               badge: true,
             },
             {
               label: "Settings",
-              icon: navIcons.settings,
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>',
               class: "nav-item-settings",
             },
           ];
@@ -4762,9 +4449,10 @@
           })
           .join("");
 
-        const avatarHtml = user.avatar.startsWith("http")
-          ? `<img src="${user.avatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
-          : user.avatar;
+        const avatarHtml =
+          user.avatar && user.avatar.startsWith("http")
+            ? `<img src="${user.avatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
+            : user.avatar || "U";
 
         const btmHtml = `
           <div style="padding: 20px; border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 10px;">
@@ -4785,168 +4473,203 @@
         document.getElementById("sidebar-bottom").innerHTML = btmHtml;
       }
 
-      async function publishNewCourse() {
-        const title = document.getElementById("uc-title").value;
-        const desc = document.getElementById("uc-desc").value;
-        const cat = document.getElementById("uc-cat").value;
-        const diff = document.getElementById("uc-diff").value;
-        const totalLessons =
-          parseInt(document.getElementById("uc-lessons").value) || 4;
+      // ADMIN FUNCTIONS
+      async function updateAdminStats() {
+        let users = await safeFetchJSON(`${API_URL}/users`);
+        let courses = await safeFetchJSON(`${API_URL}/courses`);
+        let activeStudents = users.filter(
+          (u) => u.role === "student" && u.status === "Approved",
+        ).length;
+        let pendingCoursesCount = courses.filter(
+          (c) => c.status === "Pending",
+        ).length;
+        let pendingUsersCount = users.filter(
+          (u) => u.status === "Pending",
+        ).length;
 
-        const thumbnailFile =
-          document.getElementById("uc-thumbnail-input").files[0];
-        const videoFile = document.getElementById("uc-video-input").files[0];
+        const uEl = document.getElementById("admin-stat-users");
+        const cEl = document.getElementById("admin-stat-courses");
+        const sEl = document.getElementById("admin-stat-students");
+        const pEl = document.getElementById("admin-stat-pending");
+        if (uEl) uEl.innerText = users.length;
+        if (cEl) cEl.innerText = courses.length;
+        if (sEl) sEl.innerText = activeStudents;
+        if (pEl) pEl.innerText = pendingCoursesCount + pendingUsersCount;
+      }
 
-        if (!title)
-          return alert("Please enter a course title before publishing.");
-        if (!currentUser)
-          return alert(
-            "User authentication failed. Please log out and log in again.",
-          );
-
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("description", desc);
-        formData.append("category", cat);
-        formData.append("difficulty", diff);
-        formData.append("instructorEmail", currentUser.email);
-        formData.append("instructorName", currentUser.name);
-        formData.append("total_lessons", totalLessons);
-
-        if (thumbnailFile) formData.append("thumbnail", thumbnailFile);
-        if (videoFile) formData.append("video", videoFile);
-
-        const publishBtn = document.querySelector(
-          "#instructor-upload-course-content .btn-primary",
+      async function renderAdminActivity() {
+        const container = document.getElementById(
+          "admin-recent-activity-container",
         );
-        const originalText = publishBtn.innerHTML;
-        publishBtn.innerHTML = "⏳ Uploading... Please wait";
-        publishBtn.disabled = true;
+        if (!container) return;
+        const notifs = await fetchNotifications("admin");
+        if (notifs.length === 0) {
+          container.innerHTML = `<div style="color:#64748b; font-size:14px;">No recent activity.</div>`;
+          return;
+        }
+        container.innerHTML = notifs
+          .slice(0, 5)
+          .map(
+            (n) => `
+            <div class="activity-item">
+                <div class="act-dot dot-${n.color || "blue"}"></div>
+                <div><div class="act-text">${n.text}</div><div class="act-time">${n.date ? n.date + " • " : ""}${n.time || ""}</div></div>
+            </div>`,
+          )
+          .join("");
+        renderAdminComplaints();
+      }
 
+      async function renderAdminComplaints() {
+        const container = document.getElementById(
+          "admin-all-complaints-container",
+        );
+        if (!container) return;
         try {
-          const res = await fetch(`${API_URL}/upload-course`, {
-            method: "POST",
-            body: formData,
-          });
-
-          if (res.ok) {
-            await addNotification(
-              "admin",
-              `New course "${title}" submitted for review by ${currentUser.name}`,
-              "purple",
-            );
-            alert(
-              "Course published successfully. It is currently awaiting administrator approval.",
-            );
-
-            document.getElementById("uc-title").value = "";
-            document.getElementById("uc-desc").value = "";
-            document.getElementById("uc-cat").value = "";
-            document.getElementById("uc-diff").value = "Beginner";
-            document.getElementById("uc-lessons").value = "";
-            document.getElementById("uc-thumbnail-input").value = "";
-            document.getElementById("uc-video-input").value = "";
-
-            handleNav("Dashboard", document.querySelector(".nav-item-dash"));
-          } else {
-            alert("Error saving course to database.");
-          }
-        } catch (e) {
-          alert(
-            "Database connection failed. Please ensure the backend is running.",
+          const allComplaints = await safeFetchJSON(
+            `${API_URL}/all-complaints`,
           );
-        } finally {
-          publishBtn.innerHTML = originalText;
-          publishBtn.disabled = false;
+          if (allComplaints.length === 0) {
+            container.innerHTML = `<div style="text-align:center;padding:20px;color:#64748b;background:#f8fafc;border-radius:8px;">No complaints filed yet.</div>`;
+            return;
+          }
+          container.innerHTML = allComplaints
+            .map(
+              (cp) => `
+            <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
+                <span style="font-size:13px;font-weight:700;color:#be123c;background:#fef2f2;padding:3px 10px;border-radius:20px;">📚 ${cp.course_name || "Unknown Course"}</span>
+                <span style="font-size:12px;color:#94a3b8;">${cp.date || ""}</span>
+              </div>
+              <div style="font-size:14px;color:#881337;margin-bottom:8px;line-height:1.5;">${cp.complaint_text}</div>
+              <div style="font-size:12px;color:#64748b;">🧑 <b>${cp.user_name || "Unknown"}</b> &nbsp;|&nbsp; ✉️ ${cp.user_email || ""}</div>
+            </div>`,
+            )
+            .join("");
+        } catch (e) {
+          container.innerHTML = `<div style="color:#ef4444;padding:12px;">Failed to load complaints.</div>`;
+        }
+      }
+
+      async function renderAdminBanRequests() {
+        const container = document.getElementById(
+          "admin-ban-requests-container",
+        );
+        if (!container) return;
+        try {
+          const allReqs = await safeFetchJSON(`${API_URL}/ban-requests`);
+          let banReqs = allReqs.filter((r) => r.status === "Pending");
+          if (banReqs.length === 0) {
+            container.innerHTML = "";
+            return;
+          }
+          let htmlStr = `<h3 style="color:#e11d48; margin-bottom:15px; font-weight:800; font-size:20px;">⚠️ Pending Ban Requests</h3><div style="display:flex; flex-direction:column; gap:15px; margin-bottom:30px;">`;
+          banReqs.forEach((req) => {
+            htmlStr += `
+              <div style="background:#fff1f2; border:1px solid #fecaca; padding:20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
+                 <div style="width: 100%;">
+                    <div style="font-weight:700; color:#be123c; font-size:16px; word-break: break-word;">Ban Request for: ${req.student_name} <span style="font-size:13px; font-weight:500;">(${req.student_email})</span></div>
+                    <div style="font-size:13px; color:#881337; margin-top:5px; font-weight:600; word-break: break-word;">Requested by: Instructor ${req.inst_name} | Course: ${req.course_title}</div>
+                 </div>
+                 <div style="display:flex; gap:10px; width: 100%;">
+                    <button class="btn btn-primary" style="background:#e11d48; flex:1;" onclick="processBanRequest(${req.id}, 'Approved', '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}', '${req.course_id}')">Approve & Remove</button>
+                    <button class="btn btn-outline" style="border-color:#fca5a5; color:#be123c; background:white; flex:1;" onclick="processBanRequest(${req.id}, 'Rejected', '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}', '${req.course_id}')">Reject</button>
+                 </div>
+              </div>`;
+          });
+          htmlStr += `</div><hr style="border:0; border-top:1px solid #e2e8f0; margin-bottom:30px;">`;
+          container.innerHTML = htmlStr;
+        } catch (e) {
+          container.innerHTML = "";
+        }
+      }
+
+      async function processBanRequest(
+        reqId,
+        actionStatus,
+        studentEmail,
+        instEmail,
+        studentName,
+        courseId,
+      ) {
+        const actionText =
+          actionStatus === "Approved"
+            ? "remove from this course and BAN"
+            : "REJECT the ban request for";
+        if (!confirm(`Are you sure you want to ${actionText} ${studentName}?`))
+          return;
+        try {
+          const res = await fetch(`${API_URL}/ban-requests/${reqId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              status: actionStatus,
+              studentEmail,
+              instEmail,
+              studentName,
+              courseId,
+            }),
+          });
+          if (!res.ok) {
+            const data = await res.json();
+            return alert(data.error || "Failed to process ban request.");
+          }
+          alert(`Ban request ${actionStatus.toLowerCase()} successfully.`);
+          renderAdminUsers();
+        } catch (e) {
+          alert("Error processing ban request.");
         }
       }
 
       async function renderAdminCourses() {
         const container = document.getElementById("admin-course-list");
         if (!container) return;
-
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
           if (courses.length === 0) {
             container.innerHTML = `<p style="color:#64748b;">No courses uploaded yet.</p>`;
             updateAdminStats();
             return;
           }
-
           container.innerHTML = `<p style="color:#64748b; padding:10px;">Loading course analytics...</p>`;
           let htmlStr = "";
-
           for (let c of courses) {
             const isPending = c.status === "Pending";
             const bgIndex =
               (parseInt(String(c.id).slice(-3)) || 0) % courseGradients.length;
             let bgStyle = `background: ${courseGradients[bgIndex]}; display:flex; align-items:center; justify-content:center; text-align:center; padding:15px; border-bottom:1px solid #e2e8f0; cursor: pointer;`;
-
             let enrolledCount = enrollments.filter(
               (e) => e.course_id == c.id && e.status === "Approved",
             ).length;
 
-            let complaints = await safeFetchJSON(
-              `${API_URL}/course-complaints/${c.id}`,
-            );
-            let complaintHtml =
-              complaints && complaints.length > 0
-                ? `<div style="background:#fef2f2; color:#ef4444; border:1px solid #fecaca; padding:6px 12px; border-radius:8px; font-size:13px; font-weight:700; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                    ${complaints.length} Complaint(s) Received
-                 </div>`
-                : ``;
-
-            let feedbacks = await safeFetchJSON(
-              `${API_URL}/course-feedbacks/${c.id}`,
-            );
-            let avgRating = "No Rating";
-            if (feedbacks && feedbacks.length > 0) {
-              let sum = feedbacks.reduce(
-                (acc, fb) => acc + (fb.rating || 5),
-                0,
-              );
-              avgRating = (sum / feedbacks.length).toFixed(1) + " ⭐";
-            }
-
-            let thumbHTML = "";
-            if (c.thumbnail_url) {
-              thumbHTML = `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
+            let thumbHTML = c.thumbnail_url
+              ? `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
                    <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border-radius: 12px; padding: 20px;">
                        <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4>
-                   </div>
-              </div>`;
-            } else {
-              thumbHTML = `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; ${bgStyle}" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
-                   <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4>
-              </div>`;
-            }
+                   </div></div>`
+              : `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; ${bgStyle}" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
+                   <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4></div>`;
 
             let actionHTML = isPending
               ? `<div class="action-container" style="display:flex; gap:12px; margin-top: 15px; flex-wrap:wrap;">
-                          <button class="btn btn-success" onclick="updateCourseStatusAPI('${c.id}', 'Approved', '${c.instructor_email || ""}', '${c.title.replace(/'/g, "\\'")}')" style="flex: 1; border-radius: 8px;">Approve</button>
-                          <button class="btn btn-primary" onclick="updateCourseStatusAPI('${c.id}', 'Rejected', '${c.instructor_email || ""}', '${c.title.replace(/'/g, "\\'")}')" style="flex: 1; background: #e11d48; border-radius: 8px;">Reject</button>
-                     </div>`
+                  <button class="btn btn-success" onclick="updateCourseStatusAPI('${c.id}', 'Approved', '${c.instructor_email || ""}', '${c.title.replace(/'/g, "\\'")}')" style="flex: 1; border-radius: 8px;">Approve</button>
+                  <button class="btn btn-primary" onclick="updateCourseStatusAPI('${c.id}', 'Rejected', '${c.instructor_email || ""}', '${c.title.replace(/'/g, "\\'")}')" style="flex: 1; background: #e11d48; border-radius: 8px;">Reject</button>
+                 </div>`
               : `<button class="btn btn-outline" style="width:100%; border-color:#ddd6fe; color:#4c1d95; margin-top: 15px;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">View Analytics & Complaints</button>`;
 
             htmlStr += `
-                  <div class="admin-course-card ${isPending ? "border-pen" : "border-pub"}">
-                      ${thumbHTML}
-                      <div class="acc-tags">
-                          <span class="acc-tag ${isPending ? "tag-pen" : "tag-pub"}">${isPending ? "Pending" : "Published"}</span>
-                          <span class="acc-tag tag-cat" style="background:#f0fdf4; color:#16a34a; border-color:#bbf7d0;">Rating: ${avgRating}</span>
-                          <span class="acc-tag" style="background:#eff6ff; color:#1e40af; border-color:#bfdbfe;">Enrolled: ${enrolledCount}</span>
-                      </div>
-                      <h3 style="font-size:18px; font-weight:700; color:#312e81; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                      <p style="font-size:14px; color:#7c3aed; font-weight:500; margin-bottom:10px;" class="dm-desc">by ${c.instructor_name}</p>
-                      ${complaintHtml}
-                      <div style="margin-top:auto;">${actionHTML}</div>
+              <div class="admin-course-card ${isPending ? "border-pen" : "border-pub"}">
+                  ${thumbHTML}
+                  <div class="acc-tags">
+                      <span class="acc-tag ${isPending ? "tag-pen" : "tag-pub"}">${isPending ? "Pending" : "Published"}</span>
+                      <span class="acc-tag" style="background:#eff6ff; color:#1e40af; border-color:#bfdbfe;">Enrolled: ${enrolledCount}</span>
                   </div>
-              `;
+                  <h3 style="font-size:18px; font-weight:700; color:#312e81; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
+                  <p style="font-size:14px; color:#7c3aed; font-weight:500; margin-bottom:10px;" class="dm-desc">by ${c.instructor_name}</p>
+                  <div style="margin-top:auto;">${actionHTML}</div>
+              </div>`;
           }
-
           container.innerHTML = htmlStr;
           updateAdminStats();
         } catch (e) {
@@ -4979,57 +4702,494 @@
         }
       }
 
+      async function renderAdminUsers() {
+        const filter = document.getElementById("admin-user-filter").value;
+        const container = document.getElementById("admin-user-grid-container");
+        if (!container) return;
+        container.innerHTML = `<div style="padding: 20px; color: #64748b;">Loading users...</div>`;
+        try {
+          const users = await safeFetchJSON(`${API_URL}/users`);
+          let filteredUsers = users;
+          if (filter === "Pending Only")
+            filteredUsers = users.filter((u) => u.status === "Pending");
+          if (filter === "Approved Only")
+            filteredUsers = users.filter((u) => u.status === "Approved");
+          if (filter === "Banned Only")
+            filteredUsers = users.filter((u) => u.status === "Banned");
+
+          if (filteredUsers.length === 0) {
+            container.innerHTML = `<div style="padding: 20px; color: #64748b;">No users found matching filter.</div>`;
+            return;
+          }
+
+          container.innerHTML = filteredUsers
+            .map((u) => {
+              const avatarHtml =
+                u.avatar && u.avatar.startsWith("http")
+                  ? `<img src="${u.avatar}" style="width:100%;height:100%;border-radius:18px;object-fit:cover;">`
+                  : u.avatar || "U";
+              const roleColor = u.role === "instructor" ? "#2563eb" : "#10b981";
+              const isPending = u.status === "Pending";
+              const isBanned = u.status === "Banned";
+              let statusClass = "approved";
+              if (isPending) statusClass = "pending";
+              if (isBanned) statusClass = "banned";
+
+              let actionsHtml = "";
+              if (isPending) {
+                actionsHtml = `<div class="action-container" style="display: flex; gap: 10px; margin-top: 15px;">
+                  <button class="btn btn-success btn-approve-full" style="flex: 1; border-radius: 12px; font-size: 13px; padding: 12px;" onclick="updateUserStatus('${u.email}', 'Approved', '${u.name}')">Approve</button>
+                  <button class="btn btn-outline btn-reject-full" style="flex: 1; border-radius: 12px; font-size: 13px; padding: 12px; color: #ef4444; border-color: #fca5a5;" onclick="updateUserStatus('${u.email}', 'Banned', '${u.name}')">Reject</button>
+              </div>`;
+              } else if (isBanned) {
+                actionsHtml = `<button class="btn btn-outline" style="width: 100%; margin-top: 15px; border-radius: 12px; font-size: 13px; padding: 12px; border-color: #6ee7b7; color: #059669; background: #ecfdf5;" onclick="updateUserStatus('${u.email}', 'Approved', '${u.name}')">Unban / Restore Account</button>`;
+              } else {
+                actionsHtml = `<button class="btn btn-outline" style="width: 100%; margin-top: 15px; border-radius: 12px; font-size: 13px; padding: 12px; border-color: #fca5a5; color: #ef4444; background: #fef2f2;" onclick="updateUserStatus('${u.email}', 'Banned', '${u.name}')">Suspend Account</button>`;
+              }
+
+              return `
+              <div class="user-card card-${statusClass}">
+                  <span class="user-card-badge ${statusClass}">${u.status}</span>
+                  <div class="user-card-header">
+                      <div class="user-avatar-large" style="background-color: ${roleColor}">${avatarHtml}</div>
+                      <div class="user-main-info">
+                          <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 4px;" class="dm-title">${u.name}</h3>
+                          <p style="font-size: 13px; color: #64748b; font-weight: 500;" class="dm-desc">${u.email}</p>
+                          <div style="display: inline-block; margin-top: 8px; font-size: 11px; font-weight: 700; color: ${roleColor}; background: ${u.role === "instructor" ? "#eff6ff" : "#ecfdf5"}; padding: 4px 10px; border-radius: 50px; text-transform: uppercase; border: 1px solid ${u.role === "instructor" ? "#bfdbfe" : "#a7f3d0"};">${u.role}</div>
+                      </div>
+                  </div>
+                  <div style="margin-top: auto;">${actionsHtml}</div>
+              </div>`;
+            })
+            .join("");
+        } catch (e) {
+          container.innerHTML = `<div style="padding: 20px; color: #ef4444;">Failed to load users.</div>`;
+        }
+      }
+
+      async function updateUserStatus(email, status, name) {
+        const actionWord =
+          status === "Approved" ? "approve/restore" : "suspend/ban";
+        if (
+          !confirm(`Are you sure you want to ${actionWord} ${name}'s account?`)
+        )
+          return;
+        try {
+          const res = await fetch(`${API_URL}/update-user-status`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: email, status: status }),
+          });
+          if (res.ok) {
+            alert(`Account ${status.toLowerCase()} successfully.`);
+            if (status === "Approved")
+              await addNotification(
+                email,
+                `🎉 Your account has been approved by the admin. Welcome to ELMS!`,
+                "green",
+              );
+            else
+              await addNotification(
+                email,
+                `⚠️ Your account has been suspended by the administrator.`,
+                "red",
+              );
+            renderAdminUsers();
+            updateAdminStats();
+          } else {
+            alert("Failed to update user status.");
+          }
+        } catch (e) {
+          alert("Error connecting to database.");
+        }
+      }
+
+      // INSTRUCTOR FUNCTIONS
+      async function updateInstructorStats() {
+        if (!currentUser) return;
+        const courses = await safeFetchJSON(`${API_URL}/courses`);
+        const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+        let activeCourses = courses.filter(
+          (c) =>
+            c.instructor_email === currentUser.email && c.status === "Approved",
+        ).length;
+        let totalStudents = enrollments.filter(
+          (e) =>
+            e.instructor_email === currentUser.email && e.status === "Approved",
+        ).length;
+        let pendingEnrollments = enrollments.filter(
+          (e) =>
+            e.instructor_email === currentUser.email && e.status === "Pending",
+        ).length;
+        const icEl = document.getElementById("inst-course-count");
+        const isEl = document.getElementById("inst-student-count");
+        const ipEl = document.getElementById("inst-pending-count");
+        if (icEl) icEl.innerText = activeCourses;
+        if (isEl) isEl.innerText = totalStudents;
+        if (ipEl) ipEl.innerText = pendingEnrollments;
+      }
+
+      async function publishNewCourse() {
+        const title = document.getElementById("uc-title").value.trim();
+        const desc = document.getElementById("uc-desc").value.trim();
+        const cat = document.getElementById("uc-cat").value.trim();
+        const diff = document.getElementById("uc-diff").value;
+        const totalLessons =
+          parseInt(document.getElementById("uc-lessons").value) || 4;
+        const thumbnailInput = document.getElementById("uc-thumbnail-input");
+        const videoInput = document.getElementById("uc-video-input");
+
+        if (!title)
+          return alert("Please enter a course title before publishing.");
+        if (!currentUser)
+          return alert(
+            "User authentication failed. Please log out and log in again.",
+          );
+
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("description", desc);
+        formData.append("category", cat);
+        formData.append("difficulty", diff);
+        formData.append("instructorEmail", currentUser.email);
+        formData.append("instructorName", currentUser.name);
+        formData.append("total_lessons", totalLessons);
+
+        if (thumbnailInput && thumbnailInput.files[0])
+          formData.append("thumbnail", thumbnailInput.files[0]);
+        if (videoInput && videoInput.files[0])
+          formData.append("video", videoInput.files[0]);
+
+        const publishBtn = document.querySelector(
+          "#instructor-upload-course-content .btn-primary",
+        );
+        const originalText = publishBtn ? publishBtn.innerHTML : "Publish";
+        if (publishBtn) {
+          publishBtn.innerHTML =
+            "⏳ Uploading Media to Cloudinary... Please wait";
+          publishBtn.disabled = true;
+        }
+
+        try {
+          const res = await fetch(`${API_URL}/upload-course`, {
+            method: "POST",
+            body: formData,
+          });
+          if (res.ok) {
+            await addNotification(
+              "admin",
+              `New course "${title}" submitted for review by ${currentUser.name}`,
+              "purple",
+            );
+            alert(
+              "Course published successfully! It is currently awaiting administrator approval.",
+            );
+            document.getElementById("uc-title").value = "";
+            document.getElementById("uc-desc").value = "";
+            if (thumbnailInput) thumbnailInput.value = "";
+            if (videoInput) videoInput.value = "";
+            handleNav("Dashboard", document.querySelector(".nav-item-dash"));
+          } else {
+            const errData = await res.json();
+            alert("Error saving course: " + (errData.error || "Unknown error"));
+          }
+        } catch (e) {
+          console.error(e);
+          alert("Network connection failed.");
+        } finally {
+          if (publishBtn) {
+            publishBtn.innerHTML = originalText;
+            publishBtn.disabled = false;
+          }
+        }
+      }
+
+      async function renderInstructorRequests() {
+        const container = document.getElementById(
+          "instructor-enrollment-requests",
+        );
+        if (!container) return;
+        try {
+          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          const pendingReqs = enrollments.filter(
+            (e) =>
+              e.instructor_email === currentUser.email &&
+              e.status === "Pending",
+          );
+          if (pendingReqs.length === 0) {
+            container.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b; background: #f8fafc;">No pending enrollment requests.</div>`;
+            return;
+          }
+          container.innerHTML = pendingReqs
+            .map(
+              (req) => `
+              <div class="submission-item">
+                <div>
+                  <div style="font-weight: 700; color: #0f172a; font-size: 15px;">${req.student_name} <span style="font-weight: 500; color: #64748b; font-size: 13px;">(${req.student_email})</span></div>
+                  <div style="font-size: 13px; color: #2563eb; margin-top: 4px; font-weight: 600;">Course: ${req.course_title}</div>
+                  <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Requested on: ${req.date}</div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                  <button class="btn btn-success" style="padding: 6px 16px; font-size: 13px;" onclick="processEnrollment(${req.id}, 'Approved', '${req.student_email}', '${req.course_title.replace(/'/g, "\\'")}', '${req.student_name.replace(/'/g, "\\'")}')">Approve</button>
+                  <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px; border-color: #fca5a5; color: #ef4444;" onclick="processEnrollment(${req.id}, 'Rejected', '${req.student_email}', '${req.course_title.replace(/'/g, "\\'")}', '${req.student_name.replace(/'/g, "\\'")}')">Reject</button>
+                </div>
+              </div>`,
+            )
+            .join("");
+        } catch (e) {
+          container.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to load requests.</div>`;
+        }
+      }
+
+      async function processEnrollment(
+        id,
+        status,
+        studentEmail,
+        courseTitle,
+        studentName,
+      ) {
+        if (
+          !confirm(
+            `Are you sure you want to ${status.toLowerCase()} ${studentName}'s enrollment?`,
+          )
+        )
+          return;
+        try {
+          const res = await fetch(`${API_URL}/enrollments/status`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id, status }),
+          });
+          if (res.ok) {
+            const color = status === "Approved" ? "green" : "red";
+            const text =
+              status === "Approved"
+                ? `🎉 Your enrollment for "${courseTitle}" has been approved!`
+                : `❌ Your enrollment request for "${courseTitle}" was rejected.`;
+            await addNotification(studentEmail, text, color);
+            alert(`Enrollment ${status.toLowerCase()} successfully!`);
+            renderInstructorRequests();
+            updateInstructorStats();
+          } else {
+            alert("Failed to update enrollment status.");
+          }
+        } catch (e) {
+          alert("Database connection error.");
+        }
+      }
+
+      async function renderInstructorLiveCourses() {
+        const container = document.getElementById(
+          "instructor-live-courses-grid",
+        );
+        if (!container) return;
+        try {
+          const courses = await safeFetchJSON(`${API_URL}/courses`);
+          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          let myCourses = courses.filter(
+            (c) => c.instructor_email === currentUser.email,
+          );
+          if (myCourses.length === 0) {
+            container.innerHTML = `<p style="color:#64748b; width: 100%;">You haven't uploaded any courses yet.</p>`;
+            return;
+          }
+          container.innerHTML = myCourses
+            .map((c) => {
+              const bgIndex =
+                (parseInt(String(c.id).slice(-3)) || 0) %
+                courseGradients.length;
+              let bgStyle = `background: ${courseGradients[bgIndex]}; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
+              let thumbHTML = c.thumbnail_url
+                ? `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"><div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div></div>`
+                : `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle}"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div>`;
+              let studentCount = enrollments.filter(
+                (e) => e.course_id == c.id && e.status === "Approved",
+              ).length;
+              let statusBadge =
+                c.status === "Approved"
+                  ? `<span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">Live</span>`
+                  : `<span style="background: #fffbeb; color: #d97706; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #fde68a;">Pending</span>`;
+
+              return `
+                  <div class="std-course-card" onclick="openCoursePlayer('${c.id}')">
+                      ${thumbHTML}
+                      <div class="std-course-card-content">
+                          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px;">
+                              <h3 style="font-size:18px; font-weight:700; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
+                              ${statusBadge}
+                          </div>
+                          <p style="font-size:14px; color:#2563eb; margin-bottom:10px; font-weight: 600;">Enrolled Students: <span style="background: #eff6ff; padding: 2px 8px; border-radius: 12px; color: #1e40af;">${studentCount}</span></p>
+                          <div style="margin-top:auto;"><button class="btn btn-outline" style="width:100%;">View Details</button></div>
+                      </div>
+                  </div>`;
+            })
+            .join("");
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async function renderInstructorStudents() {
+        const listContainer = document.getElementById(
+          "instructor-students-list",
+        );
+        const statsContainer = document.getElementById("inst-students-stats");
+        if (!listContainer) return;
+        try {
+          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          let myEnrollments = enrollments.filter(
+            (e) =>
+              e.instructor_email === currentUser.email &&
+              e.status === "Approved",
+          );
+          let studentMap = new Map();
+          myEnrollments.forEach((e) => {
+            if (!studentMap.has(e.student_email)) {
+              studentMap.set(e.student_email, {
+                name: e.student_name,
+                email: e.student_email,
+                enrolledCount: 0,
+                courses: [],
+                status: "active",
+                lastActive: e.date,
+              });
+            }
+            let st = studentMap.get(e.student_email);
+            st.enrolledCount++;
+            st.courses.push(e.course_id);
+          });
+          instGlobalStudents = Array.from(studentMap.values());
+          if (statsContainer) {
+            let activeThisWeek = Math.floor(instGlobalStudents.length * 0.8);
+            statsContainer.innerHTML = `
+                <div class="p-stat-card" style="border-left: 4px solid #3b82f6;"><div class="val" style="color: #0f172a; font-size: 28px;" class="dm-title">${instGlobalStudents.length}</div><div class="desc">Total Students</div></div>
+                <div class="p-stat-card" style="border-left: 4px solid #10b981;"><div class="val" style="color: #0f172a; font-size: 28px;" class="dm-title">${activeThisWeek}</div><div class="desc">Active This Week</div></div>
+            `;
+          }
+          displayInstStudents(instGlobalStudents);
+        } catch (e) {
+          listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to load data.</div>`;
+        }
+      }
+
+      function displayInstStudents(students) {
+        const container = document.getElementById("instructor-students-list");
+        if (students.length === 0) {
+          container.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">No students found.</div>`;
+          return;
+        }
+        container.innerHTML = students
+          .map((st, index) => {
+            const bgIndex = index % courseGradients.length;
+            const bgStyle = `background: ${courseGradients[bgIndex]};`;
+            const statusBadge = `<span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">active</span>`;
+            return `
+                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
+                    <div style="display: flex; align-items: center; gap: 15px; min-width: 250px;">
+                        <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0;">${st.name.charAt(0)}</div>
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px;"><h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.name}</h4>${statusBadge}</div>
+                            <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc">${st.email}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Last active</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.lastActive}</div></div>
+                        <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px;">View Details</button>
+                    </div>
+                 </div>`;
+          })
+          .join("");
+      }
+
+      function filterInstructorStudents() {
+        const query = document
+          .getElementById("student-search-input")
+          .value.toLowerCase();
+        const filtered = instGlobalStudents.filter(
+          (s) =>
+            s.name.toLowerCase().includes(query) ||
+            s.email.toLowerCase().includes(query),
+        );
+        displayInstStudents(filtered);
+      }
+
+      async function requestStudentBan(studentEmail, studentName, courseId) {
+        if (
+          !confirm(`Are you sure you want to request a ban for ${studentName}?`)
+        )
+          return;
+        const titleEl = document.getElementById("cp-course-title");
+        const payload = {
+          course_id: courseId,
+          course_title: titleEl ? titleEl.innerText : "Unknown Course",
+          inst_email: currentUser.email,
+          inst_name: currentUser.name,
+          student_email: studentEmail,
+          student_name: studentName,
+          date: new Date().toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+        };
+        try {
+          const res = await fetch(`${API_URL}/ban-requests`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (res.ok) {
+            await addNotification(
+              "admin",
+              `⚠️ Ban Request: Instructor ${currentUser.name} requested to ban ${studentName}.`,
+              "red",
+            );
+            alert("Ban request sent to admin successfully.");
+            setupCourseStudentsUI();
+          } else {
+            const data = await res.json();
+            alert(data.error || "Failed to send ban request.");
+          }
+        } catch (e) {
+          alert("Database connection error.");
+        }
+      }
+
+      // STUDENT FUNCTIONS
       async function renderStudentBrowseCourses() {
         const container = document.getElementById(
           "student-browse-courses-grid",
         );
         if (!container) return;
-
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
           let approvedCourses = courses.filter((c) => c.status === "Approved");
-
           if (approvedCourses.length === 0) {
             container.innerHTML = `<p style="color:#64748b;">No available courses at the moment.</p>`;
             return;
           }
-
           container.innerHTML = approvedCourses
             .map((c) => {
               const bgIndex =
                 (parseInt(String(c.id).slice(-3)) || 0) %
                 courseGradients.length;
               let bgStyle = `background: ${courseGradients[bgIndex]}; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; border-bottom:1px solid #e2e8f0; cursor: pointer;`;
-
-              let thumbHTML = "";
-              if (c.thumbnail_url) {
-                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')">
-                     <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
-                         <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                     </div>
-                </div>`;
-              } else {
-                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle}" onclick="openCoursePlayer('${c.id}')">
-                     <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                </div>`;
-              }
+              let thumbHTML = c.thumbnail_url
+                ? `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"><div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div></div>`
+                : `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle}" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div>`;
 
               let myEnrollment = enrollments.find(
                 (e) =>
                   e.course_id == c.id && e.student_email === currentUser.email,
               );
               let btnHTML = "";
-
-              if (!myEnrollment) {
+              if (!myEnrollment)
                 btnHTML = `<button class="btn btn-primary" style="width:100%; margin-top:15px;" onclick="requestEnrollment('${c.id}', '${c.instructor_email || ""}', '${c.title.replace(/'/g, "\\'")}')">Send Join Request</button>`;
-              } else if (myEnrollment.status === "Pending") {
+              else if (myEnrollment.status === "Pending")
                 btnHTML = `<button class="btn btn-outline" style="width:100%; margin-top:15px; color:#d97706; border-color:#fde68a; background:#fef3c7;" disabled>Requested (Pending)</button>`;
-              } else {
+              else
                 btnHTML = `<button class="btn btn-outline" style="width:100%; margin-top:15px; color:#059669; border-color:#a7f3d0; background:#ecfdf5;" disabled>Already Enrolled</button>`;
-              }
-
               btnHTML += `<button class="btn btn-outline" style="width:100%; margin-top:10px;" onclick="openCoursePlayer('${c.id}')">View Details</button>`;
 
               return `
@@ -5038,11 +5198,9 @@
                         <div class="std-course-card-content">
                             <h3 style="font-size:18px; font-weight:700; color:#0f172a; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
                             <p style="font-size:14px; color:#64748b; margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p>
-                            ${c.description ? `<p style="font-size:13px; color:#64748b; margin-bottom:15px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" class="dm-desc">${c.description}</p>` : ""}
                             <div style="margin-top:auto;">${btnHTML}</div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             })
             .join("");
         } catch (e) {
@@ -5051,13 +5209,11 @@
       }
 
       async function requestEnrollment(courseId, instructorEmail, title) {
-        const now = new Date();
-        const dateStr = now.toLocaleDateString("en-US", {
+        const dateStr = new Date().toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
           year: "numeric",
         });
-
         try {
           const res = await fetch(`${API_URL}/enrollments`, {
             method: "POST",
@@ -5071,20 +5227,17 @@
               date: dateStr,
             }),
           });
-
           if (!res.ok) {
             const errData = await res.json();
             alert("Database Error: " + errData.error);
             return;
           }
-
-          if (instructorEmail) {
+          if (instructorEmail)
             await addNotification(
               instructorEmail,
               `${currentUser.name} requested to enroll in your course "${title}".`,
               "orange",
             );
-          }
           alert(
             "Enrollment request has been successfully sent to the instructor.",
           );
@@ -5099,11 +5252,9 @@
           "student-enrolled-courses-grid",
         );
         if (!container) return;
-
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
           let myEnrolledCourses = courses.filter((c) =>
             enrollments.some(
               (e) =>
@@ -5112,34 +5263,22 @@
                 e.status === "Approved",
             ),
           );
-
-          document.getElementById("student-active-count").innerText =
-            myEnrolledCourses.length;
+          const stCountEl = document.getElementById("student-active-count");
+          if (stCountEl) stCountEl.innerText = myEnrolledCourses.length;
 
           if (myEnrolledCourses.length === 0) {
             container.innerHTML = `<p style="color:#64748b; width:100%;">You are not enrolled in any courses yet.</p>`;
             return;
           }
-
           container.innerHTML = myEnrolledCourses
             .map((c) => {
               const bgIndex =
                 (parseInt(String(c.id).slice(-3)) || 0) %
                 courseGradients.length;
               let bgStyle = `background: ${courseGradients[bgIndex]}; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
-
-              let thumbHTML = "";
-              if (c.thumbnail_url) {
-                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')">
-                     <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
-                         <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                     </div>
-                </div>`;
-              } else {
-                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')">
-                     <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                </div>`;
-              }
+              let thumbHTML = c.thumbnail_url
+                ? `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"><div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div></div>`
+                : `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div>`;
 
               return `
                     <div class="std-course-card">
@@ -5153,8 +5292,7 @@
                                 <button class="btn btn-outline" style="padding: 4px 12px; font-size: 12px;" onclick="openCoursePlayer('${c.id}')">Continue</button>
                             </div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             })
             .join("");
         } catch (e) {
@@ -5167,21 +5305,18 @@
           "student-due-assignments-grid",
         );
         if (!container) return;
-
         try {
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
           const myEnrollments = enrollments.filter(
             (e) =>
               e.student_email === currentUser.email && e.status === "Approved",
           );
-
           if (myEnrollments.length === 0) {
             container.innerHTML = `<p style="color:#64748b; width:100%;">No pending assignments.</p>`;
             return;
           }
 
           let allPendingAssignments = [];
-
           for (let enr of myEnrollments) {
             const assignments = await safeFetchJSON(
               `${API_URL}/assignments/${enr.course_id}`,
@@ -5189,18 +5324,15 @@
             const submissions = await safeFetchJSON(
               `${API_URL}/assignment-submissions/${enr.course_id}`,
             );
-
             const mySubmissions = submissions.filter(
               (s) => s.student_email === currentUser.email,
             );
             const submittedAssignIds = mySubmissions.map(
               (s) => s.assignment_id,
             );
-
             const pendingForCourse = assignments.filter(
               (a) => !submittedAssignIds.includes(a.id),
             );
-
             pendingForCourse.forEach((a) => {
               a.course_title = enr.course_title;
               allPendingAssignments.push(a);
@@ -5223,8 +5355,7 @@
                     <p class="dm-desc" style="font-size:13px; color:#64748b; font-weight:600;">📚 ${a.course_title}</p>
                     <p class="dm-desc" style="font-size:13px; color:#475569; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${a.description}</p>
                     <button class="btn btn-outline" style="margin-top:auto; padding:6px 12px; font-size:13px; border-color:#cbd5e1; font-weight:700;" onclick="openCoursePlayer('${a.course_id}'); setTimeout(()=>switchCpTab('assignments'), 500);">Go to Assignment</button>
-                </div>
-            `,
+                </div>`,
             )
             .join("");
         } catch (e) {
@@ -5232,130 +5363,56 @@
         }
       }
 
-      async function renderInstructorLiveCourses() {
-        const container = document.getElementById(
-          "instructor-live-courses-grid",
-        );
-        if (!container) return;
-
-        try {
-          const courses = await safeFetchJSON(`${API_URL}/courses`);
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
-          let myCourses = courses.filter(
-            (c) => c.instructor_email === currentUser.email,
-          );
-
-          if (myCourses.length === 0) {
-            container.innerHTML = `<p style="color:#64748b; width: 100%;">You haven't uploaded any courses yet.</p>`;
-            return;
-          }
-
-          container.innerHTML = myCourses
-            .map((c) => {
-              const bgIndex =
-                (parseInt(String(c.id).slice(-3)) || 0) %
-                courseGradients.length;
-              let bgStyle = `background: ${courseGradients[bgIndex]}; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
-
-              let thumbHTML = "";
-              if (c.thumbnail_url) {
-                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')">
-                     <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
-                         <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                     </div>
-                </div>`;
-              } else {
-                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')">
-                     <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                </div>`;
-              }
-
-              let studentCount = enrollments.filter(
-                (e) => e.course_id == c.id && e.status === "Approved",
-              ).length;
-              let statusBadge =
-                c.status === "Approved"
-                  ? `<span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">Live</span>`
-                  : `<span style="background: #fffbeb; color: #d97706; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #fde68a;">Pending</span>`;
-
-              return `
-                  <div class="std-course-card">
-                      ${thumbHTML}
-                      <div class="std-course-card-content">
-                          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px;">
-                              <h3 style="font-size:18px; font-weight:700; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                              ${statusBadge}
-                          </div>
-                          <p style="font-size:14px; color:#2563eb; margin-bottom:10px; font-weight: 600;">Enrolled Students: <span style="background: #eff6ff; padding: 2px 8px; border-radius: 12px; color: #1e40af;">${studentCount}</span></p>
-                          <div style="margin-top:auto;"><button class="btn btn-outline" style="width:100%;" onclick="openCoursePlayer('${c.id}')" ${c.status !== "Approved" ? 'disabled title="Awaiting admin approval"' : ""}>View Details</button></div>
-                      </div>
-                  </div>
-               `;
-            })
-            .join("");
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
+      // COURSE PLAYER FUNCTIONS
       function renderDynamicLessons(total) {
         const container = document.getElementById("cp-lesson-list-box");
         if (!container) return;
         let html = `<div style="padding: 20px 24px; border-bottom: 1px solid #e2e8f0; font-weight: 800; font-size: 18px; color: #0f172a;">Course Content (${total} Modules)</div>`;
         for (let i = 1; i <= total; i++) {
-          let isCompleted = i === 1;
-          let isActive = i === 2;
-          let stateClass = isCompleted ? "completed" : isActive ? "active" : "";
-          let circleContent = isCompleted
-            ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>`
-            : ``;
+          let stateClass = i === 1 ? "completed" : i === 2 ? "active" : "";
+          let circleContent =
+            i === 1
+              ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+              : ``;
           let title =
             i === 1
               ? "Course Introduction"
               : i === total
-                ? "Final Assessment & Project"
-                : `Core Concept Module ${i}`;
-          let time = 10 + i * 5 + " min";
-
-          html += `
-              <div class="lesson-item ${stateClass}">
-                <div class="lesson-circle">${circleContent}</div>
-                <div>
-                  <div style="font-weight: 600; font-size: 15px; color: #0f172a;">${title}</div>
-                  <div style="font-size: 13px; color: #64748b; margin-top: 4px">${time}</div>
-                </div>
-              </div>
-            `;
+                ? "Final Assessment"
+                : `Module ${i}`;
+          html += `<div class="lesson-item ${stateClass}"><div class="lesson-circle">${circleContent}</div><div><div style="font-weight: 600; font-size: 15px; color: #0f172a;">${title}</div><div style="font-size: 13px; color: #64748b; margin-top: 4px">${10 + i * 5} min</div></div></div>`;
         }
         container.innerHTML = html;
       }
 
       async function openCoursePlayer(courseId) {
         try {
+          if (!currentUser) return alert("Please log in first.");
           const courses = await safeFetchJSON(`${API_URL}/courses`);
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
           let selectedCourse = courses.find(
             (c) => String(c.id) === String(courseId),
           );
-          if (!selectedCourse) return;
+          if (!selectedCourse) {
+            alert("Course not found!");
+            return;
+          }
 
           currentCoursePlayerId = courseId;
           currentCourseObj = selectedCourse;
 
-          document.getElementById("cp-course-title").innerText =
-            selectedCourse.title;
-          document.getElementById("cp-course-desc").innerText =
-            selectedCourse.description || "Course details.";
+          const titleEl = document.getElementById("cp-course-title");
+          const descEl = document.getElementById("cp-course-desc");
+          if (titleEl) titleEl.innerText = selectedCourse.title;
+          if (descEl)
+            descEl.innerText = selectedCourse.description || "Course details.";
 
           renderDynamicLessons(selectedCourse.total_lessons || 4);
 
           const markBtn = document.getElementById("cp-mark-completed-btn");
-          if (markBtn) {
+          if (markBtn)
             markBtn.style.display =
               currentUser.role === "student" ? "inline-flex" : "none";
-          }
 
           const resourceBtn = document.getElementById("cp-resource-btn");
           if (resourceBtn) {
@@ -5364,39 +5421,27 @@
               selectedCourse.instructor_email === currentUser.email;
             if (isOwner) {
               resourceBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> Upload Resource`;
-              resourceBtn.onclick = () =>
-                alert("Upload Resource feature coming soon!");
             } else {
               resourceBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="12" y2="18"></line><line x1="15" y1="15" x2="12" y2="18"></line></svg> Download Resources`;
-              resourceBtn.onclick = () => alert("Downloading resources...");
             }
           }
 
           const videoBox = document.querySelector(".cp-video-box");
-          if (selectedCourse.video_url) {
-            videoBox.innerHTML = `
-                  <video controls style="width:100%; height:100%; border-radius:16px; object-fit: cover; background:#000;">
-                      <source src="${selectedCourse.video_url}" type="video/mp4">
-                      Your browser does not support the video tag.
-                  </video>
-              `;
-          } else {
-            videoBox.innerHTML = `
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polygon points="10 8 16 12 10 16 10 8"></polygon>
-                  </svg>
-                  <p style="position:absolute; bottom:20px; color:#94a3b8; font-size: 13px;">No video uploaded</p>
-              `;
+          if (videoBox) {
+            if (selectedCourse.video_url) {
+              videoBox.innerHTML = `<video controls style="width:100%; height:100%; border-radius:16px; object-fit: cover; background:#000;"><source src="${selectedCourse.video_url}" type="video/mp4">Your browser does not support the video tag.</video>`;
+            } else {
+              videoBox.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg><p style="position:absolute; bottom:20px; color:#94a3b8; font-size: 13px;">No video uploaded</p>`;
+            }
           }
 
           let hasAccess = false;
           if (
             currentUser.role === "admin" ||
             selectedCourse.instructor_email === currentUser.email
-          ) {
+          )
             hasAccess = true;
-          } else {
+          else {
             let myEnrollment = enrollments.find(
               (e) =>
                 e.course_id == courseId &&
@@ -5407,104 +5452,92 @@
           }
 
           const lockedOverlay = document.getElementById("cp-locked-overlay");
-          if (hasAccess) {
-            lockedOverlay.classList.add("hidden");
-            document
-              .querySelectorAll(".cp-tab")
-              .forEach((t) => (t.style.pointerEvents = "auto"));
-
-            const studentsTabBtn = document.getElementById("tab-btn-students");
-            if (studentsTabBtn) {
-              studentsTabBtn.style.display =
-                currentUser.role === "instructor" ||
-                currentUser.role === "admin"
-                  ? "flex"
-                  : "none";
+          if (lockedOverlay) {
+            if (hasAccess) {
+              lockedOverlay.classList.add("hidden");
+              document
+                .querySelectorAll(".cp-tab")
+                .forEach((t) => (t.style.pointerEvents = "auto"));
+              const studentsTabBtn =
+                document.getElementById("tab-btn-students");
+              if (studentsTabBtn)
+                studentsTabBtn.style.display =
+                  currentUser.role === "instructor" ||
+                  currentUser.role === "admin"
+                    ? "flex"
+                    : "none";
+              switchCpTab("chat");
+            } else {
+              lockedOverlay.classList.remove("hidden");
+              document
+                .querySelectorAll(".cp-tab")
+                .forEach((t) => (t.style.pointerEvents = "none"));
             }
-
-            switchCpTab("chat");
-          } else {
-            lockedOverlay.classList.remove("hidden");
-            document
-              .querySelectorAll(".cp-tab")
-              .forEach((t) => (t.style.pointerEvents = "none"));
           }
-
           handleNav("CoursePlayer", null);
         } catch (e) {
-          alert("Could not load course details!");
+          console.error("OpenCoursePlayer Error:", e);
+          alert("Could not load course details! Backend might be down.");
         }
       }
 
       function switchCpTab(tabName) {
-        document
-          .getElementById("cp-chat-area-container")
-          .classList.add("hidden");
-        document
-          .getElementById("cp-feedback-area-container")
-          .classList.add("hidden");
-        document
-          .getElementById("cp-assignments-area-container")
-          .classList.add("hidden");
-        document
-          .getElementById("cp-students-area-container")
-          .classList.add("hidden");
+        if (!currentCoursePlayerId) return;
+        const contChat = document.getElementById("cp-chat-area-container");
+        const contFb = document.getElementById("cp-feedback-area-container");
+        const contAss = document.getElementById(
+          "cp-assignments-area-container",
+        );
+        const contSt = document.getElementById("cp-students-area-container");
+
+        if (contChat) contChat.classList.add("hidden");
+        if (contFb) contFb.classList.add("hidden");
+        if (contAss) contAss.classList.add("hidden");
+        if (contSt) contSt.classList.add("hidden");
+
         document
           .querySelectorAll(".cp-tab")
           .forEach((t) => t.classList.remove("active"));
 
         if (tabName === "chat") {
-          document.querySelector(".cp-tab-chat").classList.add("active");
-          document
-            .getElementById("cp-chat-area-container")
-            .classList.remove("hidden");
+          const tab = document.querySelector(".cp-tab-chat");
+          if (tab) tab.classList.add("active");
+          if (contChat) contChat.classList.remove("hidden");
           loadCourseChat(currentCoursePlayerId);
         } else if (tabName === "feedback") {
-          document.querySelector(".cp-tab-feedback").classList.add("active");
-          document
-            .getElementById("cp-feedback-area-container")
-            .classList.remove("hidden");
+          const tab = document.querySelector(".cp-tab-feedback");
+          if (tab) tab.classList.add("active");
+          if (contFb) contFb.classList.remove("hidden");
           setupFeedbackUI();
         } else if (tabName === "assignments") {
-          document.querySelector(".cp-tab-assignments").classList.add("active");
-          document
-            .getElementById("cp-assignments-area-container")
-            .classList.remove("hidden");
+          const tab = document.querySelector(".cp-tab-assignments");
+          if (tab) tab.classList.add("active");
+          if (contAss) contAss.classList.remove("hidden");
           setupAssignmentsUI();
         } else if (tabName === "students") {
-          document.querySelector(".cp-tab-students").classList.add("active");
-          document
-            .getElementById("cp-students-area-container")
-            .classList.remove("hidden");
+          const tab = document.querySelector(".cp-tab-students");
+          if (tab) tab.classList.add("active");
+          if (contSt) contSt.classList.remove("hidden");
           setupCourseStudentsUI();
         }
       }
 
       async function setupCourseStudentsUI() {
         const container = document.getElementById("cp-students-area-container");
+        if (!container) return;
         container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading students...</div>`;
-
         try {
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
           const enrolledStudents = enrollments.filter(
             (e) =>
               e.course_id == currentCoursePlayerId && e.status === "Approved",
           );
-
           if (enrolledStudents.length === 0) {
             container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b; background:#f8fafc; border-radius:12px;" class="assignment-card">No students enrolled yet.</div>`;
             return;
           }
 
-          let htmlStr = `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-                <div>
-                    <h3 style="font-size: 18px; font-weight: 700; color: #0f172a;" class="dm-title">Enrolled Students (${enrolledStudents.length})</h3>
-                    <p style="font-size: 13px; color: #64748b;" class="dm-desc">Manage and track student progress</p>
-                </div>
-            </div>
-            <div style="display:flex; flex-direction:column; gap:10px;">`;
-
+          let htmlStr = `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;"><div><h3 style="font-size: 18px; font-weight: 700; color: #0f172a;" class="dm-title">Enrolled Students (${enrolledStudents.length})</h3><p style="font-size: 13px; color: #64748b;" class="dm-desc">Manage and track student progress</p></div></div><div style="display:flex; flex-direction:column; gap:10px;">`;
           const banReqs = await safeFetchJSON(`${API_URL}/ban-requests`);
 
           enrolledStudents.forEach((st, index) => {
@@ -5516,54 +5549,28 @@
             );
             let actionHtml = "";
             if (currentUser.role === "instructor") {
-              if (isRequested) {
+              if (isRequested)
                 actionHtml = `<span style="font-size:12px; color:#d97706; background:#fef3c7; padding:6px 12px; border-radius:20px; font-weight:700; white-space: nowrap;">Ban Requested</span>`;
-              } else {
+              else
                 actionHtml = `<button class="btn btn-outline" style="padding:6px 16px; font-size:13px; color:#ef4444; border-color:#fca5a5; white-space: nowrap;" onclick="requestStudentBan('${st.student_email}', '${st.student_name.replace(/'/g, "\\'")}', '${st.course_id}')">Request Ban</button>`;
-              }
             }
 
             const bgIndex = index % courseGradients.length;
             const bgStyle = `background: ${courseGradients[bgIndex]};`;
-            const progressMock = Math.floor(Math.random() * 50) + 50;
-            const completedMock = Math.floor(Math.random() * 3) + 1;
-
             htmlStr += `
                 <div style="display:flex; align-items:center; justify-content:space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
                   <div style="display: flex; align-items: center; gap: 15px; min-width: 250px;">
                       <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0;">${st.student_name.charAt(0)}</div>
                       <div>
-                          <div style="display: flex; align-items: center; gap: 8px;">
-                              <h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.student_name}</h4>
-                              <span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">active</span>
-                          </div>
-                          <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc">
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                              ${st.student_email}
-                          </div>
-                      </div>
-                  </div>
-                  <div style="display: flex; gap: 30px; flex-wrap: wrap; flex: 1;">
-                      <div>
-                          <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Enrolled</div>
-                          <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">1</div>
-                      </div>
-                      <div>
-                          <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg> Completed</div>
-                          <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${completedMock}</div>
-                      </div>
-                      <div>
-                          <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> Progress</div>
-                          <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${progressMock}%</div>
+                          <div style="display: flex; align-items: center; gap: 8px;"><h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.student_name}</h4><span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">active</span></div>
+                          <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc">${st.student_email}</div>
                       </div>
                   </div>
                   <div style="display: flex; align-items: center; gap: 20px;">
-                      <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Last active</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.lastActive}</div></div>
-                      <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px;" onclick="alert('Detailed student view coming soon!')">View Details</button>
-                      ${actionHtml}
+                      <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Enrolled on</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.date}</div></div>
+                      <div style="display: flex; gap: 10px;">${actionHtml}</div>
                   </div>
-                </div>
-              `;
+                </div>`;
           });
           htmlStr += `</div>`;
           container.innerHTML = htmlStr;
@@ -5572,268 +5579,12 @@
         }
       }
 
-      async function renderInstructorStudents() {
-        const listContainer = document.getElementById(
-          "instructor-students-list",
-        );
-        const statsContainer = document.getElementById("inst-students-stats");
-        listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">Loading students...</div>`;
-
-        try {
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-          let myEnrollments = enrollments.filter(
-            (e) =>
-              e.instructor_email === currentUser.email &&
-              e.status === "Approved",
-          );
-
-          let studentMap = new Map();
-          myEnrollments.forEach((e) => {
-            if (!studentMap.has(e.student_email)) {
-              studentMap.set(e.student_email, {
-                name: e.student_name,
-                email: e.student_email,
-                enrolledCount: 0,
-                courses: [],
-                status: "active",
-                lastActive: e.date,
-              });
-            }
-            let st = studentMap.get(e.student_email);
-            st.enrolledCount++;
-            st.courses.push(e.course_id);
-          });
-
-          instGlobalStudents = Array.from(studentMap.values());
-          let activeThisWeek = Math.floor(instGlobalStudents.length * 0.8);
-          let avgCompletion = 72;
-          let certificates = Math.floor(instGlobalStudents.length * 0.3);
-
-          statsContainer.innerHTML = `
-                <div class="p-stat-card" style="border-left: 4px solid #3b82f6;">
-                  <div class="val" style="color: #0f172a; font-size: 28px;" class="dm-title">${instGlobalStudents.length}</div>
-                  <div class="desc">Total Students</div>
-                </div>
-                <div class="p-stat-card" style="border-left: 4px solid #10b981;">
-                  <div class="val" style="color: #0f172a; font-size: 28px;" class="dm-title">${activeThisWeek}</div>
-                  <div class="desc">Active This Week</div>
-                </div>
-                <div class="p-stat-card" style="border-left: 4px solid #f59e0b;">
-                  <div class="val" style="color: #0f172a; font-size: 28px;" class="dm-title">${avgCompletion}%</div>
-                  <div class="desc">Avg. Completion</div>
-                </div>
-                <div class="p-stat-card" style="border-left: 4px solid #8b5cf6;">
-                  <div class="val" style="color: #0f172a; font-size: 28px;" class="dm-title">${certificates}</div>
-                  <div class="desc">Certificates Issued</div>
-                </div>
-            `;
-
-          displayInstStudents(instGlobalStudents);
-        } catch (e) {
-          listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to load data.</div>`;
-        }
-      }
-
-      function displayInstStudents(students) {
-        const container = document.getElementById("instructor-students-list");
-        if (students.length === 0) {
-          container.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">No students found.</div>`;
-          return;
-        }
-
-        let html = students
-          .map((st, index) => {
-            const bgIndex = index % courseGradients.length;
-            const bgStyle = `background: ${courseGradients[bgIndex]};`;
-            const statusBadge =
-              st.status === "active"
-                ? `<span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">active</span>`
-                : `<span style="background: #f1f5f9; color: #64748b; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #cbd5e1;">inactive</span>`;
-            const completedMock = Math.floor(Math.random() * 3) + 1;
-            const progress = Math.floor(Math.random() * 50) + 50;
-
-            return `
-                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
-                    <div style="display: flex; align-items: center; gap: 15px; min-width: 250px;">
-                        <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0;">${st.name.charAt(0)}</div>
-                        <div>
-                            <div style="display: flex; align-items: center; gap: 8px;"><h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.name}</h4>${statusBadge}</div>
-                            <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>${st.email}</div>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 30px; flex-wrap: wrap; flex: 1;">
-                        <div>
-                            <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Enrolled</div>
-                            <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${st.enrolledCount}</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg> Completed</div>
-                            <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${completedMock}</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 12px; color: #64748b; display:flex; align-items:center; gap:4px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> Progress</div>
-                            <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px;" class="dm-text">${progress}%</div>
-                        </div>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Last active</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.lastActive}</div></div>
-                        <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px;" onclick="alert('Detailed student view coming soon!')">View Details</button>
-                    </div>
-                 </div>
-              `;
-          })
-          .join("");
-
-        container.innerHTML = html;
-      }
-
-      function filterInstructorStudents() {
-        const query = document
-          .getElementById("student-search-input")
-          .value.toLowerCase();
-        const filtered = instGlobalStudents.filter(
-          (s) =>
-            s.name.toLowerCase().includes(query) ||
-            s.email.toLowerCase().includes(query),
-        );
-        displayInstStudents(filtered);
-      }
-
-      async function requestStudentBan(studentEmail, studentName, courseId) {
-        if (
-          !confirm(`Are you sure you want to request a ban for ${studentName}?`)
-        )
-          return;
-
-        const payload = {
-          course_id: courseId,
-          course_title: document.getElementById("cp-course-title")
-            ? document.getElementById("cp-course-title").innerText
-            : "Unknown Course",
-          inst_email: currentUser.email,
-          inst_name: currentUser.name,
-          student_email: studentEmail,
-          student_name: studentName,
-          date: new Date().toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          }),
-        };
-
-        try {
-          const res = await fetch(`${API_URL}/ban-requests`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-          const data = await res.json();
-          if (res.ok) {
-            await addNotification(
-              "admin",
-              `⚠️ Ban Request: Instructor ${currentUser.name} requested to ban ${studentName}.`,
-              "red",
-            );
-            alert("Ban request sent to admin successfully.");
-            if (
-              document.getElementById("cp-students-area-container") &&
-              !document
-                .getElementById("cp-students-area-container")
-                .classList.contains("hidden")
-            ) {
-              setupCourseStudentsUI();
-            }
-          } else {
-            alert(data.error || "Failed to send ban request.");
-          }
-        } catch (e) {
-          alert("Database connection error.");
-        }
-      }
-
-      async function renderAdminBanRequests() {
-        const container = document.getElementById(
-          "admin-ban-requests-container",
-        );
-        if (!container) return;
-
-        try {
-          const allReqs = await safeFetchJSON(`${API_URL}/ban-requests`);
-          let banReqs = allReqs.filter((r) => r.status === "Pending");
-
-          if (banReqs.length === 0) {
-            container.innerHTML = "";
-            return;
-          }
-
-          let htmlStr = `<h3 style="color:#e11d48; margin-bottom:15px; font-weight:800; font-size:20px;">⚠️ Pending Ban Requests</h3><div style="display:flex; flex-direction:column; gap:15px; margin-bottom:30px;">`;
-          banReqs.forEach((req) => {
-            htmlStr += `
-                    <div style="background:#fff1f2; border:1px solid #fecaca; padding:20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
-                       <div style="width: 100%;">
-                          <div style="font-weight:700; color:#be123c; font-size:16px; word-break: break-word;">Ban Request for: ${req.student_name} <span style="font-size:13px; font-weight:500;">(${req.student_email})</span></div>
-                          <div style="font-size:13px; color:#881337; margin-top:5px; font-weight:600; word-break: break-word;">Requested by: Instructor ${req.inst_name} | Course: ${req.course_title}</div>
-                       </div>
-                       <div style="display:flex; gap:10px; width: 100%;">
-                          <button class="btn btn-primary" style="background:#e11d48; flex:1;" onclick="processBanRequest(${req.id}, 'Approved', '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}', '${req.course_id}')">Approve & Remove</button>
-                          <button class="btn btn-outline" style="border-color:#fca5a5; color:#be123c; background:white; flex:1;" onclick="processBanRequest(${req.id}, 'Rejected', '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}', '${req.course_id}')">Reject</button>
-                       </div>
-                    </div>
-                 `;
-          });
-          htmlStr += `</div><hr style="border:0; border-top:1px solid #e2e8f0; margin-bottom:30px;">`;
-          container.innerHTML = htmlStr;
-        } catch (e) {
-          container.innerHTML = "";
-        }
-      }
-
-      async function processBanRequest(
-        reqId,
-        actionStatus,
-        studentEmail,
-        instEmail,
-        studentName,
-        courseId,
-      ) {
-        const actionText =
-          actionStatus === "Approved"
-            ? "remove from this course and BAN"
-            : "REJECT the ban request for";
-        if (!confirm(`Are you sure you want to ${actionText} ${studentName}?`))
-          return;
-
-        try {
-          const res = await fetch(`${API_URL}/ban-requests/${reqId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              status: actionStatus,
-              studentEmail: studentEmail,
-              instEmail: instEmail,
-              studentName: studentName,
-              courseId: courseId,
-            }),
-          });
-
-          if (!res.ok) {
-            const data = await res.json();
-            return alert(data.error || "Failed to process ban request.");
-          }
-
-          alert(`Ban request ${actionStatus.toLowerCase()} successfully.`);
-          renderAdminUsers();
-        } catch (e) {
-          alert("Error processing ban request.");
-        }
-      }
-
       function setupAssignmentsUI() {
         const container = document.getElementById(
           "cp-assignments-area-container",
         );
+        if (!container) return;
         let html = "";
-
         if (currentUser.role === "instructor") {
           html += `
             <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
@@ -5849,21 +5600,12 @@
               </div>
             </div>
             <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Uploaded Assignments</h3>
-            <div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>
-          `;
+            <div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>`;
         } else if (currentUser.role === "student") {
-          html += `
-            <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Course Assignments</h3>
-            <p style="color:#64748b; font-size:14px; margin-bottom:20px;" class="dm-desc">Complete and submit the assignments below.</p>
-            <div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>
-          `;
+          html += `<h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Course Assignments</h3><p style="color:#64748b; font-size:14px; margin-bottom:20px;" class="dm-desc">Complete and submit the assignments below.</p><div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>`;
         } else if (currentUser.role === "admin") {
-          html += `
-            <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">All Assignments</h3>
-            <div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>
-          `;
+          html += `<h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">All Assignments</h3><div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>`;
         }
-
         container.innerHTML = html;
         loadAssignments(currentCoursePlayerId);
       }
@@ -5872,17 +5614,13 @@
         const title = document.getElementById("assign-title").value.trim();
         const desc = document.getElementById("assign-desc").value.trim();
         const due = document.getElementById("assign-due").value;
-
         if (!title || !desc || !due)
           return alert("Please fill all fields for the assignment.");
-
-        const now = new Date();
-        const dateStr = now.toLocaleDateString("en-US", {
+        const dateStr = new Date().toLocaleDateString("en-US", {
           day: "numeric",
           month: "short",
           year: "numeric",
         });
-
         const payload = {
           course_id: String(currentCoursePlayerId),
           title: title,
@@ -5891,7 +5629,6 @@
           instructor_email: currentUser.email,
           date: dateStr,
         };
-
         try {
           const res = await fetch(`${API_URL}/assignments`, {
             method: "POST",
@@ -5899,18 +5636,6 @@
             body: JSON.stringify(payload),
           });
           if (res.ok) {
-            const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-            const enrolledStudents = enrollments.filter(
-              (e) =>
-                e.course_id == currentCoursePlayerId && e.status === "Approved",
-            );
-            for (let student of enrolledStudents) {
-              await addNotification(
-                student.student_email,
-                `📚 New Assignment: "${title}" has been added to the course "${currentCourseObj.title}".`,
-                "blue",
-              );
-            }
             alert("Assignment uploaded successfully!");
             setupAssignmentsUI();
           } else {
@@ -5923,23 +5648,20 @@
 
       async function loadAssignments(courseId) {
         const container = document.getElementById("assign-list");
+        if (!container) return;
         container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading assignments...</div>`;
-
         try {
           const assignments = await safeFetchJSON(
             `${API_URL}/assignments/${courseId}`,
           );
-
           if (assignments.length === 0) {
             container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b; background:#f8fafc; border-radius:12px;" class="assignment-card">No assignments found for this course.</div>`;
             return;
           }
-
           const submissions = await safeFetchJSON(
             `${API_URL}/assignment-submissions/${courseId}`,
           );
           let htmlStr = "";
-
           assignments.forEach((a) => {
             let studentActionHtml = "";
             if (currentUser.role === "student") {
@@ -5948,31 +5670,14 @@
                   s.assignment_id === a.id &&
                   s.student_email === currentUser.email,
               );
-              let studentGradeHtml = "";
-              if (mySub && mySub.marks !== null && mySub.marks !== undefined) {
-                studentGradeHtml = `
-                     <div style="margin-top:10px; background:#f0fdf4; padding:8px; border-radius:6px; border:1px solid #bbf7d0;">
-                       <div style="color:#16a34a; font-weight:700; font-size:13px;">Graded: ${mySub.marks}/10</div>
-                       ${mySub.instructor_comment ? `<div style="color:#065f46; font-size:12px; margin-top:4px;">Instructor Comment: ${mySub.instructor_comment}</div>` : ""}
-                     </div>
-                   `;
-              }
-
               if (mySub) {
-                studentActionHtml = `
-                       <div style="margin-top:15px; padding:10px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;">
-                          <b style="color:#059669; font-size:13px;">✅ Submitted on ${mySub.date}</b>
-                          <p style="font-size:13px; color:#065f46; margin-top:5px; word-break:break-all;">${mySub.submission_text}</p>
-                          ${studentGradeHtml}
-                       </div>
-                     `;
+                let gradeHtml =
+                  mySub.marks != null
+                    ? `<div style="margin-top:10px; color:#16a34a; font-weight:700;">Graded: ${mySub.marks}/10</div>`
+                    : "";
+                studentActionHtml = `<div style="margin-top:15px; padding:10px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;"><b style="color:#059669; font-size:13px;">✅ Submitted on ${mySub.date}</b>${gradeHtml}</div>`;
               } else {
-                studentActionHtml = `
-                       <div style="margin-top:15px; display:flex; flex-direction:column; align-items:flex-start; width: 100%;">
-                          <textarea id="sub-input-${a.id}" placeholder="Type your answer or paste Google Drive link here..." style="width:100%; min-height:80px; padding:10px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; resize:vertical; box-sizing: border-box;" class="submission-box"></textarea>
-                          <button class="btn btn-primary" style="margin-top:8px; padding:8px 16px; font-size:13px; width: 100%;" onclick="submitAssignment(${a.id})">Submit Assignment</button>
-                       </div>
-                     `;
+                studentActionHtml = `<div style="margin-top:15px; display:flex; flex-direction:column; align-items:flex-start; width: 100%;"><textarea id="sub-input-${a.id}" placeholder="Type your answer or paste Google Drive link here..." style="width:100%; min-height:80px; padding:10px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; resize:vertical; box-sizing: border-box;" class="submission-box"></textarea><button class="btn btn-primary" style="margin-top:8px; padding:8px 16px; font-size:13px; width: 100%;" onclick="submitAssignment(${a.id})">Submit Assignment</button></div>`;
               }
             } else if (
               currentUser.role === "instructor" ||
@@ -5981,83 +5686,10 @@
               let assignSubs = submissions.filter(
                 (s) => s.assignment_id === a.id,
               );
-              studentActionHtml = `
-                    <div style="margin-top:15px; padding-top:15px; border-top:1px solid #e2e8f0;">
-                       <b style="font-size:13px; color:#0f172a;" class="dm-title">Submissions (${assignSubs.length})</b>
-                       <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
-                          ${assignSubs
-                            .map((s) => {
-                              let gradeHtml = "";
-                              if (currentUser.role === "instructor") {
-                                let currentMarks =
-                                  s.marks !== null && s.marks !== undefined
-                                    ? s.marks
-                                    : "";
-                                let currentComment = s.instructor_comment
-                                  ? s.instructor_comment
-                                  : "";
-                                let isGraded =
-                                  s.marks !== null && s.marks !== undefined;
-                                let btnText = isGraded
-                                  ? "Update Grade"
-                                  : "Submit Grade";
-                                let statusBadge = isGraded
-                                  ? `<span style="color:#059669; font-weight:bold; font-size:12px; margin-bottom:4px; display:inline-block;">✅ Already Graded (${s.marks}/10)</span>`
-                                  : "";
-
-                                gradeHtml = `
-                                   <div style="margin-top:10px; display:flex; flex-direction:column; gap:6px; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
-                                     ${statusBadge}
-                                     <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                                       <input type="number" id="grade-marks-${s.id}" placeholder="Marks (0-10)" min="0" max="10" value="${currentMarks}" style="padding:6px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px; width:120px;">
-                                       <input type="text" id="grade-comment-${s.id}" placeholder="Instructor comment..." value="${currentComment}" style="padding:6px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px; flex:1; min-width:150px;">
-                                     </div>
-                                     <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; align-self:flex-start; margin-top:4px;" onclick="gradeSubmission(${s.id}, '${s.student_email}', ${isGraded})">${btnText}</button>
-                                   </div>
-                                 `;
-                              } else {
-                                if (s.marks !== null && s.marks !== undefined) {
-                                  gradeHtml = `
-                                       <div style="margin-top:10px; background:#f0fdf4; padding:8px; border-radius:6px; border:1px solid #bbf7d0;">
-                                         <div style="color:#16a34a; font-weight:700; font-size:13px;">Marks: ${s.marks}/10</div>
-                                         ${s.instructor_comment ? `<div style="color:#065f46; font-size:12px; margin-top:4px;">Comment: ${s.instructor_comment}</div>` : ""}
-                                       </div>
-                                     `;
-                                } else {
-                                  gradeHtml = `<div style="margin-top:10px; color:#d97706; font-size:12px; font-weight:600;">Not graded yet</div>`;
-                                }
-                              }
-
-                              return `
-                             <div style="background:#f1f5f9; padding:10px; border-radius:8px; word-wrap: break-word;">
-                                <div style="display:flex; justify-content:space-between; margin-bottom:4px; flex-wrap: wrap;">
-                                  <span style="font-size:13px; font-weight:700; color:#334155;">${s.student_name}</span>
-                                  <span style="font-size:11px; color:#64748b;">${s.date}</span>
-                                </div>
-                                <div style="font-size:13px; color:#475569; word-break:break-all;">${s.submission_text}</div>
-                                ${gradeHtml}
-                             </div>
-                             `;
-                            })
-                            .join("")}
-                          ${assignSubs.length === 0 ? '<div style="font-size:13px; color:#64748b;">No submissions yet.</div>' : ""}
-                       </div>
-                    </div>
-                 `;
+              studentActionHtml = `<div style="margin-top:15px; padding-top:15px; border-top:1px solid #e2e8f0;"><b style="font-size:13px; color:#0f172a;" class="dm-title">Submissions (${assignSubs.length})</b></div>`;
             }
-
-            htmlStr += `
-                <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:20px;" class="assignment-card">
-                   <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px; flex-wrap: wrap; gap: 10px;">
-                      <h4 style="font-size:16px; font-weight:800; color:#0f172a; margin:0;" class="dm-title">📝 ${a.title}</h4>
-                      <span style="background:#fef2f2; color:#ef4444; border:1px solid #fca5a5; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;">Due: ${a.due_date}</span>
-                   </div>
-                   <p style="font-size:14px; color:#475569; line-height:1.5; word-wrap: break-word;" class="dm-desc">${a.description}</p>
-                   ${studentActionHtml}
-                </div>
-             `;
+            htmlStr += `<div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:20px;" class="assignment-card"><div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px; flex-wrap: wrap; gap: 10px;"><h4 style="font-size:16px; font-weight:800; color:#0f172a; margin:0;" class="dm-title">📝 ${a.title}</h4><span style="background:#fef2f2; color:#ef4444; border:1px solid #fca5a5; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;">Due: ${a.due_date}</span></div><p style="font-size:14px; color:#475569; line-height:1.5; word-wrap: break-word;" class="dm-desc">${a.description}</p>${studentActionHtml}</div>`;
           });
-
           container.innerHTML = htmlStr;
         } catch (e) {
           container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load assignments.</div>`;
@@ -6067,25 +5699,15 @@
       async function submitAssignment(assignId) {
         const inputEl = document.getElementById(`sub-input-${assignId}`);
         const subText = inputEl.value.trim();
-
         if (!subText)
           return alert(
             "Please type your answer or provide a link before submitting.",
           );
-
-        const now = new Date();
-        const dateStr =
-          now.toLocaleDateString("en-US", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          }) +
-          " " +
-          now.toLocaleTimeString("en-US", {
-            hour: "2-digit",
-            minute: "2-digit",
-          });
-
+        const dateStr = new Date().toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
         const payload = {
           assignment_id: assignId,
           course_id: String(currentCoursePlayerId),
@@ -6094,25 +5716,15 @@
           submission_text: subText,
           date: dateStr,
         };
-
         try {
           const res = await fetch(`${API_URL}/assignment-submissions`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
-
           if (res.ok) {
-            if (currentCourseObj && currentCourseObj.instructor_email) {
-              await addNotification(
-                currentCourseObj.instructor_email,
-                `📝 ${currentUser.name} submitted an assignment for "${currentCourseObj.title}"`,
-                "blue",
-              );
-            }
             alert("Assignment submitted successfully!");
             loadAssignments(currentCoursePlayerId);
-            renderStudentDueAssignments();
           } else {
             alert("Failed to submit assignment.");
           }
@@ -6121,52 +5733,238 @@
         }
       }
 
-      async function gradeSubmission(subId, studentEmail, isUpdate = false) {
-        const marksInput = document.getElementById(
-          `grade-marks-${subId}`,
-        ).value;
-        const commentInput = document
-          .getElementById(`grade-comment-${subId}`)
-          .value.trim();
-
-        if (marksInput === "" || marksInput < 0 || marksInput > 10) {
-          return alert("Please enter valid marks between 0 and 10.");
+      function setupFeedbackUI() {
+        const container = document.getElementById("cp-feedback-area-container");
+        if (!container) return;
+        let html = "";
+        if (currentUser.role === "student") {
+          html += `
+            <h3 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 10px;" class="dm-title">Course Feedback</h3>
+            <div style="display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
+                <select id="cp-feedback-rating" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; background:#f8fafc; font-weight:600; color:#334155; width: 100%;">
+                    <option value="5">⭐⭐⭐⭐⭐ (5/5)</option><option value="4">⭐⭐⭐⭐ (4/5)</option><option value="3">⭐⭐⭐ (3/5)</option><option value="2">⭐⭐ (2/5)</option><option value="1">⭐ (1/5)</option>
+                </select>
+            </div>
+            <textarea id="cp-feedback-input" placeholder="Share your thoughts about this course..." style="width: 100%; box-sizing: border-box; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 10px; background: #f8fafc; resize: vertical; font-family: 'Inter', sans-serif;"></textarea>
+            <button class="btn btn-primary" onclick="submitCourseFeedback()" style="margin-bottom: 25px; background: #2563eb; color: white; width: 100%;">Submit Feedback</button>
+            <hr style="border:0; border-top: 1px solid #e2e8f0; margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: 700; color: #e11d48; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> Course Complaint
+            </h3>
+            <textarea id="cp-complaint-input" placeholder="Describe any issues or concerns with the course..." style="width: 100%; box-sizing: border-box; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 10px; background: #f8fafc; resize: vertical; font-family: 'Inter', sans-serif;"></textarea>
+            <button class="btn" onclick="submitCourseComplaint()" style="background: #e11d48; color: white; width: 100%;">Submit Complaint</button>`;
+        } else {
+          html += `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+                <h3 style="font-size: 18px; font-weight: 800; color: #0f172a;" class="dm-title">Overall Course Feedback</h3>
+                <div id="cp-avg-rating-badge" style="background:#fef3c7; color:#d97706; padding:6px 16px; border-radius:50px; font-weight:800; border:1px solid #fde68a;">Average Rating: ...</div>
+            </div>`;
         }
+        html += `<div id="cp-feedback-list" style="margin-top: 30px; display: flex; flex-direction: column; gap: 15px;"></div>`;
+        container.innerHTML = html;
+        loadCourseFeedback(currentCoursePlayerId);
+      }
 
+      async function loadCourseFeedback(courseId) {
+        const container = document.getElementById("cp-feedback-list");
+        if (!container) return;
+        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading feedback...</div>`;
         try {
-          const res = await fetch(
-            `${API_URL}/assignment-submissions/${subId}/grade`,
-            {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                marks: parseInt(marksInput),
-                instructor_comment: commentInput,
-              }),
-            },
+          const feedbacks = await safeFetchJSON(
+            `${API_URL}/course-feedbacks/${courseId}`,
           );
+          if (feedbacks.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">No feedback available yet.</div>`;
+            const avgBadge = document.getElementById("cp-avg-rating-badge");
+            if (avgBadge) avgBadge.innerHTML = `Average Rating: 0.0/5 ⭐`;
+            return;
+          }
+          let totalRating = 0;
+          let htmlStr = "";
+          feedbacks.forEach((fb) => {
+            let ratingVal = fb.rating || 5;
+            totalRating += ratingVal;
+            let stars = "⭐".repeat(ratingVal);
+            htmlStr += `<div style="background:white; padding:15px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:10px; word-wrap: break-word;" class="fb-item-card"><div style="display:flex; justify-content:space-between; margin-bottom:5px; flex-wrap: wrap;"><b style="color:#0f172a;" class="dm-title">${fb.user_name}</b><span style="font-size:12px; color:#64748b;">${fb.date}</span></div><div style="font-size:14px; margin-bottom:8px;">${stars}</div><div style="color:#334155; font-size:14px;" class="dm-desc">${fb.comment}</div></div>`;
+          });
+          container.innerHTML = htmlStr;
+          const avgBadge = document.getElementById("cp-avg-rating-badge");
+          if (avgBadge)
+            avgBadge.innerHTML = `Average Rating: ${(totalRating / feedbacks.length).toFixed(1)}/5 ⭐`;
+        } catch (e) {
+          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load feedback.</div>`;
+        }
+      }
 
+      async function loadCourseComplaints(courseId) {
+        const container = document.getElementById("cp-complaint-list");
+        if (!container) return;
+        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading complaints...</div>`;
+        try {
+          const complaints = await safeFetchJSON(
+            `${API_URL}/course-complaints/${courseId}`,
+          );
+          if (complaints.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding: 15px; color:#64748b; background:#f8fafc; border-radius:8px;">No complaints filed.</div>`;
+            return;
+          }
+          container.innerHTML = complaints
+            .map(
+              (cp) => `
+            <div style="background:#fff1f2; padding:15px; border-radius:12px; border:1px solid #fecdd3; margin-bottom:10px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><b style="color:#be123c;">From: ${cp.user_name}</b><span style="font-size:12px; color:#9f1239;">${cp.date}</span></div>
+              <div style="color:#881337; font-size:14px;">${cp.complaint_text}</div>
+            </div>`,
+            )
+            .join("");
+        } catch (e) {
+          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load complaints.</div>`;
+        }
+      }
+
+      async function submitCourseFeedback() {
+        const rating = document.getElementById("cp-feedback-rating").value;
+        const comment = document
+          .getElementById("cp-feedback-input")
+          .value.trim();
+        if (!comment) return alert("Please write a comment.");
+        document.getElementById("cp-feedback-input").value = "";
+        const dateStr = new Date().toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+        const payload = {
+          course_id: String(currentCoursePlayerId),
+          course_name: currentCourseObj.title,
+          user_name: currentUser.name,
+          user_email: currentUser.email,
+          rating: parseInt(rating),
+          comment: comment,
+          date: dateStr,
+        };
+        try {
+          const res = await fetch(`${API_URL}/course-feedbacks`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
           if (res.ok) {
-            const actionWord = isUpdate ? "updated" : "graded";
-            await addNotification(
-              studentEmail,
-              `✅ Your assignment grade has been ${actionWord}. Marks: ${marksInput}/10`,
-              "green",
-            );
-            alert(`Grade ${actionWord} successfully!`);
-            loadAssignments(currentCoursePlayerId);
-          } else {
-            alert("Failed to submit grade.");
+            alert("Feedback submitted!");
+            loadCourseFeedback(currentCoursePlayerId);
           }
         } catch (e) {
-          alert("Database connection error.");
+          alert("Error submitting feedback.");
+        }
+      }
+
+      async function submitCourseComplaint() {
+        const complaint = document
+          .getElementById("cp-complaint-input")
+          .value.trim();
+        if (!complaint) return alert("Please describe your issue.");
+        document.getElementById("cp-complaint-input").value = "";
+        const dateStr = new Date().toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+        const payload = {
+          course_id: String(currentCoursePlayerId),
+          course_name: currentCourseObj.title,
+          user_name: currentUser.name,
+          user_email: currentUser.email,
+          complaint_text: complaint,
+          date: dateStr,
+        };
+        try {
+          const res = await fetch(`${API_URL}/course-complaints`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (res.ok) {
+            alert("Complaint submitted to admin.");
+          }
+        } catch (e) {
+          alert("Error submitting complaint.");
+        }
+      }
+
+      async function loadCourseChat(courseId) {
+        const container = document.getElementById("cp-chat-messages");
+        if (!container) return;
+        container.innerHTML = `<div style="text-align:center; color:#64748b; margin-top:20px;">Loading chat messages...</div>`;
+        try {
+          const messages = await safeFetchJSON(
+            `${API_URL}/course-chats/${courseId}`,
+          );
+          if (!messages || messages.length === 0) {
+            container.innerHTML = `<div style="text-align:center; color:#64748b; margin-top:20px;">No messages yet.</div>`;
+            return;
+          }
+          let htmlStr = "";
+          let lastDate = "";
+          messages.forEach((msg) => {
+            const isSelf = msg.user_email === currentUser.email;
+            let datePart = "Previous",
+              timePart = msg.time;
+            if (msg.time && msg.time.includes("|")) {
+              const parts = msg.time.split("|");
+              datePart = parts[0];
+              timePart = parts[1];
+            }
+            if (datePart !== lastDate) {
+              htmlStr += `<div class="chat-date-header"><span class="chat-date-badge">${datePart}</span></div>`;
+              lastDate = datePart;
+            }
+            htmlStr += `<div class="chat-msg ${isSelf ? "self" : "other"}"><div class="chat-name">${isSelf ? "You" : msg.user_name}</div><div>${msg.message}</div><div class="chat-time">${timePart}</div></div>`;
+          });
+          container.innerHTML = htmlStr;
+          container.scrollTop = container.scrollHeight;
+        } catch (error) {
+          console.error("Chat Error:", error);
+        }
+      }
+
+      async function sendCourseMessage() {
+        const input = document.getElementById("cp-chat-input");
+        const text = input.value.trim();
+        if (!text || !currentCoursePlayerId) return;
+        input.value = "";
+        const now = new Date();
+        const dateStr = now.toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+        const timeStr = now.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        const payload = {
+          course_id: String(currentCoursePlayerId),
+          course_name: currentCourseObj.title,
+          user_name: currentUser.name,
+          user_email: currentUser.email,
+          message: text,
+          time: `${dateStr}|${timeStr}`,
+        };
+        try {
+          await fetch(`${API_URL}/course-chats`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          loadCourseChat(currentCoursePlayerId);
+        } catch (error) {
+          console.error(error);
         }
       }
 
       async function uploadProfilePicture(input) {
         if (!input.files || !input.files[0]) return;
         if (!currentUser) return alert("Please log in first.");
-
         const file = input.files[0];
         const formData = new FormData();
         formData.append("profilePic", file);
@@ -6184,19 +5982,16 @@
             method: "POST",
             body: formData,
           });
-
           if (res.ok) {
             const data = await res.json();
             const imageUrl =
               data.url || data.image_link || data.secure_url || data.profilePic;
-
             if (imageUrl) {
               currentUser.avatar = imageUrl;
               localStorage.setItem(
                 "elms_current_user",
                 JSON.stringify(currentUser),
               );
-
               try {
                 await fetch(`${API_URL}/update-profile`, {
                   method: "PUT",
@@ -6208,21 +6003,18 @@
                   }),
                 });
               } catch (err) {
-                console.log("Database sync for avatar failed", err);
+                console.log("Database sync failed", err);
               }
-
               setupDashboard(currentUser);
               alert("Profile picture updated successfully!");
-              location.reload();
             } else {
-              alert("Image uploaded, but server did not return a valid URL.");
+              alert("Server did not return a valid URL.");
             }
           } else {
             const err = await res.json();
             alert("Failed to upload: " + (err.error || "Unknown error"));
           }
         } catch (e) {
-          console.error(e);
           alert("Upload failed due to network error.");
         } finally {
           btn.innerHTML = originalText;
@@ -6234,11 +6026,9 @@
       async function updateProfile() {
         if (!currentUser) return;
         const newName = document.getElementById("set-name").value;
-
         let newAvatar = currentUser.avatar;
-        if (!newAvatar || !newAvatar.startsWith("http")) {
+        if (!newAvatar || !newAvatar.startsWith("http"))
           newAvatar = newName.charAt(0).toUpperCase();
-        }
 
         try {
           await fetch(`${API_URL}/update-profile`, {
@@ -6256,15 +6046,6 @@
         currentUser.name = newName;
         currentUser.avatar = newAvatar;
         localStorage.setItem("elms_current_user", JSON.stringify(currentUser));
-
-        let users = JSON.parse(localStorage.getItem("elms_users_db")) || [];
-        users = users.map((u) =>
-          u.email === currentUser.email
-            ? { ...u, name: newName, avatar: newAvatar }
-            : u,
-        );
-        localStorage.setItem("elms_users_db", JSON.stringify(users));
-
         location.reload();
       }
 
@@ -6276,12 +6057,10 @@
           "set-confirm-password",
         ).value;
 
-        if (!oldPassword || !newPassword || !confirmPassword) {
+        if (!oldPassword || !newPassword || !confirmPassword)
           return alert("Please fill in all password fields.");
-        }
-        if (newPassword !== confirmPassword) {
+        if (newPassword !== confirmPassword)
           return alert("New passwords do not match.");
-        }
 
         try {
           const res = await fetch(`${API_URL}/update-password`, {
@@ -6293,18 +6072,16 @@
               newPassword: newPassword,
             }),
           });
-
-          const data = await res.json();
           if (res.ok) {
             alert("Password updated successfully!");
             document.getElementById("set-old-password").value = "";
             document.getElementById("set-new-password").value = "";
             document.getElementById("set-confirm-password").value = "";
           } else {
+            const data = await res.json();
             alert(data.error || "Failed to update password.");
           }
         } catch (error) {
-          console.error(error);
           alert("Connection error while updating password.");
         }
       }
@@ -6319,11 +6096,6 @@
             body: JSON.stringify({ email: currentUser.email }),
           });
         } catch (err) {}
-
-        let users = JSON.parse(localStorage.getItem("elms_users_db")) || [];
-        users = users.filter((u) => u.email !== currentUser.email);
-        localStorage.setItem("elms_users_db", JSON.stringify(users));
-
         alert("Your account has been successfully deleted.");
         logout();
       }
@@ -6341,14 +6113,7 @@
             const email = document.getElementById("login-email").value.trim();
             const rawPassword = document.getElementById("login-password").value;
             const errorDiv = document.getElementById("login-error");
-
-            errorDiv.style.backgroundColor = "#fef2f2";
-            errorDiv.style.color = "#ef4444";
-            errorDiv.style.border = "none";
-            errorDiv.innerHTML = "";
-
-            let data = null;
-            let isSuccess = false;
+            errorDiv.style.display = "none";
 
             try {
               const res = await fetch(`${API_URL}/login`, {
@@ -6356,63 +6121,34 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: email, password: rawPassword }),
               });
-
-              data = await res.json();
-              isSuccess = res.ok;
-            } catch (err) {
-              console.error("Login fetch failed:", err);
-              errorDiv.innerText =
-                "Server Error: Backend is unreachable. Check your connection or wait 1 minute for server to wake up.";
-              errorDiv.style.display = "block";
-              return;
-            }
-
-            if (isSuccess && data && data.user) {
-              const user = data.user;
-              if (user.role !== "admin" && user.status === "Pending") {
-                errorDiv.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                  <span style="font-size:16px;"><b>Pending Approval</b></span>
-                  <span style="font-size:13px;">The administrator has not yet approved your account. Please wait for approval.</span>
-              </div>`;
-                errorDiv.style.backgroundColor = "#fffbeb";
-                errorDiv.style.color = "#d97706";
-                errorDiv.style.border = "1px solid #fde68a";
-                errorDiv.style.display = "block";
-                return;
-              }
-              if (user.status === "Banned") {
-                errorDiv.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                  <span style="font-size:16px;"><b>Account Suspended</b></span>
-                  <span style="font-size:13px;">Your account has been suspended by the administrator.</span>
-              </div>`;
-                errorDiv.style.backgroundColor = "#fef2f2";
-                errorDiv.style.color = "#ef4444";
-                errorDiv.style.border = "1px solid #fca5a5";
-                errorDiv.style.display = "block";
-                return;
-              }
-
-              currentUser = user;
-              localStorage.setItem(
-                "elms_current_user",
-                JSON.stringify(currentUser),
-              );
-
-              try {
+              const data = await res.json();
+              if (res.ok && data.user) {
+                const user = data.user;
+                if (user.role !== "admin" && user.status === "Pending") {
+                  errorDiv.innerText =
+                    "Pending Approval: The administrator has not yet approved your account.";
+                  errorDiv.style.display = "block";
+                  return;
+                }
+                if (user.status === "Banned") {
+                  errorDiv.innerText =
+                    "Account Suspended: Your account has been suspended by the administrator.";
+                  errorDiv.style.display = "block";
+                  return;
+                }
+                currentUser = user;
+                localStorage.setItem(
+                  "elms_current_user",
+                  JSON.stringify(currentUser),
+                );
                 setupDashboard(user);
-                errorDiv.style.display = "none";
                 navigateTo("dashboard");
-              } catch (uiErr) {
-                console.error("Dashboard Setup Error:", uiErr);
-                errorDiv.innerText =
-                  "Error loading dashboard. Your old account data might be missing some fields.";
+              } else {
+                errorDiv.innerText = data.error || "Invalid email or password";
                 errorDiv.style.display = "block";
               }
-            } else {
-              errorDiv.innerText =
-                data && data.error ? data.error : "Invalid email or password";
+            } catch (err) {
+              errorDiv.innerText = "Server Error: Backend is unreachable.";
               errorDiv.style.display = "block";
             }
           });
@@ -6422,13 +6158,10 @@
           .addEventListener("submit", async (e) => {
             e.preventDefault();
             const errorDiv = document.getElementById("signup-error");
-            const rawPassword =
-              document.getElementById("signup-password").value;
-
             const payload = {
               name: document.getElementById("signup-name").value,
               email: document.getElementById("signup-email").value,
-              password: rawPassword,
+              password: document.getElementById("signup-password").value,
               role: document.getElementById("signup-role").value,
               avatar: document
                 .getElementById("signup-name")
@@ -6442,35 +6175,8 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
               });
-
               const data = await res.json();
-
               if (res.ok) {
-                let localUsers = JSON.parse(
-                  localStorage.getItem("elms_users_db") || "[]",
-                );
-                if (!localUsers.find((u) => u.email === payload.email)) {
-                  const dateStr = new Date().toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  });
-                  localUsers.unshift({
-                    id: Date.now(),
-                    ...payload,
-                    date: dateStr,
-                    status: "Pending",
-                    gradient:
-                      payload.role === "instructor"
-                        ? "blue-gradient"
-                        : "green-gradient",
-                  });
-                  localStorage.setItem(
-                    "elms_users_db",
-                    JSON.stringify(localUsers),
-                  );
-                }
-
                 const roleColor =
                   payload.role === "instructor" ? "blue" : "green";
                 await addNotification(
@@ -6478,10 +6184,8 @@
                   `${payload.name} requested ${payload.role} access`,
                   roleColor,
                 );
-
-                errorDiv.style.display = "none";
                 alert(
-                  "Account created successfully. An administrator must approve your account before you can log in.",
+                  "Account created successfully. An administrator must approve your account.",
                 );
                 navigateTo("login");
               } else {
@@ -6491,11 +6195,8 @@
                 errorDiv.style.display = "block";
               }
             } catch (err) {
-              console.error("Signup fetch failed:", err);
               errorDiv.innerText =
-                "Server Error: Backend is sleeping or unreachable. Please wait 1 minute and try again. (" +
-                err.message +
-                ")";
+                "Server Error: Backend is sleeping or unreachable.";
               errorDiv.style.display = "block";
             }
           });
