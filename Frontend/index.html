@@ -6187,15 +6187,36 @@
 
           if (res.ok) {
             const data = await res.json();
-            currentUser.avatar = data.url;
-            localStorage.setItem(
-              "elms_current_user",
-              JSON.stringify(currentUser),
-            );
+            const imageUrl =
+              data.url || data.image_link || data.secure_url || data.profilePic;
 
-            setupDashboard(currentUser);
+            if (imageUrl) {
+              currentUser.avatar = imageUrl;
+              localStorage.setItem(
+                "elms_current_user",
+                JSON.stringify(currentUser),
+              );
 
-            alert("Profile picture updated successfully!");
+              try {
+                await fetch(`${API_URL}/update-profile`, {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    email: currentUser.email,
+                    name: currentUser.name,
+                    avatar: imageUrl,
+                  }),
+                });
+              } catch (err) {
+                console.log("Database sync for avatar failed", err);
+              }
+
+              setupDashboard(currentUser);
+              alert("Profile picture updated successfully!");
+              location.reload();
+            } else {
+              alert("Image uploaded, but server did not return a valid URL.");
+            }
           } else {
             const err = await res.json();
             alert("Failed to upload: " + (err.error || "Unknown error"));
