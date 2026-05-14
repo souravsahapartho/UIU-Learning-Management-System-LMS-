@@ -42,12 +42,18 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
-    // Video asle course_videos folder e, image asle course_images folder e jabe
+    // Video asle course_videos folder e, profile pic asle profile_pics folder e, ar thumbnail asle course_images e jabe
     if (file.mimetype.includes("video")) {
       return {
         folder: "elms/course_videos",
         resource_type: "video",
         allowed_formats: ["mp4", "webm", "mov", "mkv"],
+      };
+    } else if (file.fieldname === "profilePic") {
+      return {
+        folder: "elms/profile_pics",
+        resource_type: "image",
+        allowed_formats: ["jpg", "png", "jpeg", "webp"],
       };
     } else {
       return {
@@ -87,7 +93,7 @@ db.query("SELECT 1", (err) => {
 
 // Initializing Tables
 const tableQueries = [
-  `CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), email VARCHAR(100) UNIQUE, password VARCHAR(255), role VARCHAR(50) DEFAULT 'student', avatar VARCHAR(10) DEFAULT 'U', status VARCHAR(50) DEFAULT 'Pending')`,
+  `CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), email VARCHAR(100) UNIQUE, password VARCHAR(255), role VARCHAR(50) DEFAULT 'student', avatar VARCHAR(500) DEFAULT 'U', status VARCHAR(50) DEFAULT 'Pending')`,
   `CREATE TABLE IF NOT EXISTS courses (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), description TEXT, category VARCHAR(100), difficulty VARCHAR(50), instructor_email VARCHAR(100), instructor_name VARCHAR(100), total_lessons INT DEFAULT 4, status VARCHAR(50) DEFAULT 'Pending', thumbnail_url VARCHAR(500) DEFAULT NULL, video_url VARCHAR(500) DEFAULT NULL)`,
   `CREATE TABLE IF NOT EXISTS course_chats (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100) NOT NULL, course_name VARCHAR(255), user_name VARCHAR(100), user_email VARCHAR(100), message TEXT, \`time\` VARCHAR(50))`,
   `CREATE TABLE IF NOT EXISTS enrollments (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100), course_title VARCHAR(255), student_email VARCHAR(100), student_name VARCHAR(100), instructor_email VARCHAR(100), status VARCHAR(50) DEFAULT 'Pending', \`date\` VARCHAR(50))`,
@@ -97,6 +103,7 @@ const tableQueries = [
   `CREATE TABLE IF NOT EXISTS assignments (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100) NOT NULL, title VARCHAR(255), description TEXT, due_date VARCHAR(50), instructor_email VARCHAR(100), \`date\` VARCHAR(50), course_name VARCHAR(255) DEFAULT NULL)`,
   `CREATE TABLE IF NOT EXISTS assignment_submissions (id INT AUTO_INCREMENT PRIMARY KEY, assignment_id INT NOT NULL, course_id VARCHAR(100), student_email VARCHAR(100), student_name VARCHAR(100), submission_text TEXT, \`date\` VARCHAR(50), marks INT DEFAULT NULL, instructor_comment TEXT DEFAULT NULL, course_name VARCHAR(255) DEFAULT NULL, assignment_title VARCHAR(255) DEFAULT NULL)`,
   `CREATE TABLE IF NOT EXISTS ban_requests (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100), course_title VARCHAR(255), inst_email VARCHAR(100), inst_name VARCHAR(100), student_email VARCHAR(100), student_name VARCHAR(100), status VARCHAR(50) DEFAULT 'Pending', \`date\` VARCHAR(50))`,
+  `CREATE TABLE IF NOT EXISTS profile_pictures (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), email VARCHAR(100), user_type VARCHAR(50), image_link VARCHAR(500), uploaded_time VARCHAR(50))`,
 ];
 
 tableQueries.forEach((query) => {
@@ -110,17 +117,72 @@ const alterQueries = [
   "ALTER TABLE courses ADD COLUMN total_lessons INT DEFAULT 4",
   "ALTER TABLE courses ADD COLUMN thumbnail_url VARCHAR(500) DEFAULT NULL",
   "ALTER TABLE courses ADD COLUMN video_url VARCHAR(500) DEFAULT NULL",
+  "ALTER TABLE users MODIFY COLUMN avatar VARCHAR(500) DEFAULT 'U'",
 ];
 
 alterQueries.forEach((query) => {
   db.query(query, (err) => {
-    if (err && err.code !== "ER_DUP_FIELDNAME") {
-      console.error("🔥 Alter Table Error:", err.message);
+    if (
+      err &&
+      err.code !== "ER_DUP_FIELDNAME" &&
+      !err.message.includes("already exists")
+    ) {
+      // Ignoring normal duplicate field errors
     }
   });
 });
 
 app.get("/", (req, res) => res.json({ message: "Backend API is active." }));
+
+// --- PROFILE PICTURE UPLOAD API ---
+app.post(
+  "/upload-profile-pic",
+  (req, res, next) => {
+    const uploadMiddleware = upload.single("profilePic");
+
+    uploadMiddleware(req, res, (err) => {
+      if (err) {
+        console.error("🔥 Cloudinary/Multer Error (Profile):", err.message);
+        return res
+          .status(500)
+          .json({ error: "File upload failed: " + err.message });
+      }
+      next();
+    });
+  },
+  (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: "No image file uploaded." });
+    }
+
+    const imageUrl = req.file.path;
+    const { name, email, role } = req.body;
+    const uploadedTime = new Date().toLocaleString();
+
+    console.log("➡️ Profile Pic Uploaded:", { email, imageUrl });
+
+    // Add a log to the new profile_pictures table
+    db.query(
+      "INSERT INTO profile_pictures (name, email, user_type, image_link, uploaded_time) VALUES (?, ?, ?, ?, ?)",
+      [name || "", email || "", role || "", imageUrl, uploadedTime],
+      (err) => {
+        if (err)
+          console.error(
+            "🔥 DB Error inserting to profile_pictures:",
+            err.message,
+          );
+
+        // We return success even if logging to the table fails, since Cloudinary upload succeeded
+        res
+          .status(200)
+          .json({
+            message: "Profile picture uploaded successfully",
+            url: imageUrl,
+          });
+      },
+    );
+  },
+);
 
 // --- USER APIs ---
 app.post("/signup", (req, res) => {
@@ -261,7 +323,6 @@ app.put("/update-user-status", (req, res) => {
 
 // --- COURSE APIs WITH CLOUDINARY UPLOAD ---
 
-// Wrapping multer so we can catch errors easily
 app.post(
   "/upload-course",
   (req, res, next) => {
