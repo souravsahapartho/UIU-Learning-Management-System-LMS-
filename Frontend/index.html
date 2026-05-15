@@ -4820,261 +4820,6 @@
         }
       }
 
-      function setupDashboard(user) {
-        currentUser = user;
-
-        const safeName = String(user.name || "User").trim();
-        const safeRole = String(user.role || "student")
-          .trim()
-          .toLowerCase();
-        const safeAvatar = String(user.avatar || "U").trim();
-
-        const roleColors = {
-          student: "#0ea5e9",
-          instructor: "#0f172a",
-          admin: "#7c3aed",
-        };
-        const activeColor = roleColors[safeRole] || "#0ea5e9";
-
-        const topNameEl = document.getElementById("top-name");
-        if (topNameEl) topNameEl.innerText = safeName;
-
-        const topRoleEl = document.getElementById("top-role");
-        if (topRoleEl) topRoleEl.innerText = safeRole;
-
-        const topAvatarEl = document.getElementById("top-avatar");
-        const setAvatarEl = document.getElementById("set-avatar-circle");
-
-        if (safeAvatar.startsWith("http")) {
-          const imgHtml = `<img src="${safeAvatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
-          if (topAvatarEl) {
-            topAvatarEl.innerHTML = imgHtml;
-            topAvatarEl.style.backgroundColor = "transparent";
-          }
-          if (setAvatarEl) {
-            setAvatarEl.innerHTML = imgHtml;
-            setAvatarEl.style.backgroundColor = "transparent";
-          }
-        } else {
-          if (topAvatarEl) {
-            topAvatarEl.innerHTML = safeAvatar;
-            topAvatarEl.style.backgroundColor = activeColor;
-          }
-          if (setAvatarEl) {
-            setAvatarEl.innerHTML = safeAvatar;
-            setAvatarEl.style.backgroundColor = activeColor;
-          }
-        }
-
-        const adminMsg = document.getElementById("admin-welcome-msg");
-        if (adminMsg)
-          adminMsg.innerText = `Welcome back, ${safeName.split(" ")[0]}! 👋`;
-        const studentMsg = document.getElementById("welcome-msg-student");
-        if (studentMsg)
-          studentMsg.innerText = `Welcome back, ${safeName.split(" ")[0]}! 👋`;
-        const instMsg = document.getElementById("welcome-msg-inst");
-        if (instMsg)
-          instMsg.innerText = `Welcome back, ${safeName.split(" ")[0]}! 👋`;
-
-        const sDash = document.getElementById("student-dashboard-view");
-        const iDash = document.getElementById("instructor-dashboard-view");
-        const aDash = document.getElementById("admin-dashboard-view");
-
-        if (sDash)
-          sDash.style.display = safeRole === "student" ? "block" : "none";
-        if (iDash)
-          iDash.style.display = safeRole === "instructor" ? "block" : "none";
-        if (aDash)
-          aDash.style.display = safeRole === "admin" ? "block" : "none";
-
-        document.querySelectorAll(".dashboard-content > div").forEach((div) => {
-          if (div && div.classList) div.classList.add("hidden");
-        });
-        const dHome = document.getElementById("dashboard-home-content");
-        if (dHome) dHome.classList.remove("hidden");
-
-        const setNameEl = document.getElementById("set-name");
-        if (setNameEl) setNameEl.value = safeName;
-
-        const setEmailEl = document.getElementById("set-email");
-        if (setEmailEl) setEmailEl.value = user.email || "";
-
-        setupSidebar({
-          ...user,
-          name: safeName,
-          role: safeRole,
-          avatar: safeAvatar,
-        });
-        updateNotificationBadge();
-
-        if (safeRole === "admin") {
-          renderAdminActivity();
-          renderAdminBanRequests();
-          renderAdminCourses();
-          updateAdminStats();
-        } else if (safeRole === "instructor") {
-          updateInstructorStats();
-          renderInstructorLiveCourses();
-          renderInstructorRequests();
-        } else if (safeRole === "student") {
-          renderStudentEnrolledCourses();
-          renderStudentDueAssignments();
-        }
-      }
-
-      function setupSidebar(user) {
-        const sidebar = document.getElementById("sidebar");
-        if (sidebar) sidebar.className = `sidebar ${user.role}-sidebar`;
-
-        if (user.role === "instructor") {
-          const sideTitle = document.getElementById("side-title");
-          if (sideTitle) sideTitle.style.color = "#6366f1";
-          const iconBg = document.querySelector(".sidebar-icon-bg");
-          if (iconBg) iconBg.style.backgroundColor = "#0f172a";
-        }
-
-        const sideRoleEl = document.getElementById("side-role");
-        if (sideRoleEl)
-          sideRoleEl.innerText =
-            String(user.role).charAt(0).toUpperCase() +
-            String(user.role).slice(1);
-
-        const nav = document.getElementById("sidebar-nav");
-        let menu = [];
-
-        if (user.role === "student") {
-          menu = [
-            {
-              label: "Dashboard",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>',
-              active: true,
-              class: "nav-item-dash",
-            },
-            {
-              label: "Browse Courses",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-              class: "nav-item-browse",
-            },
-            {
-              label: "Progress",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>',
-              class: "nav-item-progress",
-            },
-            {
-              label: "Notifications",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>',
-              class: "nav-item-notif",
-              badge: true,
-            },
-            {
-              label: "Settings",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>',
-              class: "nav-item-settings",
-            },
-          ];
-        } else if (user.role === "admin") {
-          menu = [
-            {
-              label: "Dashboard",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>',
-              active: true,
-              class: "nav-item-dash",
-            },
-            {
-              label: "Users",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>',
-              class: "nav-item-users",
-            },
-            {
-              label: "Courses",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>',
-              class: "nav-item-courses",
-            },
-            {
-              label: "Notifications",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>',
-              class: "nav-item-notif",
-              badge: true,
-            },
-            {
-              label: "Settings",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>',
-              class: "nav-item-settings",
-            },
-          ];
-        } else if (user.role === "instructor") {
-          menu = [
-            {
-              label: "Dashboard",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>',
-              active: true,
-              class: "nav-item-dash",
-            },
-            {
-              label: "Courses",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>',
-              class: "nav-item-courses",
-            },
-            {
-              label: "Upload Course",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>',
-              class: "nav-item-upload",
-            },
-            {
-              label: "Students",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>',
-              class: "nav-item-students",
-            },
-            {
-              label: "Notifications",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>',
-              class: "nav-item-notif",
-              badge: true,
-            },
-            {
-              label: "Settings",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>',
-              class: "nav-item-settings",
-            },
-          ];
-        }
-
-        if (nav) {
-          nav.innerHTML = menu
-            .map((item) => {
-              let badgeHtml = item.badge
-                ? `<span class="notification-badge" style="display: none; position: static; margin-left: auto;" id="sidebar-notif-badge">0</span>`
-                : "";
-              return `<a class="nav-item ${item.active ? "active" : ""} ${item.class || ""}" onclick="handleNav('${item.label}', this)">${item.icon} ${item.label} ${badgeHtml}</a>`;
-            })
-            .join("");
-        }
-
-        const avatarStr = String(user.avatar || "U");
-        const sidebarAvatarHtml = avatarStr.startsWith("http")
-          ? `<img src="${avatarStr}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
-          : avatarStr;
-
-        const btmHtml = `
-          <div style="padding: 20px; border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 10px;">
-            <div style="background-color: #f1f5f9; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px;">
-              <div style="width: 34px; height: 34px; border-radius: 50%; background-color: #0f172a; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; overflow: hidden;">
-                ${sidebarAvatarHtml}
-              </div>
-              <div style="overflow: hidden; text-align: left;">
-                <div style="font-weight: 700; font-size: 14px; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${user.name}</div>
-                <div style="font-size: 12px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${user.email}</div>
-              </div>
-            </div>
-            <button style="color: #ef4444; display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; background: transparent; border: none; padding: 8px 4px; font-size: 15px;" onclick="logout()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transform: rotate(180deg);"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Logout
-            </button>
-          </div>
-        `;
-        const sidebarBottom = document.getElementById("sidebar-bottom");
-        if (sidebarBottom) sidebarBottom.innerHTML = btmHtml;
-      }
-
       async function renderAdminUsers() {
         const filter = document.getElementById("admin-user-filter").value;
         const container = document.getElementById("admin-user-grid-container");
@@ -5273,6 +5018,78 @@
           alert(`Course has been successfully ${status.toLowerCase()}.`);
         } catch (e) {
           alert("Error updating course status in database.");
+        }
+      }
+
+      async function renderAdminBanRequests() {
+        const container = document.getElementById(
+          "admin-ban-requests-container",
+        );
+        if (!container) return;
+        try {
+          const allReqs = await safeFetchJSON(`${API_URL}/ban-requests`);
+          if (!Array.isArray(allReqs)) return;
+
+          let banReqs = allReqs.filter((r) => r.status === "Pending");
+          if (banReqs.length === 0) {
+            container.innerHTML = "";
+            return;
+          }
+          let htmlStr = `<h3 style="color:#e11d48; margin-bottom:15px; font-weight:800; font-size:20px;">⚠️ Pending Ban Requests</h3><div style="display:flex; flex-direction:column; gap:15px; margin-bottom:30px;">`;
+          banReqs.forEach((req) => {
+            htmlStr += `
+              <div style="background:#fff1f2; border:1px solid #fecaca; padding:20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
+                 <div style="width: 100%;">
+                    <div style="font-weight:700; color:#be123c; font-size:16px; word-break: break-word;">Ban Request for: ${req.student_name} <span style="font-size:13px; font-weight:500;">(${req.student_email})</span></div>
+                    <div style="font-size:13px; color:#881337; margin-top:5px; font-weight:600; word-break: break-word;">Requested by: Instructor ${req.inst_name} | Course: ${req.course_title}</div>
+                 </div>
+                 <div style="display:flex; gap:10px; width: 100%;">
+                    <button class="btn btn-primary" style="background:#e11d48; flex:1;" onclick="processBanRequest(${req.id}, 'Approved', '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}', '${req.course_id}')">Approve & Remove</button>
+                    <button class="btn btn-outline" style="border-color:#fca5a5; color:#be123c; background:white; flex:1;" onclick="processBanRequest(${req.id}, 'Rejected', '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}', '${req.course_id}')">Reject</button>
+                 </div>
+              </div>`;
+          });
+          htmlStr += `</div><hr style="border:0; border-top:1px solid #e2e8f0; margin-bottom:30px;">`;
+          container.innerHTML = htmlStr;
+        } catch (e) {
+          container.innerHTML = "";
+        }
+      }
+
+      async function processBanRequest(
+        reqId,
+        actionStatus,
+        studentEmail,
+        instEmail,
+        studentName,
+        courseId,
+      ) {
+        const actionText =
+          actionStatus === "Approved"
+            ? "remove from this course and BAN"
+            : "REJECT the ban request for";
+        if (!confirm(`Are you sure you want to ${actionText} ${studentName}?`))
+          return;
+        try {
+          const res = await fetch(`${API_URL}/ban-requests/${reqId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              status: actionStatus,
+              studentEmail,
+              instEmail,
+              studentName,
+              courseId,
+            }),
+          });
+          if (!res.ok) {
+            const data = await res.json();
+            return alert(data.error || "Failed to process ban request.");
+          }
+          alert(`Ban request ${actionStatus.toLowerCase()} successfully.`);
+          renderAdminUsers();
+        } catch (e) {
+          alert("Error processing ban request.");
         }
       }
 
@@ -6057,22 +5874,13 @@
                   "Account Suspended: Your account has been suspended by the administrator.";
                 errorDiv.style.display = "block";
               } else {
-                try {
-                  currentUser = user;
-                  try {
-                    localStorage.setItem(
-                      "elms_current_user",
-                      JSON.stringify(currentUser),
-                    );
-                  } catch (e) {}
-                  setupDashboard(user);
-                  navigateTo("dashboard");
-                } catch (uiErr) {
-                  console.error("Dashboard Render Error:", uiErr);
-                  errorDiv.innerText =
-                    "Error rendering dashboard. Please try again.";
-                  errorDiv.style.display = "block";
-                }
+                currentUser = user;
+                localStorage.setItem(
+                  "elms_current_user",
+                  JSON.stringify(currentUser),
+                );
+                setupDashboard(user);
+                navigateTo("dashboard");
               }
             } else {
               errorDiv.innerText = data?.error || "Invalid email or password";
