@@ -4388,6 +4388,10 @@
           if (label === "Notifications") renderNotificationsPage();
           if (label === "Browse Courses") renderStudentBrowseCourses();
           if (label === "Students") renderInstructorStudents();
+          if (label === "Users" && currentUser.role === "admin") {
+            renderAdminUsers();
+            renderAdminBanRequests();
+          }
           if (label === "Courses" && currentUser.role === "instructor") {
             document.getElementById("instructor-dashboard-view").style.display =
               "block";
@@ -4492,8 +4496,10 @@
           setTimeout(async () => {
             await updateAdminStats();
             await renderAdminCourses();
+            await renderAdminUsers();
             await renderAdminBanRequests();
             await renderAdminActivity();
+            await renderAdminComplaints();
           }, 100);
         } else if (safeRole === "instructor") {
           setTimeout(async () => {
@@ -4698,7 +4704,6 @@
             </div>`,
           )
           .join("");
-        renderAdminComplaints();
       }
 
       async function renderAdminComplaints() {
