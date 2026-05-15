@@ -4875,17 +4875,24 @@
         updateNotificationBadge();
 
         if (safeRole === "admin") {
-          renderAdminActivity();
-          renderAdminBanRequests();
-          renderAdminCourses();
-          updateAdminStats();
+          // Sequentially load to prevent overwhelming free-tier database connections
+          (async () => {
+            await updateAdminStats();
+            await renderAdminCourses();
+            await renderAdminBanRequests();
+            await renderAdminActivity();
+          })();
         } else if (safeRole === "instructor") {
-          updateInstructorStats();
-          renderInstructorLiveCourses();
-          renderInstructorRequests();
+          (async () => {
+            await updateInstructorStats();
+            await renderInstructorLiveCourses();
+            await renderInstructorRequests();
+          })();
         } else if (safeRole === "student") {
-          renderStudentEnrolledCourses();
-          renderStudentDueAssignments();
+          (async () => {
+            await renderStudentEnrolledCourses();
+            await renderStudentDueAssignments();
+          })();
         }
       }
 
@@ -5710,6 +5717,71 @@
         }
       }
 
+      async function renderInstructorStudents() {
+        const listContainer = document.getElementById(
+          "instructor-students-list",
+        );
+        const statsContainer = document.getElementById("inst-students-stats");
+        if (!listContainer) return;
+        listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">⏳ Loading students...</div>`;
+        try {
+          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          const users = await safeFetchJSON(`${API_URL}/users`);
+
+          if (!Array.isArray(enrollments)) {
+            listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to fetch enrollments.</div>`;
+            return;
+          }
+
+          let myEnrollments = enrollments.filter(
+            (e) =>
+              e.instructor_email === currentUser.email &&
+              e.status === "Approved",
+          );
+
+          let studentMap = new Map();
+          myEnrollments.forEach((e) => {
+            if (!studentMap.has(e.student_email)) {
+              let matchedUser = Array.isArray(users)
+                ? users.find((u) => u.email === e.student_email)
+                : null;
+              let safeName = e.student_name || "Unknown";
+              let finalAvatarUrl =
+                matchedUser && matchedUser.avatar
+                  ? matchedUser.avatar
+                  : safeName.charAt(0).toUpperCase();
+
+              studentMap.set(e.student_email, {
+                name: safeName,
+                email: e.student_email,
+                avatar: finalAvatarUrl,
+                enrolledCount: 0,
+                completedCount: Math.floor(Math.random() * 3), // Mock data
+                progress: Math.floor(Math.random() * 60) + 20, // Mock progress
+                lastActive: "Active recently",
+              });
+            }
+            let st = studentMap.get(e.student_email);
+            st.enrolledCount++;
+          });
+
+          instGlobalStudents = Array.from(studentMap.values());
+
+          if (statsContainer) {
+            let activeThisWeek = Math.floor(instGlobalStudents.length * 0.8);
+            statsContainer.innerHTML = `
+                <div class="p-stat-card p-stat-card-blue"><div class="p-card-top"><h3>Total Students</h3></div><div><div class="val">${instGlobalStudents.length}</div><div class="desc">Enrolled in your courses</div></div></div>
+                <div class="p-stat-card p-stat-card-green"><div class="p-card-top"><h3>Active This Week</h3></div><div><div class="val">${activeThisWeek}</div><div class="desc">Engaging with content</div></div></div>
+            `;
+          }
+
+          displayInstStudents(instGlobalStudents);
+        } catch (e) {
+          console.error(e);
+          listContainer.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load students.</div>`;
+        }
+      }
+
       function displayInstStudents(students) {
         const container = document.getElementById("instructor-students-list");
         if (!container) return;
@@ -5720,18 +5792,44 @@
         container.innerHTML = students
           .map((st, index) => {
             const bgIndex = index % courseGradients.length;
-            const bgStyle = `background: ${courseGradients[bgIndex]};`;
+            const bgStyle = st.avatar.startsWith("http")
+              ? ""
+              : `background: ${courseGradients[bgIndex]};`;
+            const avatarHtml = st.avatar.startsWith("http")
+              ? `<img src="${st.avatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
+              : `<span style="color:white;">${st.avatar}</span>`;
+
             const statusBadge = `<span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">active</span>`;
+
             return `
                  <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
-                    <div style="display: flex; align-items: center; gap: 15px; min-width: 250px;">
-                        <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0;">${st.name.charAt(0).toUpperCase()}</div>
+                    <div style="display: flex; align-items: center; gap: 15px; min-width: 250px; flex: 1;">
+                        <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0; overflow:hidden;">${avatarHtml}</div>
                         <div>
                             <div style="display: flex; align-items: center; gap: 8px;"><h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.name}</h4>${statusBadge}</div>
-                            <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc">${st.email}</div>
+                            <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                              ${st.email}
+                            </div>
                         </div>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 20px;">
+
+                    <div style="display: flex; gap: 30px; flex: 2; min-width: 300px; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 8px; align-items: flex-start;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                            <div><div style="font-size: 11px; color: #64748b;">Enrolled</div><div style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.enrolledCount}</div></div>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: flex-start;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+                            <div><div style="font-size: 11px; color: #64748b;">Completed</div><div style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.completedCount}</div></div>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: flex-start;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+                            <div><div style="font-size: 11px; color: #64748b;">Progress</div><div style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.progress}%</div></div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 20px; flex: 1; justify-content: flex-end; min-width: 150px;">
                         <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Last active</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.lastActive}</div></div>
                         <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px;">View Details</button>
                     </div>
@@ -6407,6 +6505,13 @@
             submitBtn.disabled = true;
             errorDiv.style.display = "none";
 
+            // Show a helpful message if Render free tier is waking up
+            const wakeupTimer = setTimeout(() => {
+              if (submitBtn.disabled) {
+                submitBtn.innerHTML = "⏳ Waking up Server (Takes 1-2 mins)...";
+              }
+            }, 3000);
+
             let res, data;
             try {
               res = await fetch(`${API_URL}/login`, {
@@ -6416,6 +6521,7 @@
               });
               data = await res.json();
             } catch (err) {
+              clearTimeout(wakeupTimer);
               console.error("Login Error:", err);
               errorDiv.innerText =
                 "Server Error: Backend is unreachable. Please check your internet connection.";
@@ -6424,6 +6530,8 @@
               submitBtn.disabled = false;
               return;
             }
+
+            clearTimeout(wakeupTimer);
 
             if (res.ok && data.user) {
               const user = data.user;
@@ -6465,6 +6573,13 @@
             submitBtn.disabled = true;
             errorDiv.style.display = "none";
 
+            // Show a helpful message if Render free tier is waking up
+            const wakeupTimer = setTimeout(() => {
+              if (submitBtn.disabled) {
+                submitBtn.innerHTML = "⏳ Waking up Server (Takes 1-2 mins)...";
+              }
+            }, 3000);
+
             const payload = {
               name: document.getElementById("signup-name").value.trim(),
               email: document.getElementById("signup-email").value.trim(),
@@ -6484,6 +6599,8 @@
                 body: JSON.stringify(payload),
               });
               const data = await res.json();
+              clearTimeout(wakeupTimer);
+
               if (res.ok) {
                 const roleColor =
                   payload.role === "instructor" ? "blue" : "green";
@@ -6503,6 +6620,7 @@
                 errorDiv.style.display = "block";
               }
             } catch (err) {
+              clearTimeout(wakeupTimer);
               errorDiv.innerText =
                 "Server Error: Backend is unreachable. Please try again.";
               errorDiv.style.display = "block";
