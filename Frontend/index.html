@@ -2312,6 +2312,7 @@
               </div>
             </div>
 
+            <!-- Due Assignments Section -->
             <div
               style="
                 display: flex;
@@ -4238,7 +4239,6 @@
         }
       });
 
-      // NOTIFICATIONS
       async function fetchNotifications(identifier) {
         try {
           const res = await fetch(`${API_URL}/notifications/${identifier}`);
@@ -4427,7 +4427,6 @@
           .join("");
       }
 
-      // NAVIGATION
       function navigateTo(pageId) {
         document
           .querySelectorAll(".page")
@@ -5003,6 +5002,41 @@
               class: "nav-item-settings",
             },
           ];
+        } else if (user.role === "instructor") {
+          menu = [
+            {
+              label: "Dashboard",
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>',
+              active: true,
+              class: "nav-item-dash",
+            },
+            {
+              label: "Courses",
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>',
+              class: "nav-item-courses",
+            },
+            {
+              label: "Upload Course",
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>',
+              class: "nav-item-upload",
+            },
+            {
+              label: "Students",
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>',
+              class: "nav-item-students",
+            },
+            {
+              label: "Notifications",
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>',
+              class: "nav-item-notif",
+              badge: true,
+            },
+            {
+              label: "Settings",
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>',
+              class: "nav-item-settings",
+            },
+          ];
         }
 
         if (nav) {
@@ -5039,165 +5073,6 @@
         `;
         const sidebarBottom = document.getElementById("sidebar-bottom");
         if (sidebarBottom) sidebarBottom.innerHTML = btmHtml;
-      }
-
-      async function publishNewCourse() {
-        const title = document.getElementById("uc-title").value.trim();
-        const desc = document.getElementById("uc-desc").value.trim();
-        const cat = document.getElementById("uc-cat").value.trim();
-        const diff = document.getElementById("uc-diff").value;
-        const totalLessons =
-          parseInt(document.getElementById("uc-lessons").value) || 4;
-        const thumbnailInput = document.getElementById("uc-thumbnail-input");
-        const videoInput = document.getElementById("uc-video-input");
-
-        if (!title)
-          return alert("Please enter a course title before publishing.");
-        if (!currentUser)
-          return alert(
-            "User authentication failed. Please log out and log in again.",
-          );
-
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("description", desc);
-        formData.append("category", cat);
-        formData.append("difficulty", diff);
-        formData.append("instructorEmail", currentUser.email);
-        formData.append("instructorName", currentUser.name);
-        formData.append("total_lessons", totalLessons);
-
-        if (thumbnailInput && thumbnailInput.files[0])
-          formData.append("thumbnail", thumbnailInput.files[0]);
-        if (videoInput && videoInput.files[0])
-          formData.append("video", videoInput.files[0]);
-
-        const publishBtn = document.getElementById("btn-submit-upload");
-        let originalText = "Publish Course";
-        if (publishBtn) {
-          originalText = publishBtn.innerHTML;
-          publishBtn.innerHTML = "⏳ Uploading...";
-          publishBtn.disabled = true;
-        }
-
-        try {
-          const res = await fetch(`${API_URL}/upload-course`, {
-            method: "POST",
-            body: formData,
-          });
-          if (res.ok) {
-            await addNotification(
-              "admin",
-              `New course "${title}" submitted for review by ${currentUser.name}`,
-              "purple",
-            );
-            alert(
-              "Course published successfully! It is currently awaiting administrator approval.",
-            );
-            document.getElementById("uc-title").value = "";
-            document.getElementById("uc-desc").value = "";
-            if (thumbnailInput) thumbnailInput.value = "";
-            if (videoInput) videoInput.value = "";
-            handleNav("Dashboard", document.querySelector(".nav-item-dash"));
-          } else {
-            const errData = await res.json();
-            alert("Error saving course: " + (errData.error || "Unknown error"));
-          }
-        } catch (e) {
-          console.error(e);
-          alert("Network connection failed.");
-        } finally {
-          if (publishBtn) {
-            publishBtn.innerHTML = originalText;
-            publishBtn.disabled = false;
-          }
-        }
-      }
-
-      async function openEditCourse(courseId) {
-        try {
-          const courses = await safeFetchJSON(`${API_URL}/courses`);
-          if (!Array.isArray(courses)) return;
-          const course = courses.find((c) => String(c.id) === String(courseId));
-          if (!course) return alert("Course not found!");
-
-          const idEl = document.getElementById("ec-id");
-          const titleEl = document.getElementById("ec-title");
-          const descEl = document.getElementById("ec-desc");
-          const catEl = document.getElementById("ec-cat");
-          const diffEl = document.getElementById("ec-diff");
-          const lessEl = document.getElementById("ec-lessons");
-
-          if (idEl) idEl.value = course.id;
-          if (titleEl) titleEl.value = course.title || "";
-          if (descEl) descEl.value = course.description || "";
-          if (catEl) catEl.value = course.category || "";
-          if (diffEl) diffEl.value = course.difficulty || "Beginner";
-          if (lessEl) lessEl.value = course.total_lessons || 4;
-
-          handleNav("Edit Course", null);
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
-      async function submitEditCourse() {
-        const id = document.getElementById("ec-id").value;
-        const title = document.getElementById("ec-title").value.trim();
-        const desc = document.getElementById("ec-desc").value.trim();
-        const cat = document.getElementById("ec-cat").value.trim();
-        const diff = document.getElementById("ec-diff").value;
-        const totalLessons =
-          parseInt(document.getElementById("ec-lessons").value) || 4;
-
-        const thumbnailFile =
-          document.getElementById("ec-thumbnail-input").files[0];
-        const videoFile = document.getElementById("ec-video-input").files[0];
-
-        if (!title) return alert("Please enter a course title.");
-
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("description", desc);
-        formData.append("category", cat);
-        formData.append("difficulty", diff);
-        formData.append("total_lessons", totalLessons);
-
-        if (thumbnailFile) formData.append("thumbnail", thumbnailFile);
-        if (videoFile) formData.append("video", videoFile);
-
-        const publishBtn = document.getElementById("btn-submit-edit");
-        let originalText = "Update Course";
-        if (publishBtn) {
-          originalText = publishBtn.innerHTML;
-          publishBtn.innerHTML = "⏳ Updating...";
-          publishBtn.disabled = true;
-        }
-
-        try {
-          const res = await fetch(`${API_URL}/update-course/${id}`, {
-            method: "PUT",
-            body: formData,
-          });
-
-          if (res.ok) {
-            alert("Course updated successfully!");
-            document.getElementById("ec-thumbnail-input").value = "";
-            document.getElementById("ec-video-input").value = "";
-            renderInstructorLiveCourses();
-            handleNav("Dashboard", document.querySelector(".nav-item-dash"));
-          } else {
-            const err = await res.json();
-            alert("Error updating course: " + (err.error || "Unknown error"));
-          }
-        } catch (e) {
-          alert("Network connection failed.");
-        } finally {
-          if (publishBtn) {
-            publishBtn.innerHTML = originalText;
-            publishBtn.disabled = false;
-          }
-        }
       }
 
       async function renderAdminUsers() {
@@ -5792,6 +5667,48 @@
         }
       }
 
+      function displayInstStudents(students) {
+        const container = document.getElementById("instructor-students-list");
+        if (!container) return;
+        if (students.length === 0) {
+          container.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">No students found.</div>`;
+          return;
+        }
+        container.innerHTML = students
+          .map((st, index) => {
+            const bgIndex = index % courseGradients.length;
+            const bgStyle = `background: ${courseGradients[bgIndex]};`;
+            const statusBadge = `<span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">active</span>`;
+            return `
+                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
+                    <div style="display: flex; align-items: center; gap: 15px; min-width: 250px;">
+                        <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0;">${st.name.charAt(0).toUpperCase()}</div>
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px;"><h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.name}</h4>${statusBadge}</div>
+                            <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc">${st.email}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Last active</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.lastActive}</div></div>
+                        <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px;">View Details</button>
+                    </div>
+                 </div>`;
+          })
+          .join("");
+      }
+
+      function filterInstructorStudents() {
+        const input = document.getElementById("student-search-input");
+        if (!input) return;
+        const query = input.value.toLowerCase();
+        const filtered = instGlobalStudents.filter(
+          (s) =>
+            String(s.name).toLowerCase().includes(query) ||
+            String(s.email).toLowerCase().includes(query),
+        );
+        displayInstStudents(filtered);
+      }
+
       async function setupCourseStudentsUI() {
         const listContainer = document.getElementById(
           "cp-students-area-container",
@@ -5882,6 +5799,51 @@
         } catch (e) {
           console.error(e);
           listContainer.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load students.</div>`;
+        }
+      }
+
+      async function requestStudentBan(encodedEmail, encodedName, courseId) {
+        const studentEmail = decodeURIComponent(encodedEmail);
+        const studentName = decodeURIComponent(encodedName);
+        if (
+          !confirm(`Are you sure you want to request a ban for ${studentName}?`)
+        )
+          return;
+
+        const titleEl = document.getElementById("cp-course-title");
+        const payload = {
+          course_id: courseId,
+          course_title: titleEl ? titleEl.innerText : "Unknown Course",
+          inst_email: currentUser.email,
+          inst_name: currentUser.name,
+          student_email: studentEmail,
+          student_name: studentName,
+          date: new Date().toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+        };
+        try {
+          const res = await fetch(`${API_URL}/ban-requests`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (res.ok) {
+            await addNotification(
+              "admin",
+              `⚠️ Ban Request: Instructor ${currentUser.name} requested to ban ${studentName}.`,
+              "red",
+            );
+            alert("Ban request sent to admin successfully.");
+            setupCourseStudentsUI();
+          } else {
+            const data = await res.json();
+            alert(data.error || "Failed to send ban request.");
+          }
+        } catch (e) {
+          alert("Database connection error.");
         }
       }
 
@@ -6431,13 +6393,20 @@
                   "Account Suspended: Your account has been suspended by the administrator.";
                 errorDiv.style.display = "block";
               } else {
-                currentUser = user;
-                localStorage.setItem(
-                  "elms_current_user",
-                  JSON.stringify(currentUser),
-                );
-                setupDashboard(user);
-                navigateTo("dashboard");
+                try {
+                  currentUser = user;
+                  localStorage.setItem(
+                    "elms_current_user",
+                    JSON.stringify(currentUser),
+                  );
+                  setupDashboard(user);
+                  navigateTo("dashboard");
+                } catch (uiErr) {
+                  console.error("Dashboard Render Error:", uiErr);
+                  errorDiv.innerText =
+                    "Error loading your dashboard profile. Data might be corrupted.";
+                  errorDiv.style.display = "block";
+                }
               }
             } else {
               errorDiv.innerText = data?.error || "Invalid email or password";
@@ -6461,13 +6430,14 @@
             errorDiv.style.display = "none";
 
             const payload = {
-              name: document.getElementById("signup-name").value,
-              email: document.getElementById("signup-email").value,
+              name: document.getElementById("signup-name").value.trim(),
+              email: document.getElementById("signup-email").value.trim(),
               password: document.getElementById("signup-password").value,
               role: document.getElementById("signup-role").value,
               avatar: document
                 .getElementById("signup-name")
-                .value.charAt(0)
+                .value.trim()
+                .charAt(0)
                 .toUpperCase(),
             };
 
