@@ -584,7 +584,7 @@
       }
       .green-gradient {
         background: linear-gradient(135deg, #10b981, #059669);
-        box-shadow: 0 10px 20px -5px rgba(5, 150, 105, 0.3);
+        boxshadow: 0 10px 20px -5px rgba(5, 150, 105, 0.3);
       }
       .orange-gradient {
         background: linear-gradient(135deg, #f97316, #ea580c);
@@ -4239,6 +4239,7 @@
         }
       });
 
+      // NOTIFICATIONS
       async function fetchNotifications(identifier) {
         try {
           const res = await fetch(`${API_URL}/notifications/${identifier}`);
@@ -4427,6 +4428,7 @@
           .join("");
       }
 
+      // NAVIGATION
       function navigateTo(pageId) {
         document
           .querySelectorAll(".page")
@@ -5864,7 +5866,7 @@
           const feedbacks = await safeFetchJSON(
             `${API_URL}/course-feedbacks/${courseId}`,
           );
-          if (feedbacks.length === 0) {
+          if (!Array.isArray(feedbacks) || feedbacks.length === 0) {
             container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">No feedback available yet.</div>`;
             const avgBadge = document.getElementById("cp-avg-rating-badge");
             if (avgBadge) avgBadge.innerHTML = `Average Rating: 0.0/5 ⭐`;
@@ -5964,7 +5966,7 @@
           const messages = await safeFetchJSON(
             `${API_URL}/course-chats/${courseId}`,
           );
-          if (!messages || messages.length === 0) {
+          if (!Array.isArray(messages) || messages.length === 0) {
             container.innerHTML = `<div style="text-align:center; color:#64748b; margin-top:20px;">No messages yet.</div>`;
             return;
           }
