@@ -5894,7 +5894,6 @@
                 if (t) t.style.pointerEvents = "auto";
               });
 
-              // Ensure Enrolled Students tab is visible for admin/instructor
               const studentsTabBtn =
                 document.getElementById("tab-btn-students");
               if (studentsTabBtn) {
@@ -5904,7 +5903,7 @@
                     ? "flex"
                     : "none";
               }
-              switchCpTab("assignments"); // Default tab
+              switchCpTab("assignments");
             } else {
               lockedOverlay.classList.remove("hidden");
               document.querySelectorAll(".cp-tab").forEach((t) => {
