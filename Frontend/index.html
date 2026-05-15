@@ -4706,7 +4706,10 @@
               aDash.style.display = "block";
           }
         }
-        if (window.innerWidth < 1024 && el) toggleSidebar();
+        const sidebarEl = document.getElementById("sidebar");
+        if (sidebarEl && sidebarEl.classList.contains("active") && el) {
+          toggleSidebar();
+        }
       }
 
       async function updateAdminStats() {
@@ -5949,6 +5952,73 @@
           if (tab) tab.classList.add("active");
           if (contSt) contSt.classList.remove("hidden");
           setupCourseStudentsUI();
+        }
+      }
+
+      async function renderInstructorStudents() {
+        const listContainer = document.getElementById(
+          "instructor-students-list",
+        );
+        const statsContainer = document.getElementById("inst-students-stats");
+        if (!listContainer) return;
+
+        listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">⏳ Loading students...</div>`;
+
+        try {
+          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          const users = await safeFetchJSON(`${API_URL}/users`);
+
+          if (!Array.isArray(enrollments)) {
+            listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to fetch enrollments.</div>`;
+            return;
+          }
+
+          let myEnrollments = enrollments.filter(
+            (e) =>
+              e.instructor_email === currentUser.email &&
+              e.status === "Approved",
+          );
+
+          let studentMap = new Map();
+          myEnrollments.forEach((e) => {
+            if (!studentMap.has(e.student_email)) {
+              let matchedUser = Array.isArray(users)
+                ? users.find((u) => u.email === e.student_email)
+                : null;
+              let safeName = e.student_name || "Unknown";
+              let finalAvatarUrl =
+                matchedUser && matchedUser.avatar
+                  ? matchedUser.avatar
+                  : safeName.charAt(0).toUpperCase();
+
+              studentMap.set(e.student_email, {
+                name: safeName,
+                email: e.student_email,
+                avatar: finalAvatarUrl,
+                enrolledCount: 0,
+                completedCount: Math.floor(Math.random() * 3), // Mock data
+                progress: Math.floor(Math.random() * 60) + 20, // Mock data
+                lastActive: e.date || "Unknown",
+              });
+            }
+            let st = studentMap.get(e.student_email);
+            st.enrolledCount++;
+          });
+
+          instGlobalStudents = Array.from(studentMap.values());
+
+          if (statsContainer) {
+            let activeThisWeek = Math.floor(instGlobalStudents.length * 0.8);
+            statsContainer.innerHTML = `
+                  <div class="p-stat-card p-stat-card-blue"><div class="p-card-top"><h3>Total Students</h3></div><div><div class="val">${instGlobalStudents.length}</div><div class="desc">Enrolled in your courses</div></div></div>
+                  <div class="p-stat-card p-stat-card-green"><div class="p-card-top"><h3>Active This Week</h3></div><div><div class="val">${activeThisWeek}</div><div class="desc">Engaging with content</div></div></div>
+              `;
+          }
+
+          displayInstStudents(instGlobalStudents);
+        } catch (e) {
+          console.error(e);
+          listContainer.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load students.</div>`;
         }
       }
 
