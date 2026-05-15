@@ -6380,16 +6380,6 @@
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
           if (currentUser.role === "admin") {
-            rooms.push({
-              id: "broadcast_students",
-              title: "📢 All Students",
-              isBroadcast: true,
-            });
-            rooms.push({
-              id: "broadcast_instructors",
-              title: "📢 All Instructors",
-              isBroadcast: true,
-            });
             courses.forEach((c) => {
               if (c.status === "Approved")
                 rooms.push({
@@ -6399,11 +6389,6 @@
                 });
             });
           } else if (currentUser.role === "instructor") {
-            rooms.push({
-              id: "broadcast_instructors",
-              title: "📢 All Instructors",
-              isBroadcast: true,
-            });
             courses.forEach((c) => {
               if (
                 c.instructor_email === currentUser.email &&
@@ -6417,11 +6402,6 @@
               }
             });
           } else if (currentUser.role === "student") {
-            rooms.push({
-              id: "broadcast_students",
-              title: "📢 All Students",
-              isBroadcast: true,
-            });
             const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
             let myEnrolled = enrollments.filter(
               (e) =>
@@ -6467,17 +6447,28 @@
               <div style="font-size:16px; font-weight:700;">${roomName}</div>
           `;
 
-        const inputEl = document.getElementById("g-chat-input");
-        const sendBtn = document.getElementById("g-chat-send-btn");
+        const inputArea = document.getElementById("g-chat-input-area");
 
-        if (isBroadcast && currentUser.role !== "admin") {
-          inputEl.disabled = true;
-          inputEl.placeholder = "Only Admins can post announcements.";
-          sendBtn.disabled = true;
+        if (isBroadcast && currentUser.role === "admin") {
+          inputArea.innerHTML = `
+                  <select id="g-chat-target" style="padding: 10px 15px; border-radius: 50px; border: 1px solid #cbd5e1; outline: none; background: #f8fafc; cursor: pointer; flex-shrink: 0; font-size: 13px; font-weight: 600; color: #334155;">
+                      <option value="broadcast">All Users</option>
+                      <option value="broadcast_students">Students Only</option>
+                      <option value="broadcast_instructors">Instructors Only</option>
+                  </select>
+                  <input type="text" id="g-chat-input" placeholder="Type an announcement..." onkeydown="if(event.key === 'Enter') sendGlobalMessage()" style="flex: 1; padding: 12px 20px; border-radius: 50px; border: 1px solid #cbd5e1; outline: none; font-size: 14px; background: #f8fafc;" />
+                  <button class="btn btn-primary" id="g-chat-send-btn" onclick="sendGlobalMessage()" style="border-radius: 50px;">Send</button>
+              `;
+        } else if (isBroadcast && currentUser.role !== "admin") {
+          inputArea.innerHTML = `
+                  <input type="text" id="g-chat-input" placeholder="Only Admins can post announcements." disabled style="flex: 1; padding: 12px 20px; border-radius: 50px; border: 1px solid #cbd5e1; outline: none; font-size: 14px; background: #e2e8f0; cursor: not-allowed;" />
+                  <button class="btn btn-primary" id="g-chat-send-btn" disabled style="border-radius: 50px; opacity: 0.5;">Send</button>
+              `;
         } else {
-          inputEl.disabled = false;
-          inputEl.placeholder = "Type a message...";
-          sendBtn.disabled = false;
+          inputArea.innerHTML = `
+                  <input type="text" id="g-chat-input" placeholder="Type a message..." onkeydown="if(event.key === 'Enter') sendGlobalMessage()" style="flex: 1; padding: 12px 20px; border-radius: 50px; border: 1px solid #cbd5e1; outline: none; font-size: 14px; background: #f8fafc;" />
+                  <button class="btn btn-primary" id="g-chat-send-btn" onclick="sendGlobalMessage()" style="border-radius: 50px;">Send</button>
+              `;
         }
 
         await fetchGlobalChatMessages();
@@ -6490,10 +6481,46 @@
         if (!currentOpenRoom) return;
         const container = document.getElementById("g-chat-messages-container");
         try {
-          const messages = await safeFetchJSON(
-            `${API_URL}/course-chats/${currentOpenRoom}`,
-          );
-          if (!Array.isArray(messages) || messages.length === 0) {
+          let messages = [];
+
+          if (currentOpenRoom === "broadcast") {
+            const fetch1 = safeFetchJSON(`${API_URL}/course-chats/broadcast`);
+            let fetch2 = Promise.resolve([]);
+            let fetch3 = Promise.resolve([]);
+
+            if (
+              currentUser.role === "student" ||
+              currentUser.role === "admin"
+            ) {
+              fetch2 = safeFetchJSON(
+                `${API_URL}/course-chats/broadcast_students`,
+              );
+            }
+            if (
+              currentUser.role === "instructor" ||
+              currentUser.role === "admin"
+            ) {
+              fetch3 = safeFetchJSON(
+                `${API_URL}/course-chats/broadcast_instructors`,
+              );
+            }
+
+            const [m1, m2, m3] = await Promise.all([fetch1, fetch2, fetch3]);
+            messages = [
+              ...(Array.isArray(m1) ? m1 : []),
+              ...(Array.isArray(m2) ? m2 : []),
+              ...(Array.isArray(m3) ? m3 : []),
+            ];
+            // Sort by ID to ensure accurate chronological order globally
+            messages.sort((a, b) => a.id - b.id);
+          } else {
+            const res = await safeFetchJSON(
+              `${API_URL}/course-chats/${currentOpenRoom}`,
+            );
+            messages = Array.isArray(res) ? res : [];
+          }
+
+          if (messages.length === 0) {
             container.innerHTML = `<div style="text-align:center; color:#64748b; margin-top:20px;">No messages yet.</div>`;
             return;
           }
@@ -6517,12 +6544,35 @@
               htmlStr += `<div class="chat-date-header"><span class="chat-date-badge">${datePart}</span></div>`;
               lastDate = datePart;
             }
+
+            let targetBadge = "";
+            if (
+              currentOpenRoom === "broadcast" &&
+              currentUser.role === "admin"
+            ) {
+              if (msg.course_id === "broadcast_students")
+                targetBadge =
+                  '<span style="color:#bfdbfe; font-size:10px; margin-left:5px; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 10px;">To Students</span>';
+              else if (msg.course_id === "broadcast_instructors")
+                targetBadge =
+                  '<span style="color:#fef08a; font-size:10px; margin-left:5px; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 10px;">To Instructors</span>';
+              else
+                targetBadge =
+                  '<span style="color:#a7f3d0; font-size:10px; margin-left:5px; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 10px;">To All</span>';
+            }
+
             let adminIcon =
-              msg.user_email && msg.user_email.includes("admin") ? "👑 " : "";
+              msg.course_id.startsWith("broadcast") &&
+              msg.user_email.includes("admin")
+                ? "👑 "
+                : "";
             htmlStr += `<div class="chat-msg ${isSelf ? "self" : "other"}">
                       ${!isSelf ? `<div class="chat-name">${adminIcon}${msg.user_name}</div>` : ""}
                       <div>${msg.message}</div>
-                      <div class="chat-time">${timePart}</div>
+                      <div class="chat-time" style="display:flex; justify-content:${isSelf ? "flex-end" : "space-between"}; align-items:center; margin-top:5px;">
+                          <span>${timePart}</span>
+                          ${isSelf ? targetBadge : ""}
+                      </div>
                   </div>`;
           });
           container.innerHTML = htmlStr;
@@ -6537,9 +6587,16 @@
 
       async function sendGlobalMessage() {
         const input = document.getElementById("g-chat-input");
+        if (!input) return;
         const text = input.value.trim();
         if (!text || !currentOpenRoom) return;
         input.value = "";
+
+        let targetId = currentOpenRoom;
+        if (currentOpenRoom === "broadcast" && currentUser.role === "admin") {
+          const targetSelect = document.getElementById("g-chat-target");
+          if (targetSelect) targetId = targetSelect.value;
+        }
 
         const now = new Date();
         const dateStr = now.toLocaleDateString("en-US", {
@@ -6553,7 +6610,7 @@
         });
 
         const payload = {
-          course_id: String(currentOpenRoom),
+          course_id: String(targetId),
           course_name: currentRoomName,
           user_name:
             currentUser.role === "admin" ? "ELMS Admin" : currentUser.name,
