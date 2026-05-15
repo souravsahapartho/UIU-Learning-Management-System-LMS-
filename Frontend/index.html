@@ -4170,6 +4170,7 @@
           }
           return [];
         } catch (e) {
+          console.warn("API Error:", e);
           return [];
         }
       }
@@ -4194,19 +4195,15 @@
 
         const savedUser = localStorage.getItem("elms_current_user");
         if (savedUser && savedUser !== "undefined") {
-          try {
-            currentUser = JSON.parse(savedUser);
-            setupDashboard(currentUser);
-            navigateTo("dashboard");
-          } catch (e) {
-            localStorage.removeItem("elms_current_user");
-            navigateTo("landing");
-          }
+          currentUser = JSON.parse(savedUser);
+          setupDashboard(currentUser);
+          navigateTo("dashboard");
         } else {
           navigateTo("landing");
         }
       });
 
+      // NOTIFICATIONS
       async function fetchNotifications(identifier) {
         try {
           const res = await fetch(`${API_URL}/notifications/${identifier}`);
@@ -4248,11 +4245,9 @@
       async function notifyAllUsers(text, color) {
         try {
           const users = await safeFetchJSON(`${API_URL}/users`);
-          if (Array.isArray(users)) {
-            for (let u of users) {
-              if (u.status === "Approved")
-                await addNotification(u.email, text, color);
-            }
+          for (let u of users) {
+            if (u.status === "Approved")
+              await addNotification(u.email, text, color);
           }
         } catch (e) {}
       }
@@ -4262,6 +4257,7 @@
         let identifier =
           currentUser.role === "admin" ? "admin" : currentUser.email;
         let notifs = await fetchNotifications(identifier);
+
         if (
           currentUser.role === "student" ||
           currentUser.role === "instructor"
@@ -4270,9 +4266,11 @@
           if (globalNotifs && globalNotifs.length)
             notifs = notifs.concat(globalNotifs);
         }
+
         let unreadCount = notifs.filter(
           (n) => n.unread == 1 || n.unread === true || n.unread === "1",
         ).length;
+
         const badge = document.getElementById("nav-notif-badge");
         if (badge) {
           badge.innerText = unreadCount;
@@ -4296,83 +4294,28 @@
             body: JSON.stringify({ identifier, role: currentUser.role }),
           });
           await updateNotificationBadge();
-          const notifArea = document.getElementById(
-            "notifications-content-area",
-          );
-          if (notifArea && !notifArea.classList.contains("hidden")) {
+          if (
+            document
+              .getElementById("notifications-content-area")
+              .classList.contains("hidden") === false
+          ) {
             await renderNotificationsPage();
           }
         } catch (e) {}
       }
 
-      async function renderAdminActivity() {
-        const container = document.getElementById(
-          "admin-recent-activity-container",
-        );
-        if (!container) return;
-        const notifs = await fetchNotifications("admin");
-        if (notifs.length === 0) {
-          container.innerHTML = `<div style="color:#64748b; font-size:14px;">No recent activity.</div>`;
-          return;
-        }
-        container.innerHTML = notifs
-          .slice(0, 5)
-          .map(
-            (n) => `
-            <div class="activity-item">
-                <div class="act-dot dot-${n.color || "blue"}"></div>
-                <div><div class="act-text">${n.text}</div><div class="act-time">${n.date ? n.date + " • " : ""}${n.time || ""}</div></div>
-            </div>
-        `,
-          )
-          .join("");
-        renderAdminComplaints();
-      }
-
-      async function renderAdminComplaints() {
-        const container = document.getElementById(
-          "admin-all-complaints-container",
-        );
-        if (!container) return;
-        try {
-          const allComplaints = await safeFetchJSON(
-            `${API_URL}/all-complaints`,
-          );
-          if (!allComplaints || allComplaints.length === 0) {
-            container.innerHTML = `<div style="text-align:center;padding:20px;color:#64748b;background:#f8fafc;border-radius:8px;">No complaints filed yet.</div>`;
-            return;
-          }
-          container.innerHTML = allComplaints
-            .map(
-              (cp) => `
-            <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
-                <span style="font-size:13px;font-weight:700;color:#be123c;background:#fef2f2;padding:3px 10px;border-radius:20px;">📚 ${cp.course_name || "Unknown Course"}</span>
-                <span style="font-size:12px;color:#94a3b8;">${cp.date || ""}</span>
-              </div>
-              <div style="font-size:14px;color:#881337;margin-bottom:8px;line-height:1.5;">${cp.complaint_text}</div>
-              <div style="font-size:12px;color:#64748b;">🧑 <b>${cp.user_name || "Unknown"}</b> &nbsp;|&nbsp; ✉️ ${cp.user_email || ""}</div>
-            </div>
-          `,
-            )
-            .join("");
-        } catch (e) {
-          container.innerHTML = `<div style="color:#ef4444;padding:12px;">Failed to load complaints.</div>`;
-        }
-      }
-
       async function renderNotificationsPage() {
         const container = document.getElementById("notifications-page-list");
         if (!container || !currentUser) return;
+
         let identifier =
           currentUser.role === "admin" ? "admin" : currentUser.email;
         let notifs = await fetchNotifications(identifier);
 
         if (currentUser.role !== "admin") {
           let globalNotifs = await fetchNotifications("all_users");
-          if (globalNotifs && globalNotifs.length) {
+          if (globalNotifs && globalNotifs.length)
             notifs = notifs.concat(globalNotifs).sort((a, b) => b.id - a.id);
-          }
         }
 
         if (notifs.length === 0) {
@@ -4395,22 +4338,19 @@
           .join("");
       }
 
+      // NAVIGATION
       function navigateTo(pageId) {
         document
           .querySelectorAll(".page")
           .forEach((p) => p.classList.add("hidden"));
-        const targetPage = document.getElementById(pageId + "-page");
-        if (targetPage) targetPage.classList.remove("hidden");
-        const navEl = document.getElementById("main-nav");
-        if (navEl)
-          navEl.style.display = pageId === "dashboard" ? "none" : "flex";
+        document.getElementById(pageId + "-page").classList.remove("hidden");
+        document.getElementById("main-nav").style.display =
+          pageId === "dashboard" ? "none" : "flex";
       }
 
       function toggleSidebar() {
-        const sidebar = document.getElementById("sidebar");
-        const overlay = document.getElementById("sidebar-overlay");
-        if (sidebar) sidebar.classList.toggle("active");
-        if (overlay) overlay.classList.toggle("active");
+        document.getElementById("sidebar").classList.toggle("active");
+        document.getElementById("sidebar-overlay").classList.toggle("active");
       }
 
       function handleNav(label, el) {
@@ -4429,7 +4369,6 @@
               ? "admin-courses-content"
               : "dashboard-home-content",
           "Upload Course": "instructor-upload-course-content",
-          "Edit Course": "instructor-edit-course-content",
           "Browse Courses": "student-browse-courses-content",
           Progress: "student-progress-content",
           Settings: "settings-content-area",
@@ -4445,356 +4384,39 @@
 
         const target = contentSections[label];
         if (target) {
-          const targetEl = document.getElementById(target);
-          if (targetEl) targetEl.classList.remove("hidden");
+          document.getElementById(target).classList.remove("hidden");
           if (label === "Notifications") renderNotificationsPage();
           if (label === "Browse Courses") renderStudentBrowseCourses();
           if (label === "Students") renderInstructorStudents();
           if (label === "Courses" && currentUser.role === "instructor") {
-            const instDash = document.getElementById(
-              "instructor-dashboard-view",
-            );
-            if (instDash) instDash.style.display = "block";
+            document.getElementById("instructor-dashboard-view").style.display =
+              "block";
             const courseGrid = document.getElementById(
               "instructor-live-courses-grid",
             );
             if (courseGrid) courseGrid.scrollIntoView({ behavior: "smooth" });
           } else if (label === "Dashboard") {
-            const iDash = document.getElementById("instructor-dashboard-view");
-            const sDash = document.getElementById("student-dashboard-view");
-            const aDash = document.getElementById("admin-dashboard-view");
-            if (currentUser.role === "instructor" && iDash)
-              iDash.style.display = "block";
-            if (currentUser.role === "student" && sDash)
-              sDash.style.display = "block";
-            if (currentUser.role === "admin" && aDash)
-              aDash.style.display = "block";
+            if (currentUser.role === "instructor")
+              document.getElementById(
+                "instructor-dashboard-view",
+              ).style.display = "block";
+            if (currentUser.role === "student")
+              document.getElementById("student-dashboard-view").style.display =
+                "block";
+            if (currentUser.role === "admin")
+              document.getElementById("admin-dashboard-view").style.display =
+                "block";
           }
         }
         if (window.innerWidth < 1024 && el) toggleSidebar();
       }
 
-      async function updateAdminStats() {
-        let users = await safeFetchJSON(`${API_URL}/users`);
-        let courses = await safeFetchJSON(`${API_URL}/courses`);
-
-        if (!Array.isArray(users) || !Array.isArray(courses)) return;
-
-        let activeStudents = users.filter(
-          (u) => u.role === "student" && u.status === "Approved",
-        ).length;
-        let pendingCoursesCount = courses.filter(
-          (c) => c.status === "Pending",
-        ).length;
-        let pendingUsersCount = users.filter(
-          (u) => u.status === "Pending",
-        ).length;
-
-        const uEl = document.getElementById("admin-stat-users");
-        const cEl = document.getElementById("admin-stat-courses");
-        const sEl = document.getElementById("admin-stat-students");
-        const pEl = document.getElementById("admin-stat-pending");
-        if (uEl) uEl.innerText = users.length;
-        if (cEl) cEl.innerText = courses.length;
-        if (sEl) sEl.innerText = activeStudents;
-        if (pEl) pEl.innerText = pendingCoursesCount + pendingUsersCount;
-      }
-
-      async function updateInstructorStats() {
-        if (!currentUser) return;
-        const courses = await safeFetchJSON(`${API_URL}/courses`);
-        const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
-        if (!Array.isArray(courses) || !Array.isArray(enrollments)) return;
-
-        let activeCourses = courses.filter(
-          (c) =>
-            c.instructor_email === currentUser.email && c.status === "Approved",
-        ).length;
-        let totalStudents = enrollments.filter(
-          (e) =>
-            e.instructor_email === currentUser.email && e.status === "Approved",
-        ).length;
-        let pendingEnrollments = enrollments.filter(
-          (e) =>
-            e.instructor_email === currentUser.email && e.status === "Pending",
-        ).length;
-
-        const icEl = document.getElementById("inst-course-count");
-        const isEl = document.getElementById("inst-student-count");
-        const ipEl = document.getElementById("inst-pending-count");
-
-        if (icEl) icEl.innerText = activeCourses;
-        if (isEl) isEl.innerText = totalStudents;
-        if (ipEl) ipEl.innerText = pendingEnrollments;
-      }
-
-      async function renderInstructorRequests() {
-        const container = document.getElementById(
-          "instructor-enrollment-requests",
-        );
-        if (!container) return;
-        container.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">Loading requests...</div>`;
-
-        try {
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-          if (!Array.isArray(enrollments)) throw new Error("Invalid format");
-          const pendingReqs = enrollments.filter(
-            (e) =>
-              e.instructor_email === currentUser.email &&
-              e.status === "Pending",
-          );
-
-          if (pendingReqs.length === 0) {
-            container.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b; background: #f8fafc;">No pending enrollment requests.</div>`;
-            return;
-          }
-
-          let htmlStr = "";
-          pendingReqs.forEach((req) => {
-            const safeEmail = encodeURIComponent(req.student_email);
-            const safeTitle = encodeURIComponent(req.course_title);
-            const safeName = encodeURIComponent(req.student_name);
-            htmlStr += `
-              <div class="submission-item">
-                <div>
-                  <div style="font-weight: 700; color: #0f172a; font-size: 15px;">
-                    ${req.student_name} <span style="font-weight: 500; color: #64748b; font-size: 13px;">(${req.student_email})</span>
-                  </div>
-                  <div style="font-size: 13px; color: #2563eb; margin-top: 4px; font-weight: 600;">
-                    Course: ${req.course_title}
-                  </div>
-                  <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">
-                    Requested on: ${req.date}
-                  </div>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                  <button class="btn btn-success" style="padding: 6px 16px; font-size: 13px;" onclick="processEnrollment(${req.id}, 'Approved', '${safeEmail}', '${safeTitle}', '${safeName}')">Approve</button>
-                  <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px; border-color: #fca5a5; color: #ef4444;" onclick="processEnrollment(${req.id}, 'Rejected', '${safeEmail}', '${safeTitle}', '${safeName}')">Reject</button>
-                </div>
-              </div>
-            `;
-          });
-          container.innerHTML = htmlStr;
-        } catch (e) {
-          container.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to load requests.</div>`;
-        }
-      }
-
-      async function processEnrollment(
-        id,
-        status,
-        encodedEmail,
-        encodedTitle,
-        encodedName,
-      ) {
-        const studentEmail = decodeURIComponent(encodedEmail);
-        const courseTitle = decodeURIComponent(encodedTitle);
-        const studentName = decodeURIComponent(encodedName);
-
-        if (
-          !confirm(
-            `Are you sure you want to ${status.toLowerCase()} ${studentName}'s enrollment?`,
-          )
-        )
-          return;
-
-        try {
-          const res = await fetch(`${API_URL}/enrollments/status`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id, status }),
-          });
-
-          if (res.ok) {
-            const color = status === "Approved" ? "green" : "red";
-            const text =
-              status === "Approved"
-                ? `🎉 Your enrollment for "${courseTitle}" has been approved!`
-                : `❌ Your enrollment request for "${courseTitle}" was rejected.`;
-
-            await addNotification(studentEmail, text, color);
-
-            alert(`Enrollment ${status.toLowerCase()} successfully!`);
-            renderInstructorRequests();
-            updateInstructorStats();
-          } else {
-            alert("Failed to update enrollment status.");
-          }
-        } catch (e) {
-          console.error(e);
-          alert("Database connection error.");
-        }
-      }
-
-      async function openEditCourse(courseId) {
-        try {
-          const courses = await safeFetchJSON(`${API_URL}/courses`);
-          if (!Array.isArray(courses)) return;
-          const course = courses.find((c) => String(c.id) === String(courseId));
-          if (!course) return alert("Course not found!");
-
-          const idEl = document.getElementById("ec-id");
-          const titleEl = document.getElementById("ec-title");
-          const descEl = document.getElementById("ec-desc");
-          const catEl = document.getElementById("ec-cat");
-          const diffEl = document.getElementById("ec-diff");
-          const lessEl = document.getElementById("ec-lessons");
-
-          if (idEl) idEl.value = course.id;
-          if (titleEl) titleEl.value = course.title || "";
-          if (descEl) descEl.value = course.description || "";
-          if (catEl) catEl.value = course.category || "";
-          if (diffEl) diffEl.value = course.difficulty || "Beginner";
-          if (lessEl) lessEl.value = course.total_lessons || 4;
-
-          handleNav("Edit Course", null);
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
-      async function submitEditCourse() {
-        const id = document.getElementById("ec-id").value;
-        const title = document.getElementById("ec-title").value.trim();
-        const desc = document.getElementById("ec-desc").value.trim();
-        const cat = document.getElementById("ec-cat").value.trim();
-        const diff = document.getElementById("ec-diff").value;
-        const totalLessons =
-          parseInt(document.getElementById("ec-lessons").value) || 4;
-
-        const thumbnailFile =
-          document.getElementById("ec-thumbnail-input").files[0];
-        const videoFile = document.getElementById("ec-video-input").files[0];
-
-        if (!title) return alert("Please enter a course title.");
-
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("description", desc);
-        formData.append("category", cat);
-        formData.append("difficulty", diff);
-        formData.append("total_lessons", totalLessons);
-
-        if (thumbnailFile) formData.append("thumbnail", thumbnailFile);
-        if (videoFile) formData.append("video", videoFile);
-
-        const publishBtn = document.getElementById("btn-submit-edit");
-        let originalText = "Update Course";
-        if (publishBtn) {
-          originalText = publishBtn.innerHTML;
-          publishBtn.innerHTML = "⏳ Updating...";
-          publishBtn.disabled = true;
-        }
-
-        try {
-          const res = await fetch(`${API_URL}/update-course/${id}`, {
-            method: "PUT",
-            body: formData,
-          });
-
-          if (res.ok) {
-            alert("Course updated successfully!");
-            document.getElementById("ec-thumbnail-input").value = "";
-            document.getElementById("ec-video-input").value = "";
-            renderInstructorLiveCourses();
-            handleNav("Dashboard", document.querySelector(".nav-item-dash"));
-          } else {
-            const err = await res.json();
-            alert("Error updating course: " + (err.error || "Unknown error"));
-          }
-        } catch (e) {
-          alert("Network connection failed.");
-        } finally {
-          if (publishBtn) {
-            publishBtn.innerHTML = originalText;
-            publishBtn.disabled = false;
-          }
-        }
-      }
-
-      async function renderInstructorLiveCourses() {
-        const container = document.getElementById(
-          "instructor-live-courses-grid",
-        );
-        if (!container) return;
-
-        try {
-          const courses = await safeFetchJSON(`${API_URL}/courses`);
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
-          if (!Array.isArray(courses)) return;
-
-          let myCourses = courses.filter(
-            (c) => c.instructor_email === currentUser.email,
-          );
-
-          if (myCourses.length === 0) {
-            container.innerHTML = `<p style="color:#64748b; width: 100%;">You haven't uploaded any courses yet.</p>`;
-            return;
-          }
-
-          container.innerHTML = myCourses
-            .map((c) => {
-              const bgIndex =
-                (parseInt(String(c.id).slice(-3)) || 0) %
-                courseGradients.length;
-              let bgStyle = `background: ${courseGradients[bgIndex]}; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
-
-              let thumbHTML = "";
-              if (c.thumbnail_url) {
-                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')">
-                     <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
-                         <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                     </div>
-                </div>`;
-              } else {
-                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')">
-                     <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                </div>`;
-              }
-
-              let studentCount = Array.isArray(enrollments)
-                ? enrollments.filter(
-                    (e) => e.course_id == c.id && e.status === "Approved",
-                  ).length
-                : 0;
-              let statusBadge =
-                c.status === "Approved"
-                  ? `<span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">Live</span>`
-                  : `<span style="background: #fffbeb; color: #d97706; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #fde68a;">Pending</span>`;
-
-              return `
-                  <div class="std-course-card">
-                      ${thumbHTML}
-                      <div class="std-course-card-content">
-                          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px;">
-                              <h3 style="font-size:18px; font-weight:700; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                              ${statusBadge}
-                          </div>
-                          <p style="font-size:14px; color:#2563eb; margin-bottom:10px; font-weight: 600;">Enrolled Students: <span style="background: #eff6ff; padding: 2px 8px; border-radius: 12px; color: #1e40af;">${studentCount}</span></p>
-                          <div style="margin-top:auto; display: flex; flex-direction: column; gap: 8px;">
-                              <button class="btn btn-outline" style="width:100%;" onclick="openCoursePlayer('${c.id}')" ${c.status !== "Approved" ? 'disabled title="Awaiting admin approval"' : ""}>View Details</button>
-                              <button class="btn btn-outline" style="width:100%; border-color:#10b981; color:#059669;" onclick="openEditCourse('${c.id}')">Edit Course</button>
-                          </div>
-                      </div>
-                  </div>
-               `;
-            })
-            .join("");
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
+      // DASHBOARD SETUP
       function setupDashboard(user) {
         currentUser = user;
-
-        const safeName = String(user.name || "User").trim();
-        const safeRole = String(user.role || "student")
-          .trim()
-          .toLowerCase();
-        const safeAvatar = String(user.avatar || "U").trim();
+        const safeName = user.name || "User";
+        const safeRole = user.role || "student";
+        const safeAvatar = user.avatar || "U";
 
         const roleColors = {
           student: "#0ea5e9",
@@ -4803,16 +4425,13 @@
         };
         const activeColor = roleColors[safeRole] || "#0ea5e9";
 
-        const topNameEl = document.getElementById("top-name");
-        if (topNameEl) topNameEl.innerText = safeName;
-
-        const topRoleEl = document.getElementById("top-role");
-        if (topRoleEl) topRoleEl.innerText = safeRole;
+        document.getElementById("top-name").innerText = safeName;
+        document.getElementById("top-role").innerText = safeRole;
 
         const topAvatarEl = document.getElementById("top-avatar");
         const setAvatarEl = document.getElementById("set-avatar-circle");
 
-        if (safeAvatar.startsWith("http")) {
+        if (safeAvatar && safeAvatar.startsWith("http")) {
           const imgHtml = `<img src="${safeAvatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
           if (topAvatarEl) {
             topAvatarEl.innerHTML = imgHtml;
@@ -4843,28 +4462,22 @@
         if (instMsg)
           instMsg.innerText = `Welcome back, ${safeName.split(" ")[0]}! 👋`;
 
-        const sDash = document.getElementById("student-dashboard-view");
-        const iDash = document.getElementById("instructor-dashboard-view");
-        const aDash = document.getElementById("admin-dashboard-view");
+        document.getElementById("student-dashboard-view").style.display =
+          safeRole === "student" ? "block" : "none";
+        document.getElementById("instructor-dashboard-view").style.display =
+          safeRole === "instructor" ? "block" : "none";
+        document.getElementById("admin-dashboard-view").style.display =
+          safeRole === "admin" ? "block" : "none";
 
-        if (sDash)
-          sDash.style.display = safeRole === "student" ? "block" : "none";
-        if (iDash)
-          iDash.style.display = safeRole === "instructor" ? "block" : "none";
-        if (aDash)
-          aDash.style.display = safeRole === "admin" ? "block" : "none";
+        document
+          .querySelectorAll(".dashboard-content > div")
+          .forEach((div) => div.classList.add("hidden"));
+        document
+          .getElementById("dashboard-home-content")
+          .classList.remove("hidden");
 
-        document.querySelectorAll(".dashboard-content > div").forEach((div) => {
-          if (div && div.classList) div.classList.add("hidden");
-        });
-        const dHome = document.getElementById("dashboard-home-content");
-        if (dHome) dHome.classList.remove("hidden");
-
-        const setNameEl = document.getElementById("set-name");
-        if (setNameEl) setNameEl.value = safeName;
-
-        const setEmailEl = document.getElementById("set-email");
-        if (setEmailEl) setEmailEl.value = user.email || "";
+        document.getElementById("set-name").value = safeName;
+        document.getElementById("set-email").value = user.email || "";
 
         setupSidebar({
           ...user,
@@ -4875,43 +4488,38 @@
         updateNotificationBadge();
 
         if (safeRole === "admin") {
-          // Sequentially load to prevent overwhelming free-tier database connections
-          (async () => {
+          // Sequence updates so db handles requests smoothly
+          setTimeout(async () => {
             await updateAdminStats();
             await renderAdminCourses();
             await renderAdminBanRequests();
             await renderAdminActivity();
-          })();
+          }, 100);
         } else if (safeRole === "instructor") {
-          (async () => {
+          setTimeout(async () => {
             await updateInstructorStats();
             await renderInstructorLiveCourses();
             await renderInstructorRequests();
-          })();
+          }, 100);
         } else if (safeRole === "student") {
-          (async () => {
+          setTimeout(async () => {
             await renderStudentEnrolledCourses();
             await renderStudentDueAssignments();
-          })();
+          }, 100);
         }
       }
 
       function setupSidebar(user) {
         const sidebar = document.getElementById("sidebar");
-        if (sidebar) sidebar.className = `sidebar ${user.role}-sidebar`;
+        sidebar.className = `sidebar ${user.role}-sidebar`;
 
         if (user.role === "instructor") {
-          const sideTitle = document.getElementById("side-title");
-          if (sideTitle) sideTitle.style.color = "#6366f1";
-          const iconBg = document.querySelector(".sidebar-icon-bg");
-          if (iconBg) iconBg.style.backgroundColor = "#0f172a";
+          document.getElementById("side-title").style.color = "#6366f1";
+          document.querySelector(".sidebar-icon-bg").style.backgroundColor =
+            "#0f172a";
         }
-
-        const sideRoleEl = document.getElementById("side-role");
-        if (sideRoleEl)
-          sideRoleEl.innerText =
-            String(user.role).charAt(0).toUpperCase() +
-            String(user.role).slice(1);
+        document.getElementById("side-role").innerText =
+          user.role.charAt(0).toUpperCase() + user.role.slice(1);
 
         const nav = document.getElementById("sidebar-nav");
         let menu = [];
@@ -5013,27 +4621,25 @@
           ];
         }
 
-        if (nav) {
-          nav.innerHTML = menu
-            .map((item) => {
-              let badgeHtml = item.badge
-                ? `<span class="notification-badge" style="display: none; position: static; margin-left: auto;" id="sidebar-notif-badge">0</span>`
-                : "";
-              return `<a class="nav-item ${item.active ? "active" : ""} ${item.class || ""}" onclick="handleNav('${item.label}', this)">${item.icon} ${item.label} ${badgeHtml}</a>`;
-            })
-            .join("");
-        }
+        nav.innerHTML = menu
+          .map((item) => {
+            let badgeHtml = item.badge
+              ? `<span class="notification-badge" style="display: none; position: static; margin-left: auto;" id="sidebar-notif-badge">0</span>`
+              : "";
+            return `<a class="nav-item ${item.active ? "active" : ""} ${item.class || ""}" onclick="handleNav('${item.label}', this)">${item.icon} ${item.label} ${badgeHtml}</a>`;
+          })
+          .join("");
 
-        const avatarStr = String(user.avatar || "U");
-        const sidebarAvatarHtml = avatarStr.startsWith("http")
-          ? `<img src="${avatarStr}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
-          : avatarStr;
+        const avatarHtml =
+          user.avatar && user.avatar.startsWith("http")
+            ? `<img src="${user.avatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
+            : user.avatar || "U";
 
         const btmHtml = `
           <div style="padding: 20px; border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 10px;">
             <div style="background-color: #f1f5f9; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px;">
               <div style="width: 34px; height: 34px; border-radius: 50%; background-color: #0f172a; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; overflow: hidden;">
-                ${sidebarAvatarHtml}
+                ${avatarHtml}
               </div>
               <div style="overflow: hidden; text-align: left;">
                 <div style="font-weight: 700; font-size: 14px; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${user.name}</div>
@@ -5045,95 +4651,245 @@
             </button>
           </div>
         `;
-        const sidebarBottom = document.getElementById("sidebar-bottom");
-        if (sidebarBottom) sidebarBottom.innerHTML = btmHtml;
+        document.getElementById("sidebar-bottom").innerHTML = btmHtml;
       }
 
-      async function publishNewCourse() {
-        const title = document.getElementById("uc-title").value.trim();
-        const desc = document.getElementById("uc-desc").value.trim();
-        const cat = document.getElementById("uc-cat").value.trim();
-        const diff = document.getElementById("uc-diff").value;
-        const totalLessons =
-          parseInt(document.getElementById("uc-lessons").value) || 4;
-        const thumbnailInput = document.getElementById("uc-thumbnail-input");
-        const videoInput = document.getElementById("uc-video-input");
+      // ADMIN FUNCTIONS
+      async function updateAdminStats() {
+        let users = await safeFetchJSON(`${API_URL}/users`);
+        let courses = await safeFetchJSON(`${API_URL}/courses`);
+        let activeStudents = users.filter(
+          (u) => u.role === "student" && u.status === "Approved",
+        ).length;
+        let pendingCoursesCount = courses.filter(
+          (c) => c.status === "Pending",
+        ).length;
+        let pendingUsersCount = users.filter(
+          (u) => u.status === "Pending",
+        ).length;
 
-        if (!title)
-          return alert("Please enter a course title before publishing.");
-        if (!currentUser)
-          return alert(
-            "User authentication failed. Please log out and log in again.",
-          );
+        const uEl = document.getElementById("admin-stat-users");
+        const cEl = document.getElementById("admin-stat-courses");
+        const sEl = document.getElementById("admin-stat-students");
+        const pEl = document.getElementById("admin-stat-pending");
+        if (uEl) uEl.innerText = users.length;
+        if (cEl) cEl.innerText = courses.length;
+        if (sEl) sEl.innerText = activeStudents;
+        if (pEl) pEl.innerText = pendingCoursesCount + pendingUsersCount;
+      }
 
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("description", desc);
-        formData.append("category", cat);
-        formData.append("difficulty", diff);
-        formData.append("instructorEmail", currentUser.email);
-        formData.append("instructorName", currentUser.name);
-        formData.append("total_lessons", totalLessons);
-
-        if (thumbnailInput && thumbnailInput.files[0])
-          formData.append("thumbnail", thumbnailInput.files[0]);
-        if (videoInput && videoInput.files[0])
-          formData.append("video", videoInput.files[0]);
-
-        const publishBtn = document.getElementById("btn-submit-upload");
-        let originalText = "Publish Course";
-        if (publishBtn) {
-          originalText = publishBtn.innerHTML;
-          publishBtn.innerHTML =
-            "⏳ Uploading Media to Cloudinary... Please wait (This may take a few minutes for videos)";
-          publishBtn.disabled = true;
+      async function renderAdminActivity() {
+        const container = document.getElementById(
+          "admin-recent-activity-container",
+        );
+        if (!container) return;
+        const notifs = await fetchNotifications("admin");
+        if (notifs.length === 0) {
+          container.innerHTML = `<div style="color:#64748b; font-size:14px;">No recent activity.</div>`;
+          return;
         }
+        container.innerHTML = notifs
+          .slice(0, 5)
+          .map(
+            (n) => `
+            <div class="activity-item">
+                <div class="act-dot dot-${n.color || "blue"}"></div>
+                <div><div class="act-text">${n.text}</div><div class="act-time">${n.date ? n.date + " • " : ""}${n.time || ""}</div></div>
+            </div>`,
+          )
+          .join("");
+        renderAdminComplaints();
+      }
 
+      async function renderAdminComplaints() {
+        const container = document.getElementById(
+          "admin-all-complaints-container",
+        );
+        if (!container) return;
         try {
-          const res = await fetch(`${API_URL}/upload-course-with-media`, {
-            method: "POST",
-            body: formData,
-          });
-
-          if (res.ok) {
-            await addNotification(
-              "admin",
-              `New course "${title}" with media submitted for review by ${currentUser.name}`,
-              "purple",
-            );
-            alert(
-              "Course published successfully! Images and videos have been uploaded. It is currently awaiting administrator approval.",
-            );
-            document.getElementById("uc-title").value = "";
-            document.getElementById("uc-desc").value = "";
-            document.getElementById("uc-cat").value = "";
-            document.getElementById("uc-diff").value = "Beginner";
-            document.getElementById("uc-lessons").value = "";
-            if (thumbnailInput) thumbnailInput.value = "";
-            if (videoInput) videoInput.value = "";
-            handleNav("Dashboard", document.querySelector(".nav-item-dash"));
-          } else {
-            const errData = await res.json();
-            alert("Error saving course: " + (errData.error || "Unknown error"));
-          }
-        } catch (e) {
-          console.error(e);
-          alert(
-            "Database/Network connection failed. Please ensure the backend is running properly.",
+          const allComplaints = await safeFetchJSON(
+            `${API_URL}/all-complaints`,
           );
-        } finally {
-          if (publishBtn) {
-            publishBtn.innerHTML = originalText;
-            publishBtn.disabled = false;
+          if (allComplaints.length === 0) {
+            container.innerHTML = `<div style="text-align:center;padding:20px;color:#64748b;background:#f8fafc;border-radius:8px;">No complaints filed yet.</div>`;
+            return;
           }
+          container.innerHTML = allComplaints
+            .map(
+              (cp) => `
+            <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
+                <span style="font-size:13px;font-weight:700;color:#be123c;background:#fef2f2;padding:3px 10px;border-radius:20px;">📚 ${cp.course_name || "Unknown Course"}</span>
+                <span style="font-size:12px;color:#94a3b8;">${cp.date || ""}</span>
+              </div>
+              <div style="font-size:14px;color:#881337;margin-bottom:8px;line-height:1.5;">${cp.complaint_text}</div>
+              <div style="font-size:12px;color:#64748b;">🧑 <b>${cp.user_name || "Unknown"}</b> &nbsp;|&nbsp; ✉️ ${cp.user_email || ""}</div>
+            </div>`,
+            )
+            .join("");
+        } catch (e) {
+          container.innerHTML = `<div style="color:#ef4444;padding:12px;">Failed to load complaints.</div>`;
         }
       }
 
-      async function openEditCourse(courseId) {
+      async function renderAdminBanRequests() {
+        const container = document.getElementById(
+          "admin-ban-requests-container",
+        );
+        if (!container) return;
+        try {
+          const allReqs = await safeFetchJSON(`${API_URL}/ban-requests`);
+          let banReqs = allReqs.filter((r) => r.status === "Pending");
+          if (banReqs.length === 0) {
+            container.innerHTML = "";
+            return;
+          }
+          let htmlStr = `<h3 style="color:#e11d48; margin-bottom:15px; font-weight:800; font-size:20px;">⚠️ Pending Ban Requests</h3><div style="display:flex; flex-direction:column; gap:15px; margin-bottom:30px;">`;
+          banReqs.forEach((req) => {
+            htmlStr += `
+              <div style="background:#fff1f2; border:1px solid #fecaca; padding:20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
+                 <div style="width: 100%;">
+                    <div style="font-weight:700; color:#be123c; font-size:16px; word-break: break-word;">Ban Request for: ${req.student_name} <span style="font-size:13px; font-weight:500;">(${req.student_email})</span></div>
+                    <div style="font-size:13px; color:#881337; margin-top:5px; font-weight:600; word-break: break-word;">Requested by: Instructor ${req.inst_name} | Course: ${req.course_title}</div>
+                 </div>
+                 <div style="display:flex; gap:10px; width: 100%;">
+                    <button class="btn btn-primary" style="background:#e11d48; flex:1;" onclick="processBanRequest(${req.id}, 'Approved', '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}', '${req.course_id}')">Approve & Remove</button>
+                    <button class="btn btn-outline" style="border-color:#fca5a5; color:#be123c; background:white; flex:1;" onclick="processBanRequest(${req.id}, 'Rejected', '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}', '${req.course_id}')">Reject</button>
+                 </div>
+              </div>`;
+          });
+          htmlStr += `</div><hr style="border:0; border-top:1px solid #e2e8f0; margin-bottom:30px;">`;
+          container.innerHTML = htmlStr;
+        } catch (e) {
+          container.innerHTML = "";
+        }
+      }
+
+      async function processBanRequest(
+        reqId,
+        actionStatus,
+        studentEmail,
+        instEmail,
+        studentName,
+        courseId,
+      ) {
+        const actionText =
+          actionStatus === "Approved"
+            ? "remove from this course and BAN"
+            : "REJECT the ban request for";
+        if (!confirm(`Are you sure you want to ${actionText} ${studentName}?`))
+          return;
+        try {
+          const res = await fetch(`${API_URL}/ban-requests/${reqId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              status: actionStatus,
+              studentEmail,
+              instEmail,
+              studentName,
+              courseId,
+            }),
+          });
+          if (!res.ok) {
+            const data = await res.json();
+            return alert(data.error || "Failed to process ban request.");
+          }
+          alert(`Ban request ${actionStatus.toLowerCase()} successfully.`);
+          renderAdminUsers();
+        } catch (e) {
+          alert("Error processing ban request.");
+        }
+      }
+
+      async function renderAdminCourses() {
+        const container = document.getElementById("admin-course-list");
+        if (!container) return;
+        try {
+          const courses = await safeFetchJSON(`${API_URL}/courses`);
+          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          if (courses.length === 0) {
+            container.innerHTML = `<p style="color:#64748b;">No courses uploaded yet.</p>`;
+            updateAdminStats();
+            return;
+          }
+          container.innerHTML = `<p style="color:#64748b; padding:10px;">Loading course analytics...</p>`;
+          let htmlStr = "";
+          for (let c of courses) {
+            const isPending = c.status === "Pending";
+            const bgIndex =
+              (parseInt(String(c.id).slice(-3)) || 0) % courseGradients.length;
+            let bgStyle = `background: ${courseGradients[bgIndex]}; display:flex; align-items:center; justify-content:center; text-align:center; padding:15px; border-bottom:1px solid #e2e8f0; cursor: pointer;`;
+            let enrolledCount = enrollments.filter(
+              (e) => e.course_id == c.id && e.status === "Approved",
+            ).length;
+
+            let thumbHTML = c.thumbnail_url
+              ? `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
+                   <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border-radius: 12px; padding: 20px;">
+                       <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4>
+                   </div></div>`
+              : `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; ${bgStyle}" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
+                   <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4></div>`;
+
+            let actionHTML = isPending
+              ? `<div class="action-container" style="display:flex; gap:12px; margin-top: 15px; flex-wrap:wrap;">
+                  <button class="btn btn-success" onclick="updateCourseStatusAPI('${c.id}', 'Approved', '${c.instructor_email || ""}', '${c.title.replace(/'/g, "\\'")}')" style="flex: 1; border-radius: 8px;">Approve</button>
+                  <button class="btn btn-primary" onclick="updateCourseStatusAPI('${c.id}', 'Rejected', '${c.instructor_email || ""}', '${c.title.replace(/'/g, "\\'")}')" style="flex: 1; background: #e11d48; border-radius: 8px;">Reject</button>
+                 </div>`
+              : `<button class="btn btn-outline" style="width:100%; border-color:#ddd6fe; color:#4c1d95; margin-top: 15px;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">View Analytics & Complaints</button>`;
+
+            htmlStr += `
+              <div class="admin-course-card ${isPending ? "border-pen" : "border-pub"}">
+                  ${thumbHTML}
+                  <div class="acc-tags">
+                      <span class="acc-tag ${isPending ? "tag-pen" : "tag-pub"}">${isPending ? "Pending" : "Published"}</span>
+                      <span class="acc-tag" style="background:#eff6ff; color:#1e40af; border-color:#bfdbfe;">Enrolled: ${enrolledCount}</span>
+                  </div>
+                  <h3 style="font-size:18px; font-weight:700; color:#312e81; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
+                  <p style="font-size:14px; color:#7c3aed; font-weight:500; margin-bottom:10px;" class="dm-desc">by ${c.instructor_name}</p>
+                  <div style="margin-top:auto;">${actionHTML}</div>
+              </div>`;
+          }
+          container.innerHTML = htmlStr;
+          updateAdminStats();
+        } catch (e) {
+          container.innerHTML = `<p style="color:#ef4444;">Database connection failed!</p>`;
+        }
+      }
+
+      async function updateCourseStatusAPI(id, status, instructorEmail, title) {
+        try {
+          await fetch(`${API_URL}/course-status`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id, status }),
+          });
+          await renderAdminCourses();
+          if (status === "Approved") {
+            await addNotification(
+              instructorEmail,
+              `Your course "${title}" has been approved and is now live!`,
+              "green",
+            );
+            await notifyAllUsers(
+              `A new course "${title}" has been published! Explore it now.`,
+              "blue",
+            );
+          }
+          alert(`Course has been successfully ${status.toLowerCase()}.`);
+        } catch (e) {
+          alert("Error updating course status in database.");
+        }
+      }
+
+      async function renderAdminUsers() {
+        const filter = document.getElementById("admin-user-filter").value;
+        const container = document.getElementById("admin-user-grid-container");
+        if (!container) return;
+        container.innerHTML = `<div style="padding: 20px; color: #64748b;">Loading users...</div>`;
         try {
           const users = await safeFetchJSON(`${API_URL}/users`);
-          if (!Array.isArray(users)) return;
-
           let filteredUsers = users;
           if (filter === "Pending Only")
             filteredUsers = users.filter((u) => u.status === "Pending");
@@ -5160,18 +4916,16 @@
               if (isPending) statusClass = "pending";
               if (isBanned) statusClass = "banned";
 
-              const safeName = encodeURIComponent(u.name);
-
               let actionsHtml = "";
               if (isPending) {
                 actionsHtml = `<div class="action-container" style="display: flex; gap: 10px; margin-top: 15px;">
-                  <button class="btn btn-success btn-approve-full" style="flex: 1; border-radius: 12px; font-size: 13px; padding: 12px;" onclick="updateUserStatus('${u.email}', 'Approved', '${safeName}')">Approve</button>
-                  <button class="btn btn-outline btn-reject-full" style="flex: 1; border-radius: 12px; font-size: 13px; padding: 12px; color: #ef4444; border-color: #fca5a5;" onclick="updateUserStatus('${u.email}', 'Banned', '${safeName}')">Reject</button>
+                  <button class="btn btn-success btn-approve-full" style="flex: 1; border-radius: 12px; font-size: 13px; padding: 12px;" onclick="updateUserStatus('${u.email}', 'Approved', '${u.name}')">Approve</button>
+                  <button class="btn btn-outline btn-reject-full" style="flex: 1; border-radius: 12px; font-size: 13px; padding: 12px; color: #ef4444; border-color: #fca5a5;" onclick="updateUserStatus('${u.email}', 'Banned', '${u.name}')">Reject</button>
               </div>`;
               } else if (isBanned) {
-                actionsHtml = `<button class="btn btn-outline" style="width: 100%; margin-top: 15px; border-radius: 12px; font-size: 13px; padding: 12px; border-color: #6ee7b7; color: #059669; background: #ecfdf5;" onclick="updateUserStatus('${u.email}', 'Approved', '${safeName}')">Unban / Restore Account</button>`;
+                actionsHtml = `<button class="btn btn-outline" style="width: 100%; margin-top: 15px; border-radius: 12px; font-size: 13px; padding: 12px; border-color: #6ee7b7; color: #059669; background: #ecfdf5;" onclick="updateUserStatus('${u.email}', 'Approved', '${u.name}')">Unban / Restore Account</button>`;
               } else {
-                actionsHtml = `<button class="btn btn-outline" style="width: 100%; margin-top: 15px; border-radius: 12px; font-size: 13px; padding: 12px; border-color: #fca5a5; color: #ef4444; background: #fef2f2;" onclick="updateUserStatus('${u.email}', 'Banned', '${safeName}')">Suspend Account</button>`;
+                actionsHtml = `<button class="btn btn-outline" style="width: 100%; margin-top: 15px; border-radius: 12px; font-size: 13px; padding: 12px; border-color: #fca5a5; color: #ef4444; background: #fef2f2;" onclick="updateUserStatus('${u.email}', 'Banned', '${u.name}')">Suspend Account</button>`;
               }
 
               return `
@@ -5194,8 +4948,7 @@
         }
       }
 
-      async function updateUserStatus(email, status, encodedName) {
-        const name = decodeURIComponent(encodedName);
+      async function updateUserStatus(email, status, name) {
         const actionWord =
           status === "Approved" ? "approve/restore" : "suspend/ban";
         if (
@@ -5232,100 +4985,407 @@
         }
       }
 
-      async function renderAdminCourses() {
-        const container = document.getElementById("admin-course-list");
-        if (!container) return;
+      // INSTRUCTOR FUNCTIONS
+      async function updateInstructorStats() {
+        if (!currentUser) return;
+        const courses = await safeFetchJSON(`${API_URL}/courses`);
+        const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+        let activeCourses = courses.filter(
+          (c) =>
+            c.instructor_email === currentUser.email && c.status === "Approved",
+        ).length;
+        let totalStudents = enrollments.filter(
+          (e) =>
+            e.instructor_email === currentUser.email && e.status === "Approved",
+        ).length;
+        let pendingEnrollments = enrollments.filter(
+          (e) =>
+            e.instructor_email === currentUser.email && e.status === "Pending",
+        ).length;
+        const icEl = document.getElementById("inst-course-count");
+        const isEl = document.getElementById("inst-student-count");
+        const ipEl = document.getElementById("inst-pending-count");
+        if (icEl) icEl.innerText = activeCourses;
+        if (isEl) isEl.innerText = totalStudents;
+        if (ipEl) ipEl.innerText = pendingEnrollments;
+      }
+
+      async function publishNewCourse() {
+        const title = document.getElementById("uc-title").value.trim();
+        const desc = document.getElementById("uc-desc").value.trim();
+        const cat = document.getElementById("uc-cat").value.trim();
+        const diff = document.getElementById("uc-diff").value;
+        const totalLessons =
+          parseInt(document.getElementById("uc-lessons").value) || 4;
+        const thumbnailInput = document.getElementById("uc-thumbnail-input");
+        const videoInput = document.getElementById("uc-video-input");
+
+        if (!title)
+          return alert("Please enter a course title before publishing.");
+        if (!currentUser)
+          return alert(
+            "User authentication failed. Please log out and log in again.",
+          );
+
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("description", desc);
+        formData.append("category", cat);
+        formData.append("difficulty", diff);
+        formData.append("instructorEmail", currentUser.email);
+        formData.append("instructorName", currentUser.name);
+        formData.append("total_lessons", totalLessons);
+
+        if (thumbnailInput && thumbnailInput.files[0])
+          formData.append("thumbnail", thumbnailInput.files[0]);
+        if (videoInput && videoInput.files[0])
+          formData.append("video", videoInput.files[0]);
+
+        const publishBtn = document.querySelector(
+          "#instructor-upload-course-content .btn-primary",
+        );
+        const originalText = publishBtn ? publishBtn.innerHTML : "Publish";
+        if (publishBtn) {
+          publishBtn.innerHTML =
+            "⏳ Uploading Media to Cloudinary... Please wait";
+          publishBtn.disabled = true;
+        }
+
         try {
-          const courses = await safeFetchJSON(`${API_URL}/courses`);
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
-          if (!Array.isArray(courses)) return;
-
-          if (courses.length === 0) {
-            container.innerHTML = `<p style="color:#64748b;">No courses uploaded yet.</p>`;
-            updateAdminStats();
-            return;
+          const res = await fetch(`${API_URL}/upload-course-with-media`, {
+            method: "POST",
+            body: formData,
+          });
+          if (res.ok) {
+            await addNotification(
+              "admin",
+              `New course "${title}" submitted for review by ${currentUser.name}`,
+              "purple",
+            );
+            alert(
+              "Course published successfully! It is currently awaiting administrator approval.",
+            );
+            document.getElementById("uc-title").value = "";
+            document.getElementById("uc-desc").value = "";
+            if (thumbnailInput) thumbnailInput.value = "";
+            if (videoInput) videoInput.value = "";
+            handleNav("Dashboard", document.querySelector(".nav-item-dash"));
+          } else {
+            const errData = await res.json();
+            alert("Error saving course: " + (errData.error || "Unknown error"));
           }
-          container.innerHTML = `<p style="color:#64748b; padding:10px;">Loading course analytics...</p>`;
-          let htmlStr = "";
-          for (let c of courses) {
-            const isPending = c.status === "Pending";
-            const bgIndex =
-              (parseInt(String(c.id).slice(-3)) || 0) % courseGradients.length;
-            let bgStyle = `background: ${courseGradients[bgIndex]}; display:flex; align-items:center; justify-content:center; text-align:center; padding:15px; border-bottom:1px solid #e2e8f0; cursor: pointer;`;
-            let enrolledCount = Array.isArray(enrollments)
-              ? enrollments.filter(
-                  (e) => e.course_id == c.id && e.status === "Approved",
-                ).length
-              : 0;
-
-            let thumbHTML = c.thumbnail_url
-              ? `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
-                   <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border-radius: 12px; padding: 20px;">
-                       <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4>
-                   </div></div>`
-              : `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; ${bgStyle}" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
-                   <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4></div>`;
-
-            const safeTitle = encodeURIComponent(c.title);
-
-            let actionHTML = isPending
-              ? `<div class="action-container" style="display:flex; gap:12px; margin-top: 15px; flex-wrap:wrap;">
-                  <button class="btn btn-success" onclick="updateCourseStatusAPI('${c.id}', 'Approved', '${c.instructor_email || ""}', '${safeTitle}')" style="flex: 1; border-radius: 8px;">Approve</button>
-                  <button class="btn btn-primary" onclick="updateCourseStatusAPI('${c.id}', 'Rejected', '${c.instructor_email || ""}', '${safeTitle}')" style="flex: 1; background: #e11d48; border-radius: 8px;">Reject</button>
-                 </div>`
-              : `<button class="btn btn-outline" style="width:100%; border-color:#ddd6fe; color:#4c1d95; margin-top: 15px;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">View Analytics & Complaints</button>`;
-
-            htmlStr += `
-              <div class="admin-course-card ${isPending ? "border-pen" : "border-pub"}">
-                  ${thumbHTML}
-                  <div class="acc-tags">
-                      <span class="acc-tag ${isPending ? "tag-pen" : "tag-pub"}">${isPending ? "Pending" : "Published"}</span>
-                      <span class="acc-tag" style="background:#eff6ff; color:#1e40af; border-color:#bfdbfe;">Enrolled: ${enrolledCount}</span>
-                  </div>
-                  <h3 style="font-size:18px; font-weight:700; color:#312e81; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                  <p style="font-size:14px; color:#7c3aed; font-weight:500; margin-bottom:10px;" class="dm-desc">by ${c.instructor_name}</p>
-                  <div style="margin-top:auto;">${actionHTML}</div>
-              </div>`;
-          }
-          container.innerHTML = htmlStr;
-          updateAdminStats();
         } catch (e) {
-          container.innerHTML = `<p style="color:#ef4444;">Database connection failed!</p>`;
+          console.error(e);
+          alert("Network connection failed.");
+        } finally {
+          if (publishBtn) {
+            publishBtn.innerHTML = originalText;
+            publishBtn.disabled = false;
+          }
         }
       }
 
-      async function updateCourseStatusAPI(
+      async function renderInstructorRequests() {
+        const container = document.getElementById(
+          "instructor-enrollment-requests",
+        );
+        if (!container) return;
+        try {
+          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          const pendingReqs = enrollments.filter(
+            (e) =>
+              e.instructor_email === currentUser.email &&
+              e.status === "Pending",
+          );
+          if (pendingReqs.length === 0) {
+            container.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b; background: #f8fafc;">No pending enrollment requests.</div>`;
+            return;
+          }
+          container.innerHTML = pendingReqs
+            .map(
+              (req) => `
+              <div class="submission-item">
+                <div>
+                  <div style="font-weight: 700; color: #0f172a; font-size: 15px;">${req.student_name} <span style="font-weight: 500; color: #64748b; font-size: 13px;">(${req.student_email})</span></div>
+                  <div style="font-size: 13px; color: #2563eb; margin-top: 4px; font-weight: 600;">Course: ${req.course_title}</div>
+                  <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Requested on: ${req.date}</div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                  <button class="btn btn-success" style="padding: 6px 16px; font-size: 13px;" onclick="processEnrollment(${req.id}, 'Approved', '${req.student_email}', '${req.course_title.replace(/'/g, "\\'")}', '${req.student_name.replace(/'/g, "\\'")}')">Approve</button>
+                  <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px; border-color: #fca5a5; color: #ef4444;" onclick="processEnrollment(${req.id}, 'Rejected', '${req.student_email}', '${req.course_title.replace(/'/g, "\\'")}', '${req.student_name.replace(/'/g, "\\'")}')">Reject</button>
+                </div>
+              </div>`,
+            )
+            .join("");
+        } catch (e) {
+          container.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to load requests.</div>`;
+        }
+      }
+
+      async function processEnrollment(
         id,
         status,
-        instructorEmail,
-        encodedTitle,
+        studentEmail,
+        courseTitle,
+        studentName,
       ) {
-        const title = decodeURIComponent(encodedTitle);
+        if (
+          !confirm(
+            `Are you sure you want to ${status.toLowerCase()} ${studentName}'s enrollment?`,
+          )
+        )
+          return;
         try {
-          await fetch(`${API_URL}/course-status`, {
+          const res = await fetch(`${API_URL}/enrollments/status`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id, status }),
           });
-          await renderAdminCourses();
-          if (status === "Approved") {
-            await addNotification(
-              instructorEmail,
-              `Your course "${title}" has been approved and is now live!`,
-              "green",
-            );
-            await notifyAllUsers(
-              `A new course "${title}" has been published! Explore it now.`,
-              "blue",
-            );
+          if (res.ok) {
+            const color = status === "Approved" ? "green" : "red";
+            const text =
+              status === "Approved"
+                ? `🎉 Your enrollment for "${courseTitle}" has been approved!`
+                : `❌ Your enrollment request for "${courseTitle}" was rejected.`;
+            await addNotification(studentEmail, text, color);
+            alert(`Enrollment ${status.toLowerCase()} successfully!`);
+            renderInstructorRequests();
+            updateInstructorStats();
+          } else {
+            alert("Failed to update enrollment status.");
           }
-          alert(`Course has been successfully ${status.toLowerCase()}.`);
         } catch (e) {
-          alert("Error updating course status in database.");
+          alert("Database connection error.");
         }
       }
 
+      async function renderInstructorLiveCourses() {
+        const container = document.getElementById(
+          "instructor-live-courses-grid",
+        );
+        if (!container) return;
+        try {
+          const courses = await safeFetchJSON(`${API_URL}/courses`);
+          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          let myCourses = courses.filter(
+            (c) => c.instructor_email === currentUser.email,
+          );
+          if (myCourses.length === 0) {
+            container.innerHTML = `<p style="color:#64748b; width: 100%;">You haven't uploaded any courses yet.</p>`;
+            return;
+          }
+          container.innerHTML = myCourses
+            .map((c) => {
+              const bgIndex =
+                (parseInt(String(c.id).slice(-3)) || 0) %
+                courseGradients.length;
+              let bgStyle = `background: ${courseGradients[bgIndex]}; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
+              let thumbHTML = c.thumbnail_url
+                ? `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"><div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div></div>`
+                : `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle}"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div>`;
+              let studentCount = enrollments.filter(
+                (e) => e.course_id == c.id && e.status === "Approved",
+              ).length;
+              let statusBadge =
+                c.status === "Approved"
+                  ? `<span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">Live</span>`
+                  : `<span style="background: #fffbeb; color: #d97706; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #fde68a;">Pending</span>`;
+
+              return `
+                  <div class="std-course-card" onclick="openCoursePlayer('${c.id}')">
+                      ${thumbHTML}
+                      <div class="std-course-card-content">
+                          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px;">
+                              <h3 style="font-size:18px; font-weight:700; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
+                              ${statusBadge}
+                          </div>
+                          <p style="font-size:14px; color:#2563eb; margin-bottom:10px; font-weight: 600;">Enrolled Students: <span style="background: #eff6ff; padding: 2px 8px; border-radius: 12px; color: #1e40af;">${studentCount}</span></p>
+                          <div style="margin-top:auto;"><button class="btn btn-outline" style="width:100%;">View Details</button></div>
+                      </div>
+                  </div>`;
+            })
+            .join("");
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async function renderInstructorStudents() {
+        const listContainer = document.getElementById(
+          "instructor-students-list",
+        );
+        const statsContainer = document.getElementById("inst-students-stats");
+        if (!listContainer) return;
+        listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">⏳ Loading students...</div>`;
+        try {
+          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          const users = await safeFetchJSON(`${API_URL}/users`);
+
+          if (!Array.isArray(enrollments)) {
+            listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to fetch enrollments.</div>`;
+            return;
+          }
+
+          let myEnrollments = enrollments.filter(
+            (e) =>
+              e.instructor_email === currentUser.email &&
+              e.status === "Approved",
+          );
+
+          let studentMap = new Map();
+          myEnrollments.forEach((e) => {
+            if (!studentMap.has(e.student_email)) {
+              let matchedUser = Array.isArray(users)
+                ? users.find((u) => u.email === e.student_email)
+                : null;
+              let safeName = e.student_name || "Unknown";
+              let finalAvatarUrl =
+                matchedUser && matchedUser.avatar
+                  ? matchedUser.avatar
+                  : safeName.charAt(0).toUpperCase();
+
+              studentMap.set(e.student_email, {
+                name: safeName,
+                email: e.student_email,
+                avatar: finalAvatarUrl,
+                enrolledCount: 0,
+                completedCount: Math.floor(Math.random() * 3), // Mock data
+                progress: Math.floor(Math.random() * 60) + 20, // Mock progress
+                lastActive: e.date || "Unknown",
+              });
+            }
+            let st = studentMap.get(e.student_email);
+            st.enrolledCount++;
+          });
+
+          instGlobalStudents = Array.from(studentMap.values());
+
+          if (statsContainer) {
+            let activeThisWeek = Math.floor(instGlobalStudents.length * 0.8);
+            statsContainer.innerHTML = `
+                <div class="p-stat-card p-stat-card-blue"><div class="p-card-top"><h3>Total Students</h3></div><div><div class="val">${instGlobalStudents.length}</div><div class="desc">Enrolled in your courses</div></div></div>
+                <div class="p-stat-card p-stat-card-green"><div class="p-card-top"><h3>Active This Week</h3></div><div><div class="val">${activeThisWeek}</div><div class="desc">Engaging with content</div></div></div>
+            `;
+          }
+
+          displayInstStudents(instGlobalStudents);
+        } catch (e) {
+          console.error(e);
+          listContainer.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load students.</div>`;
+        }
+      }
+
+      function displayInstStudents(students) {
+        const container = document.getElementById("instructor-students-list");
+        if (!container) return;
+        if (students.length === 0) {
+          container.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">No students found.</div>`;
+          return;
+        }
+        container.innerHTML = students
+          .map((st, index) => {
+            const bgIndex = index % courseGradients.length;
+            const bgStyle = st.avatar.startsWith("http")
+              ? ""
+              : `background: ${courseGradients[bgIndex]};`;
+            const avatarHtml = st.avatar.startsWith("http")
+              ? `<img src="${st.avatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
+              : `<span style="color:white;">${st.avatar}</span>`;
+
+            const statusBadge = `<span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">active</span>`;
+
+            return `
+                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
+                    <div style="display: flex; align-items: center; gap: 15px; min-width: 250px; flex: 1;">
+                        <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0; overflow:hidden;">${avatarHtml}</div>
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px;"><h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.name}</h4>${statusBadge}</div>
+                            <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                              ${st.email}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 30px; flex: 2; min-width: 300px; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 8px; align-items: flex-start;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                            <div><div style="font-size: 11px; color: #64748b;">Enrolled</div><div style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.enrolledCount}</div></div>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: flex-start;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+                            <div><div style="font-size: 11px; color: #64748b;">Completed</div><div style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.completedCount}</div></div>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: flex-start;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+                            <div><div style="font-size: 11px; color: #64748b;">Progress</div><div style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.progress}%</div></div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 20px; flex: 1; justify-content: flex-end; min-width: 150px;">
+                        <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Enrolled On</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.lastActive}</div></div>
+                        <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px;">View Details</button>
+                    </div>
+                 </div>`;
+          })
+          .join("");
+      }
+
+      function filterInstructorStudents() {
+        const query = document
+          .getElementById("student-search-input")
+          .value.toLowerCase();
+        const filtered = instGlobalStudents.filter(
+          (s) =>
+            s.name.toLowerCase().includes(query) ||
+            s.email.toLowerCase().includes(query),
+        );
+        displayInstStudents(filtered);
+      }
+
+      async function requestStudentBan(studentEmail, studentName, courseId) {
+        if (
+          !confirm(`Are you sure you want to request a ban for ${studentName}?`)
+        )
+          return;
+        const titleEl = document.getElementById("cp-course-title");
+        const payload = {
+          course_id: courseId,
+          course_title: titleEl ? titleEl.innerText : "Unknown Course",
+          inst_email: currentUser.email,
+          inst_name: currentUser.name,
+          student_email: studentEmail,
+          student_name: studentName,
+          date: new Date().toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+        };
+        try {
+          const res = await fetch(`${API_URL}/ban-requests`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (res.ok) {
+            await addNotification(
+              "admin",
+              `⚠️ Ban Request: Instructor ${currentUser.name} requested to ban ${studentName}.`,
+              "red",
+            );
+            alert("Ban request sent to admin successfully.");
+            setupCourseStudentsUI();
+          } else {
+            const data = await res.json();
+            alert(data.error || "Failed to send ban request.");
+          }
+        } catch (e) {
+          alert("Database connection error.");
+        }
+      }
+
+      // STUDENT FUNCTIONS
       async function renderStudentBrowseCourses() {
         const container = document.getElementById(
           "student-browse-courses-grid",
@@ -5334,9 +5394,6 @@
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
-          if (!Array.isArray(courses)) return;
-
           let approvedCourses = courses.filter((c) => c.status === "Approved");
           if (approvedCourses.length === 0) {
             container.innerHTML = `<p style="color:#64748b;">No available courses at the moment.</p>`;
@@ -5352,18 +5409,13 @@
                 ? `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"><div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div></div>`
                 : `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle}" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div>`;
 
-              let myEnrollment = Array.isArray(enrollments)
-                ? enrollments.find(
-                    (e) =>
-                      e.course_id == c.id &&
-                      e.student_email === currentUser.email,
-                  )
-                : null;
+              let myEnrollment = enrollments.find(
+                (e) =>
+                  e.course_id == c.id && e.student_email === currentUser.email,
+              );
               let btnHTML = "";
-              const safeTitle = encodeURIComponent(c.title);
-
               if (!myEnrollment)
-                btnHTML = `<button class="btn btn-primary" style="width:100%; margin-top:15px;" onclick="requestEnrollment('${c.id}', '${c.instructor_email || ""}', '${safeTitle}')">Send Join Request</button>`;
+                btnHTML = `<button class="btn btn-primary" style="width:100%; margin-top:15px;" onclick="requestEnrollment('${c.id}', '${c.instructor_email || ""}', '${c.title.replace(/'/g, "\\'")}')">Send Join Request</button>`;
               else if (myEnrollment.status === "Pending")
                 btnHTML = `<button class="btn btn-outline" style="width:100%; margin-top:15px; color:#d97706; border-color:#fde68a; background:#fef3c7;" disabled>Requested (Pending)</button>`;
               else
@@ -5386,12 +5438,7 @@
         }
       }
 
-      async function requestEnrollment(
-        courseId,
-        instructorEmail,
-        encodedTitle,
-      ) {
-        const title = decodeURIComponent(encodedTitle);
+      async function requestEnrollment(courseId, instructorEmail, title) {
         const dateStr = new Date().toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
@@ -5438,9 +5485,6 @@
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
-          if (!Array.isArray(courses) || !Array.isArray(enrollments)) return;
-
           let myEnrolledCourses = courses.filter((c) =>
             enrollments.some(
               (e) =>
@@ -5493,8 +5537,6 @@
         if (!container) return;
         try {
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-          if (!Array.isArray(enrollments)) return;
-
           const myEnrollments = enrollments.filter(
             (e) =>
               e.student_email === currentUser.email && e.status === "Approved",
@@ -5512,22 +5554,19 @@
             const submissions = await safeFetchJSON(
               `${API_URL}/assignment-submissions/${enr.course_id}`,
             );
-            const mySubmissions = Array.isArray(submissions)
-              ? submissions.filter((s) => s.student_email === currentUser.email)
-              : [];
+            const mySubmissions = submissions.filter(
+              (s) => s.student_email === currentUser.email,
+            );
             const submittedAssignIds = mySubmissions.map(
               (s) => s.assignment_id,
             );
-
-            if (Array.isArray(assignments)) {
-              const pendingForCourse = assignments.filter(
-                (a) => !submittedAssignIds.includes(a.id),
-              );
-              pendingForCourse.forEach((a) => {
-                a.course_title = enr.course_title;
-                allPendingAssignments.push(a);
-              });
-            }
+            const pendingForCourse = assignments.filter(
+              (a) => !submittedAssignIds.includes(a.id),
+            );
+            pendingForCourse.forEach((a) => {
+              a.course_title = enr.course_title;
+              allPendingAssignments.push(a);
+            });
           }
 
           if (allPendingAssignments.length === 0) {
@@ -5554,6 +5593,7 @@
         }
       }
 
+      // COURSE PLAYER FUNCTIONS
       function renderDynamicLessons(total) {
         const container = document.getElementById("cp-lesson-list-box");
         if (!container) return;
@@ -5580,9 +5620,6 @@
           if (!currentUser) return alert("Please log in first.");
           const courses = await safeFetchJSON(`${API_URL}/courses`);
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-
-          if (!Array.isArray(courses)) return;
-
           let selectedCourse = courses.find(
             (c) => String(c.id) === String(courseId),
           );
@@ -5635,15 +5672,13 @@
           )
             hasAccess = true;
           else {
-            if (Array.isArray(enrollments)) {
-              let myEnrollment = enrollments.find(
-                (e) =>
-                  e.course_id == courseId &&
-                  e.student_email === currentUser.email &&
-                  e.status === "Approved",
-              );
-              if (myEnrollment) hasAccess = true;
-            }
+            let myEnrollment = enrollments.find(
+              (e) =>
+                e.course_id == courseId &&
+                e.student_email === currentUser.email &&
+                e.status === "Approved",
+            );
+            if (myEnrollment) hasAccess = true;
           }
 
           const lockedOverlay = document.getElementById("cp-locked-overlay");
@@ -5717,161 +5752,19 @@
         }
       }
 
-      async function renderInstructorStudents() {
-        const listContainer = document.getElementById(
-          "instructor-students-list",
-        );
-        const statsContainer = document.getElementById("inst-students-stats");
-        if (!listContainer) return;
-        listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">⏳ Loading students...</div>`;
-        try {
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-          const users = await safeFetchJSON(`${API_URL}/users`);
-
-          if (!Array.isArray(enrollments)) {
-            listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to fetch enrollments.</div>`;
-            return;
-          }
-
-          let myEnrollments = enrollments.filter(
-            (e) =>
-              e.instructor_email === currentUser.email &&
-              e.status === "Approved",
-          );
-
-          let studentMap = new Map();
-          myEnrollments.forEach((e) => {
-            if (!studentMap.has(e.student_email)) {
-              let matchedUser = Array.isArray(users)
-                ? users.find((u) => u.email === e.student_email)
-                : null;
-              let safeName = e.student_name || "Unknown";
-              let finalAvatarUrl =
-                matchedUser && matchedUser.avatar
-                  ? matchedUser.avatar
-                  : safeName.charAt(0).toUpperCase();
-
-              studentMap.set(e.student_email, {
-                name: safeName,
-                email: e.student_email,
-                avatar: finalAvatarUrl,
-                enrolledCount: 0,
-                completedCount: Math.floor(Math.random() * 3), // Mock data
-                progress: Math.floor(Math.random() * 60) + 20, // Mock progress
-                lastActive: "Active recently",
-              });
-            }
-            let st = studentMap.get(e.student_email);
-            st.enrolledCount++;
-          });
-
-          instGlobalStudents = Array.from(studentMap.values());
-
-          if (statsContainer) {
-            let activeThisWeek = Math.floor(instGlobalStudents.length * 0.8);
-            statsContainer.innerHTML = `
-                <div class="p-stat-card p-stat-card-blue"><div class="p-card-top"><h3>Total Students</h3></div><div><div class="val">${instGlobalStudents.length}</div><div class="desc">Enrolled in your courses</div></div></div>
-                <div class="p-stat-card p-stat-card-green"><div class="p-card-top"><h3>Active This Week</h3></div><div><div class="val">${activeThisWeek}</div><div class="desc">Engaging with content</div></div></div>
-            `;
-          }
-
-          displayInstStudents(instGlobalStudents);
-        } catch (e) {
-          console.error(e);
-          listContainer.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load students.</div>`;
-        }
-      }
-
-      function displayInstStudents(students) {
-        const container = document.getElementById("instructor-students-list");
-        if (!container) return;
-        if (students.length === 0) {
-          container.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">No students found.</div>`;
-          return;
-        }
-        container.innerHTML = students
-          .map((st, index) => {
-            const bgIndex = index % courseGradients.length;
-            const bgStyle = st.avatar.startsWith("http")
-              ? ""
-              : `background: ${courseGradients[bgIndex]};`;
-            const avatarHtml = st.avatar.startsWith("http")
-              ? `<img src="${st.avatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
-              : `<span style="color:white;">${st.avatar}</span>`;
-
-            const statusBadge = `<span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">active</span>`;
-
-            return `
-                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
-                    <div style="display: flex; align-items: center; gap: 15px; min-width: 250px; flex: 1;">
-                        <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0; overflow:hidden;">${avatarHtml}</div>
-                        <div>
-                            <div style="display: flex; align-items: center; gap: 8px;"><h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.name}</h4>${statusBadge}</div>
-                            <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc">
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                              ${st.email}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; gap: 30px; flex: 2; min-width: 300px; justify-content: space-between; align-items: center;">
-                        <div style="display: flex; gap: 8px; align-items: flex-start;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-                            <div><div style="font-size: 11px; color: #64748b;">Enrolled</div><div style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.enrolledCount}</div></div>
-                        </div>
-                        <div style="display: flex; gap: 8px; align-items: flex-start;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
-                            <div><div style="font-size: 11px; color: #64748b;">Completed</div><div style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.completedCount}</div></div>
-                        </div>
-                        <div style="display: flex; gap: 8px; align-items: flex-start;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
-                            <div><div style="font-size: 11px; color: #64748b;">Progress</div><div style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.progress}%</div></div>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; align-items: center; gap: 20px; flex: 1; justify-content: flex-end; min-width: 150px;">
-                        <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Last active</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.lastActive}</div></div>
-                        <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px;">View Details</button>
-                    </div>
-                 </div>`;
-          })
-          .join("");
-      }
-
-      function filterInstructorStudents() {
-        const input = document.getElementById("student-search-input");
-        if (!input) return;
-        const query = input.value.toLowerCase();
-        const filtered = instGlobalStudents.filter(
-          (s) =>
-            String(s.name).toLowerCase().includes(query) ||
-            String(s.email).toLowerCase().includes(query),
-        );
-        displayInstStudents(filtered);
-      }
-
       async function setupCourseStudentsUI() {
-        const listContainer = document.getElementById(
-          "cp-students-area-container",
-        );
-        if (!listContainer) return;
-        listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">⏳ Loading students...</div>`;
+        const container = document.getElementById("cp-students-area-container");
+        if (!container) return;
+        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading students...</div>`;
         try {
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
           const users = await safeFetchJSON(`${API_URL}/users`);
-
-          if (!Array.isArray(enrollments)) {
-            listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to fetch enrollments.</div>`;
-            return;
-          }
-
-          let enrolledStudents = enrollments.filter(
+          const enrolledStudents = enrollments.filter(
             (e) =>
               e.course_id == currentCoursePlayerId && e.status === "Approved",
           );
-
           if (enrolledStudents.length === 0) {
-            listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b; background:#f8fafc; border-radius:12px;" class="assignment-card">No students enrolled yet.</div>`;
+            container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b; background:#f8fafc; border-radius:12px;" class="assignment-card">No students enrolled yet.</div>`;
             return;
           }
 
@@ -5879,12 +5772,9 @@
           const banReqs = await safeFetchJSON(`${API_URL}/ban-requests`);
 
           enrolledStudents.forEach((st, index) => {
-            let matchedUser = Array.isArray(users)
-              ? users.find((u) => u.email === st.student_email)
-              : null;
+            let matchedUser = users.find((u) => u.email === st.student_email);
             let safeName = st.student_name || "Unknown";
             let avatarHtml = "";
-
             let finalAvatarUrl =
               matchedUser && matchedUser.avatar
                 ? matchedUser.avatar
@@ -5896,95 +5786,43 @@
               avatarHtml = `<span style="color:white;">${finalAvatarUrl}</span>`;
             }
 
-            let isRequested =
-              Array.isArray(banReqs) &&
-              banReqs.some(
-                (r) =>
-                  r.student_email === st.student_email &&
-                  r.course_id == currentCoursePlayerId &&
-                  r.status === "Pending",
-              );
+            let isRequested = banReqs.some(
+              (r) =>
+                r.student_email === st.student_email &&
+                r.course_id == currentCoursePlayerId &&
+                r.status === "Pending",
+            );
             let actionHtml = "";
             if (currentUser.role === "instructor") {
-              if (isRequested) {
+              if (isRequested)
                 actionHtml = `<span style="font-size:12px; color:#d97706; background:#fef3c7; padding:6px 12px; border-radius:20px; font-weight:700; white-space: nowrap;">Ban Requested</span>`;
-              } else {
-                const encodedEmail = encodeURIComponent(st.student_email);
-                const encodedName = encodeURIComponent(safeName);
-                actionHtml = `<button class="btn btn-outline" style="padding:6px 16px; font-size:13px; color:#ef4444; border-color:#fca5a5; white-space: nowrap;" onclick="requestStudentBan('${encodedEmail}', '${encodedName}', '${st.course_id}')">Request Ban</button>`;
-              }
+              else
+                actionHtml = `<button class="btn btn-outline" style="padding:6px 16px; font-size:13px; color:#ef4444; border-color:#fca5a5; white-space: nowrap;" onclick="requestStudentBan('${st.student_email}', '${st.student_name.replace(/'/g, "\\'")}', '${st.course_id}')">Request Ban</button>`;
             }
 
             const bgIndex = index % courseGradients.length;
             const bgStyle = finalAvatarUrl.startsWith("http")
               ? ""
               : `background: ${courseGradients[bgIndex]};`;
-
             htmlStr += `
                 <div style="display:flex; align-items:center; justify-content:space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
                   <div style="display: flex; align-items: center; gap: 15px; min-width: 250px;">
-                      <div style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0; overflow:hidden;">${avatarHtml}</div>
+                      <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0;">${avatarHtml}</div>
                       <div>
                           <div style="display: flex; align-items: center; gap: 8px;"><h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${safeName}</h4><span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">active</span></div>
-                          <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>${st.student_email || "No Email"}</div>
+                          <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>${st.student_email}</div>
                       </div>
                   </div>
                   <div style="display: flex; align-items: center; gap: 20px;">
-                      <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Enrolled on</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.date || "Unknown"}</div></div>
+                      <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Enrolled On</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.date || "Unknown"}</div></div>
                       <div style="display: flex; gap: 10px;">${actionHtml}</div>
                   </div>
                 </div>`;
           });
           htmlStr += `</div>`;
-          listContainer.innerHTML = htmlStr;
+          container.innerHTML = htmlStr;
         } catch (e) {
-          console.error(e);
-          listContainer.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load students.</div>`;
-        }
-      }
-
-      async function requestStudentBan(encodedEmail, encodedName, courseId) {
-        const studentEmail = decodeURIComponent(encodedEmail);
-        const studentName = decodeURIComponent(encodedName);
-        if (
-          !confirm(`Are you sure you want to request a ban for ${studentName}?`)
-        )
-          return;
-
-        const titleEl = document.getElementById("cp-course-title");
-        const payload = {
-          course_id: courseId,
-          course_title: titleEl ? titleEl.innerText : "Unknown Course",
-          inst_email: currentUser.email,
-          inst_name: currentUser.name,
-          student_email: studentEmail,
-          student_name: studentName,
-          date: new Date().toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          }),
-        };
-        try {
-          const res = await fetch(`${API_URL}/ban-requests`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-          if (res.ok) {
-            await addNotification(
-              "admin",
-              `⚠️ Ban Request: Instructor ${currentUser.name} requested to ban ${studentName}.`,
-              "red",
-            );
-            alert("Ban request sent to admin successfully.");
-            setupCourseStudentsUI();
-          } else {
-            const data = await res.json();
-            alert(data.error || "Failed to send ban request.");
-          }
-        } catch (e) {
-          alert("Database connection error.");
+          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load students.</div>`;
         }
       }
 
@@ -6074,13 +5912,11 @@
           assignments.forEach((a) => {
             let studentActionHtml = "";
             if (currentUser.role === "student") {
-              let mySub = Array.isArray(submissions)
-                ? submissions.find(
-                    (s) =>
-                      s.assignment_id === a.id &&
-                      s.student_email === currentUser.email,
-                  )
-                : null;
+              let mySub = submissions.find(
+                (s) =>
+                  s.assignment_id === a.id &&
+                  s.student_email === currentUser.email,
+              );
               if (mySub) {
                 let gradeHtml =
                   mySub.marks != null
@@ -6094,9 +5930,9 @@
               currentUser.role === "instructor" ||
               currentUser.role === "admin"
             ) {
-              let assignSubs = Array.isArray(submissions)
-                ? submissions.filter((s) => s.assignment_id === a.id)
-                : [];
+              let assignSubs = submissions.filter(
+                (s) => s.assignment_id === a.id,
+              );
               studentActionHtml = `<div style="margin-top:15px; padding-top:15px; border-top:1px solid #e2e8f0;"><b style="font-size:13px; color:#0f172a;" class="dm-title">Submissions (${assignSubs.length})</b></div>`;
             }
             htmlStr += `<div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:20px;" class="assignment-card"><div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px; flex-wrap: wrap; gap: 10px;"><h4 style="font-size:16px; font-weight:800; color:#0f172a; margin:0;" class="dm-title">📝 ${a.title}</h4><span style="background:#fef2f2; color:#ef4444; border:1px solid #fca5a5; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;">Due: ${a.due_date}</span></div><p style="font-size:14px; color:#475569; line-height:1.5; word-wrap: break-word;" class="dm-desc">${a.description}</p>${studentActionHtml}</div>`;
@@ -6184,7 +6020,7 @@
           const feedbacks = await safeFetchJSON(
             `${API_URL}/course-feedbacks/${courseId}`,
           );
-          if (!Array.isArray(feedbacks) || feedbacks.length === 0) {
+          if (feedbacks.length === 0) {
             container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">No feedback available yet.</div>`;
             const avgBadge = document.getElementById("cp-avg-rating-badge");
             if (avgBadge) avgBadge.innerHTML = `Average Rating: 0.0/5 ⭐`;
@@ -6204,6 +6040,32 @@
             avgBadge.innerHTML = `Average Rating: ${(totalRating / feedbacks.length).toFixed(1)}/5 ⭐`;
         } catch (e) {
           container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load feedback.</div>`;
+        }
+      }
+
+      async function loadCourseComplaints(courseId) {
+        const container = document.getElementById("cp-complaint-list");
+        if (!container) return;
+        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading complaints...</div>`;
+        try {
+          const complaints = await safeFetchJSON(
+            `${API_URL}/course-complaints/${courseId}`,
+          );
+          if (complaints.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding: 15px; color:#64748b; background:#f8fafc; border-radius:8px;">No complaints filed.</div>`;
+            return;
+          }
+          container.innerHTML = complaints
+            .map(
+              (cp) => `
+            <div style="background:#fff1f2; padding:15px; border-radius:12px; border:1px solid #fecdd3; margin-bottom:10px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><b style="color:#be123c;">From: ${cp.user_name}</b><span style="font-size:12px; color:#9f1239;">${cp.date}</span></div>
+              <div style="color:#881337; font-size:14px;">${cp.complaint_text}</div>
+            </div>`,
+            )
+            .join("");
+        } catch (e) {
+          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load complaints.</div>`;
         }
       }
 
@@ -6284,7 +6146,7 @@
           const messages = await safeFetchJSON(
             `${API_URL}/course-chats/${courseId}`,
           );
-          if (!Array.isArray(messages) || messages.length === 0) {
+          if (messages.length === 0) {
             container.innerHTML = `<div style="text-align:center; color:#64748b; margin-top:20px;">No messages yet.</div>`;
             return;
           }
@@ -6539,18 +6401,27 @@
                 errorDiv.innerText =
                   "Pending Approval: The administrator has not yet approved your account.";
                 errorDiv.style.display = "block";
+                return;
               } else if (user.status === "Banned") {
                 errorDiv.innerText =
                   "Account Suspended: Your account has been suspended by the administrator.";
                 errorDiv.style.display = "block";
+                return;
               } else {
-                currentUser = user;
-                localStorage.setItem(
-                  "elms_current_user",
-                  JSON.stringify(currentUser),
-                );
-                setupDashboard(user);
-                navigateTo("dashboard");
+                try {
+                  currentUser = user;
+                  localStorage.setItem(
+                    "elms_current_user",
+                    JSON.stringify(currentUser),
+                  );
+                  setupDashboard(user);
+                  navigateTo("dashboard");
+                } catch (uiErr) {
+                  console.error("Dashboard Render Error:", uiErr);
+                  errorDiv.innerText =
+                    "Error loading your dashboard profile. Data might be corrupted.";
+                  errorDiv.style.display = "block";
+                }
               }
             } else {
               errorDiv.innerText = data?.error || "Invalid email or password";
@@ -6573,7 +6444,6 @@
             submitBtn.disabled = true;
             errorDiv.style.display = "none";
 
-            // Show a helpful message if Render free tier is waking up
             const wakeupTimer = setTimeout(() => {
               if (submitBtn.disabled) {
                 submitBtn.innerHTML = "⏳ Waking up Server (Takes 1-2 mins)...";
