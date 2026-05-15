@@ -6927,8 +6927,13 @@
         if (badge) {
           const overlay = document.getElementById("global-chat-overlay");
           if (overlay && overlay.classList.contains("hidden")) {
-            // Placeholder for actual fetch integration if you add an endpoint.
-            // Example: let unread = await fetchUnreadCount()...
+            let unreadCount = Math.floor(Math.random() * 3); // Simulated unread count
+            if (unreadCount > 0) {
+              badge.innerText = unreadCount;
+              badge.style.display = "flex";
+            } else {
+              badge.style.display = "none";
+            }
           }
         }
       }
