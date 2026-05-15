@@ -5721,7 +5721,7 @@
           if (!Array.isArray(courses)) return;
 
           let selectedCourse = courses.find(
-            (c) => String(c.id) === String(courseId),
+            (c) => c && String(c.id) === String(courseId),
           );
           if (!selectedCourse) {
             alert("Course not found!");
@@ -5733,7 +5733,8 @@
 
           const titleEl = document.getElementById("cp-course-title");
           const descEl = document.getElementById("cp-course-desc");
-          if (titleEl) titleEl.innerText = selectedCourse.title;
+          if (titleEl)
+            titleEl.innerText = selectedCourse.title || "Untitled Course";
           if (descEl)
             descEl.innerText = selectedCourse.description || "Course details.";
 
@@ -5769,12 +5770,13 @@
           if (
             currentUser.role === "admin" ||
             selectedCourse.instructor_email === currentUser.email
-          )
+          ) {
             hasAccess = true;
-          else {
+          } else {
             if (Array.isArray(enrollments)) {
               let myEnrollment = enrollments.find(
                 (e) =>
+                  e &&
                   e.course_id == courseId &&
                   e.student_email === currentUser.email &&
                   e.status === "Approved",
@@ -5787,9 +5789,9 @@
           if (lockedOverlay) {
             if (hasAccess) {
               lockedOverlay.classList.add("hidden");
-              document
-                .querySelectorAll(".cp-tab")
-                .forEach((t) => (t.style.pointerEvents = "auto"));
+              document.querySelectorAll(".cp-tab").forEach((t) => {
+                if (t) t.style.pointerEvents = "auto";
+              });
               const studentsTabBtn =
                 document.getElementById("tab-btn-students");
               if (studentsTabBtn)
@@ -5801,15 +5803,15 @@
               switchCpTab("assignments");
             } else {
               lockedOverlay.classList.remove("hidden");
-              document
-                .querySelectorAll(".cp-tab")
-                .forEach((t) => (t.style.pointerEvents = "none"));
+              document.querySelectorAll(".cp-tab").forEach((t) => {
+                if (t) t.style.pointerEvents = "none";
+              });
             }
           }
           handleNav("CoursePlayer", null);
         } catch (e) {
           console.error("OpenCoursePlayer Error:", e);
-          alert("Could not load course details! Backend might be down.");
+          alert("Error loading course details: " + e.message);
         }
       }
 
