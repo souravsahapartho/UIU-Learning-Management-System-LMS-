@@ -42,7 +42,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
-    // Video asle course_videos folder e, profile pic asle profile_pics folder e, ar thumbnail asle course_images e jabe
+    // Media types anujayi folder e pathano
     if (file.mimetype.includes("video")) {
       return {
         folder: "elms/course_videos",
@@ -54,6 +54,12 @@ const storage = new CloudinaryStorage({
         folder: "elms/profile_pics",
         resource_type: "image",
         allowed_formats: ["jpg", "png", "jpeg", "webp"],
+      };
+    } else if (file.fieldname === "media" || file.mimetype.includes("image")) {
+      return {
+        folder: "elms/chat_media",
+        resource_type: "auto",
+        allowed_formats: ["jpg", "png", "jpeg", "webp", "mp4", "webm"],
       };
     } else {
       return {
@@ -95,7 +101,7 @@ db.query("SELECT 1", (err) => {
 const tableQueries = [
   `CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), email VARCHAR(100) UNIQUE, password VARCHAR(255), role VARCHAR(50) DEFAULT 'student', avatar VARCHAR(500) DEFAULT 'U', status VARCHAR(50) DEFAULT 'Pending')`,
   `CREATE TABLE IF NOT EXISTS courses (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), description TEXT, category VARCHAR(100), difficulty VARCHAR(50), instructor_email VARCHAR(100), instructor_name VARCHAR(100), total_lessons INT DEFAULT 4, status VARCHAR(50) DEFAULT 'Pending', thumbnail_url VARCHAR(500) DEFAULT NULL, video_url VARCHAR(500) DEFAULT NULL)`,
-  `CREATE TABLE IF NOT EXISTS course_chats (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100) NOT NULL, course_name VARCHAR(255), user_name VARCHAR(100), user_email VARCHAR(100), message TEXT, \`time\` VARCHAR(50))`,
+  `CREATE TABLE IF NOT EXISTS course_chats (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100) NOT NULL, course_name VARCHAR(255), user_name VARCHAR(100), user_email VARCHAR(100), message TEXT, \`time\` VARCHAR(50), media_url VARCHAR(500) DEFAULT NULL, media_type VARCHAR(50) DEFAULT NULL)`,
   `CREATE TABLE IF NOT EXISTS enrollments (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100), course_title VARCHAR(255), student_email VARCHAR(100), student_name VARCHAR(100), instructor_email VARCHAR(100), status VARCHAR(50) DEFAULT 'Pending', \`date\` VARCHAR(50))`,
   `CREATE TABLE IF NOT EXISTS notifications (id INT AUTO_INCREMENT PRIMARY KEY, identifier VARCHAR(100), text TEXT, color VARCHAR(50), \`date\` VARCHAR(50), \`time\` VARCHAR(50), unread TINYINT(1) DEFAULT 1)`,
   `CREATE TABLE IF NOT EXISTS feedbacks (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100) NOT NULL, course_name VARCHAR(255), user_name VARCHAR(100), user_email VARCHAR(100), rating INT, comment TEXT, \`date\` VARCHAR(50))`,
@@ -112,12 +118,14 @@ tableQueries.forEach((query) => {
   });
 });
 
-// Safely add missing columns to courses table
+// Safely add missing columns to tables
 const alterQueries = [
   "ALTER TABLE courses ADD COLUMN total_lessons INT DEFAULT 4",
   "ALTER TABLE courses ADD COLUMN thumbnail_url VARCHAR(500) DEFAULT NULL",
   "ALTER TABLE courses ADD COLUMN video_url VARCHAR(500) DEFAULT NULL",
   "ALTER TABLE users MODIFY COLUMN avatar VARCHAR(500) DEFAULT 'U'",
+  "ALTER TABLE course_chats ADD COLUMN media_url VARCHAR(500) DEFAULT NULL",
+  "ALTER TABLE course_chats ADD COLUMN media_type VARCHAR(50) DEFAULT NULL",
 ];
 
 alterQueries.forEach((query) => {
@@ -154,14 +162,10 @@ app.post(
     if (!req.file) {
       return res.status(400).json({ error: "No image file uploaded." });
     }
-
     const imageUrl = req.file.path;
     const { name, email, role } = req.body;
     const uploadedTime = new Date().toLocaleString();
 
-    console.log("➡️ Profile Pic Uploaded:", { email, imageUrl });
-
-    // Add a log to the new profile_pictures table
     db.query(
       "INSERT INTO profile_pictures (name, email, user_type, image_link, uploaded_time) VALUES (?, ?, ?, ?, ?)",
       [name || "", email || "", role || "", imageUrl, uploadedTime],
@@ -171,8 +175,6 @@ app.post(
             "🔥 DB Error inserting to profile_pictures:",
             err.message,
           );
-
-        // We return success even if logging to the table fails, since Cloudinary upload succeeded
         res
           .status(200)
           .json({
@@ -181,6 +183,29 @@ app.post(
           });
       },
     );
+  },
+);
+
+// --- CHAT MEDIA UPLOAD API ---
+app.post(
+  "/upload-chat-media",
+  (req, res, next) => {
+    const uploadMiddleware = upload.single("media");
+    uploadMiddleware(req, res, (err) => {
+      if (err) {
+        console.error("🔥 Cloudinary/Multer Error (Chat Media):", err.message);
+        return res
+          .status(500)
+          .json({ error: "File upload failed: " + err.message });
+      }
+      next();
+    });
+  },
+  (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: "No media file uploaded." });
+    }
+    res.status(200).json({ url: req.file.path, type: req.file.mimetype });
   },
 );
 
@@ -359,13 +384,6 @@ app.post(
     const videoUrl =
       req.files && req.files["video"] ? req.files["video"][0].path : null;
 
-    console.log("➡️ Received Course Upload Data:", {
-      title,
-      instructorEmail,
-      thumbnailUrl,
-      videoUrl,
-    });
-
     db.query(
       `INSERT INTO courses (
       title, description, category, difficulty, instructor_email, instructor_name, total_lessons, status, thumbnail_url, video_url
@@ -400,7 +418,68 @@ app.post(
   },
 );
 
-// Edit Course API Endpoint
+app.post(
+  "/upload-course-with-media",
+  (req, res, next) => {
+    const uploadMiddleware = upload.fields([
+      { name: "thumbnail", maxCount: 1 },
+      { name: "video", maxCount: 1 },
+    ]);
+
+    uploadMiddleware(req, res, (err) => {
+      if (err) {
+        console.error("🔥 Cloudinary/Multer Error:", err.message);
+        return res
+          .status(500)
+          .json({ error: "File upload failed: " + err.message });
+      }
+      next();
+    });
+  },
+  (req, res) => {
+    const {
+      title,
+      description,
+      category,
+      difficulty,
+      instructorEmail,
+      instructorName,
+      total_lessons,
+    } = req.body;
+    const thumbnailUrl =
+      req.files && req.files["thumbnail"]
+        ? req.files["thumbnail"][0].path
+        : null;
+    const videoUrl =
+      req.files && req.files["video"] ? req.files["video"][0].path : null;
+
+    db.query(
+      `INSERT INTO courses (title, description, category, difficulty, instructor_email, instructor_name, total_lessons, status, thumbnail_url, video_url) VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending', ?, ?)`,
+      [
+        title,
+        description,
+        category,
+        difficulty,
+        instructorEmail,
+        instructorName,
+        total_lessons || 4,
+        thumbnailUrl,
+        videoUrl,
+      ],
+      (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res
+          .status(200)
+          .json({
+            message: "Course published successfully with media!",
+            thumbnail: thumbnailUrl,
+            video: videoUrl,
+          });
+      },
+    );
+  },
+);
+
 app.put(
   "/update-course/:id",
   (req, res, next) => {
@@ -410,12 +489,10 @@ app.put(
     ]);
 
     uploadMiddleware(req, res, (err) => {
-      if (err) {
-        console.error("🔥 Cloudinary/Multer Error (Edit Course):", err.message);
+      if (err)
         return res
           .status(500)
           .json({ error: "File upload failed: " + err.message });
-      }
       next();
     });
   },
@@ -455,12 +532,10 @@ app.put(
     queryParams.push(courseId);
 
     db.query(updateQuery, queryParams, (err) => {
-      if (err) {
-        console.error("🔥 Database Update Error:", err.message);
+      if (err)
         return res
           .status(500)
           .json({ error: "Database error: " + err.message });
-      }
       res
         .status(200)
         .json({
@@ -557,24 +632,45 @@ app.get("/course-chats/:courseId", (req, res) => {
 });
 
 app.post("/course-chats", (req, res) => {
-  const { course_id, course_name, user_name, user_email, message, time } =
-    req.body;
-  if (!message || !course_id)
+  const {
+    course_id,
+    course_name,
+    user_name,
+    user_email,
+    message,
+    time,
+    media_url,
+    media_type,
+  } = req.body;
+  if (!message && !media_url)
     return res.status(400).json({ error: "Missing fields" });
   db.query(
-    "INSERT INTO course_chats (course_id, course_name, user_name, user_email, message, `time`) VALUES (?, ?, ?, ?, ?, ?)",
+    "INSERT INTO course_chats (course_id, course_name, user_name, user_email, message, `time`, media_url, media_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
     [
       String(course_id),
       String(course_name),
       String(user_name),
       String(user_email),
-      String(message),
+      String(message || ""),
       String(time),
+      media_url || null,
+      media_type || null,
     ],
     (err) =>
       err
         ? res.status(500).json({ error: err.message })
         : res.status(200).json({ message: "Chat saved!" }),
+  );
+});
+
+app.get("/course-chats-latest/:courseId", (req, res) => {
+  db.query(
+    "SELECT MAX(id) as maxId FROM course_chats WHERE course_id = ?",
+    [String(req.params.courseId)],
+    (err, data) =>
+      err
+        ? res.status(500).json({ error: err.message })
+        : res.status(200).json(data[0] || { maxId: 0 }),
   );
 });
 
@@ -775,18 +871,18 @@ app.post("/ban-requests", (req, res) => {
     student_name,
     date,
   } = req.body;
-
   db.query(
     "SELECT * FROM ban_requests WHERE course_id = ? AND student_email = ? AND status = 'Pending'",
     [String(course_id), String(student_email)],
     (err, data) => {
       if (err) return res.status(500).json({ error: err.message });
       if (data.length > 0)
-        return res.status(400).json({
-          error:
-            "A pending request already exists for this student in this course.",
-        });
-
+        return res
+          .status(400)
+          .json({
+            error:
+              "A pending request already exists for this student in this course.",
+          });
       db.query(
         "INSERT INTO ban_requests (course_id, course_title, inst_email, inst_name, student_email, student_name, `date`) VALUES (?, ?, ?, ?, ?, ?, ?)",
         [
@@ -826,7 +922,6 @@ app.put("/ban-requests/:id", async (req, res) => {
       status,
       req.params.id,
     ]);
-
     if (status === "Approved") {
       await promiseDb.query(
         "UPDATE enrollments SET status = 'Banned' WHERE student_email = ? AND course_id = ?",
@@ -864,7 +959,6 @@ app.put("/ban-requests/:id", async (req, res) => {
         ],
       );
     }
-
     res.status(200).json({ message: `Ban request ${status} successfully!` });
   } catch (err) {
     console.error("Ban Request Processing Error:", err);
@@ -908,9 +1002,11 @@ app.put("/notifications/read", (req, res) => {
 });
 
 app.use((req, res) =>
-  res.status(404).json({
-    error: `API route not found on backend: ${req.method} ${req.url}`,
-  }),
+  res
+    .status(404)
+    .json({
+      error: `API route not found on backend: ${req.method} ${req.url}`,
+    }),
 );
 
 const PORT = process.env.PORT || 5005;
