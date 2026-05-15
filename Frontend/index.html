@@ -1503,7 +1503,10 @@
         justify-content: center;
         backdrop-filter: blur(4px);
       }
+
+      /* Position Relative to hold the absolute close button */
       .global-chat-container {
+        position: relative;
         width: 95%;
         max-width: 1000px;
         height: 85vh;
@@ -1513,6 +1516,29 @@
         overflow: hidden;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
       }
+
+      /* New Close Button Style */
+      .close-chat-btn-top {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #f1f5f9;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1002;
+        color: #64748b;
+        transition: 0.2s;
+      }
+      .close-chat-btn-top:hover {
+        background: #e2e8f0;
+        color: #ef4444;
+      }
+
       .g-chat-sidebar {
         width: 320px;
         background: #f8fafc;
@@ -1570,8 +1596,10 @@
         flex-direction: column;
         background: #ffffff;
       }
+      /* Adjust main header padding to accommodate the top right close button */
       .g-chat-main-header {
         padding: 20px;
+        padding-right: 60px;
         border-bottom: 1px solid #e2e8f0;
         font-weight: 700;
         color: #0f172a;
@@ -1608,17 +1636,6 @@
       .g-chat-input-area input:disabled {
         background: #e2e8f0;
         cursor: not-allowed;
-      }
-      .close-chat-btn {
-        cursor: pointer;
-        color: #64748b;
-        padding: 5px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .close-chat-btn:hover {
-        color: #ef4444;
       }
       .chat-msg {
         max-width: 85%;
@@ -1851,9 +1868,6 @@
         background-color: #0f172a;
         border-left-color: #3b82f6;
       }
-      body.dark-mode #cp-feedback-list {
-        background-color: #0f172a !important;
-      }
       body.dark-mode .fb-item-card {
         background-color: #1e293b !important;
         border-color: #334155 !important;
@@ -1914,6 +1928,14 @@
       body.dark-mode .chat-date-badge {
         background: #334155;
         color: #cbd5e1;
+      }
+      body.dark-mode .close-chat-btn-top {
+        background: #334155;
+        color: #cbd5e1;
+      }
+      body.dark-mode .close-chat-btn-top:hover {
+        background: #475569;
+        color: #ef4444;
       }
 
       @media (max-width: 1200px) {
@@ -2090,6 +2112,10 @@
         }
         .g-chat-main {
           height: 60%;
+        }
+        .close-chat-btn-top {
+          top: 10px;
+          right: 10px;
         }
       }
       @media (max-width: 480px) {
@@ -4259,24 +4285,28 @@
 
     <div class="global-chat-overlay hidden" id="global-chat-overlay">
       <div class="global-chat-container">
+        <!-- New Top Right Close Button -->
+        <div
+          class="close-chat-btn-top"
+          onclick="toggleGlobalChat(false)"
+          title="Close Chat"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </div>
+
         <!-- Sidebar -->
         <div class="g-chat-sidebar">
-          <div class="g-chat-header">
-            Chats
-            <span class="close-chat-btn" onclick="toggleGlobalChat(false)">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </span>
-          </div>
+          <div class="g-chat-header">Chats</div>
           <div class="g-chat-list" id="g-chat-list-container">
             <!-- Chat groups loaded dynamically -->
           </div>
@@ -5768,7 +5798,6 @@
                   currentUser.role === "admin"
                     ? "flex"
                     : "none";
-              // Changed default active tab to assignments to match removed chat
               switchCpTab("assignments");
             } else {
               lockedOverlay.classList.remove("hidden");
@@ -6121,6 +6150,16 @@
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
           if (currentUser.role === "admin") {
+            rooms.push({
+              id: "broadcast_students",
+              title: "📢 All Students",
+              isBroadcast: true,
+            });
+            rooms.push({
+              id: "broadcast_instructors",
+              title: "📢 All Instructors",
+              isBroadcast: true,
+            });
             courses.forEach((c) => {
               if (c.status === "Approved")
                 rooms.push({
@@ -6130,6 +6169,11 @@
                 });
             });
           } else if (currentUser.role === "instructor") {
+            rooms.push({
+              id: "broadcast_instructors",
+              title: "📢 All Instructors",
+              isBroadcast: true,
+            });
             courses.forEach((c) => {
               if (
                 c.instructor_email === currentUser.email &&
@@ -6143,6 +6187,11 @@
               }
             });
           } else if (currentUser.role === "student") {
+            rooms.push({
+              id: "broadcast_students",
+              title: "📢 All Students",
+              isBroadcast: true,
+            });
             const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
             let myEnrolled = enrollments.filter(
               (e) =>
@@ -6239,10 +6288,7 @@
               lastDate = datePart;
             }
             let adminIcon =
-              currentOpenRoom === "broadcast" &&
-              msg.user_email.includes("admin")
-                ? "👑 "
-                : "";
+              msg.user_email && msg.user_email.includes("admin") ? "👑 " : "";
             htmlStr += `<div class="chat-msg ${isSelf ? "self" : "other"}">
                       ${!isSelf ? `<div class="chat-name">${adminIcon}${msg.user_name}</div>` : ""}
                       <div>${msg.message}</div>
