@@ -1591,6 +1591,7 @@
         flex-direction: column;
         background: #ffffff;
       }
+      /* Adjust main header padding to accommodate the top right close button */
       .g-chat-main-header {
         padding: 20px;
         padding-right: 60px;
@@ -4201,6 +4202,27 @@
                   </h3>
                   <div class="cp-tabs">
                     <button
+                      id="tab-btn-students"
+                      class="cp-tab cp-tab-students"
+                      onclick="switchCpTab('students')"
+                      style="display: none; align-items: center; gap: 8px"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
+                        ></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                      </svg>
+                      Enrolled Students
+                    </button>
+                    <button
                       class="cp-tab cp-tab-assignments active"
                       onclick="switchCpTab('assignments')"
                       style="display: flex; align-items: center; gap: 8px"
@@ -4246,6 +4268,7 @@
 
                   <div id="cp-feedback-area-container" class="hidden"></div>
                   <div id="cp-assignments-area-container"></div>
+                  <div id="cp-students-area-container" class="hidden"></div>
                 </div>
               </div>
 
@@ -5099,6 +5122,7 @@
             await renderAdminUsers();
             await renderAdminBanRequests();
             await renderAdminActivity();
+            await renderAdminComplaints();
           }, 100);
         } else if (safeRole === "instructor") {
           setTimeout(async () => {
@@ -5869,15 +5893,18 @@
               document.querySelectorAll(".cp-tab").forEach((t) => {
                 if (t) t.style.pointerEvents = "auto";
               });
+
+              // Ensure Enrolled Students tab is visible for admin/instructor
               const studentsTabBtn =
                 document.getElementById("tab-btn-students");
-              if (studentsTabBtn)
+              if (studentsTabBtn) {
                 studentsTabBtn.style.display =
                   currentUser.role === "instructor" ||
                   currentUser.role === "admin"
                     ? "flex"
                     : "none";
-              switchCpTab("assignments");
+              }
+              switchCpTab("assignments"); // Default tab
             } else {
               lockedOverlay.classList.remove("hidden");
               document.querySelectorAll(".cp-tab").forEach((t) => {
@@ -5943,39 +5970,52 @@
               ? `<img src="${st.avatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
               : `<span style="color:white;">${st.avatar}</span>`;
 
-            const statusBadge = `<span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">active</span>`;
-
             return `
-                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
-                    <div style="display: flex; align-items: center; gap: 15px; min-width: 250px; flex: 1;">
+                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s; background: white;" class="assignment-card">
+                    <div style="display: flex; align-items: center; gap: 15px; flex: 1.5; min-width: 250px;">
                         <div style="width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0; overflow:hidden;">${avatarHtml}</div>
-                        <div>
-                            <div style="display: flex; align-items: center; gap: 8px;"><h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.name}</h4>${statusBadge}</div>
-                            <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc">
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 16px; font-weight: 700; color: #0f172a;" class="dm-title">${st.name}</span>
+                                <span style="background: #dcfce7; color: #059669; padding: 2px 8px; border-radius: 50px; font-size: 11px; font-weight: 600; border: 1px solid #bbf7d0;">active</span>
+                            </div>
+                            <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:6px;">
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                               ${st.email}
                             </div>
                         </div>
                     </div>
 
-                    <div style="display: flex; gap: 30px; flex: 2; min-width: 300px; justify-content: space-between; align-items: center;">
-                        <div style="display: flex; gap: 8px; align-items: flex-start;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-                            <div><div style="font-size: 11px; color: #64748b;">Enrolled</div><div style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.enrolledCount}</div></div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex: 2; min-width: 300px; padding: 0 20px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                            <div style="display: flex; flex-direction: column;">
+                                <span style="font-size: 11px; color: #64748b;">Enrolled</span>
+                                <span style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.enrolledCount}</span>
+                            </div>
                         </div>
-                        <div style="display: flex; gap: 8px; align-items: flex-start;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
-                            <div><div style="font-size: 11px; color: #64748b;">Completed</div><div style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.completedCount}</div></div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15l-2 5l9-5-9-5-2 5z"></path><circle cx="12" cy="8" r="7"></circle></svg>
+                            <div style="display: flex; flex-direction: column;">
+                                <span style="font-size: 11px; color: #64748b;">Completed</span>
+                                <span style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.completedCount}</span>
+                            </div>
                         </div>
-                        <div style="display: flex; gap: 8px; align-items: flex-start;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
-                            <div><div style="font-size: 11px; color: #64748b;">Progress</div><div style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.progress}%</div></div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                            <div style="display: flex; flex-direction: column;">
+                                <span style="font-size: 11px; color: #64748b;">Progress</span>
+                                <span style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.progress}%</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div style="display: flex; align-items: center; gap: 20px; flex: 1; justify-content: flex-end; min-width: 150px;">
-                        <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Enrolled On</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.lastActive}</div></div>
-                        <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px;">View Details</button>
+                    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 20px; flex: 1; min-width: 150px;">
+                        <div style="text-align: right; display: flex; flex-direction: column;">
+                            <span style="font-size: 11px; color: #94a3b8;">Last active</span>
+                            <span style="font-size: 12px; color: #334155;" class="dm-desc">${st.lastActive}</span>
+                        </div>
+                        <button style="padding: 6px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; background: white; border: 1px solid #cbd5e1; color: #334155; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='white'">View Details</button>
                     </div>
                  </div>`;
           })
@@ -6597,16 +6637,6 @@
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
           if (currentUser.role === "admin") {
-            rooms.push({
-              id: "broadcast_students",
-              title: "📢 All Students",
-              isBroadcast: true,
-            });
-            rooms.push({
-              id: "broadcast_instructors",
-              title: "📢 All Instructors",
-              isBroadcast: true,
-            });
             courses.forEach((c) => {
               if (c.status === "Approved")
                 rooms.push({
@@ -6616,11 +6646,6 @@
                 });
             });
           } else if (currentUser.role === "instructor") {
-            rooms.push({
-              id: "broadcast_instructors",
-              title: "📢 All Instructors",
-              isBroadcast: true,
-            });
             courses.forEach((c) => {
               if (
                 c.instructor_email === currentUser.email &&
@@ -6634,11 +6659,6 @@
               }
             });
           } else if (currentUser.role === "student") {
-            rooms.push({
-              id: "broadcast_students",
-              title: "📢 All Students",
-              isBroadcast: true,
-            });
             const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
             let myEnrolled = enrollments.filter(
               (e) =>
@@ -6693,8 +6713,9 @@
                       <option value="broadcast_students">Students Only</option>
                       <option value="broadcast_instructors">Instructors Only</option>
                   </select>
-                  <label style="cursor:pointer; display:flex; align-items:center; padding: 10px; background:#f1f5f9; border-radius:50%; margin-right:5px;" title="Attach Image or Video">
-                      📎 <input type="file" id="g-chat-media" class="hidden" accept="image/*,video/*" />
+                  <label style="cursor:pointer; display:flex; align-items:center; padding: 10px; background:#f1f5f9; border-radius:50%; margin-right:5px;" title="Attach Image or Video" id="g-chat-media-lbl">
+                      <span id="g-chat-media-icon">📎</span>
+                      <input type="file" id="g-chat-media" class="hidden" accept="image/*,video/*" onchange="document.getElementById('g-chat-media-icon').innerText = this.files.length > 0 ? '✅' : '📎';" />
                   </label>
                   <input type="text" id="g-chat-input" placeholder="Type an announcement..." onkeydown="if(event.key === 'Enter') sendGlobalMessage()" style="flex: 1; padding: 12px 20px; border-radius: 50px; border: 1px solid #cbd5e1; outline: none; font-size: 14px; background: #f8fafc;" />
                   <button class="btn btn-primary" id="g-chat-send-btn" onclick="sendGlobalMessage()" style="border-radius: 50px;">Send</button>
@@ -6706,8 +6727,9 @@
               `;
         } else {
           inputArea.innerHTML = `
-                  <label style="cursor:pointer; display:flex; align-items:center; padding: 10px; background:#f1f5f9; border-radius:50%; margin-right:5px;" title="Attach Image or Video">
-                      📎 <input type="file" id="g-chat-media" class="hidden" accept="image/*,video/*" />
+                  <label style="cursor:pointer; display:flex; align-items:center; padding: 10px; background:#f1f5f9; border-radius:50%; margin-right:5px;" title="Attach Image or Video" id="g-chat-media-lbl">
+                      <span id="g-chat-media-icon">📎</span>
+                      <input type="file" id="g-chat-media" class="hidden" accept="image/*,video/*" onchange="document.getElementById('g-chat-media-icon').innerText = this.files.length > 0 ? '✅' : '📎';" />
                   </label>
                   <input type="text" id="g-chat-input" placeholder="Type a message..." onkeydown="if(event.key === 'Enter') sendGlobalMessage()" style="flex: 1; padding: 12px 20px; border-radius: 50px; border: 1px solid #cbd5e1; outline: none; font-size: 14px; background: #f8fafc;" />
                   <button class="btn btn-primary" id="g-chat-send-btn" onclick="sendGlobalMessage()" style="border-radius: 50px;">Send</button>
@@ -6831,6 +6853,7 @@
       async function sendGlobalMessage() {
         const input = document.getElementById("g-chat-input");
         const mediaInput = document.getElementById("g-chat-media");
+        const mediaIcon = document.getElementById("g-chat-media-icon");
         if (!input) return;
         const text = input.value.trim();
         const hasMedia =
@@ -6906,6 +6929,7 @@
 
           input.value = "";
           if (mediaInput) mediaInput.value = "";
+          if (mediaIcon) mediaIcon.innerText = "📎";
 
           await fetchGlobalChatMessages();
           const container = document.getElementById(
