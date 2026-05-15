@@ -1297,7 +1297,7 @@
         width: 18px;
         left: 3px;
         bottom: 3px;
-        background-color: white;
+        background: white;
         transition: 0.3s;
         border-radius: 50%;
       }
@@ -1503,8 +1503,6 @@
         justify-content: center;
         backdrop-filter: blur(4px);
       }
-
-      /* Position Relative to hold the absolute close button */
       .global-chat-container {
         position: relative;
         width: 95%;
@@ -1516,8 +1514,6 @@
         overflow: hidden;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
       }
-
-      /* New Close Button Style */
       .close-chat-btn-top {
         position: absolute;
         top: 15px;
@@ -1538,7 +1534,6 @@
         background: #e2e8f0;
         color: #ef4444;
       }
-
       .g-chat-sidebar {
         width: 320px;
         background: #f8fafc;
@@ -1596,7 +1591,6 @@
         flex-direction: column;
         background: #ffffff;
       }
-      /* Adjust main header padding to accommodate the top right close button */
       .g-chat-main-header {
         padding: 20px;
         padding-right: 60px;
@@ -1862,18 +1856,12 @@
       body.dark-mode .progress-bar-bg {
         background-color: #334155;
       }
-      body.dark-mode .chat-date-header {
-        color: #94a3b8;
-      }
       body.dark-mode .notif-page-item {
         border-bottom-color: #334155;
       }
       body.dark-mode .notif-page-item.unread {
         background-color: #0f172a;
         border-left-color: #3b82f6;
-      }
-      body.dark-mode #cp-feedback-list {
-        background-color: #0f172a !important;
       }
       body.dark-mode .fb-item-card {
         background-color: #1e293b !important;
@@ -6144,29 +6132,803 @@
         }
       }
 
-      function checkUnreadGlobalChats() {
-        if (!currentUser) return;
-
-        let targetIds = ["broadcast"];
-        if (currentUser.role === "admin") {
-          targetIds.push("broadcast_students", "broadcast_instructors");
-        } else if (currentUser.role === "instructor") {
-          targetIds.push("broadcast_instructors");
+      function setupAssignmentsUI() {
+        const container = document.getElementById(
+          "cp-assignments-area-container",
+        );
+        if (!container) return;
+        let html = "";
+        if (currentUser.role === "instructor") {
+          html += `
+            <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
+              <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Create New Assignment</h3>
+              <div style="display:flex; flex-direction:column; gap:12px;">
+                 <input type="text" id="assign-title" placeholder="Assignment Title" style="padding:10px 15px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif;">
+                 <textarea id="assign-desc" placeholder="Assignment Instructions..." style="padding:10px 15px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; min-height:80px; resize:vertical;"></textarea>
+                 <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                    <label style="font-weight:600; font-size:14px; color:#334155;" class="dm-text">Due Date:</label>
+                    <input type="date" id="assign-due" style="padding:8px 12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; flex:1;">
+                 </div>
+                 <button class="btn btn-primary" onclick="createAssignment()" style="margin-top:5px; width: 100%;">Upload Assignment</button>
+              </div>
+            </div>
+            <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Uploaded Assignments</h3>
+            <div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>`;
         } else if (currentUser.role === "student") {
-          targetIds.push("broadcast_students");
+          html += `<h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Course Assignments</h3><p style="color:#64748b; font-size:14px; margin-bottom:20px;" class="dm-desc">Complete and submit the assignments below.</p><div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>`;
+        } else if (currentUser.role === "admin") {
+          html += `<h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">All Assignments</h3><div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>`;
+        }
+        container.innerHTML = html;
+        loadAssignments(currentCoursePlayerId);
+      }
+
+      async function createAssignment() {
+        const title = document.getElementById("assign-title").value.trim();
+        const desc = document.getElementById("assign-desc").value.trim();
+        const due = document.getElementById("assign-due").value;
+        if (!title || !desc || !due)
+          return alert("Please fill all fields for the assignment.");
+        const dateStr = new Date().toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+        const payload = {
+          course_id: String(currentCoursePlayerId),
+          title: title,
+          description: desc,
+          due_date: due,
+          instructor_email: currentUser.email,
+          date: dateStr,
+        };
+        try {
+          const res = await fetch(`${API_URL}/assignments`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (res.ok) {
+            alert("Assignment uploaded successfully!");
+            setupAssignmentsUI();
+          } else {
+            alert("Failed to upload assignment.");
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async function loadAssignments(courseId) {
+        const container = document.getElementById("assign-list");
+        if (!container) return;
+        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading assignments...</div>`;
+        try {
+          const assignments = await safeFetchJSON(
+            `${API_URL}/assignments/${courseId}`,
+          );
+          if (!Array.isArray(assignments) || assignments.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b; background:#f8fafc; border-radius:12px;" class="assignment-card">No assignments found for this course.</div>`;
+            return;
+          }
+          const submissions = await safeFetchJSON(
+            `${API_URL}/assignment-submissions/${courseId}`,
+          );
+          let htmlStr = "";
+          assignments.forEach((a) => {
+            let studentActionHtml = "";
+            if (currentUser.role === "student") {
+              let mySub = Array.isArray(submissions)
+                ? submissions.find(
+                    (s) =>
+                      s.assignment_id === a.id &&
+                      s.student_email === currentUser.email,
+                  )
+                : null;
+              if (mySub) {
+                let gradeHtml =
+                  mySub.marks != null
+                    ? `<div style="margin-top:10px; color:#16a34a; font-weight:700;">Graded: ${mySub.marks}/10</div>`
+                    : "";
+                studentActionHtml = `<div style="margin-top:15px; padding:10px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;"><b style="color:#059669; font-size:13px;">✅ Submitted on ${mySub.date}</b>${gradeHtml}</div>`;
+              } else {
+                studentActionHtml = `<div style="margin-top:15px; display:flex; flex-direction:column; align-items:flex-start; width: 100%;"><textarea id="sub-input-${a.id}" placeholder="Type your answer or paste Google Drive link here..." style="width:100%; min-height:80px; padding:10px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; resize:vertical; box-sizing: border-box;" class="submission-box"></textarea><button class="btn btn-primary" style="margin-top:8px; padding:8px 16px; font-size:13px; width: 100%;" onclick="submitAssignment(${a.id})">Submit Assignment</button></div>`;
+              }
+            } else if (
+              currentUser.role === "instructor" ||
+              currentUser.role === "admin"
+            ) {
+              let assignSubs = Array.isArray(submissions)
+                ? submissions.filter((s) => s.assignment_id === a.id)
+                : [];
+              studentActionHtml = `<div style="margin-top:15px; padding-top:15px; border-top:1px solid #e2e8f0;"><b style="font-size:13px; color:#0f172a;" class="dm-title">Submissions (${assignSubs.length})</b></div>`;
+            }
+            htmlStr += `<div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:20px;" class="assignment-card"><div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px; flex-wrap: wrap; gap: 10px;"><h4 style="font-size:16px; font-weight:800; color:#0f172a; margin:0;" class="dm-title">📝 ${a.title}</h4><span style="background:#fef2f2; color:#ef4444; border:1px solid #fca5a5; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;">Due: ${a.due_date}</span></div><p style="font-size:14px; color:#475569; line-height:1.5; word-wrap: break-word;" class="dm-desc">${a.description}</p>${studentActionHtml}</div>`;
+          });
+          container.innerHTML = htmlStr;
+        } catch (e) {
+          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load assignments.</div>`;
+        }
+      }
+
+      async function submitAssignment(assignId) {
+        const inputEl = document.getElementById(`sub-input-${assignId}`);
+        const subText = inputEl.value.trim();
+        if (!subText)
+          return alert(
+            "Please type your answer or provide a link before submitting.",
+          );
+        const dateStr = new Date().toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+        const payload = {
+          assignment_id: assignId,
+          course_id: String(currentCoursePlayerId),
+          student_email: currentUser.email,
+          student_name: currentUser.name,
+          submission_text: subText,
+          date: dateStr,
+        };
+        try {
+          const res = await fetch(`${API_URL}/assignment-submissions`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (res.ok) {
+            alert("Assignment submitted successfully!");
+            loadAssignments(currentCoursePlayerId);
+          } else {
+            alert("Failed to submit assignment.");
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      function setupFeedbackUI() {
+        const container = document.getElementById("cp-feedback-area-container");
+        if (!container) return;
+        let html = "";
+        if (currentUser.role === "student") {
+          html += `
+            <h3 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 10px;" class="dm-title">Course Feedback</h3>
+            <div style="display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
+                <select id="cp-feedback-rating" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; background:#f8fafc; font-weight:600; color:#334155; width: 100%;">
+                    <option value="5">⭐⭐⭐⭐⭐ (5/5)</option><option value="4">⭐⭐⭐⭐ (4/5)</option><option value="3">⭐⭐⭐ (3/5)</option><option value="2">⭐⭐ (2/5)</option><option value="1">⭐ (1/5)</option>
+                </select>
+            </div>
+            <textarea id="cp-feedback-input" placeholder="Share your thoughts about this course..." style="width: 100%; box-sizing: border-box; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 10px; background: #f8fafc; resize: vertical; font-family: 'Inter', sans-serif;"></textarea>
+            <button class="btn btn-primary" onclick="submitCourseFeedback()" style="margin-bottom: 25px; background: #2563eb; color: white; width: 100%;">Submit Feedback</button>
+            <hr style="border:0; border-top: 1px solid #e2e8f0; margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: 700; color: #e11d48; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> Course Complaint
+            </h3>
+            <textarea id="cp-complaint-input" placeholder="Describe any issues or concerns with the course..." style="width: 100%; box-sizing: border-box; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 10px; background: #f8fafc; resize: vertical; font-family: 'Inter', sans-serif;"></textarea>
+            <button class="btn" onclick="submitCourseComplaint()" style="background: #e11d48; color: white; width: 100%;">Submit Complaint</button>`;
+        } else {
+          html += `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+                <h3 style="font-size: 18px; font-weight: 800; color: #0f172a;" class="dm-title">Overall Course Feedback</h3>
+                <div id="cp-avg-rating-badge" style="background:#fef3c7; color:#d97706; padding:6px 16px; border-radius:50px; font-weight:800; border:1px solid #fde68a;">Average Rating: ...</div>
+            </div>`;
+        }
+        html += `<div id="cp-feedback-list" style="margin-top: 30px; display: flex; flex-direction: column; gap: 15px;"></div>`;
+        container.innerHTML = html;
+        loadCourseFeedback(currentCoursePlayerId);
+      }
+
+      async function loadCourseFeedback(courseId) {
+        const container = document.getElementById("cp-feedback-list");
+        if (!container) return;
+        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading feedback...</div>`;
+        try {
+          const feedbacks = await safeFetchJSON(
+            `${API_URL}/course-feedbacks/${courseId}`,
+          );
+          if (!Array.isArray(feedbacks) || feedbacks.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">No feedback available yet.</div>`;
+            const avgBadge = document.getElementById("cp-avg-rating-badge");
+            if (avgBadge) avgBadge.innerHTML = `Average Rating: 0.0/5 ⭐`;
+            return;
+          }
+          let totalRating = 0;
+          let htmlStr = "";
+          feedbacks.forEach((fb) => {
+            let ratingVal = fb.rating || 5;
+            totalRating += ratingVal;
+            let stars = "⭐".repeat(ratingVal);
+            htmlStr += `<div style="background:white; padding:15px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:10px; word-wrap: break-word;" class="fb-item-card"><div style="display:flex; justify-content:space-between; margin-bottom:5px; flex-wrap: wrap;"><b style="color:#0f172a;" class="dm-title">${fb.user_name}</b><span style="font-size:12px; color:#64748b;">${fb.date}</span></div><div style="font-size:14px; margin-bottom:8px;">${stars}</div><div style="color:#334155; font-size:14px;" class="dm-desc">${fb.comment}</div></div>`;
+          });
+          container.innerHTML = htmlStr;
+          const avgBadge = document.getElementById("cp-avg-rating-badge");
+          if (avgBadge)
+            avgBadge.innerHTML = `Average Rating: ${(totalRating / feedbacks.length).toFixed(1)}/5 ⭐`;
+        } catch (e) {
+          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load feedback.</div>`;
+        }
+      }
+
+      async function submitCourseFeedback() {
+        const rating = document.getElementById("cp-feedback-rating").value;
+        const comment = document
+          .getElementById("cp-feedback-input")
+          .value.trim();
+        if (!comment) return alert("Please write a comment.");
+        document.getElementById("cp-feedback-input").value = "";
+        const dateStr = new Date().toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+        const payload = {
+          course_id: String(currentCoursePlayerId),
+          course_name: currentCourseObj.title,
+          user_name: currentUser.name,
+          user_email: currentUser.email,
+          rating: parseInt(rating),
+          comment: comment,
+          date: dateStr,
+        };
+        try {
+          const res = await fetch(`${API_URL}/course-feedbacks`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (res.ok) {
+            alert("Feedback submitted!");
+            loadCourseFeedback(currentCoursePlayerId);
+          }
+        } catch (e) {
+          alert("Error submitting feedback.");
+        }
+      }
+
+      async function submitCourseComplaint() {
+        const complaint = document
+          .getElementById("cp-complaint-input")
+          .value.trim();
+        if (!complaint) return alert("Please describe your issue.");
+        document.getElementById("cp-complaint-input").value = "";
+        const dateStr = new Date().toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+        const payload = {
+          course_id: String(currentCoursePlayerId),
+          course_name: currentCourseObj.title,
+          user_name: currentUser.name,
+          user_email: currentUser.email,
+          complaint_text: complaint,
+          date: dateStr,
+        };
+        try {
+          const res = await fetch(`${API_URL}/course-complaints`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (res.ok) {
+            alert("Complaint submitted to admin.");
+          }
+        } catch (e) {
+          alert("Error submitting complaint.");
+        }
+      }
+
+      async function uploadProfilePicture(input) {
+        if (!input.files || !input.files[0]) return;
+        if (!currentUser) return alert("Please log in first.");
+        const file = input.files[0];
+        const formData = new FormData();
+        formData.append("profilePic", file);
+        formData.append("email", currentUser.email);
+        formData.append("name", currentUser.name);
+        formData.append("role", currentUser.role);
+
+        const btn = document.getElementById("btn-upload-avatar");
+        const originalText = btn.innerHTML;
+        btn.innerHTML = "⏳ Uploading...";
+        btn.disabled = true;
+
+        try {
+          const res = await fetch(`${API_URL}/upload-profile-pic`, {
+            method: "POST",
+            body: formData,
+          });
+          if (res.ok) {
+            const data = await res.json();
+            const imageUrl =
+              data.url || data.image_link || data.secure_url || data.profilePic;
+            if (imageUrl) {
+              currentUser.avatar = imageUrl;
+              localStorage.setItem(
+                "elms_current_user",
+                JSON.stringify(currentUser),
+              );
+              try {
+                await fetch(`${API_URL}/update-profile`, {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    email: currentUser.email,
+                    name: currentUser.name,
+                    avatar: imageUrl,
+                  }),
+                });
+              } catch (err) {
+                console.log("Database sync failed", err);
+              }
+              setupDashboard(currentUser);
+              alert("Profile picture updated successfully!");
+            } else {
+              alert("Server did not return a valid URL.");
+            }
+          } else {
+            const err = await res.json();
+            alert("Failed to upload: " + (err.error || "Unknown error"));
+          }
+        } catch (e) {
+          alert("Upload failed due to network error.");
+        } finally {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          input.value = "";
+        }
+      }
+
+      async function updateProfile() {
+        if (!currentUser) return;
+        const newName = document.getElementById("set-name").value;
+        let newAvatar = currentUser.avatar;
+        if (!newAvatar || !newAvatar.startsWith("http"))
+          newAvatar = newName.charAt(0).toUpperCase();
+
+        try {
+          await fetch(`${API_URL}/update-profile`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: currentUser.email,
+              name: newName,
+              avatar: newAvatar,
+            }),
+          });
+        } catch (err) {}
+
+        alert("Profile updated successfully!");
+        currentUser.name = newName;
+        currentUser.avatar = newAvatar;
+        localStorage.setItem("elms_current_user", JSON.stringify(currentUser));
+        location.reload();
+      }
+
+      async function changePassword() {
+        if (!currentUser) return;
+        const oldPassword = document.getElementById("set-old-password").value;
+        const newPassword = document.getElementById("set-new-password").value;
+        const confirmPassword = document.getElementById(
+          "set-confirm-password",
+        ).value;
+
+        if (!oldPassword || !newPassword || !confirmPassword)
+          return alert("Please fill in all password fields.");
+        if (newPassword !== confirmPassword)
+          return alert("New passwords do not match.");
+
+        try {
+          const res = await fetch(`${API_URL}/update-password`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: currentUser.email,
+              oldPassword: oldPassword,
+              newPassword: newPassword,
+            }),
+          });
+          if (res.ok) {
+            alert("Password updated successfully!");
+            document.getElementById("set-old-password").value = "";
+            document.getElementById("set-new-password").value = "";
+            document.getElementById("set-confirm-password").value = "";
+          } else {
+            const data = await res.json();
+            alert(data.error || "Failed to update password.");
+          }
+        } catch (error) {
+          alert("Connection error while updating password.");
+        }
+      }
+
+      async function deleteAccount() {
+        if (!currentUser) return;
+        if (!confirm("Are you sure you want to delete your account?")) return;
+        try {
+          await fetch(`${API_URL}/delete-account`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: currentUser.email }),
+          });
+        } catch (err) {}
+        alert("Your account has been successfully deleted.");
+        logout();
+      }
+
+      function logout() {
+        localStorage.removeItem("elms_current_user");
+        location.reload();
+      }
+
+      // GLOBAL CHAT WHATSAPP STYLE LOGIC
+      function toggleGlobalChat(show) {
+        const overlay = document.getElementById("global-chat-overlay");
+        if (show) {
+          overlay.classList.remove("hidden");
+          overlay.style.display = "flex";
+          // Clear badge since we are opening the chat
+          const badge = document.getElementById("global-chat-badge");
+          if (badge) {
+            badge.innerText = "0";
+            badge.style.display = "none";
+          }
+          loadChatGroups();
+        } else {
+          overlay.classList.add("hidden");
+          overlay.style.display = "none";
+          if (chatRefreshInterval) clearInterval(chatRefreshInterval);
+        }
+      }
+
+      async function loadChatGroups() {
+        const listContainer = document.getElementById("g-chat-list-container");
+        listContainer.innerHTML = `<div style="padding:20px;text-align:center;color:#64748b;">Loading chats...</div>`;
+
+        let rooms = [];
+        rooms.push({
+          id: "broadcast",
+          title: "📢 Official Announcements",
+          isBroadcast: true,
+        });
+
+        try {
+          const courses = await safeFetchJSON(`${API_URL}/courses`);
+          if (currentUser.role === "admin") {
+            rooms.push({
+              id: "broadcast_students",
+              title: "📢 All Students",
+              isBroadcast: true,
+            });
+            rooms.push({
+              id: "broadcast_instructors",
+              title: "📢 All Instructors",
+              isBroadcast: true,
+            });
+            courses.forEach((c) => {
+              if (c.status === "Approved")
+                rooms.push({
+                  id: c.id,
+                  title: `📚 ${c.title}`,
+                  isBroadcast: false,
+                });
+            });
+          } else if (currentUser.role === "instructor") {
+            rooms.push({
+              id: "broadcast_instructors",
+              title: "📢 All Instructors",
+              isBroadcast: true,
+            });
+            courses.forEach((c) => {
+              if (
+                c.instructor_email === currentUser.email &&
+                c.status === "Approved"
+              ) {
+                rooms.push({
+                  id: c.id,
+                  title: `📚 ${c.title}`,
+                  isBroadcast: false,
+                });
+              }
+            });
+          } else if (currentUser.role === "student") {
+            rooms.push({
+              id: "broadcast_students",
+              title: "📢 All Students",
+              isBroadcast: true,
+            });
+            const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+            let myEnrolled = enrollments.filter(
+              (e) =>
+                e.student_email === currentUser.email &&
+                e.status === "Approved",
+            );
+            myEnrolled.forEach((e) => {
+              rooms.push({
+                id: e.course_id,
+                title: `📚 ${e.course_title}`,
+                isBroadcast: false,
+              });
+            });
+          }
+
+          listContainer.innerHTML = rooms
+            .map(
+              (r) => `
+                  <div class="g-chat-item ${currentOpenRoom === String(r.id) ? "active" : ""}" onclick="openChatRoom('${r.id}', '${r.title.replace(/'/g, "\\'")}', ${r.isBroadcast})">
+                      <div class="g-chat-avatar" style="${r.isBroadcast ? "background:#10b981;" : "background:#3b82f6;"}">${r.isBroadcast ? "📢" : "💬"}</div>
+                      <div style="font-weight:700; color:#0f172a; font-size:14px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${r.title}</div>
+                  </div>
+              `,
+            )
+            .join("");
+        } catch (e) {
+          listContainer.innerHTML = `<div style="padding:20px;color:red;">Error loading chats</div>`;
+        }
+      }
+
+      async function openChatRoom(roomId, roomName, isBroadcast) {
+        currentOpenRoom = String(roomId);
+        currentRoomName = roomName;
+
+        document
+          .querySelectorAll(".g-chat-item")
+          .forEach((el) => el.classList.remove("active"));
+        if (event && event.currentTarget)
+          event.currentTarget.classList.add("active");
+
+        document.getElementById("g-chat-main-header").innerHTML = `
+              <div class="g-chat-avatar" style="${isBroadcast ? "background:#10b981;" : "background:#3b82f6;"}">${isBroadcast ? "📢" : "💬"}</div>
+              <div style="font-size:16px; font-weight:700;">${roomName}</div>
+          `;
+
+        const inputArea = document.getElementById("g-chat-input-area");
+
+        if (isBroadcast && currentUser.role === "admin") {
+          inputArea.innerHTML = `
+                  <select id="g-chat-target" style="padding: 10px 15px; border-radius: 50px; border: 1px solid #cbd5e1; outline: none; background: #f8fafc; cursor: pointer; flex-shrink: 0; font-size: 13px; font-weight: 600; color: #334155;">
+                      <option value="broadcast">All Users</option>
+                      <option value="broadcast_students">Students Only</option>
+                      <option value="broadcast_instructors">Instructors Only</option>
+                  </select>
+                  <label style="cursor:pointer; display:flex; align-items:center; padding: 10px; background:#f1f5f9; border-radius:50%; margin-right:5px;" title="Attach Image or Video">
+                      📎 <input type="file" id="g-chat-media" class="hidden" accept="image/*,video/*" />
+                  </label>
+                  <input type="text" id="g-chat-input" placeholder="Type an announcement..." onkeydown="if(event.key === 'Enter') sendGlobalMessage()" style="flex: 1; padding: 12px 20px; border-radius: 50px; border: 1px solid #cbd5e1; outline: none; font-size: 14px; background: #f8fafc;" />
+                  <button class="btn btn-primary" id="g-chat-send-btn" onclick="sendGlobalMessage()" style="border-radius: 50px;">Send</button>
+              `;
+        } else if (isBroadcast && currentUser.role !== "admin") {
+          inputArea.innerHTML = `
+                  <input type="text" id="g-chat-input" placeholder="Only Admins can post announcements." disabled style="flex: 1; padding: 12px 20px; border-radius: 50px; border: 1px solid #cbd5e1; outline: none; font-size: 14px; background: #e2e8f0; cursor: not-allowed;" />
+                  <button class="btn btn-primary" id="g-chat-send-btn" disabled style="border-radius: 50px; opacity: 0.5;">Send</button>
+              `;
+        } else {
+          inputArea.innerHTML = `
+                  <label style="cursor:pointer; display:flex; align-items:center; padding: 10px; background:#f1f5f9; border-radius:50%; margin-right:5px;" title="Attach Image or Video">
+                      📎 <input type="file" id="g-chat-media" class="hidden" accept="image/*,video/*" />
+                  </label>
+                  <input type="text" id="g-chat-input" placeholder="Type a message..." onkeydown="if(event.key === 'Enter') sendGlobalMessage()" style="flex: 1; padding: 12px 20px; border-radius: 50px; border: 1px solid #cbd5e1; outline: none; font-size: 14px; background: #f8fafc;" />
+                  <button class="btn btn-primary" id="g-chat-send-btn" onclick="sendGlobalMessage()" style="border-radius: 50px;">Send</button>
+              `;
         }
 
+        await fetchGlobalChatMessages();
+
+        if (chatRefreshInterval) clearInterval(chatRefreshInterval);
+        chatRefreshInterval = setInterval(fetchGlobalChatMessages, 5000);
+      }
+
+      async function fetchGlobalChatMessages() {
+        if (!currentOpenRoom) return;
+        const container = document.getElementById("g-chat-messages-container");
+        try {
+          let messages = [];
+
+          if (currentOpenRoom === "broadcast") {
+            const fetch1 = safeFetchJSON(`${API_URL}/course-chats/broadcast`);
+            let fetch2 = Promise.resolve([]);
+            let fetch3 = Promise.resolve([]);
+
+            if (
+              currentUser.role === "student" ||
+              currentUser.role === "admin"
+            ) {
+              fetch2 = safeFetchJSON(
+                `${API_URL}/course-chats/broadcast_students`,
+              );
+            }
+            if (
+              currentUser.role === "instructor" ||
+              currentUser.role === "admin"
+            ) {
+              fetch3 = safeFetchJSON(
+                `${API_URL}/course-chats/broadcast_instructors`,
+              );
+            }
+
+            const [m1, m2, m3] = await Promise.all([fetch1, fetch2, fetch3]);
+            messages = [
+              ...(Array.isArray(m1) ? m1 : []),
+              ...(Array.isArray(m2) ? m2 : []),
+              ...(Array.isArray(m3) ? m3 : []),
+            ];
+            // Sort by ID to ensure accurate chronological order globally
+            messages.sort((a, b) => a.id - b.id);
+          } else {
+            const res = await safeFetchJSON(
+              `${API_URL}/course-chats/${currentOpenRoom}`,
+            );
+            messages = Array.isArray(res) ? res : [];
+          }
+
+          if (messages.length === 0) {
+            container.innerHTML = `<div style="text-align:center; color:#64748b; margin-top:20px;">No messages yet.</div>`;
+            return;
+          }
+
+          const isScrolledToBottom =
+            container.scrollHeight - container.clientHeight <=
+            container.scrollTop + 50;
+
+          let htmlStr = "";
+          let lastDate = "";
+          messages.forEach((msg) => {
+            const isSelf = msg.user_email === currentUser.email;
+            let datePart = "Previous",
+              timePart = msg.time;
+            if (msg.time && msg.time.includes("|")) {
+              const parts = msg.time.split("|");
+              datePart = parts[0];
+              timePart = parts[1];
+            }
+            if (datePart !== lastDate) {
+              htmlStr += `<div class="chat-date-header"><span class="chat-date-badge">${datePart}</span></div>`;
+              lastDate = datePart;
+            }
+
+            let targetBadge = "";
+            if (
+              currentOpenRoom === "broadcast" &&
+              currentUser.role === "admin"
+            ) {
+              if (msg.course_id === "broadcast_students")
+                targetBadge =
+                  '<span style="color:#bfdbfe; font-size:10px; margin-left:5px; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 10px;">To Students</span>';
+              else if (msg.course_id === "broadcast_instructors")
+                targetBadge =
+                  '<span style="color:#fef08a; font-size:10px; margin-left:5px; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 10px;">To Instructors</span>';
+              else
+                targetBadge =
+                  '<span style="color:#a7f3d0; font-size:10px; margin-left:5px; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 10px;">To All</span>';
+            }
+
+            let adminIcon =
+              msg.course_id.startsWith("broadcast") &&
+              msg.user_email.includes("admin")
+                ? "👑 "
+                : "";
+            htmlStr += `<div class="chat-msg ${isSelf ? "self" : "other"}">
+                      ${!isSelf ? `<div class="chat-name">${adminIcon}${msg.user_name}</div>` : ""}
+                      <div>${msg.message}</div>
+                      <div class="chat-time" style="display:flex; justify-content:${isSelf ? "flex-end" : "space-between"}; align-items:center; margin-top:5px;">
+                          <span>${timePart}</span>
+                          ${isSelf ? targetBadge : ""}
+                      </div>
+                  </div>`;
+          });
+          container.innerHTML = htmlStr;
+
+          if (isScrolledToBottom) {
+            container.scrollTop = container.scrollHeight;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async function sendGlobalMessage() {
+        const input = document.getElementById("g-chat-input");
+        const mediaInput = document.getElementById("g-chat-media");
+        if (!input) return;
+        const text = input.value.trim();
+        const hasMedia =
+          mediaInput && mediaInput.files && mediaInput.files.length > 0;
+
+        if (!text && !hasMedia) return;
+        if (!currentOpenRoom) return;
+
+        let targetId = currentOpenRoom;
+        if (currentOpenRoom === "broadcast" && currentUser.role === "admin") {
+          const targetSelect = document.getElementById("g-chat-target");
+          if (targetSelect) targetId = targetSelect.value;
+        }
+
+        const now = new Date();
+        const dateStr = now.toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+        const timeStr = now.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        const sendBtn = document.getElementById("g-chat-send-btn");
+        const originalText = sendBtn.innerHTML;
+        sendBtn.innerHTML = "⏳";
+        sendBtn.disabled = true;
+
+        try {
+          let mediaUrl = "";
+          if (hasMedia) {
+            const formData = new FormData();
+            formData.append("media", mediaInput.files[0]);
+            const upRes = await fetch(`${API_URL}/upload-chat-media`, {
+              method: "POST",
+              body: formData,
+            });
+            if (upRes.ok) {
+              const data = await upRes.json();
+              mediaUrl = data.url;
+            }
+          }
+
+          let finalMsg = text;
+          if (mediaUrl) {
+            const isImage =
+              mediaUrl.match(/\.(jpeg|jpg|gif|png|webp)/i) ||
+              mediaInput.files[0].type.startsWith("image/");
+            if (isImage) {
+              finalMsg += `<br><img src="${mediaUrl}" style="max-width:200px; border-radius:10px; margin-top:5px; cursor:pointer;" onclick="window.open('${mediaUrl}', '_blank')" />`;
+            } else {
+              finalMsg += `<br><video controls style="max-width:200px; border-radius:10px; margin-top:5px;"><source src="${mediaUrl}" type="video/mp4"></video>`;
+            }
+          }
+
+          const payload = {
+            course_id: String(targetId),
+            course_name: currentRoomName,
+            user_name:
+              currentUser.role === "admin" ? "ELMS Admin" : currentUser.name,
+            user_email: currentUser.email,
+            message: finalMsg,
+            time: `${dateStr}|${timeStr}`,
+          };
+
+          await fetch(`${API_URL}/course-chats`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          input.value = "";
+          if (mediaInput) mediaInput.value = "";
+
+          await fetchGlobalChatMessages();
+          const container = document.getElementById(
+            "g-chat-messages-container",
+          );
+          setTimeout(() => (container.scrollTop = container.scrollHeight), 100);
+        } catch (error) {
+          console.error(error);
+          alert("Failed to send message.");
+        } finally {
+          sendBtn.innerHTML = originalText;
+          sendBtn.disabled = false;
+        }
+      }
+
+      function checkUnreadGlobalChats() {
+        if (!currentUser) return;
         const badge = document.getElementById("global-chat-badge");
         if (badge) {
-          // Placeholder logc for demonstration. In a real scenario, this would query a dedicated endpoint.
-          // For now, let's assume we randomly generate a badge count if the server indicates unread messages.
-          // Note: True unread count implementation requires backend tracking of last seen message per user.
-          let unreadCount = Math.floor(Math.random() * 3); // Simulated unread count
-          if (unreadCount > 0) {
-            badge.innerText = unreadCount;
-            badge.style.display = "flex";
-          } else {
-            badge.style.display = "none";
+          const overlay = document.getElementById("global-chat-overlay");
+          if (overlay && overlay.classList.contains("hidden")) {
+            // Placeholder for actual fetch integration if you add an endpoint.
+            // Example: let unread = await fetchUnreadCount()...
           }
         }
       }
