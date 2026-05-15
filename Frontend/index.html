@@ -4202,6 +4202,7 @@
           }
           return [];
         } catch (e) {
+          console.warn("API Error:", e);
           return [];
         }
       }
@@ -4226,9 +4227,14 @@
 
         const savedUser = localStorage.getItem("elms_current_user");
         if (savedUser && savedUser !== "undefined") {
-          currentUser = JSON.parse(savedUser);
-          setupDashboard(currentUser);
-          navigateTo("dashboard");
+          try {
+            currentUser = JSON.parse(savedUser);
+            setupDashboard(currentUser);
+            navigateTo("dashboard");
+          } catch (e) {
+            localStorage.removeItem("elms_current_user");
+            navigateTo("landing");
+          }
         } else {
           navigateTo("landing");
         }
@@ -4787,9 +4793,9 @@
       function setupDashboard(user) {
         currentUser = user;
 
-        const safeName = user.name || "User";
-        const safeRole = user.role || "student";
-        const safeAvatar = user.avatar || "U";
+        const safeName = String(user.name || "User");
+        const safeRole = String(user.role || "student").toLowerCase();
+        const safeAvatar = String(user.avatar || "U");
 
         const roleColors = {
           student: "#0ea5e9",
@@ -4798,13 +4804,16 @@
         };
         const activeColor = roleColors[safeRole] || "#0ea5e9";
 
-        document.getElementById("top-name").innerText = safeName;
-        document.getElementById("top-role").innerText = safeRole;
+        const topNameEl = document.getElementById("top-name");
+        if (topNameEl) topNameEl.innerText = safeName;
+
+        const topRoleEl = document.getElementById("top-role");
+        if (topRoleEl) topRoleEl.innerText = safeRole;
 
         const topAvatarEl = document.getElementById("top-avatar");
         const setAvatarEl = document.getElementById("set-avatar-circle");
 
-        if (safeAvatar && safeAvatar.startsWith("http")) {
+        if (safeAvatar.startsWith("http")) {
           const imgHtml = `<img src="${safeAvatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
           if (topAvatarEl) {
             topAvatarEl.innerHTML = imgHtml;
@@ -4849,8 +4858,10 @@
           .getElementById("dashboard-home-content")
           .classList.remove("hidden");
 
-        document.getElementById("set-name").value = safeName;
-        document.getElementById("set-email").value = user.email || "";
+        const setNameEl = document.getElementById("set-name");
+        if (setNameEl) setNameEl.value = safeName;
+        const setEmailEl = document.getElementById("set-email");
+        if (setEmailEl) setEmailEl.value = user.email || "";
 
         setupSidebar({
           ...user,
@@ -4996,16 +5007,16 @@
           })
           .join("");
 
-        const avatarHtml =
-          user.avatar && user.avatar.startsWith("http")
-            ? `<img src="${user.avatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
-            : user.avatar || "U";
+        const avatarStr = String(user.avatar || "U");
+        const sidebarAvatarHtml = avatarStr.startsWith("http")
+          ? `<img src="${avatarStr}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
+          : avatarStr;
 
         const btmHtml = `
           <div style="padding: 20px; border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 10px;">
             <div style="background-color: #f1f5f9; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px;">
               <div style="width: 34px; height: 34px; border-radius: 50%; background-color: #0f172a; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; overflow: hidden;">
-                ${avatarHtml}
+                ${sidebarAvatarHtml}
               </div>
               <div style="overflow: hidden; text-align: left;">
                 <div style="font-weight: 700; font-size: 14px; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${user.name}</div>
@@ -5052,9 +5063,10 @@
           formData.append("video", videoInput.files[0]);
 
         const publishBtn = document.getElementById("btn-submit-upload");
-        const originalText = publishBtn ? publishBtn.innerHTML : "Publish";
+        let originalText = "Publish Course";
         if (publishBtn) {
-          publishBtn.innerHTML = "⏳ Uploading Media... Please wait";
+          originalText = publishBtn.innerHTML;
+          publishBtn.innerHTML = "⏳ Uploading...";
           publishBtn.disabled = true;
         }
 
@@ -5139,9 +5151,10 @@
         if (videoFile) formData.append("video", videoFile);
 
         const publishBtn = document.getElementById("btn-submit-edit");
-        const originalText = publishBtn ? publishBtn.innerHTML : "Update";
+        let originalText = "Update Course";
         if (publishBtn) {
-          publishBtn.innerHTML = "⏳ Updating... Please wait";
+          originalText = publishBtn.innerHTML;
+          publishBtn.innerHTML = "⏳ Updating...";
           publishBtn.disabled = true;
         }
 
@@ -5512,232 +5525,6 @@
         }
       }
 
-      async function setupCourseStudentsUI() {
-        const listContainer = document.getElementById(
-          "cp-students-area-container",
-        );
-        if (!listContainer) return;
-        listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">Loading students...</div>`;
-        try {
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-          const users = await safeFetchJSON(`${API_URL}/users`);
-
-          let enrolledStudents = enrollments.filter(
-            (e) =>
-              e.course_id == currentCoursePlayerId && e.status === "Approved",
-          );
-
-          if (enrolledStudents.length === 0) {
-            listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b; background:#f8fafc; border-radius:12px;" class="assignment-card">No students enrolled yet.</div>`;
-            return;
-          }
-
-          let htmlStr = `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;"><div><h3 style="font-size: 18px; font-weight: 700; color: #0f172a;" class="dm-title">Enrolled Students (${enrolledStudents.length})</h3><p style="font-size: 13px; color: #64748b;" class="dm-desc">Manage and track student progress</p></div></div><div style="display:flex; flex-direction:column; gap:10px;">`;
-          const banReqs = await safeFetchJSON(`${API_URL}/ban-requests`);
-
-          enrolledStudents.forEach((st, index) => {
-            let matchedUser =
-              users.find((u) => u.email === st.student_email) || {};
-            let avatar =
-              matchedUser.avatar || st.student_name.charAt(0).toUpperCase();
-
-            let isRequested = banReqs.some(
-              (r) =>
-                r.student_email === st.student_email &&
-                r.course_id == currentCoursePlayerId &&
-                r.status === "Pending",
-            );
-            let actionHtml = "";
-            if (currentUser.role === "instructor") {
-              if (isRequested)
-                actionHtml = `<span style="font-size:12px; color:#d97706; background:#fef3c7; padding:6px 12px; border-radius:20px; font-weight:700; white-space: nowrap;">Ban Requested</span>`;
-              else
-                actionHtml = `<button class="btn btn-outline" style="padding:6px 16px; font-size:13px; color:#ef4444; border-color:#fca5a5; white-space: nowrap;" onclick="requestStudentBan('${st.student_email}', '${st.student_name.replace(/'/g, "\\'")}', '${st.course_id}')">Request Ban</button>`;
-            }
-
-            const bgIndex = index % courseGradients.length;
-            const bgStyle = `background: ${courseGradients[bgIndex]};`;
-            const avatarHtml =
-              avatar && avatar.startsWith("http")
-                ? `<img src="${avatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
-                : `<span style="color:white;">${avatar}</span>`;
-
-            htmlStr += `
-                <div style="display:flex; align-items:center; justify-content:space-between; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 15px; transition: background 0.2s;" class="assignment-card">
-                  <div style="display: flex; align-items: center; gap: 15px; min-width: 250px;">
-                      <div style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; ${bgStyle} flex-shrink:0; overflow:hidden;">${avatarHtml}</div>
-                      <div>
-                          <div style="display: flex; align-items: center; gap: 8px;"><h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" class="dm-title">${st.student_name}</h4><span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">active</span></div>
-                          <div style="font-size: 13px; color: #64748b; display:flex; align-items:center; gap:4px; margin-top:2px;" class="dm-desc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>${st.student_email}</div>
-                      </div>
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 20px;">
-                      <div style="text-align: right;"><div style="font-size: 11px; color: #94a3b8;">Enrolled on</div><div style="font-size: 12px; color: #475569; font-weight: 500;" class="dm-desc">${st.date}</div></div>
-                      <div style="display: flex; gap: 10px;">${actionHtml}</div>
-                  </div>
-                </div>`;
-          });
-          htmlStr += `</div>`;
-          listContainer.innerHTML = htmlStr;
-        } catch (e) {
-          listContainer.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load students.</div>`;
-        }
-      }
-
-      function setupAssignmentsUI() {
-        const container = document.getElementById(
-          "cp-assignments-area-container",
-        );
-        if (!container) return;
-        let html = "";
-        if (currentUser.role === "instructor") {
-          html += `
-            <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
-              <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Create New Assignment</h3>
-              <div style="display:flex; flex-direction:column; gap:12px;">
-                 <input type="text" id="assign-title" placeholder="Assignment Title" style="padding:10px 15px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif;">
-                 <textarea id="assign-desc" placeholder="Assignment Instructions..." style="padding:10px 15px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; min-height:80px; resize:vertical;"></textarea>
-                 <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                    <label style="font-weight:600; font-size:14px; color:#334155;" class="dm-text">Due Date:</label>
-                    <input type="date" id="assign-due" style="padding:8px 12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; flex:1;">
-                 </div>
-                 <button class="btn btn-primary" onclick="createAssignment()" style="margin-top:5px; width: 100%;">Upload Assignment</button>
-              </div>
-            </div>
-            <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Uploaded Assignments</h3>
-            <div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>`;
-        } else if (currentUser.role === "student") {
-          html += `<h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">Course Assignments</h3><p style="color:#64748b; font-size:14px; margin-bottom:20px;" class="dm-desc">Complete and submit the assignments below.</p><div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>`;
-        } else if (currentUser.role === "admin") {
-          html += `<h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 15px;" class="dm-title">All Assignments</h3><div id="assign-list" style="display:flex; flex-direction:column; gap:15px;"></div>`;
-        }
-        container.innerHTML = html;
-        loadAssignments(currentCoursePlayerId);
-      }
-
-      async function createAssignment() {
-        const title = document.getElementById("assign-title").value.trim();
-        const desc = document.getElementById("assign-desc").value.trim();
-        const due = document.getElementById("assign-due").value;
-        if (!title || !desc || !due)
-          return alert("Please fill all fields for the assignment.");
-        const dateStr = new Date().toLocaleDateString("en-US", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        });
-        const payload = {
-          course_id: String(currentCoursePlayerId),
-          title: title,
-          description: desc,
-          due_date: due,
-          instructor_email: currentUser.email,
-          date: dateStr,
-        };
-        try {
-          const res = await fetch(`${API_URL}/assignments`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-          if (res.ok) {
-            alert("Assignment uploaded successfully!");
-            setupAssignmentsUI();
-          } else {
-            alert("Failed to upload assignment.");
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
-      async function loadAssignments(courseId) {
-        const container = document.getElementById("assign-list");
-        if (!container) return;
-        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading assignments...</div>`;
-        try {
-          const assignments = await safeFetchJSON(
-            `${API_URL}/assignments/${courseId}`,
-          );
-          if (assignments.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b; background:#f8fafc; border-radius:12px;" class="assignment-card">No assignments found for this course.</div>`;
-            return;
-          }
-          const submissions = await safeFetchJSON(
-            `${API_URL}/assignment-submissions/${courseId}`,
-          );
-          let htmlStr = "";
-          assignments.forEach((a) => {
-            let studentActionHtml = "";
-            if (currentUser.role === "student") {
-              let mySub = submissions.find(
-                (s) =>
-                  s.assignment_id === a.id &&
-                  s.student_email === currentUser.email,
-              );
-              if (mySub) {
-                let gradeHtml =
-                  mySub.marks != null
-                    ? `<div style="margin-top:10px; color:#16a34a; font-weight:700;">Graded: ${mySub.marks}/10</div>`
-                    : "";
-                studentActionHtml = `<div style="margin-top:15px; padding:10px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;"><b style="color:#059669; font-size:13px;">✅ Submitted on ${mySub.date}</b>${gradeHtml}</div>`;
-              } else {
-                studentActionHtml = `<div style="margin-top:15px; display:flex; flex-direction:column; align-items:flex-start; width: 100%;"><textarea id="sub-input-${a.id}" placeholder="Type your answer or paste Google Drive link here..." style="width:100%; min-height:80px; padding:10px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; resize:vertical; box-sizing: border-box;" class="submission-box"></textarea><button class="btn btn-primary" style="margin-top:8px; padding:8px 16px; font-size:13px; width: 100%;" onclick="submitAssignment(${a.id})">Submit Assignment</button></div>`;
-              }
-            } else if (
-              currentUser.role === "instructor" ||
-              currentUser.role === "admin"
-            ) {
-              let assignSubs = submissions.filter(
-                (s) => s.assignment_id === a.id,
-              );
-              studentActionHtml = `<div style="margin-top:15px; padding-top:15px; border-top:1px solid #e2e8f0;"><b style="font-size:13px; color:#0f172a;" class="dm-title">Submissions (${assignSubs.length})</b></div>`;
-            }
-            htmlStr += `<div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:20px;" class="assignment-card"><div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px; flex-wrap: wrap; gap: 10px;"><h4 style="font-size:16px; font-weight:800; color:#0f172a; margin:0;" class="dm-title">📝 ${a.title}</h4><span style="background:#fef2f2; color:#ef4444; border:1px solid #fca5a5; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;">Due: ${a.due_date}</span></div><p style="font-size:14px; color:#475569; line-height:1.5; word-wrap: break-word;" class="dm-desc">${a.description}</p>${studentActionHtml}</div>`;
-          });
-          container.innerHTML = htmlStr;
-        } catch (e) {
-          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load assignments.</div>`;
-        }
-      }
-
-      async function submitAssignment(assignId) {
-        const inputEl = document.getElementById(`sub-input-${assignId}`);
-        const subText = inputEl.value.trim();
-        if (!subText)
-          return alert(
-            "Please type your answer or provide a link before submitting.",
-          );
-        const dateStr = new Date().toLocaleDateString("en-US", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        });
-        const payload = {
-          assignment_id: assignId,
-          course_id: String(currentCoursePlayerId),
-          student_email: currentUser.email,
-          student_name: currentUser.name,
-          submission_text: subText,
-          date: dateStr,
-        };
-        try {
-          const res = await fetch(`${API_URL}/assignment-submissions`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-          if (res.ok) {
-            alert("Assignment submitted successfully!");
-            loadAssignments(currentCoursePlayerId);
-          } else {
-            alert("Failed to submit assignment.");
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
       function setupFeedbackUI() {
         const container = document.getElementById("cp-feedback-area-container");
         if (!container) return;
@@ -6095,28 +5882,40 @@
 
             const submitBtn = e.target.querySelector("button[type='submit']");
             const oldBtnText = submitBtn.innerHTML;
-            submitBtn.innerHTML = "⏳ Connecting to Server (Wait 1 min)...";
+            submitBtn.innerHTML = "⏳ Logging in...";
             submitBtn.disabled = true;
             errorDiv.style.display = "none";
 
+            let res, data;
             try {
-              const res = await fetch(`${API_URL}/login`, {
+              res = await fetch(`${API_URL}/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: email, password: rawPassword }),
               });
-              const data = await res.json();
-              if (res.ok && data.user) {
-                const user = data.user;
-                if (user.role !== "admin" && user.status === "Pending") {
-                  errorDiv.innerText =
-                    "Pending Approval: The administrator has not yet approved your account.";
-                  errorDiv.style.display = "block";
-                } else if (user.status === "Banned") {
-                  errorDiv.innerText =
-                    "Account Suspended: Your account has been suspended by the administrator.";
-                  errorDiv.style.display = "block";
-                } else {
+              data = await res.json();
+            } catch (err) {
+              console.error("Login Error:", err);
+              errorDiv.innerText =
+                "Server Error: Backend is unreachable. Please check your internet connection.";
+              errorDiv.style.display = "block";
+              submitBtn.innerHTML = oldBtnText;
+              submitBtn.disabled = false;
+              return;
+            }
+
+            if (res.ok && data.user) {
+              const user = data.user;
+              if (user.role !== "admin" && user.status === "Pending") {
+                errorDiv.innerText =
+                  "Pending Approval: The administrator has not yet approved your account.";
+                errorDiv.style.display = "block";
+              } else if (user.status === "Banned") {
+                errorDiv.innerText =
+                  "Account Suspended: Your account has been suspended by the administrator.";
+                errorDiv.style.display = "block";
+              } else {
+                try {
                   currentUser = user;
                   localStorage.setItem(
                     "elms_current_user",
@@ -6124,19 +5923,19 @@
                   );
                   setupDashboard(user);
                   navigateTo("dashboard");
+                } catch (uiErr) {
+                  console.error("Dashboard Render Error:", uiErr);
+                  errorDiv.innerText =
+                    "Error loading your dashboard profile. Data might be corrupted.";
+                  errorDiv.style.display = "block";
                 }
-              } else {
-                errorDiv.innerText = data.error || "Invalid email or password";
-                errorDiv.style.display = "block";
               }
-            } catch (err) {
-              errorDiv.innerText =
-                "Server Error: Backend is waking up or unreachable. Please wait 1-2 minutes and try again.";
+            } else {
+              errorDiv.innerText = data?.error || "Invalid email or password";
               errorDiv.style.display = "block";
-            } finally {
-              submitBtn.innerHTML = oldBtnText;
-              submitBtn.disabled = false;
             }
+            submitBtn.innerHTML = oldBtnText;
+            submitBtn.disabled = false;
           });
 
         document
@@ -6147,7 +5946,7 @@
             const submitBtn = e.target.querySelector("button[type='submit']");
             const oldBtnText = submitBtn.innerHTML;
 
-            submitBtn.innerHTML = "⏳ Connecting to Server (Wait 1 min)...";
+            submitBtn.innerHTML = "⏳ Signing up...";
             submitBtn.disabled = true;
             errorDiv.style.display = "none";
 
@@ -6189,7 +5988,7 @@
               }
             } catch (err) {
               errorDiv.innerText =
-                "Server Error: Backend is waking up or unreachable. Please wait 1-2 minutes and try again.";
+                "Server Error: Backend is unreachable. Please try again.";
               errorDiv.style.display = "block";
             } finally {
               submitBtn.innerHTML = oldBtnText;
