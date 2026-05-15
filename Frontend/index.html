@@ -4824,9 +4824,11 @@
       function setupDashboard(user) {
         currentUser = user;
 
-        const safeName = String(user.name || "User");
-        const safeRole = String(user.role || "student").toLowerCase();
-        const safeAvatar = String(user.avatar || "U");
+        const safeName = String(user.name || "User").trim();
+        const safeRole = String(user.role || "student")
+          .trim()
+          .toLowerCase();
+        const safeAvatar = String(user.avatar || "U").trim();
 
         const roleColors = {
           student: "#0ea5e9",
@@ -6429,20 +6431,13 @@
                   "Account Suspended: Your account has been suspended by the administrator.";
                 errorDiv.style.display = "block";
               } else {
-                try {
-                  currentUser = user;
-                  localStorage.setItem(
-                    "elms_current_user",
-                    JSON.stringify(currentUser),
-                  );
-                  setupDashboard(user);
-                  navigateTo("dashboard");
-                } catch (uiErr) {
-                  console.error("Dashboard Render Error:", uiErr);
-                  errorDiv.innerText =
-                    "Error loading your dashboard profile. Data might be corrupted.";
-                  errorDiv.style.display = "block";
-                }
+                currentUser = user;
+                localStorage.setItem(
+                  "elms_current_user",
+                  JSON.stringify(currentUser),
+                );
+                setupDashboard(user);
+                navigateTo("dashboard");
               }
             } else {
               errorDiv.innerText = data?.error || "Invalid email or password";
