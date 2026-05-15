@@ -4706,10 +4706,7 @@
               aDash.style.display = "block";
           }
         }
-        const sidebarEl = document.getElementById("sidebar");
-        if (sidebarEl && sidebarEl.classList.contains("active") && el) {
-          toggleSidebar();
-        }
+        if (window.innerWidth < 1024 && el) toggleSidebar();
       }
 
       async function updateAdminStats() {
@@ -4981,11 +4978,7 @@
 
               let thumbHTML = "";
               if (c.thumbnail_url) {
-                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')">
-                     <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
-                         <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                     </div>
-                </div>`;
+                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"></div>`;
               } else {
                 thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')">
                      <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
@@ -5221,41 +5214,6 @@
               class: "nav-item-settings",
             },
           ];
-        } else if (user.role === "instructor") {
-          menu = [
-            {
-              label: "Dashboard",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>',
-              active: true,
-              class: "nav-item-dash",
-            },
-            {
-              label: "Courses",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>',
-              class: "nav-item-courses",
-            },
-            {
-              label: "Upload Course",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>',
-              class: "nav-item-upload",
-            },
-            {
-              label: "Students",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>',
-              class: "nav-item-students",
-            },
-            {
-              label: "Notifications",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>',
-              class: "nav-item-notif",
-              badge: true,
-            },
-            {
-              label: "Settings",
-              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>',
-              class: "nav-item-settings",
-            },
-          ];
         }
 
         if (nav) {
@@ -5429,12 +5387,8 @@
               : 0;
 
             let thumbHTML = c.thumbnail_url
-              ? `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
-                   <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border-radius: 12px; padding: 20px;">
-                       <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4>
-                   </div></div>`
-              : `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; ${bgStyle}" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
-                   <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4></div>`;
+              ? `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);"></div>`
+              : `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; ${bgStyle}" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);"><h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4></div>`;
 
             const safeTitle = encodeURIComponent(c.title);
 
@@ -5590,7 +5544,7 @@
                 courseGradients.length;
               let bgStyle = `background: ${courseGradients[bgIndex]}; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; border-bottom:1px solid #e2e8f0; cursor: pointer;`;
               let thumbHTML = c.thumbnail_url
-                ? `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"><div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div></div>`
+                ? `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"></div>`
                 : `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle}" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div>`;
 
               let myEnrollment = Array.isArray(enrollments)
@@ -5704,7 +5658,7 @@
                 courseGradients.length;
               let bgStyle = `background: ${courseGradients[bgIndex]}; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
               let thumbHTML = c.thumbnail_url
-                ? `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"><div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div></div>`
+                ? `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"></div>`
                 : `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div>`;
 
               return `
@@ -5952,73 +5906,6 @@
           if (tab) tab.classList.add("active");
           if (contSt) contSt.classList.remove("hidden");
           setupCourseStudentsUI();
-        }
-      }
-
-      async function renderInstructorStudents() {
-        const listContainer = document.getElementById(
-          "instructor-students-list",
-        );
-        const statsContainer = document.getElementById("inst-students-stats");
-        if (!listContainer) return;
-
-        listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">⏳ Loading students...</div>`;
-
-        try {
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-          const users = await safeFetchJSON(`${API_URL}/users`);
-
-          if (!Array.isArray(enrollments)) {
-            listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to fetch enrollments.</div>`;
-            return;
-          }
-
-          let myEnrollments = enrollments.filter(
-            (e) =>
-              e.instructor_email === currentUser.email &&
-              e.status === "Approved",
-          );
-
-          let studentMap = new Map();
-          myEnrollments.forEach((e) => {
-            if (!studentMap.has(e.student_email)) {
-              let matchedUser = Array.isArray(users)
-                ? users.find((u) => u.email === e.student_email)
-                : null;
-              let safeName = e.student_name || "Unknown";
-              let finalAvatarUrl =
-                matchedUser && matchedUser.avatar
-                  ? matchedUser.avatar
-                  : safeName.charAt(0).toUpperCase();
-
-              studentMap.set(e.student_email, {
-                name: safeName,
-                email: e.student_email,
-                avatar: finalAvatarUrl,
-                enrolledCount: 0,
-                completedCount: Math.floor(Math.random() * 3), // Mock data
-                progress: Math.floor(Math.random() * 60) + 20, // Mock data
-                lastActive: e.date || "Unknown",
-              });
-            }
-            let st = studentMap.get(e.student_email);
-            st.enrolledCount++;
-          });
-
-          instGlobalStudents = Array.from(studentMap.values());
-
-          if (statsContainer) {
-            let activeThisWeek = Math.floor(instGlobalStudents.length * 0.8);
-            statsContainer.innerHTML = `
-                  <div class="p-stat-card p-stat-card-blue"><div class="p-card-top"><h3>Total Students</h3></div><div><div class="val">${instGlobalStudents.length}</div><div class="desc">Enrolled in your courses</div></div></div>
-                  <div class="p-stat-card p-stat-card-green"><div class="p-card-top"><h3>Active This Week</h3></div><div><div class="val">${activeThisWeek}</div><div class="desc">Engaging with content</div></div></div>
-              `;
-          }
-
-          displayInstStudents(instGlobalStudents);
-        } catch (e) {
-          console.error(e);
-          listContainer.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load students.</div>`;
         }
       }
 
@@ -6896,7 +6783,9 @@
             }
 
             let adminIcon =
+              msg.course_id &&
               msg.course_id.startsWith("broadcast") &&
+              msg.user_email &&
               msg.user_email.includes("admin")
                 ? "👑 "
                 : "";
