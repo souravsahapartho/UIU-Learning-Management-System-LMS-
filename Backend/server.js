@@ -175,12 +175,10 @@ app.post(
             "🔥 DB Error inserting to profile_pictures:",
             err.message,
           );
-        res
-          .status(200)
-          .json({
-            message: "Profile picture uploaded successfully",
-            url: imageUrl,
-          });
+        res.status(200).json({
+          message: "Profile picture uploaded successfully",
+          url: imageUrl,
+        });
       },
     );
   },
@@ -406,13 +404,11 @@ app.post(
             .status(500)
             .json({ error: "Database error: " + err.message });
         }
-        res
-          .status(200)
-          .json({
-            message: "Saved successfully with media",
-            thumbnail: thumbnailUrl,
-            video: videoUrl,
-          });
+        res.status(200).json({
+          message: "Saved successfully with media",
+          thumbnail: thumbnailUrl,
+          video: videoUrl,
+        });
       },
     );
   },
@@ -468,13 +464,11 @@ app.post(
       ],
       (err) => {
         if (err) return res.status(500).json({ error: err.message });
-        res
-          .status(200)
-          .json({
-            message: "Course published successfully with media!",
-            thumbnail: thumbnailUrl,
-            video: videoUrl,
-          });
+        res.status(200).json({
+          message: "Course published successfully with media!",
+          thumbnail: thumbnailUrl,
+          video: videoUrl,
+        });
       },
     );
   },
@@ -536,13 +530,11 @@ app.put(
         return res
           .status(500)
           .json({ error: "Database error: " + err.message });
-      res
-        .status(200)
-        .json({
-          message: "Course updated successfully",
-          thumbnail: thumbnailUrl,
-          video: videoUrl,
-        });
+      res.status(200).json({
+        message: "Course updated successfully",
+        thumbnail: thumbnailUrl,
+        video: videoUrl,
+      });
     });
   },
 );
@@ -810,28 +802,30 @@ app.get("/assignment-submissions/:courseId", (req, res) => {
   );
 });
 
+// ✅ এটা দিয়ে replace করো
 app.post("/assignment-submissions", (req, res) => {
   const {
     assignment_id,
-    assignment_title,
     course_id,
-    course_name,
     student_email,
     student_name,
     submission_text,
     date,
+    assignment_title, // optional, may be undefined
+    course_name, // optional, may be undefined
   } = req.body;
+
   db.query(
-    "INSERT INTO assignment_submissions (assignment_id, assignment_title, course_id, course_name, student_email, student_name, submission_text, `date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+    "INSERT INTO assignment_submissions (assignment_id, course_id, student_email, student_name, submission_text, `date`, assignment_title, course_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
     [
       assignment_id,
-      String(assignment_title || ""),
       String(course_id),
-      String(course_name || ""),
       String(student_email),
       String(student_name),
       String(submission_text),
       String(date),
+      assignment_title ? String(assignment_title) : null,
+      course_name ? String(course_name) : null,
     ],
     (err) =>
       err
@@ -877,12 +871,10 @@ app.post("/ban-requests", (req, res) => {
     (err, data) => {
       if (err) return res.status(500).json({ error: err.message });
       if (data.length > 0)
-        return res
-          .status(400)
-          .json({
-            error:
-              "A pending request already exists for this student in this course.",
-          });
+        return res.status(400).json({
+          error:
+            "A pending request already exists for this student in this course.",
+        });
       db.query(
         "INSERT INTO ban_requests (course_id, course_title, inst_email, inst_name, student_email, student_name, `date`) VALUES (?, ?, ?, ?, ?, ?, ?)",
         [
@@ -1002,11 +994,9 @@ app.put("/notifications/read", (req, res) => {
 });
 
 app.use((req, res) =>
-  res
-    .status(404)
-    .json({
-      error: `API route not found on backend: ${req.method} ${req.url}`,
-    }),
+  res.status(404).json({
+    error: `API route not found on backend: ${req.method} ${req.url}`,
+  }),
 );
 
 const PORT = process.env.PORT || 5005;

@@ -4892,6 +4892,70 @@
         }
       }
 
+      async function publishNewCourse() {
+        const title = document.getElementById("uc-title").value.trim();
+        const desc = document.getElementById("uc-desc").value.trim();
+        const cat = document.getElementById("uc-cat").value.trim();
+        const diff = document.getElementById("uc-diff").value;
+        const totalLessons =
+          parseInt(document.getElementById("uc-lessons").value) || 4;
+
+        const thumbnailFile =
+          document.getElementById("uc-thumbnail-input").files[0];
+        const videoFile = document.getElementById("uc-video-input").files[0];
+
+        if (!title) return alert("Please enter a course title.");
+
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("description", desc);
+        formData.append("category", cat);
+        formData.append("difficulty", diff);
+        formData.append("instructorEmail", currentUser.email);
+        formData.append("instructorName", currentUser.name);
+        formData.append("total_lessons", totalLessons);
+
+        if (thumbnailFile) formData.append("thumbnail", thumbnailFile);
+        if (videoFile) formData.append("video", videoFile);
+
+        const publishBtn = document.getElementById("btn-submit-upload");
+        const originalText = publishBtn.innerHTML;
+        publishBtn.innerHTML = "⏳ Publishing...";
+        publishBtn.disabled = true;
+
+        try {
+          const res = await fetch(`${API_URL}/upload-course`, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (res.ok) {
+            alert("Course submitted for admin approval!");
+            document.getElementById("uc-title").value = "";
+            document.getElementById("uc-desc").value = "";
+            document.getElementById("uc-cat").value = "";
+            document.getElementById("uc-lessons").value = "";
+            document.getElementById("uc-thumbnail-input").value = "";
+            document.getElementById("uc-video-input").value = "";
+            await addNotification(
+              "admin",
+              `New course "${title}" submitted by ${currentUser.name} for approval.`,
+              "blue",
+            );
+            renderInstructorLiveCourses();
+            handleNav("Dashboard", document.querySelector(".nav-item-dash"));
+          } else {
+            const err = await res.json();
+            alert("Error publishing course: " + (err.error || "Unknown error"));
+          }
+        } catch (e) {
+          alert("Network connection failed.");
+        } finally {
+          publishBtn.innerHTML = originalText;
+          publishBtn.disabled = false;
+        }
+      }
+
       async function submitEditCourse() {
         const id = document.getElementById("ec-id").value;
         const title = document.getElementById("ec-title").value.trim();
