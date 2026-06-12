@@ -110,6 +110,13 @@ const tableQueries = [
   `CREATE TABLE IF NOT EXISTS assignment_submissions (id INT AUTO_INCREMENT PRIMARY KEY, assignment_id INT NOT NULL, course_id VARCHAR(100), student_email VARCHAR(100), student_name VARCHAR(100), submission_text TEXT, \`date\` VARCHAR(50), marks INT DEFAULT NULL, instructor_comment TEXT DEFAULT NULL, course_name VARCHAR(255) DEFAULT NULL, assignment_title VARCHAR(255) DEFAULT NULL)`,
   `CREATE TABLE IF NOT EXISTS ban_requests (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100), course_title VARCHAR(255), inst_email VARCHAR(100), inst_name VARCHAR(100), student_email VARCHAR(100), student_name VARCHAR(100), status VARCHAR(50) DEFAULT 'Pending', \`date\` VARCHAR(50))`,
   `CREATE TABLE IF NOT EXISTS profile_pictures (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), email VARCHAR(100), user_type VARCHAR(50), image_link VARCHAR(500), uploaded_time VARCHAR(50))`,
+  `CREATE TABLE IF NOT EXISTS chat_read_status (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_email VARCHAR(100) NOT NULL,
+  course_id VARCHAR(100) NOT NULL,
+  last_read_message_id INT DEFAULT 0,
+  UNIQUE KEY unique_user_room (user_email, course_id)
+)`,
 ];
 
 tableQueries.forEach((query) => {
@@ -1032,6 +1039,68 @@ app.put("/notifications/read", (req, res) => {
     },
   );
 });
+
+// --- UNREAD CHAT COUNT APIs ---
+app.get("/unread-counts/:userEmail", async (req, res) => {
+  const userEmail = req.params.userEmail;
+  const promiseDb = db.promise();
+  try {
+    const [readRows] = await promiseDb.query(
+      "SELECT course_id, last_read_message_id FROM chat_read_status WHERE user_email = ?",
+      [userEmail],
+    );
+    const readMap = {};
+    readRows.forEach((r) => (readMap[r.course_id] = r.last_read_message_id));
+
+    const [allMessages] = await promiseDb.query(
+      `SELECT course_id, MAX(id) as maxId 
+       FROM course_chats 
+       WHERE user_email != ? 
+       GROUP BY course_id`,
+      [userEmail],
+    );
+
+    let result = [];
+    let totalUnread = 0;
+
+    for (let row of allMessages) {
+      const lastRead = readMap[row.course_id] || 0;
+      const [countRows] = await promiseDb.query(
+        "SELECT COUNT(*) as cnt FROM course_chats WHERE course_id = ? AND id > ? AND user_email != ?",
+        [row.course_id, lastRead, userEmail],
+      );
+      const unreadCount = countRows[0].cnt;
+      if (unreadCount > 0) {
+        result.push({ course_id: row.course_id, unread: unreadCount });
+        totalUnread += unreadCount;
+      }
+    }
+
+    res.status(200).json({ total: totalUnread, rooms: result });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post("/mark-chat-read", (req, res) => {
+  const { user_email, course_id, last_message_id } = req.body;
+  db.query(
+    `INSERT INTO chat_read_status (user_email, course_id, last_read_message_id) 
+     VALUES (?, ?, ?) 
+     ON DUPLICATE KEY UPDATE last_read_message_id = ?`,
+    [user_email, String(course_id), last_message_id || 0, last_message_id || 0],
+    (err) =>
+      err
+        ? res.status(500).json({ error: err.message })
+        : res.status(200).json({ message: "Marked as read" }),
+  );
+});
+
+app.use((req, res) =>
+  res.status(404).json({
+    error: `API route not found on backend: ${req.method} ${req.url}`,
+  }),
+);
 
 app.use((req, res) =>
   res.status(404).json({

@@ -1678,6 +1678,7 @@
         cursor: pointer;
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 12px;
         transition: 0.2s;
       }
@@ -5488,8 +5489,9 @@
 
         // Show global chat fab if logged in
         document.getElementById("global-chat-fab").classList.remove("hidden");
+        checkUnreadGlobalChats(); // Initial check (instant)
         if (!globalChatPollingInterval) {
-          globalChatPollingInterval = setInterval(checkUnreadGlobalChats, 6000);
+          globalChatPollingInterval = setInterval(checkUnreadGlobalChats, 3000);
         }
 
         setupSidebar({
@@ -7325,16 +7327,28 @@
               });
             });
           }
-
           listContainer.innerHTML = rooms
-            .map(
-              (r) => `
+            .map((r) => {
+              let unreadCount = 0;
+              if (window.__unreadRoomsData) {
+                const found = window.__unreadRoomsData.find(
+                  (x) => String(x.course_id) === String(r.id),
+                );
+                if (found) unreadCount = found.unread;
+              }
+              const unreadBadgeHtml =
+                unreadCount > 0
+                  ? `<span style="background:#ef4444; color:white; font-size:11px; font-weight:700; padding:2px 8px; border-radius:50px; flex-shrink:0;">${unreadCount}</span>`
+                  : "";
+
+              return `
                   <div class="g-chat-item ${currentOpenRoom === String(r.id) ? "active" : ""}" onclick="openChatRoom('${r.id}', '${r.title.replace(/'/g, "\\'")}', ${r.isBroadcast})">
                       <div class="g-chat-avatar" style="${r.isBroadcast ? "background:#10b981;" : "background:#3b82f6;"}">${r.isBroadcast ? "📢" : "💬"}</div>
-                      <div style="font-weight:700; color:#0f172a; font-size:14px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${r.title}</div>
+                      <div style="font-weight:700; color:#0f172a; font-size:14px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; flex:1;">${r.title}</div>
+                      ${unreadBadgeHtml}
                   </div>
-              `,
-            )
+              `;
+            })
             .join("");
         } catch (e) {
           listContainer.innerHTML = `<div style="padding:20px;color:red;">Error loading chats</div>`;
@@ -7391,11 +7405,14 @@
   <button class="btn btn-primary" id="g-chat-send-btn" onclick="sendGlobalMessage()" style="border-radius:50px;">Send</button>
 `;
         }
-
         await fetchGlobalChatMessages();
+        await markRoomAsRead(roomId);
 
         if (chatRefreshInterval) clearInterval(chatRefreshInterval);
-        chatRefreshInterval = setInterval(fetchGlobalChatMessages, 5000);
+        chatRefreshInterval = setInterval(async () => {
+          await fetchGlobalChatMessages();
+          await markRoomAsRead(roomId);
+        }, 5000);
       }
 
       async function fetchGlobalChatMessages() {
@@ -7665,21 +7682,68 @@
         }
       }
 
-      function checkUnreadGlobalChats() {
+      async function checkUnreadGlobalChats() {
         if (!currentUser) return;
         const badge = document.getElementById("global-chat-badge");
-        if (badge) {
+        if (!badge) return;
+
+        try {
+          const data = await safeFetchJSON(
+            `${API_URL}/unread-counts/${currentUser.email}`,
+          );
           const overlay = document.getElementById("global-chat-overlay");
-          if (overlay && overlay.classList.contains("hidden")) {
-            let unreadCount = Math.floor(Math.random() * 3); // Simulated unread count
-            if (unreadCount > 0) {
-              badge.innerText = unreadCount;
-              badge.style.display = "flex";
-            } else {
-              badge.style.display = "none";
-            }
+          const isChatOpen = overlay && !overlay.classList.contains("hidden");
+
+          if (!isChatOpen && data && data.total > 0) {
+            badge.innerText = data.total > 9 ? "9+" : data.total;
+            badge.style.display = "flex";
+          } else {
+            badge.style.display = "none";
           }
+
+          window.__unreadRoomsData = data && data.rooms ? data.rooms : [];
+
+          const listContainer = document.getElementById(
+            "g-chat-list-container",
+          );
+          if (isChatOpen && listContainer && !currentOpenRoom) {
+            loadChatGroups();
+          }
+        } catch (e) {
+          console.warn("Unread check failed", e);
         }
+      }
+
+      async function markRoomAsRead(roomId) {
+        let idsToMark = [roomId];
+        if (roomId === "broadcast") {
+          idsToMark = ["broadcast"];
+          if (currentUser.role === "student" || currentUser.role === "admin")
+            idsToMark.push("broadcast_students");
+          if (currentUser.role === "instructor" || currentUser.role === "admin")
+            idsToMark.push("broadcast_instructors");
+        }
+        for (let id of idsToMark) {
+          try {
+            const messages = await safeFetchJSON(
+              `${API_URL}/course-chats/${id}`,
+            );
+            let maxId = 0;
+            if (Array.isArray(messages) && messages.length > 0) {
+              maxId = Math.max(...messages.map((m) => m.id));
+            }
+            await fetch(`${API_URL}/mark-chat-read`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                user_email: currentUser.email,
+                course_id: id,
+                last_message_id: maxId,
+              }),
+            });
+          } catch (e) {}
+        }
+        await checkUnreadGlobalChats();
       }
 
       function documentReady() {
