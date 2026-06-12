@@ -5239,7 +5239,7 @@
 
         const publishBtn = document.getElementById("btn-submit-upload");
         const originalText = publishBtn.innerHTML;
-        publishBtn.innerHTML = "⏳ Publishing...";
+        publishBtn.innerHTML = "Publishing...";
         publishBtn.disabled = true;
 
         try {
@@ -5249,7 +5249,7 @@
           });
 
           if (res.ok) {
-            alert("Course submitted for admin approval!");
+            alert("Your course has been submitted and is pending review.");
             document.getElementById("uc-title").value = "";
             document.getElementById("uc-desc").value = "";
             document.getElementById("uc-cat").value = "";
@@ -5265,10 +5265,10 @@
             handleNav("Dashboard", document.querySelector(".nav-item-dash"));
           } else {
             const err = await res.json();
-            alert("Error publishing course: " + (err.error || "Unknown error"));
+            alert("Failed to publish your course. Please try again.");
           }
         } catch (e) {
-          alert("Network connection failed.");
+          alert("Connection failed. Please check your internet and try again.");
         } finally {
           publishBtn.innerHTML = originalText;
           publishBtn.disabled = false;
@@ -5304,7 +5304,7 @@
         let originalText = "Update Course";
         if (publishBtn) {
           originalText = publishBtn.innerHTML;
-          publishBtn.innerHTML = "⏳ Updating...";
+          publishBtn.innerHTML = "Updating...";
           publishBtn.disabled = true;
         }
 
@@ -5315,14 +5315,14 @@
           });
 
           if (res.ok) {
-            alert("Course updated successfully!");
+            alert("Your course has been updated successfully.");
             document.getElementById("ec-thumbnail-input").value = "";
             document.getElementById("ec-video-input").value = "";
             renderInstructorLiveCourses();
             handleNav("Dashboard", document.querySelector(".nav-item-dash"));
           } else {
             const err = await res.json();
-            alert("Error updating course: " + (err.error || "Unknown error"));
+            alert("Failed to update your course. Please try again.");
           }
         } catch (e) {
           alert("Network connection failed.");
@@ -5762,7 +5762,9 @@
             body: JSON.stringify({ email: email, status: status }),
           });
           if (res.ok) {
-            alert(`Account ${status.toLowerCase()} successfully.`);
+            alert(
+              `The account has been ${status === "Approved" ? "approved" : "suspended"} successfully.`,
+            );
             if (status === "Approved")
               await addNotification(
                 email,
@@ -5778,10 +5780,10 @@
             renderAdminUsers();
             updateAdminStats();
           } else {
-            alert("Failed to update user status.");
+            alert("Failed to update the account status. Please try again.");
           }
         } catch (e) {
-          alert("Error connecting to database.");
+          alert("Connection error. Please try again.");
         }
       }
 
@@ -5888,9 +5890,11 @@
               "red",
             );
           }
-          alert(`Course has been successfully ${status.toLowerCase()}.`);
+          alert(
+            `The course has been ${status === "Approved" ? "approved and is now live" : "unpublished"}.`,
+          );
         } catch (e) {
-          alert("Error updating course status in database.");
+          alert("Failed to update course status. Please try again.");
         }
       }
 
@@ -5959,10 +5963,12 @@
             const data = await res.json();
             return alert(data.error || "Failed to process ban request.");
           }
-          alert(`Ban request ${actionStatus.toLowerCase()} successfully.`);
+          alert(
+            `The ban request has been ${actionStatus === "Approved" ? "approved" : "rejected"}.`,
+          );
           renderAdminUsers();
         } catch (e) {
-          alert("Error processing ban request.");
+          alert("Failed to process the request. Please try again.");
         }
       }
 
@@ -6052,7 +6058,7 @@
           });
           if (!res.ok) {
             const errData = await res.json();
-            alert("Database Error: " + errData.error);
+            alert("Something went wrong. Please try again.");
             return;
           }
           if (instructorEmail)
@@ -6062,11 +6068,13 @@
               "orange",
             );
           alert(
-            "Enrollment request has been successfully sent to the instructor.",
+            "Your join request has been sent to the instructor. You will be notified once approved.",
           );
           renderStudentBrowseCourses();
         } catch (e) {
-          alert("Failed to send request. Is the backend running?");
+          alert(
+            "Failed to send your request. Please check your connection and try again.",
+          );
         }
       }
 
@@ -6671,14 +6679,14 @@
               `⚠️ Ban Request: Instructor ${currentUser.name} requested to ban ${studentName}.`,
               "red",
             );
-            alert("Ban request sent to admin successfully.");
+            alert("Your request has been submitted to the admin for review.");
             setupCourseStudentsUI();
           } else {
             const data = await res.json();
             alert(data.error || "Failed to send ban request.");
           }
         } catch (e) {
-          alert("Database connection error.");
+          alert("Connection error. Please try again.");
         }
       }
 
@@ -6718,7 +6726,9 @@
         const desc = document.getElementById("assign-desc").value.trim();
         const due = document.getElementById("assign-due").value;
         if (!title || !desc || !due)
-          return alert("Please fill all fields for the assignment.");
+          return alert(
+            "Please fill in the title, instructions, and due date before uploading.",
+          );
         const dateStr = new Date().toLocaleDateString("en-US", {
           day: "numeric",
           month: "short",
@@ -6758,10 +6768,10 @@
                 );
               }
             }
-            alert("Assignment uploaded successfully!");
+            alert("Assignment has been posted successfully.");
             setupAssignmentsUI();
           } else {
-            alert("Failed to upload assignment.");
+            alert("Failed to post the assignment. Please try again.");
           }
         } catch (e) {
           console.error(e);
@@ -6867,7 +6877,7 @@
         const subText = inputEl.value.trim();
         if (!subText)
           return alert(
-            "Please type your answer or provide a link before submitting.",
+            "Please write your answer or paste a link before submitting.",
           );
         const dateStr = new Date().toLocaleDateString("en-US", {
           day: "numeric",
@@ -6922,15 +6932,15 @@
                 "orange",
               );
             }
-            alert("Assignment submitted successfully!");
+            alert("Your assignment has been submitted successfully.");
             loadAssignments(currentCoursePlayerId);
           } else {
             const errData = await res.json();
-            alert("Failed to submit: " + (errData.error || "Unknown error"));
+            alert("Failed to submit your assignment. Please try again.");
           }
         } catch (e) {
           console.error(e);
-          alert("Network error: " + e.message);
+          alert("Connection error. Please check your internet and try again.");
         }
       }
 
@@ -6941,7 +6951,7 @@
         const comment = commentInput.value.trim();
 
         if (marks === "" || isNaN(marks) || marks < 0 || marks > 10) {
-          return alert("Please enter valid marks between 0 and 10.");
+          return alert("Please enter a valid score between 0 and 10.");
         }
 
         try {
@@ -6975,14 +6985,14 @@
               );
             }
 
-            alert("Submission graded successfully!");
+            alert("The submission has been graded successfully.");
             loadAssignments(currentCoursePlayerId);
           } else {
             const err = await res.json();
-            alert("Failed to grade: " + (err.error || "Unknown error"));
+            alert("Failed to save the grade. Please try again.");
           }
         } catch (e) {
-          alert("Network error while grading submission.");
+          alert("Connection error. Please try again.");
         }
       }
 
@@ -7120,7 +7130,8 @@
 
       async function uploadProfilePicture(input) {
         if (!input.files || !input.files[0]) return;
-        if (!currentUser) return alert("Please log in first.");
+        if (!currentUser)
+          return alert("Please log in to upload a profile picture.");
         const file = input.files[0];
         const formData = new FormData();
         formData.append("profilePic", file);
@@ -7162,16 +7173,18 @@
                 console.log("Database sync failed", err);
               }
               setupDashboard(currentUser);
-              alert("Profile picture updated successfully!");
+              alert("Your profile picture has been updated.");
             } else {
-              alert("Server did not return a valid URL.");
+              alert(
+                "Upload completed but the image could not be saved. Please try again.",
+              );
             }
           } else {
             const err = await res.json();
-            alert("Failed to upload: " + (err.error || "Unknown error"));
+            alert("Failed to upload your picture. Please try again.");
           }
         } catch (e) {
-          alert("Upload failed due to network error.");
+          alert("Upload failed. Please check your connection and try again.");
         } finally {
           btn.innerHTML = originalText;
           btn.disabled = false;
@@ -7198,7 +7211,7 @@
           });
         } catch (err) {}
 
-        alert("Profile updated successfully!");
+        alert("Your profile has been updated successfully.");
         currentUser.name = newName;
         currentUser.avatar = newAvatar;
         localStorage.setItem("elms_current_user", JSON.stringify(currentUser));
@@ -7214,9 +7227,11 @@
         ).value;
 
         if (!oldPassword || !newPassword || !confirmPassword)
-          return alert("Please fill in all password fields.");
+          return alert(
+            "Please fill in your current and new password to continue.",
+          );
         if (newPassword !== confirmPassword)
-          return alert("New passwords do not match.");
+          return alert("Your new passwords do not match. Please try again.");
 
         try {
           const res = await fetch(`${API_URL}/update-password`, {
@@ -7229,7 +7244,7 @@
             }),
           });
           if (res.ok) {
-            alert("Password updated successfully!");
+            alert("Your password has been updated successfully.");
             document.getElementById("set-old-password").value = "";
             document.getElementById("set-new-password").value = "";
             document.getElementById("set-confirm-password").value = "";
@@ -7238,7 +7253,7 @@
             alert(data.error || "Failed to update password.");
           }
         } catch (error) {
-          alert("Connection error while updating password.");
+          alert("Connection error. Please try again.");
         }
       }
 
@@ -7252,7 +7267,9 @@
             body: JSON.stringify({ email: currentUser.email }),
           });
         } catch (err) {}
-        alert("Your account has been successfully deleted.");
+        alert(
+          "Your account has been permanently deleted. We're sorry to see you go.",
+        );
         logout();
       }
 
@@ -7654,7 +7671,7 @@
 
         const sendBtn = document.getElementById("g-chat-send-btn");
         const originalText = sendBtn.innerHTML;
-        sendBtn.innerHTML = "⏳";
+        sendBtn.innerHTML = "Sending...";
         sendBtn.disabled = true;
 
         try {
@@ -7710,7 +7727,7 @@
           setTimeout(() => (container.scrollTop = container.scrollHeight), 100);
         } catch (error) {
           console.error(error);
-          alert("Failed to send message.");
+          alert("Failed to send your message. Please try again.");
         } finally {
           sendBtn.innerHTML = originalText;
           sendBtn.disabled = false;
@@ -7732,10 +7749,10 @@
             await fetchGlobalChatMessages();
           } else {
             const data = await res.json();
-            alert(data.error || "Failed to delete message.");
+            alert("Failed to delete the message. Please try again.");
           }
         } catch (e) {
-          alert("Network error while deleting message.");
+          alert("Connection error. Please try again.");
         }
       }
 
@@ -7814,7 +7831,7 @@
 
             const submitBtn = e.target.querySelector("button[type='submit']");
             const oldBtnText = submitBtn.innerHTML;
-            submitBtn.innerHTML = "⏳ Logging in...";
+            submitBtn.innerHTML = "Signing in...";
             submitBtn.disabled = true;
             errorDiv.style.display = "none";
 
@@ -7836,7 +7853,7 @@
               clearTimeout(wakeupTimer);
               console.error("Login Error:", err);
               errorDiv.innerText =
-                "Server Error: Backend is unreachable. Please check your internet connection.";
+                "Unable to connect. Please check your internet connection and try again.";
               errorDiv.style.display = "block";
               submitBtn.innerHTML = oldBtnText;
               submitBtn.disabled = false;
@@ -7849,14 +7866,14 @@
               const user = data.user;
               if (user.role !== "admin" && user.status === "Pending") {
                 errorDiv.innerText =
-                  "Pending Approval: The administrator has not yet approved your account.";
+                  "Your account is currently pending approval. Please check back later.";
                 errorDiv.style.display = "block";
                 submitBtn.innerHTML = oldBtnText;
                 submitBtn.disabled = false;
                 return;
               } else if (user.status === "Banned") {
                 errorDiv.innerText =
-                  "Account Suspended: Your account has been suspended by the administrator.";
+                  "Your account has been suspended. Please contact support for assistance.";
                 errorDiv.style.display = "block";
                 submitBtn.innerHTML = oldBtnText;
                 submitBtn.disabled = false;
@@ -7873,7 +7890,7 @@
                 } catch (uiErr) {
                   console.error("Dashboard Render Error:", uiErr);
                   errorDiv.innerText =
-                    "Error loading your dashboard profile. Data might be corrupted.";
+                    "Something went wrong while loading your profile. Please try logging in again.";
                   errorDiv.style.display = "block";
                 }
               }
@@ -7894,13 +7911,13 @@
             const submitBtn = e.target.querySelector("button[type='submit']");
             const oldBtnText = submitBtn.innerHTML;
 
-            submitBtn.innerHTML = "⏳ Signing up...";
+            submitBtn.innerHTML = "Creating account...";
             submitBtn.disabled = true;
             errorDiv.style.display = "none";
 
             const wakeupTimer = setTimeout(() => {
               if (submitBtn.disabled) {
-                submitBtn.innerHTML = "⏳ Waking up Server (Takes 1-2 mins)...";
+                submitBtn.innerHTML = "Please wait, this may take a moment...";
               }
             }, 3000);
 
@@ -7934,19 +7951,19 @@
                   roleColor,
                 );
                 alert(
-                  "Account created successfully. An administrator must approve your account.",
+                  "Account created successfully! Your request has been sent for approval. You will be notified once approved.",
                 );
                 navigateTo("login");
               } else {
                 errorDiv.innerText =
                   data.error ||
-                  "Email already exists or a database error occurred.";
+                  "This email is already registered or an error occurred. Please try a different email.";
                 errorDiv.style.display = "block";
               }
             } catch (err) {
               clearTimeout(wakeupTimer);
               errorDiv.innerText =
-                "Server Error: Backend is unreachable. Please try again.";
+                "Unable to connect to the server. Please try again shortly.";
               errorDiv.style.display = "block";
             } finally {
               submitBtn.innerHTML = oldBtnText;

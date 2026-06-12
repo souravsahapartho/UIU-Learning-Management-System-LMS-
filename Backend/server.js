@@ -11,10 +11,10 @@ require("dotenv").config();
 const app = express();
 
 process.on("uncaughtException", (err) =>
-  console.error("🔥 Server Error:", err.message),
+  console.error("Server Error:", err.message),
 );
 process.on("unhandledRejection", (reason) =>
-  console.error("🔥 Promise Error:", reason),
+  console.error("Promise Error:", reason),
 );
 
 app.use(cors({ origin: "*" }));
@@ -89,11 +89,11 @@ const db = mysql.createPool({
 db.query("SELECT 1", (err) => {
   if (err) {
     console.error(
-      "❌ DB Connection Failed. Make sure your MySQL is running.",
+      "Database connection failed:",
       err.message,
     );
   } else {
-    console.log("✅ MySQL Connected Successfully!");
+    console.log("Database connected.");
   }
 });
 
@@ -121,7 +121,7 @@ const tableQueries = [
 
 tableQueries.forEach((query) => {
   db.query(query, (err) => {
-    if (err) console.error("🔥 Table Init Error:", err.message);
+    if (err) console.error("Table initialization error:", err.message);
   });
 });
 
@@ -157,7 +157,7 @@ app.post(
 
     uploadMiddleware(req, res, (err) => {
       if (err) {
-        console.error("🔥 Cloudinary/Multer Error (Profile):", err.message);
+        console.error("Profile upload error:", err.message);
         return res
           .status(500)
           .json({ error: "File upload failed: " + err.message });
@@ -179,7 +179,7 @@ app.post(
       (err) => {
         if (err)
           console.error(
-            "🔥 DB Error inserting to profile_pictures:",
+            "Profile picture save error:",
             err.message,
           );
         res.status(200).json({
@@ -198,7 +198,7 @@ app.post(
     const uploadMiddleware = upload.single("media");
     uploadMiddleware(req, res, (err) => {
       if (err) {
-        console.error("🔥 Cloudinary/Multer Error (Chat Media):", err.message);
+        console.error("Chat media upload error:", err.message);
         return res
           .status(500)
           .json({ error: "File upload failed: " + err.message });
@@ -369,7 +369,7 @@ app.post(
 
     uploadMiddleware(req, res, (err) => {
       if (err) {
-        console.error("🔥 Cloudinary/Multer Error:", err.message);
+        console.error("Course upload error:", err.message);
         return res
           .status(500)
           .json({ error: "File upload failed: " + err.message });
@@ -412,7 +412,7 @@ app.post(
       ],
       (err) => {
         if (err) {
-          console.error("🔥 Database Insert Error:", err.message);
+          console.error("Course insert error:", err.message);
           return res
             .status(500)
             .json({ error: "Database error: " + err.message });
@@ -1100,7 +1100,6 @@ app.use((req, res) =>
     error: `API route not found on backend: ${req.method} ${req.url}`,
   }),
 );
-
 
 const PORT = process.env.PORT || 5005;
 
