@@ -4502,6 +4502,7 @@
                 </div>
 
                 <div
+                  id="course-activities-box"
                   style="
                     background: white;
                     border: 1px solid #e2e8f0;
@@ -6310,14 +6311,29 @@
             }
           }
           // Unpublished course — student er kache block
-          if (
-            currentUser.role === "student" &&
-            selectedCourse.status === "Unpublished"
-          ) {
-            alert(
-              "⛔ This course has been unpublished by the admin and is currently unavailable.",
-            );
-            return;
+          if (currentUser.role === "student") {
+            const enrollments2 = await safeFetchJSON(`${API_URL}/enrollments`);
+            const isEnrolled =
+              Array.isArray(enrollments2) &&
+              enrollments2.some(
+                (e) =>
+                  e.course_id == courseId &&
+                  e.student_email === currentUser.email &&
+                  e.status === "Approved",
+              );
+
+            if (selectedCourse.status === "Unpublished") {
+              alert("This course is currently unavailable.");
+              return;
+            }
+
+            if (!isEnrolled) {
+              const box = document.getElementById("course-activities-box");
+              if (box) box.style.display = "none";
+            } else {
+              const box = document.getElementById("course-activities-box");
+              if (box) box.style.display = "block";
+            }
           }
           let hasAccess = false;
           if (
@@ -7343,17 +7359,27 @@
             });
           } else if (currentUser.role === "student") {
             const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+            const allCourses2 = await safeFetchJSON(`${API_URL}/courses`);
+
             let myEnrolled = enrollments.filter(
               (e) =>
                 e.student_email === currentUser.email &&
                 e.status === "Approved",
             );
+
             myEnrolled.forEach((e) => {
-              rooms.push({
-                id: e.course_id,
-                title: `📚 ${e.course_title}`,
-                isBroadcast: false,
-              });
+              const matchedCourse = Array.isArray(allCourses2)
+                ? allCourses2.find((c) => String(c.id) === String(e.course_id))
+                : null;
+
+              // Only show chat room if course is still published/approved
+              if (matchedCourse && matchedCourse.status === "Approved") {
+                rooms.push({
+                  id: e.course_id,
+                  title: `📚 ${e.course_title}`,
+                  isBroadcast: false,
+                });
+              }
             });
           }
           listContainer.innerHTML = rooms
