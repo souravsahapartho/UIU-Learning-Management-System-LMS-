@@ -238,9 +238,16 @@ app.post("/login", (req, res) => {
       if (data.length > 0) {
         const user = data[0];
         delete user.password;
+        if (user.status === "Banned") {
+          return res.status(403).json({
+            error:
+              "Account Suspended: Your account has been suspended by the administrator.",
+          });
+        }
         res.status(200).json({ user: user });
       } else {
-        res.status(401).json({ error: "Invalid credentials" });
+        errorDiv.innerText = data?.error || "Invalid email or password";
+        errorDiv.style.display = "block";
       }
     },
   );
@@ -671,7 +678,9 @@ app.delete("/course-chats/:id", (req, res) => {
       const isAdmin = requester_role === "admin";
 
       if (!isOwner && !isAdmin) {
-        return res.status(403).json({ error: "Not authorized to delete this message" });
+        return res
+          .status(403)
+          .json({ error: "Not authorized to delete this message" });
       }
 
       db.query(

@@ -930,6 +930,10 @@
         border-color: #c7d2fe;
         box-shadow: 0 10px 20px -5px rgba(199, 210, 254, 0.3);
       }
+      .admin-course-card.border-ban {
+        border-color: #fca5a5;
+        box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.1);
+      }
       .admin-course-card.border-pen {
         border-color: #fde68a;
         box-shadow: 0 10px 20px -5px rgba(253, 230, 138, 0.3);
@@ -5773,6 +5777,7 @@
           let htmlStr = "";
           for (let c of courses) {
             const isPending = c.status === "Pending";
+            const isUnpublished = c.status === "Unpublished";
             const bgIndex =
               (parseInt(String(c.id).slice(-3)) || 0) % courseGradients.length;
             let bgStyle = `background: ${courseGradients[bgIndex]}; display:flex; align-items:center; justify-content:center; text-align:center; padding:15px; border-bottom:1px solid #e2e8f0; cursor: pointer;`;
@@ -5794,13 +5799,21 @@
 
             let actionHTML = isPending
               ? `<div class="action-container" style="display:flex; gap:12px; margin-top: 15px; flex-wrap:wrap;">
-                  <button class="btn btn-success" onclick="updateCourseStatusAPI('${c.id}', 'Approved', '${c.instructor_email || ""}', '${safeTitle}')" style="flex: 1; border-radius: 8px;">Approve</button>
-                  <button class="btn btn-primary" onclick="updateCourseStatusAPI('${c.id}', 'Rejected', '${c.instructor_email || ""}', '${safeTitle}')" style="flex: 1; background: #e11d48; border-radius: 8px;">Reject</button>
-                 </div>`
-              : `<button class="btn btn-outline" style="width:100%; border-color:#ddd6fe; color:#4c1d95; margin-top: 15px;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">View Analytics & Complaints</button>`;
+        <button class="btn btn-success" onclick="updateCourseStatusAPI('${c.id}', 'Approved', '${c.instructor_email || ""}', '${safeTitle}')" style="flex: 1; border-radius: 8px;">Approve</button>
+        <button class="btn btn-primary" onclick="updateCourseStatusAPI('${c.id}', 'Rejected', '${c.instructor_email || ""}', '${safeTitle}')" style="flex: 1; background: #e11d48; border-radius: 8px;">Reject</button>
+       </div>`
+              : c.status === "Approved"
+                ? `<div style="display:flex; flex-direction:column; gap:8px; margin-top:15px;">
+        <button class="btn btn-outline" style="width:100%; border-color:#ddd6fe; color:#4c1d95;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">View Analytics & Complaints</button>
+        <button class="btn btn-outline" style="width:100%; border-color:#fca5a5; color:#e11d48; background:#fff5f5;" onclick="updateCourseStatusAPI('${c.id}', 'Unpublished', '${c.instructor_email || ""}', '${safeTitle}')">Unpublish Course</button>
+       </div>`
+                : `<div style="display:flex; flex-direction:column; gap:8px; margin-top:15px;">
+        <span style="background:#fee2e2; color:#b91c1c; padding:6px 12px; border-radius:8px; font-size:12px; font-weight:700; text-align:center;">⛔ Unpublished by Admin</span>
+        <button class="btn btn-success" style="width:100%;" onclick="updateCourseStatusAPI('${c.id}', 'Approved', '${c.instructor_email || ""}', '${safeTitle}')">Re-publish</button>
+       </div>`;
 
             htmlStr += `
-              <div class="admin-course-card ${isPending ? "border-pen" : "border-pub"}">
+        <div class="admin-course-card ${isPending ? "border-pen" : isUnpublished ? "border-ban" : "border-pub"}">
                   ${thumbHTML}
                   <div class="acc-tags">
                       <span class="acc-tag ${isPending ? "tag-pen" : "tag-pub"}">${isPending ? "Pending" : "Published"}</span>
@@ -5841,6 +5854,12 @@
             await notifyAllUsers(
               `A new course "${title}" has been published! Explore it now.`,
               "blue",
+            );
+          } else if (status === "Unpublished") {
+            await addNotification(
+              instructorEmail,
+              `⚠️ Your course "${title}" has been unpublished by the admin.`,
+              "red",
             );
           }
           alert(`Course has been successfully ${status.toLowerCase()}.`);
@@ -7659,11 +7678,15 @@
                 errorDiv.innerText =
                   "Pending Approval: The administrator has not yet approved your account.";
                 errorDiv.style.display = "block";
+                submitBtn.innerHTML = oldBtnText;
+                submitBtn.disabled = false;
                 return;
               } else if (user.status === "Banned") {
                 errorDiv.innerText =
                   "Account Suspended: Your account has been suspended by the administrator.";
                 errorDiv.style.display = "block";
+                submitBtn.innerHTML = oldBtnText;
+                submitBtn.disabled = false;
                 return;
               } else {
                 try {
