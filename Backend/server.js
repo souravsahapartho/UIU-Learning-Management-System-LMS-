@@ -655,6 +655,37 @@ app.post("/course-chats", (req, res) => {
   );
 });
 
+app.delete("/course-chats/:id", (req, res) => {
+  const { requester_email, requester_role } = req.body;
+
+  db.query(
+    "SELECT * FROM course_chats WHERE id = ?",
+    [req.params.id],
+    (err, data) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (data.length === 0)
+        return res.status(404).json({ error: "Message not found" });
+
+      const msg = data[0];
+      const isOwner = msg.user_email === requester_email;
+      const isAdmin = requester_role === "admin";
+
+      if (!isOwner && !isAdmin) {
+        return res.status(403).json({ error: "Not authorized to delete this message" });
+      }
+
+      db.query(
+        "DELETE FROM course_chats WHERE id = ?",
+        [req.params.id],
+        (delErr) =>
+          delErr
+            ? res.status(500).json({ error: delErr.message })
+            : res.status(200).json({ message: "Deleted" }),
+      );
+    },
+  );
+});
+
 app.get("/course-chats-latest/:courseId", (req, res) => {
   db.query(
     "SELECT MAX(id) as maxId FROM course_chats WHERE course_id = ?",
