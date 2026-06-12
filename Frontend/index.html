@@ -1514,6 +1514,45 @@
         overflow: hidden;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
       }
+      .g-chat-messages {
+        padding: 12px;
+      }
+      .chat-msg {
+        max-width: 90%;
+        font-size: 14px;
+        padding: 10px 14px;
+      }
+      .g-chat-input-area {
+        padding: 12px;
+        gap: 8px;
+      }
+      .g-chat-input-area input[type="text"] {
+        padding: 10px 16px;
+        font-size: 13px;
+      }
+      .g-chat-input-area .btn {
+        padding: 10px 14px;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+      #g-chat-target {
+        font-size: 12px;
+        padding: 8px 10px;
+      }
+      .g-chat-list-container .g-chat-item {
+        padding: 12px 16px;
+      }
+      .g-chat-main-header {
+        padding: 15px;
+        padding-right: 55px;
+        font-size: 14px;
+      }
+      .g-chat-main-header div:last-child {
+        font-size: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
       .close-chat-btn-top {
         position: absolute;
         top: 15px;
@@ -1954,6 +1993,47 @@
         }
       }
       @media (max-width: 768px) {
+        .cp-video-box svg {
+          width: 48px;
+          height: 48px;
+        }
+        .cp-lesson-info {
+          padding: 16px;
+        }
+        .cp-lesson-info h2 {
+          font-size: 20px;
+        }
+        .lesson-item {
+          padding: 12px 16px;
+        }
+        .lesson-item > div:last-child > div:first-child {
+          font-size: 14px;
+        }
+        #cp-feedback-area-container,
+        #cp-assignments-area-container,
+        #cp-students-area-container {
+          padding: 0;
+        }
+        .due-assign-card {
+          padding: 16px;
+        }
+        .assignment-card {
+          padding: 14px !important;
+        }
+        .fb-item-card {
+          padding: 12px !important;
+        }
+        #assign-title,
+        #assign-desc,
+        #assign-due,
+        .submission-box {
+          font-size: 14px;
+        }
+        #cp-feedback-rating,
+        #cp-feedback-input,
+        #cp-complaint-input {
+          font-size: 14px;
+        }
         .navbar {
           padding: 12px 20px;
         }
@@ -2115,6 +2195,42 @@
         }
       }
       @media (max-width: 480px) {
+        .cp-header-area h1 {
+          font-size: 22px;
+        }
+        .cp-header-area p {
+          font-size: 13px;
+        }
+        .cp-tabs {
+          gap: 6px;
+          padding: 4px;
+        }
+        .cp-tab {
+          padding: 6px 12px;
+          font-size: 12px;
+        }
+        .cp-tab svg {
+          width: 14px;
+          height: 14px;
+        }
+        .lesson-list-box > div:first-child {
+          font-size: 15px;
+          padding: 15px 18px;
+        }
+        .lesson-circle {
+          width: 20px;
+          height: 20px;
+        }
+        .assignment-card > div:first-child {
+          flex-direction: column;
+          align-items: flex-start !important;
+        }
+        .due-assign-card {
+          border-left-width: 3px;
+        }
+        .due-assign-card h4 {
+          font-size: 15px;
+        }
         .prog-stats-grid {
           grid-template-columns: 1fr;
         }
@@ -2133,6 +2249,35 @@
           display: inline-block;
           margin-bottom: 15px;
           align-self: center;
+        }
+        .global-chat-fab {
+          width: 50px;
+          height: 50px;
+          bottom: 20px;
+          right: 20px;
+        }
+        .global-chat-fab svg {
+          width: 22px;
+          height: 22px;
+        }
+        .chat-msg {
+          max-width: 95%;
+          font-size: 13px;
+        }
+        .g-chat-sidebar {
+          height: 35%;
+        }
+        .g-chat-main {
+          height: 65%;
+        }
+        .g-chat-input-area {
+          flex-wrap: nowrap;
+        }
+        .g-chat-input-area input[type="text"] {
+          min-width: 0;
+        }
+        .g-chat-main-header {
+          padding-right: 50px;
         }
         .user-card {
           align-items: center;
@@ -6321,9 +6466,9 @@
               <div style="display:flex; flex-direction:column; gap:12px;">
                  <input type="text" id="assign-title" placeholder="Assignment Title" style="padding:10px 15px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif;">
                  <textarea id="assign-desc" placeholder="Assignment Instructions..." style="padding:10px 15px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; min-height:80px; resize:vertical;"></textarea>
-                 <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+              <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
                     <label style="font-weight:600; font-size:14px; color:#334155;" class="dm-text">Due Date:</label>
-                    <input type="date" id="assign-due" style="padding:8px 12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; flex:1;">
+                    <input type="date" id="assign-due" style="padding:8px 12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif; flex:1; min-width:140px; width:100%;">
                  </div>
                  <button class="btn btn-primary" onclick="createAssignment()" style="margin-top:5px; width: 100%;">Upload Assignment</button>
               </div>
