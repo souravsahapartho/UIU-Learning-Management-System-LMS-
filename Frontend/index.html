@@ -1523,29 +1523,7 @@
         overflow: hidden;
         margin: 0;
       }
-      .g-chat-sidebar {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 2;
-        transition: transform 0.25s ease;
-        display: flex;
-        flex-direction: column;
-      }
-      .g-chat-main {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1;
-        transform: translateX(100%);
-        transition: transform 0.25s ease;
-        display: flex;
-        flex-direction: column;
-      }
+
       .g-chat-list {
         flex: 1;
         min-height: 0;
@@ -1572,6 +1550,40 @@
         padding: 10px 14px;
         font-size: 13px;
         flex-shrink: 0;
+      }
+      .g-chat-media-preview {
+        position: absolute;
+        bottom: 70px;
+        left: 12px;
+        background: var(--color-background-primary, white);
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 4px;
+        display: none;
+        z-index: 5;
+      }
+      .g-chat-media-preview.active {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .g-chat-media-preview img,
+      .g-chat-media-preview video {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 6px;
+      }
+      .g-chat-media-preview .remove-media {
+        cursor: pointer;
+        color: #ef4444;
+        font-weight: 700;
+        font-size: 13px;
+        padding: 0 6px;
+      }
+      body.dark-mode .g-chat-media-preview {
+        background: #1e293b;
+        border-color: #334155;
       }
       #g-chat-target {
         font-size: 12px;
@@ -4699,17 +4711,6 @@
         }
       }
 
-      function setChatViewportHeight() {
-        const overlay = document.getElementById("global-chat-overlay");
-        if (overlay && window.visualViewport) {
-          overlay.style.height = window.visualViewport.height + "px";
-        }
-      }
-      window.addEventListener("resize", setChatViewportHeight);
-      if (window.visualViewport) {
-        window.visualViewport.addEventListener("resize", setChatViewportHeight);
-      }
-
       window.addEventListener("DOMContentLoaded", () => {
         const isDark = localStorage.getItem("elms_dark_mode") === "true";
         if (isDark) {
@@ -7183,7 +7184,6 @@
       }
 
       function toggleGlobalChat(show) {
-        setChatViewportHeight();
         const overlay = document.getElementById("global-chat-overlay");
         const container = document.querySelector(".global-chat-container");
         if (show) {
@@ -7450,6 +7450,39 @@
         }
       }
 
+      function previewChatMedia(input) {
+        const preview = document.getElementById("g-chat-media-preview");
+        const icon = document.getElementById("g-chat-media-icon");
+        if (!preview) return;
+        if (!input.files || !input.files[0]) {
+          preview.classList.remove("active");
+          preview.innerHTML = "";
+          if (icon) icon.innerText = "📎";
+          return;
+        }
+        const file = input.files[0];
+        const url = URL.createObjectURL(file);
+        const isImage = file.type.startsWith("image/");
+        const mediaTag = isImage
+          ? `<img src="${url}" />`
+          : `<video src="${url}" muted></video>`;
+        preview.innerHTML = `${mediaTag}<span class="remove-media" onclick="clearChatMediaPreview()">✕</span>`;
+        preview.classList.add("active");
+        if (icon) icon.innerText = "✅";
+      }
+
+      function clearChatMediaPreview() {
+        const input = document.getElementById("g-chat-media");
+        const preview = document.getElementById("g-chat-media-preview");
+        const icon = document.getElementById("g-chat-media-icon");
+        if (input) input.value = "";
+        if (preview) {
+          preview.classList.remove("active");
+          preview.innerHTML = "";
+        }
+        if (icon) icon.innerText = "📎";
+      }
+
       async function sendGlobalMessage() {
         const input = document.getElementById("g-chat-input");
         const mediaInput = document.getElementById("g-chat-media");
@@ -7528,8 +7561,7 @@
           });
 
           input.value = "";
-          if (mediaInput) mediaInput.value = "";
-          if (mediaIcon) mediaIcon.innerText = "📎";
+          clearChatMediaPreview();
 
           await fetchGlobalChatMessages();
           const container = document.getElementById(
