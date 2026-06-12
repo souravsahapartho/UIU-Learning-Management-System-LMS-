@@ -2456,6 +2456,33 @@
           font-size: 14px;
         }
       }
+      .g-chat-media-preview {
+        display: none;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        background: #f1f5f9;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        margin-right: 6px;
+        flex-shrink: 0;
+      }
+      .g-chat-media-preview.active {
+        display: flex;
+      }
+      .g-chat-media-preview img,
+      .g-chat-media-preview video {
+        width: 44px;
+        height: 44px;
+        object-fit: cover;
+        border-radius: 6px;
+      }
+      .g-chat-media-preview .remove-media {
+        cursor: pointer;
+        color: #ef4444;
+        font-weight: 700;
+        font-size: 13px;
+      }
     </style>
   </head>
   <body>
@@ -6080,19 +6107,37 @@
                 ? `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"><div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div></div>`
                 : `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div>`;
 
+              const isUnpublished = c.status === "Unpublished";
               return `
-                    <div class="std-course-card">
-                        ${thumbHTML}
-                        <div class="std-course-card-content">
-                            <h3 style="font-size:18px; font-weight:700; color:#0f172a; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                            <p style="font-size:14px; color:#64748b; margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p>
-                            <div class="progress-bar-bg" style="margin-top: auto;"><div class="progress-bar-fill" style="width:50%;"></div></div>
-                            <div style="display:flex; justify-content:space-between; color:#64748b; font-size:13px; font-weight:500;">
-                                <span class="dm-desc">50% Complete</span>
-                                <button class="btn btn-outline" style="padding: 4px 12px; font-size: 12px;" onclick="openCoursePlayer('${c.id}')">Continue</button>
-                            </div>
-                        </div>
-                    </div>`;
+  <div class="std-course-card" style="${isUnpublished ? "opacity:0.75;" : ""}">
+    ${thumbHTML}
+    ${
+      isUnpublished
+        ? `
+      <div style="background:#fef2f2; border-top: 2px solid #fca5a5; padding: 10px 16px; display:flex; align-items:center; gap:8px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span style="font-size:12px; font-weight:700; color:#ef4444;">⛔ Unpublished by Admin</span>
+      </div>`
+        : ""
+    }
+    <div class="std-course-card-content">
+      <h3 style="font-size:18px; font-weight:700; color:#0f172a; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
+      <p style="font-size:14px; color:#64748b; margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p>
+      ${
+        isUnpublished
+          ? `
+        <div style="background:#fef2f2; border:1px solid #fca5a5; border-radius:10px; padding:12px; margin-top:auto; font-size:13px; color:#b91c1c; font-weight:600; text-align:center;">
+          This course is currently unavailable.
+        </div>`
+          : `
+        <div class="progress-bar-bg" style="margin-top: auto;"><div class="progress-bar-fill" style="width:50%;"></div></div>
+        <div style="display:flex; justify-content:space-between; color:#64748b; font-size:13px; font-weight:500;">
+          <span class="dm-desc">50% Complete</span>
+          <button class="btn btn-outline" style="padding: 4px 12px; font-size: 12px;" onclick="openCoursePlayer('${c.id}')">Continue</button>
+        </div>`
+      }
+    </div>
+  </div>`;
             })
             .join("");
         } catch (e) {
@@ -6245,7 +6290,16 @@
               videoBox.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg><p style="position:absolute; bottom:20px; color:#94a3b8; font-size: 13px;">No video uploaded</p>`;
             }
           }
-
+          // Unpublished course — student er kache block
+          if (
+            currentUser.role === "student" &&
+            selectedCourse.status === "Unpublished"
+          ) {
+            alert(
+              "⛔ This course has been unpublished by the admin and is currently unavailable.",
+            );
+            return;
+          }
           let hasAccess = false;
           if (
             currentUser.role === "admin" ||
@@ -7318,9 +7372,10 @@
                       <option value="broadcast_students">Students Only</option>
                       <option value="broadcast_instructors">Instructors Only</option>
                   </select>
+                  <div class="g-chat-media-preview" id="g-chat-media-preview"></div>
                   <label style="cursor:pointer; display:flex; align-items:center; padding: 10px; background:#f1f5f9; border-radius:50%; margin-right:5px;" title="Attach Image or Video" id="g-chat-media-lbl">
                       <span id="g-chat-media-icon">📎</span>
-                      <input type="file" id="g-chat-media" class="hidden" accept="image/*,video/*" onchange="document.getElementById('g-chat-media-icon').innerText = this.files.length > 0 ? '✅' : '📎';" />
+<input type="file" id="g-chat-media" class="hidden" accept="image/*,video/*" onchange="previewChatMedia(this)" />
                   </label>
                   <input type="text" id="g-chat-input" placeholder="Type an announcement..." onkeydown="if(event.key === 'Enter') sendGlobalMessage()" style="flex: 1; padding: 12px 20px; border-radius: 50px; border: 1px solid #cbd5e1; outline: none; font-size: 14px; background: #f8fafc;" />
                   <button class="btn btn-primary" id="g-chat-send-btn" onclick="sendGlobalMessage()" style="border-radius: 50px;">Send</button>
@@ -7334,7 +7389,7 @@
           inputArea.innerHTML = `
                   <label style="cursor:pointer; display:flex; align-items:center; padding: 10px; background:#f1f5f9; border-radius:50%; margin-right:5px;" title="Attach Image or Video" id="g-chat-media-lbl">
                       <span id="g-chat-media-icon">📎</span>
-                      <input type="file" id="g-chat-media" class="hidden" accept="image/*,video/*" onchange="document.getElementById('g-chat-media-icon').innerText = this.files.length > 0 ? '✅' : '📎';" />
+<input type="file" id="g-chat-media" class="hidden" accept="image/*,video/*" onchange="previewChatMedia(this)" />
                   </label>
                   <input type="text" id="g-chat-input" placeholder="Type a message..." onkeydown="if(event.key === 'Enter') sendGlobalMessage()" style="flex: 1; padding: 12px 20px; border-radius: 50px; border: 1px solid #cbd5e1; outline: none; font-size: 14px; background: #f8fafc;" />
                   <button class="btn btn-primary" id="g-chat-send-btn" onclick="sendGlobalMessage()" style="border-radius: 50px;">Send</button>
@@ -7478,11 +7533,11 @@
         const url = URL.createObjectURL(file);
         const isImage = file.type.startsWith("image/");
         const mediaTag = isImage
-          ? `<img src="${url}" />`
+          ? `<img src="${url}" alt="preview" />`
           : `<video src="${url}" muted></video>`;
         preview.innerHTML = `${mediaTag}<span class="remove-media" onclick="clearChatMediaPreview()">✕</span>`;
         preview.classList.add("active");
-        if (icon) icon.innerText = "✅";
+        if (icon) icon.innerText = "📎";
       }
 
       function clearChatMediaPreview() {
