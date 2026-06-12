@@ -1556,25 +1556,23 @@
         flex-shrink: 0;
       }
       .g-chat-media-preview {
-        position: absolute;
-        bottom: 70px;
-        left: 12px;
-        background: var(--color-background-primary, white);
-        border: 1px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 4px;
         display: none;
-        z-index: 5;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        background: #f1f5f9;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        flex-shrink: 0;
+        max-width: 80px;
       }
       .g-chat-media-preview.active {
         display: flex;
-        align-items: center;
-        gap: 8px;
       }
       .g-chat-media-preview img,
       .g-chat-media-preview video {
-        width: 50px;
-        height: 50px;
+        width: 44px;
+        height: 44px;
         object-fit: cover;
         border-radius: 6px;
       }
@@ -1583,7 +1581,6 @@
         color: #ef4444;
         font-weight: 700;
         font-size: 13px;
-        padding: 0 6px;
       }
       body.dark-mode .g-chat-media-preview {
         background: #1e293b;
@@ -7367,19 +7364,18 @@
 
         if (isBroadcast && currentUser.role === "admin") {
           inputArea.innerHTML = `
-                  <select id="g-chat-target" style="padding: 10px 15px; border-radius: 50px; border: 1px solid #cbd5e1; outline: none; background: #f8fafc; cursor: pointer; flex-shrink: 0; font-size: 13px; font-weight: 600; color: #334155;">
-                      <option value="broadcast">All Users</option>
-                      <option value="broadcast_students">Students Only</option>
-                      <option value="broadcast_instructors">Instructors Only</option>
-                  </select>
-                  <div class="g-chat-media-preview" id="g-chat-media-preview"></div>
-                  <label style="cursor:pointer; display:flex; align-items:center; padding: 10px; background:#f1f5f9; border-radius:50%; margin-right:5px;" title="Attach Image or Video" id="g-chat-media-lbl">
-                      <span id="g-chat-media-icon">📎</span>
-<input type="file" id="g-chat-media" class="hidden" accept="image/*,video/*" onchange="previewChatMedia(this)" />
-                  </label>
-                  <input type="text" id="g-chat-input" placeholder="Type an announcement..." onkeydown="if(event.key === 'Enter') sendGlobalMessage()" style="flex: 1; padding: 12px 20px; border-radius: 50px; border: 1px solid #cbd5e1; outline: none; font-size: 14px; background: #f8fafc;" />
-                  <button class="btn btn-primary" id="g-chat-send-btn" onclick="sendGlobalMessage()" style="border-radius: 50px;">Send</button>
-              `;
+  <select id="g-chat-target" style="padding:10px 15px;border-radius:50px;border:1px solid #cbd5e1;outline:none;background:#f8fafc;cursor:pointer;flex-shrink:0;font-size:13px;font-weight:600;color:#334155;">
+    <option value="broadcast">All Users</option>
+    <option value="broadcast_students">Students Only</option>
+    <option value="broadcast_instructors">Instructors Only</option>
+  </select>
+  <label style="cursor:pointer;display:flex;align-items:center;padding:10px;background:#f1f5f9;border-radius:50%;flex-shrink:0;" title="Attach">
+    📎<input type="file" id="g-chat-media" class="hidden" accept="image/*,video/*" onchange="previewChatMedia(this)" />
+  </label>
+  <div class="g-chat-media-preview" id="g-chat-media-preview"></div>
+  <input type="text" id="g-chat-input" placeholder="Type an announcement..." onkeydown="if(event.key==='Enter') sendGlobalMessage()" style="flex:1;padding:12px 20px;border-radius:50px;border:1px solid #cbd5e1;outline:none;font-size:14px;background:#f8fafc;" />
+  <button class="btn btn-primary" id="g-chat-send-btn" onclick="sendGlobalMessage()" style="border-radius:50px;">Send</button>
+`;
         } else if (isBroadcast && currentUser.role !== "admin") {
           inputArea.innerHTML = `
                   <input type="text" id="g-chat-input" placeholder="Only Admins can post announcements." disabled style="flex: 1; padding: 12px 20px; border-radius: 50px; border: 1px solid #cbd5e1; outline: none; font-size: 14px; background: #e2e8f0; cursor: not-allowed;" />
@@ -7387,13 +7383,13 @@
               `;
         } else {
           inputArea.innerHTML = `
-                  <label style="cursor:pointer; display:flex; align-items:center; padding: 10px; background:#f1f5f9; border-radius:50%; margin-right:5px;" title="Attach Image or Video" id="g-chat-media-lbl">
-                      <span id="g-chat-media-icon">📎</span>
-<input type="file" id="g-chat-media" class="hidden" accept="image/*,video/*" onchange="previewChatMedia(this)" />
-                  </label>
-                  <input type="text" id="g-chat-input" placeholder="Type a message..." onkeydown="if(event.key === 'Enter') sendGlobalMessage()" style="flex: 1; padding: 12px 20px; border-radius: 50px; border: 1px solid #cbd5e1; outline: none; font-size: 14px; background: #f8fafc;" />
-                  <button class="btn btn-primary" id="g-chat-send-btn" onclick="sendGlobalMessage()" style="border-radius: 50px;">Send</button>
-              `;
+  <label style="cursor:pointer;display:flex;align-items:center;padding:10px;background:#f1f5f9;border-radius:50%;flex-shrink:0;" title="Attach">
+    📎<input type="file" id="g-chat-media" class="hidden" accept="image/*,video/*" onchange="previewChatMedia(this)" />
+  </label>
+  <div class="g-chat-media-preview" id="g-chat-media-preview"></div>
+  <input type="text" id="g-chat-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendGlobalMessage()" style="flex:1;padding:12px 20px;border-radius:50px;border:1px solid #cbd5e1;outline:none;font-size:14px;background:#f8fafc;" />
+  <button class="btn btn-primary" id="g-chat-send-btn" onclick="sendGlobalMessage()" style="border-radius:50px;">Send</button>
+`;
         }
 
         await fetchGlobalChatMessages();
@@ -7521,23 +7517,24 @@
 
       function previewChatMedia(input) {
         const preview = document.getElementById("g-chat-media-preview");
-        const icon = document.getElementById("g-chat-media-icon");
         if (!preview) return;
+
         if (!input.files || !input.files[0]) {
           preview.classList.remove("active");
           preview.innerHTML = "";
-          if (icon) icon.innerText = "📎";
           return;
         }
+
         const file = input.files[0];
         const url = URL.createObjectURL(file);
         const isImage = file.type.startsWith("image/");
+
         const mediaTag = isImage
           ? `<img src="${url}" alt="preview" />`
           : `<video src="${url}" muted></video>`;
+
         preview.innerHTML = `${mediaTag}<span class="remove-media" onclick="clearChatMediaPreview()">✕</span>`;
         preview.classList.add("active");
-        if (icon) icon.innerText = "📎";
       }
 
       function clearChatMediaPreview() {
