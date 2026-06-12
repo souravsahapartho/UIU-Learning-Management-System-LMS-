@@ -1569,6 +1569,25 @@
         color: #64748b;
         transition: 0.2s;
       }
+      .g-chat-back-btn {
+        display: none;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        color: #64748b;
+        padding: 4px;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      body.dark-mode .g-chat-back-btn {
+        color: #cbd5e1;
+      }
+      .chat-msg img,
+      .chat-msg video {
+        max-width: 100% !important;
+        width: 100%;
+        display: block;
+      }
       .close-chat-btn-top:hover {
         background: #e2e8f0;
         color: #ef4444;
@@ -2181,6 +2200,88 @@
           height: 100vh;
           width: 100%;
           border-radius: 0;
+        }
+        .global-chat-container {
+          flex-direction: column;
+          height: 100vh;
+          width: 100%;
+          border-radius: 0;
+          position: relative;
+          overflow: hidden;
+        }
+        .g-chat-sidebar {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 2;
+          transition: transform 0.25s ease;
+        }
+        .g-chat-main {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 1;
+          transform: translateX(100%);
+          transition: transform 0.25s ease;
+        }
+        .global-chat-container.chat-open .g-chat-sidebar {
+          transform: translateX(-100%);
+        }
+        .global-chat-container.chat-open .g-chat-main {
+          transform: translateX(0);
+        }
+        .g-chat-back-btn {
+          display: flex;
+        }
+        .g-chat-messages {
+          padding: 12px;
+        }
+        .chat-msg {
+          max-width: 90%;
+          font-size: 14px;
+          padding: 10px 14px;
+        }
+        .g-chat-input-area {
+          padding: 12px;
+          gap: 8px;
+        }
+        .g-chat-input-area input[type="text"] {
+          padding: 10px 16px;
+          font-size: 13px;
+          min-width: 0;
+        }
+        .g-chat-input-area .btn {
+          padding: 10px 14px;
+          font-size: 13px;
+          flex-shrink: 0;
+        }
+        #g-chat-target {
+          font-size: 12px;
+          padding: 8px 10px;
+        }
+        .g-chat-list-container .g-chat-item {
+          padding: 14px 16px;
+        }
+        .g-chat-main-header {
+          padding: 12px 15px;
+          padding-right: 55px;
+          font-size: 14px;
+          gap: 8px;
+        }
+        .g-chat-main-header div:last-child {
+          font-size: 14px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          flex: 1;
+        }
+        .close-chat-btn-top {
+          top: 12px;
+          right: 12px;
         }
         .g-chat-sidebar {
           width: 100%;
@@ -7032,13 +7133,13 @@
         location.reload();
       }
 
-      // GLOBAL CHAT WHATSAPP STYLE LOGIC
       function toggleGlobalChat(show) {
         const overlay = document.getElementById("global-chat-overlay");
+        const container = document.querySelector(".global-chat-container");
         if (show) {
           overlay.classList.remove("hidden");
           overlay.style.display = "flex";
-          // Clear badge since we are opening the chat
+          if (container) container.classList.remove("chat-open");
           const badge = document.getElementById("global-chat-badge");
           if (badge) {
             badge.innerText = "0";
@@ -7050,6 +7151,13 @@
           overlay.style.display = "none";
           if (chatRefreshInterval) clearInterval(chatRefreshInterval);
         }
+      }
+
+      function backToChatList() {
+        const container = document.querySelector(".global-chat-container");
+        if (container) container.classList.remove("chat-open");
+        if (chatRefreshInterval) clearInterval(chatRefreshInterval);
+        currentOpenRoom = null;
       }
 
       async function loadChatGroups() {
@@ -7120,6 +7228,8 @@
 
       async function openChatRoom(roomId, roomName, isBroadcast) {
         currentOpenRoom = String(roomId);
+        const chatContainer = document.querySelector(".global-chat-container");
+        if (chatContainer) chatContainer.classList.add("chat-open");
         currentRoomName = roomName;
 
         document
@@ -7127,8 +7237,10 @@
           .forEach((el) => el.classList.remove("active"));
         if (event && event.currentTarget)
           event.currentTarget.classList.add("active");
-
         document.getElementById("g-chat-main-header").innerHTML = `
+              <button class="g-chat-back-btn" onclick="backToChatList()" title="Back to chats">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              </button>
               <div class="g-chat-avatar" style="${isBroadcast ? "background:#10b981;" : "background:#3b82f6;"}">${isBroadcast ? "📢" : "💬"}</div>
               <div style="font-size:16px; font-weight:700;">${roomName}</div>
           `;
