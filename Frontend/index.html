@@ -5796,6 +5796,7 @@
           "student-due-assignments-grid",
         );
         if (!container) return;
+        container.innerHTML = `<div style="padding:20px; color:#64748b;">Loading assignments...</div>`;
         try {
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
           if (!Array.isArray(enrollments)) return;
@@ -5809,31 +5810,33 @@
             return;
           }
 
-          let allPendingAssignments = [];
-          for (let enr of myEnrollments) {
-            const assignments = await safeFetchJSON(
-              `${API_URL}/assignments/${enr.course_id}`,
-            );
-            const submissions = await safeFetchJSON(
-              `${API_URL}/assignment-submissions/${enr.course_id}`,
-            );
-            const mySubmissions = Array.isArray(submissions)
-              ? submissions.filter((s) => s.student_email === currentUser.email)
-              : [];
-            const submittedAssignIds = mySubmissions.map(
-              (s) => s.assignment_id,
-            );
+          const results = await Promise.all(
+            myEnrollments.map(async (enr) => {
+              const [assignments, submissions] = await Promise.all([
+                safeFetchJSON(`${API_URL}/assignments/${enr.course_id}`),
+                safeFetchJSON(
+                  `${API_URL}/assignment-submissions/${enr.course_id}`,
+                ),
+              ]);
 
-            if (Array.isArray(assignments)) {
-              const pendingForCourse = assignments.filter(
-                (a) => !submittedAssignIds.includes(a.id),
+              const mySubmissions = Array.isArray(submissions)
+                ? submissions.filter(
+                    (s) => s.student_email === currentUser.email,
+                  )
+                : [];
+              const submittedAssignIds = mySubmissions.map(
+                (s) => s.assignment_id,
               );
-              pendingForCourse.forEach((a) => {
-                a.course_title = enr.course_title;
-                allPendingAssignments.push(a);
-              });
-            }
-          }
+
+              if (!Array.isArray(assignments)) return [];
+
+              return assignments
+                .filter((a) => !submittedAssignIds.includes(a.id))
+                .map((a) => ({ ...a, course_title: enr.course_title }));
+            }),
+          );
+
+          let allPendingAssignments = results.flat();
 
           if (allPendingAssignments.length === 0) {
             container.innerHTML = `<p style="color:#10b981; width:100%; padding:20px; background:#ecfdf5; border-radius:12px; border:1px solid #a7f3d0; text-align:center; font-weight:600;">🎉 Great job! You have no pending assignments.</p>`;
