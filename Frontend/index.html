@@ -1503,18 +1503,56 @@
         justify-content: center;
         backdrop-filter: blur(4px);
       }
+      .global-chat-overlay {
+        align-items: stretch;
+        justify-content: stretch;
+        padding: 0;
+      }
       .global-chat-container {
-        position: relative;
-        width: 95%;
-        max-width: 1000px;
-        height: 85vh;
-        background: white;
-        border-radius: 20px;
-        display: flex;
+        flex-direction: column;
+        height: 100dvh;
+        max-height: 100dvh;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         overflow: hidden;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        margin: 0;
+      }
+      .g-chat-sidebar {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        transition: transform 0.25s ease;
+        display: flex;
+        flex-direction: column;
+      }
+      .g-chat-main {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        transform: translateX(100%);
+        transition: transform 0.25s ease;
+        display: flex;
+        flex-direction: column;
+      }
+      .g-chat-list {
+        flex: 1;
+        min-height: 0;
       }
       .g-chat-messages {
+        flex: 1;
+        min-height: 0;
         padding: 12px;
       }
       .chat-msg {
@@ -4661,6 +4699,17 @@
         }
       }
 
+      function setChatViewportHeight() {
+        const overlay = document.getElementById("global-chat-overlay");
+        if (overlay && window.visualViewport) {
+          overlay.style.height = window.visualViewport.height + "px";
+        }
+      }
+      window.addEventListener("resize", setChatViewportHeight);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", setChatViewportHeight);
+      }
+
       window.addEventListener("DOMContentLoaded", () => {
         const isDark = localStorage.getItem("elms_dark_mode") === "true";
         if (isDark) {
@@ -7134,6 +7183,7 @@
       }
 
       function toggleGlobalChat(show) {
+        setChatViewportHeight();
         const overlay = document.getElementById("global-chat-overlay");
         const container = document.querySelector(".global-chat-container");
         if (show) {
