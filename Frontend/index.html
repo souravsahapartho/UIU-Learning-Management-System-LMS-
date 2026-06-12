@@ -6414,7 +6414,40 @@
               let assignSubs = Array.isArray(submissions)
                 ? submissions.filter((s) => s.assignment_id === a.id)
                 : [];
-              studentActionHtml = `<div style="margin-top:15px; padding-top:15px; border-top:1px solid #e2e8f0;"><b style="font-size:13px; color:#0f172a;" class="dm-title">Submissions (${assignSubs.length})</b></div>`;
+
+              let subsHtml = "";
+              if (assignSubs.length === 0) {
+                subsHtml = `<p style="font-size:13px; color:#94a3b8; margin-top:8px;">No submissions yet.</p>`;
+              } else {
+                assignSubs.forEach((sub) => {
+                  let gradeBoxHtml = "";
+                  if (sub.marks != null) {
+                    gradeBoxHtml = `
+                      <div style="margin-top:10px; padding:10px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;">
+                        <b style="color:#059669; font-size:13px;">✅ Graded: ${sub.marks}/10</b>
+                        ${sub.instructor_comment ? `<p style="font-size:13px; color:#334155; margin-top:5px;" class="dm-text">Feedback: ${sub.instructor_comment}</p>` : ""}
+                        <button class="btn btn-outline" style="margin-top:8px; padding:4px 12px; font-size:12px;" onclick="document.getElementById('grade-form-${sub.id}').classList.remove('hidden'); this.parentElement.querySelector('b').parentElement.classList.add('hidden');">Edit Grade</button>
+                      </div>`;
+                  }
+
+                  subsHtml += `
+                    <div style="margin-top:12px; padding:12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;" class="fb-item-card">
+                      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                        <b style="font-size:14px; color:#0f172a;" class="dm-title">${sub.student_name}</b>
+                        <span style="font-size:12px; color:#64748b;">${sub.date}</span>
+                      </div>
+                      <p style="font-size:13px; color:#475569; margin-top:6px; word-wrap:break-word; white-space:pre-wrap;" class="dm-desc">${sub.submission_text}</p>
+                      ${gradeBoxHtml}
+                      <div id="grade-form-${sub.id}" class="${sub.marks != null ? "hidden" : ""}" style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start;">
+                        <input type="number" id="marks-${sub.id}" min="0" max="10" placeholder="Marks /10" value="${sub.marks != null ? sub.marks : ""}" style="width:90px; padding:8px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif;">
+                        <input type="text" id="comment-${sub.id}" placeholder="Feedback (optional)" value="${sub.instructor_comment ? sub.instructor_comment.replace(/"/g, "&quot;") : ""}" style="flex:1; min-width:150px; padding:8px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-family:'Inter', sans-serif;">
+                        <button class="btn btn-primary" style="padding:8px 16px; font-size:13px;" onclick="gradeSubmission(${sub.id}, ${a.id})">Save Grade</button>
+                      </div>
+                    </div>`;
+                });
+              }
+
+              studentActionHtml = `<div style="margin-top:15px; padding-top:15px; border-top:1px solid #e2e8f0;"><b style="font-size:13px; color:#0f172a;" class="dm-title">Submissions (${assignSubs.length})</b>${subsHtml}</div>`;
             }
             htmlStr += `<div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:20px;" class="assignment-card"><div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px; flex-wrap: wrap; gap: 10px;"><h4 style="font-size:16px; font-weight:800; color:#0f172a; margin:0;" class="dm-title">📝 ${a.title}</h4><span style="background:#fef2f2; color:#ef4444; border:1px solid #fca5a5; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;">Due: ${a.due_date}</span></div><p style="font-size:14px; color:#475569; line-height:1.5; word-wrap: break-word;" class="dm-desc">${a.description}</p>${studentActionHtml}</div>`;
           });
@@ -6460,6 +6493,40 @@
         } catch (e) {
           console.error(e);
           alert("Network error: " + e.message);
+        }
+      }
+
+      async function gradeSubmission(subId, assignId) {
+        const marksInput = document.getElementById(`marks-${subId}`);
+        const commentInput = document.getElementById(`comment-${subId}`);
+        const marks = marksInput.value;
+        const comment = commentInput.value.trim();
+
+        if (marks === "" || isNaN(marks) || marks < 0 || marks > 10) {
+          return alert("Please enter valid marks between 0 and 10.");
+        }
+
+        try {
+          const res = await fetch(
+            `${API_URL}/assignment-submissions/${subId}/grade`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                marks: parseInt(marks),
+                instructor_comment: comment,
+              }),
+            },
+          );
+          if (res.ok) {
+            alert("Submission graded successfully!");
+            loadAssignments(currentCoursePlayerId);
+          } else {
+            const err = await res.json();
+            alert("Failed to grade: " + (err.error || "Unknown error"));
+          }
+        } catch (e) {
+          alert("Network error while grading submission.");
         }
       }
 
@@ -6966,7 +7033,7 @@
               msg.user_email.includes("admin")
                 ? "👑 "
                 : "";
-        const canDelete = isSelf || currentUser.role === "admin";
+            const canDelete = isSelf || currentUser.role === "admin";
             const deleteBtn = canDelete
               ? `<span onclick="deleteGlobalMessage(${msg.id})" 
                        onmouseover="this.style.color='#ef4444'; this.style.opacity='1';" 
