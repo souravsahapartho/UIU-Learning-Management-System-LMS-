@@ -118,7 +118,6 @@ tableQueries.forEach((query) => {
   });
 });
 
-// Safely add missing columns to tables
 const alterQueries = [
   "ALTER TABLE courses ADD COLUMN total_lessons INT DEFAULT 4",
   "ALTER TABLE courses ADD COLUMN thumbnail_url VARCHAR(500) DEFAULT NULL",
@@ -126,8 +125,9 @@ const alterQueries = [
   "ALTER TABLE users MODIFY COLUMN avatar VARCHAR(500) DEFAULT 'U'",
   "ALTER TABLE course_chats ADD COLUMN media_url VARCHAR(500) DEFAULT NULL",
   "ALTER TABLE course_chats ADD COLUMN media_type VARCHAR(50) DEFAULT NULL",
+  "ALTER TABLE assignment_submissions ADD COLUMN course_name VARCHAR(255) DEFAULT NULL",
+  "ALTER TABLE assignment_submissions ADD COLUMN assignment_title VARCHAR(255) DEFAULT NULL",
 ];
-
 alterQueries.forEach((query) => {
   db.query(query, (err) => {
     if (
