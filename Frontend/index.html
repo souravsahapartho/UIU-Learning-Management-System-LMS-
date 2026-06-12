@@ -1499,15 +1499,12 @@
         background: rgba(0, 0, 0, 0.6);
         z-index: 1001;
         display: none;
-        align-items: center;
-        justify-content: center;
-        backdrop-filter: blur(4px);
-      }
-      .global-chat-overlay {
         align-items: stretch;
         justify-content: stretch;
         padding: 0;
+        backdrop-filter: blur(4px);
       }
+
       .global-chat-container {
         flex-direction: column;
         height: 100dvh;
@@ -2335,10 +2332,10 @@
         }
         .g-chat-sidebar {
           width: 100%;
-          height: 40%;
+          height: 100%;
         }
         .g-chat-main {
-          height: 60%;
+          height: 100%;
         }
         .close-chat-btn-top {
           top: 10px;
@@ -7189,6 +7186,7 @@
         if (show) {
           overlay.classList.remove("hidden");
           overlay.style.display = "flex";
+          overlay.style.alignItems = "stretch";
           if (container) container.classList.remove("chat-open");
           const badge = document.getElementById("global-chat-badge");
           if (badge) {
@@ -7538,7 +7536,7 @@
               mediaUrl.match(/\.(jpeg|jpg|gif|png|webp)/i) ||
               mediaInput.files[0].type.startsWith("image/");
             if (isImage) {
-              finalMsg += `<br><img src="${mediaUrl}" style="max-width:200px; border-radius:10px; margin-top:5px; cursor:pointer;" onclick="window.open('${mediaUrl}', '_blank')" />`;
+              finalMsg += `<br><img src="${mediaUrl}" style="max-width:180px; max-height:180px; width:100%; border-radius:10px; margin-top:5px; cursor:pointer; display:block; object-fit:cover;" onclick="window.open('${mediaUrl}', '_blank')" />`;
             } else {
               finalMsg += `<br><video controls style="max-width:200px; border-radius:10px; margin-top:5px;"><source src="${mediaUrl}" type="video/mp4"></video>`;
             }
