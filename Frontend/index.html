@@ -6347,8 +6347,12 @@
           month: "short",
           year: "numeric",
         });
+        const courseTitle = currentCourseObj
+          ? currentCourseObj.title
+          : "your course";
         const payload = {
           course_id: String(currentCoursePlayerId),
+          course_name: courseTitle,
           title: title,
           description: desc,
           due_date: due,
@@ -6362,6 +6366,21 @@
             body: JSON.stringify(payload),
           });
           if (res.ok) {
+            const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+            if (Array.isArray(enrollments)) {
+              const myStudents = enrollments.filter(
+                (e) =>
+                  e.course_id == currentCoursePlayerId &&
+                  e.status === "Approved",
+              );
+              for (let st of myStudents) {
+                await addNotification(
+                  st.student_email,
+                  `📝 New assignment "${title}" has been posted in "${courseTitle}". Due: ${due}.`,
+                  "blue",
+                );
+              }
+            }
             alert("Assignment uploaded successfully!");
             setupAssignmentsUI();
           } else {
@@ -6405,6 +6424,11 @@
                     <div style="margin-top:10px; padding-top:10px; border-top:1px solid #a7f3d0;">
                       <div style="color:#16a34a; font-weight:700; font-size:14px;">Graded: ${mySub.marks}/10</div>
                       ${mySub.instructor_comment ? `<div style="margin-top:6px; font-size:13px; color:#334155;" class="dm-text"><b>Feedback:</b> ${mySub.instructor_comment}</div>` : ""}
+                    </div>`;
+                } else {
+                  gradeHtml = `
+                    <div style="margin-top:10px; padding-top:10px; border-top:1px solid #a7f3d0;">
+                      <span style="background:#fef3c7; color:#d97706; padding:3px 10px; border-radius:50px; font-size:12px; font-weight:700; border:1px solid #fde68a;">Not graded yet</span>
                     </div>`;
                 }
                 studentActionHtml = `<div style="margin-top:15px; padding:10px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;"><b style="color:#059669; font-size:13px;">✅ Submitted on ${mySub.date}</b>${gradeHtml}</div>`;
@@ -6473,9 +6497,30 @@
           month: "short",
           year: "numeric",
         });
+
+        let assignmentTitle = "Assignment";
+        let instructorEmail = currentCourseObj
+          ? currentCourseObj.instructor_email
+          : null;
+        try {
+          const assignments = await safeFetchJSON(
+            `${API_URL}/assignments/${currentCoursePlayerId}`,
+          );
+          if (Array.isArray(assignments)) {
+            const a = assignments.find((x) => x.id === assignId);
+            if (a) assignmentTitle = a.title;
+          }
+        } catch (e) {}
+
+        const courseTitle = currentCourseObj
+          ? currentCourseObj.title
+          : "the course";
+
         const payload = {
           assignment_id: assignId,
+          assignment_title: assignmentTitle,
           course_id: String(currentCoursePlayerId),
+          course_name: courseTitle,
           student_email: currentUser.email,
           student_name: currentUser.name,
           submission_text: subText,
@@ -6488,6 +6533,18 @@
             body: JSON.stringify(payload),
           });
           if (res.ok) {
+            await addNotification(
+              currentUser.email,
+              `✅ You submitted "${assignmentTitle}" for "${courseTitle}".`,
+              "green",
+            );
+            if (instructorEmail) {
+              await addNotification(
+                instructorEmail,
+                `📥 ${currentUser.name} submitted "${assignmentTitle}" in "${courseTitle}".`,
+                "orange",
+              );
+            }
             alert("Assignment submitted successfully!");
             loadAssignments(currentCoursePlayerId);
           } else {
@@ -6523,6 +6580,24 @@
             },
           );
           if (res.ok) {
+            const subs = await safeFetchJSON(
+              `${API_URL}/assignment-submissions/${currentCoursePlayerId}`,
+            );
+            const sub = Array.isArray(subs)
+              ? subs.find((s) => s.id === subId)
+              : null;
+            const courseTitle = currentCourseObj
+              ? currentCourseObj.title
+              : "your course";
+
+            if (sub) {
+              await addNotification(
+                sub.student_email,
+                `📝 Your assignment "${sub.assignment_title || "Assignment"}" in "${courseTitle}" has been graded: ${marks}/10.`,
+                "green",
+              );
+            }
+
             alert("Submission graded successfully!");
             loadAssignments(currentCoursePlayerId);
           } else {
