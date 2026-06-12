@@ -253,8 +253,7 @@ app.post("/login", (req, res) => {
         }
         res.status(200).json({ user: user });
       } else {
-        errorDiv.innerText = data?.error || "Invalid email or password";
-        errorDiv.style.display = "block";
+        res.status(401).json({ error: "Invalid email or password" });
       }
     },
   );
@@ -1102,11 +1101,6 @@ app.use((req, res) =>
   }),
 );
 
-app.use((req, res) =>
-  res.status(404).json({
-    error: `API route not found on backend: ${req.method} ${req.url}`,
-  }),
-);
 
 const PORT = process.env.PORT || 5005;
 
