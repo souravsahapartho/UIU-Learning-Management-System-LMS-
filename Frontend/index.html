@@ -6720,10 +6720,12 @@
               }
             });
 
-            // Build set of active dates (YYYY-MM-DD)
             const activeDateSet = new Set(
               allCompletions.map((d) => d.toDateString()),
             );
+            const todayDateObj = new Date();
+            todayDateObj.setHours(0, 0, 0, 0);
+            activeDateSet.add(todayDateObj.toDateString());
 
             // Current streak: count consecutive days ending today
             let streak = 0;
@@ -6734,19 +6736,28 @@
               cursor.setDate(cursor.getDate() - 1);
             }
 
-            // Hours this month: each completed module ~ counted as 0.5 hr (adjustable estimate)
+            // Hours this month: 1 hour counted for each distinct day the user was active (logged in / completed something)
             const now2 = new Date();
-            const hoursThisMonth =
-              allCompletions.filter(
-                (d) =>
-                  d.getMonth() === now2.getMonth() &&
-                  d.getFullYear() === now2.getFullYear(),
-              ).length * 0.5;
+            const activeDaysThisMonth = new Set();
+            allCompletions.forEach((d) => {
+              if (
+                d.getMonth() === now2.getMonth() &&
+                d.getFullYear() === now2.getFullYear()
+              ) {
+                activeDaysThisMonth.add(d.toDateString());
+              }
+            });
+
+            const today2 = new Date();
+            today2.setHours(0, 0, 0, 0);
+            activeDaysThisMonth.add(today2.toDateString());
+
+            const hoursThisMonth = activeDaysThisMonth.size * 1;
 
             const streakEl = document.getElementById("ps-streak-days");
             const hoursEl = document.getElementById("ps-hours-month");
             if (streakEl) streakEl.innerText = streak;
-            if (hoursEl) hoursEl.innerText = hoursThisMonth.toFixed(1);
+            if (hoursEl) hoursEl.innerText = hoursThisMonth;
 
             // Last 7 days activity icons
             const weekContainer = document.getElementById("ps-week-activity");
@@ -7126,10 +7137,15 @@
             const progress = await safeFetchJSON(
               `${API_URL}/module-progress/${currentCoursePlayerId}/${currentUser.email}`,
             );
-            if (Array.isArray(progress)) {
-              completedModules = new Set(
+            if (Array.isArray(progress) && progress.length > 0) {
+              const fetchedSet = new Set(
                 progress.map((p) => Number(p.module_index)),
               );
+              fetchedSet.forEach((idx) => completedModules.add(idx));
+              completedModules =
+                fetchedSet.size >= completedModules.size
+                  ? new Set([...fetchedSet, ...completedModules])
+                  : completedModules;
             }
           } catch (e) {}
         }
