@@ -2594,6 +2594,16 @@
       body.dark-mode #ps-course-progress-list .dm-text {
         color: #f8fafc !important;
       }
+      .student-card:hover,
+      .instructor-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.15);
+        transition: all 0.2s ease;
+      }
+      .student-card,
+      .instructor-card {
+        transition: all 0.2s ease;
+      }
     </style>
   </head>
   <body>
@@ -2860,7 +2870,16 @@
               </p>
             </div>
             <div class="stats-grid">
-              <div class="student-card blue-card">
+              <div
+                class="student-card blue-card"
+                style="cursor: pointer"
+                onclick="
+                  handleNav(
+                    'Browse Courses',
+                    document.querySelector('.nav-item-browse'),
+                  )
+                "
+              >
                 <div class="card-header">
                   <h3>Active Courses</h3>
                   <div class="icon-bg blue-icon">
@@ -2882,7 +2901,17 @@
                 <div class="number blue-text" id="student-active-count">0</div>
                 <div class="desc">Currently enrolled</div>
               </div>
-              <div class="student-card orange-card">
+              <div
+                class="student-card orange-card"
+                id="student-hours-card"
+                style="cursor: pointer"
+                onclick="
+                  handleNav(
+                    'Progress',
+                    document.querySelector('.nav-item-progress'),
+                  )
+                "
+              >
                 <div class="card-header">
                   <h3>Hours Learned</h3>
                   <div class="icon-bg orange-icon">
@@ -2902,7 +2931,17 @@
                 <div class="number orange-text">12</div>
                 <div class="desc">This month</div>
               </div>
-              <div class="student-card green-card">
+              <div
+                class="student-card green-card"
+                id="student-badges-card"
+                style="cursor: pointer"
+                onclick="
+                  handleNav(
+                    'Progress',
+                    document.querySelector('.nav-item-progress'),
+                  )
+                "
+              >
                 <div class="card-header">
                   <h3>Badges Earned</h3>
                   <div class="icon-bg green-icon">
@@ -5294,6 +5333,40 @@
         if (icEl) icEl.innerText = activeCourses;
         if (isEl) isEl.innerText = totalStudents;
         if (ipEl) ipEl.innerText = pendingEnrollments;
+
+        const courseCard = document.querySelector(
+          ".instructor-card.blue-gradient",
+        );
+        if (courseCard) {
+          courseCard.style.cursor = "pointer";
+          courseCard.onclick = () =>
+            handleNav("Courses", document.querySelector(".nav-item-courses"));
+        }
+
+        const studentCard = document.querySelector(
+          ".instructor-card.green-gradient",
+        );
+        if (studentCard) {
+          studentCard.style.cursor = "pointer";
+          studentCard.onclick = () =>
+            handleNav("Students", document.querySelector(".nav-item-students"));
+        }
+
+        const pendingCard = document.querySelector(
+          ".instructor-card.orange-gradient",
+        );
+        if (pendingCard) {
+          pendingCard.style.cursor = "pointer";
+          pendingCard.onclick = () => {
+            handleNav("Dashboard", document.querySelector(".nav-item-dash"));
+            setTimeout(() => {
+              const reqSection = document.getElementById(
+                "instructor-enrollment-requests",
+              );
+              if (reqSection) reqSection.scrollIntoView({ behavior: "smooth" });
+            }, 300);
+          };
+        }
       }
 
       async function renderInstructorRequests() {
