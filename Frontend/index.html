@@ -2481,6 +2481,110 @@
         font-weight: 700;
         font-size: 13px;
       }
+      .progress-summary-section {
+        margin-top: 40px;
+        margin-bottom: 30px;
+      }
+      .progress-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+      }
+      .ps-card {
+        background: white;
+        border-radius: 20px;
+        padding: 24px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .ps-card-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .ps-card-value {
+        font-size: 36px;
+        font-weight: 800;
+        line-height: 1;
+      }
+      .ps-card-desc {
+        font-size: 13px;
+        color: #94a3b8;
+        font-weight: 500;
+      }
+      .circular-progress-wrap {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .circular-svg {
+        flex-shrink: 0;
+      }
+      .progress-bar-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 6px;
+      }
+      .mini-progress-bar {
+        height: 8px;
+        background: #e2e8f0;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 10px;
+      }
+      .mini-progress-fill {
+        height: 100%;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #2563eb, #0ea5e9);
+      }
+      .assign-countdown-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f5f9;
+      }
+      .assign-countdown-item:last-child {
+        border-bottom: none;
+      }
+      .assign-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .assign-days-badge {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 50px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      body.dark-mode .ps-card {
+        background: #1e293b;
+        border-color: #334155;
+      }
+      body.dark-mode .ps-card-title {
+        color: #94a3b8;
+      }
+      body.dark-mode .mini-progress-bar {
+        background: #334155;
+      }
+      body.dark-mode .assign-countdown-item {
+        border-color: #334155;
+      }
+      body.dark-mode .progress-bar-label {
+        color: #cbd5e1;
+      }
     </style>
   </head>
   <body>
@@ -2897,6 +3001,101 @@
               class="continue-learning-grid"
               id="student-enrolled-courses-grid"
             ></div>
+          </div>
+          <!-- Progress Summary Section -->
+          <div
+            class="progress-summary-section"
+            id="student-progress-summary-section"
+            style="display: none"
+          >
+            <h2
+              style="
+                font-size: 22px;
+                font-weight: 800;
+                color: #0f172a;
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+              "
+              class="dm-title"
+            >
+              <span
+                style="
+                  width: 4px;
+                  height: 24px;
+                  background: #8b5cf6;
+                  border-radius: 4px;
+                "
+              ></span>
+              Your Learning Summary
+            </h2>
+            <div class="progress-summary-grid">
+              <!-- Card 1: Overall Progress -->
+              <div class="ps-card">
+                <div class="ps-card-title">📊 Overall Progress</div>
+                <div id="ps-course-progress-list"></div>
+              </div>
+
+              <!-- Card 2: Streak & Hours -->
+              <div
+                class="ps-card"
+                style="
+                  background: linear-gradient(135deg, #0f172a, #1e3a5f);
+                  border: none;
+                "
+              >
+                <div class="ps-card-title" style="color: #94a3b8">
+                  🔥 Streak & Activity
+                </div>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap">
+                  <div>
+                    <div class="ps-card-value" style="color: #f59e0b">7</div>
+                    <div class="ps-card-desc" style="color: #64748b">
+                      Day Streak
+                    </div>
+                  </div>
+                  <div>
+                    <div class="ps-card-value" style="color: #38bdf8">12</div>
+                    <div class="ps-card-desc" style="color: #64748b">
+                      Hrs This Month
+                    </div>
+                  </div>
+                </div>
+                <div style="margin-top: 8px; display: flex; gap: 6px">
+                  <span style="font-size: 20px" title="Mon">✅</span>
+                  <span style="font-size: 20px" title="Tue">✅</span>
+                  <span style="font-size: 20px" title="Wed">✅</span>
+                  <span style="font-size: 20px" title="Thu">✅</span>
+                  <span style="font-size: 20px" title="Fri">✅</span>
+                  <span style="font-size: 20px" title="Sat">✅</span>
+                  <span style="font-size: 20px" title="Sun">✅</span>
+                </div>
+                <div
+                  class="ps-card-desc"
+                  style="color: #475569; margin-top: 4px"
+                >
+                  Last 7 days active
+                </div>
+              </div>
+
+              <!-- Card 3: Upcoming Due Assignments -->
+              <div class="ps-card">
+                <div class="ps-card-title">⏰ Upcoming Deadlines</div>
+                <div id="ps-upcoming-deadlines">
+                  <div
+                    style="
+                      color: #94a3b8;
+                      font-size: 14px;
+                      text-align: center;
+                      padding: 10px;
+                    "
+                  >
+                    Loading...
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- instructor Dashbosrd -->
@@ -6141,6 +6340,160 @@
             .join("");
         } catch (e) {
           console.error(e);
+        }
+        renderStudentProgressSummary();
+      }
+      async function renderStudentProgressSummary() {
+        const section = document.getElementById(
+          "student-progress-summary-section",
+        );
+        if (!section) return;
+
+        try {
+          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          const courses = await safeFetchJSON(`${API_URL}/courses`);
+
+          if (!Array.isArray(enrollments) || !Array.isArray(courses)) return;
+
+          const myEnrollments = enrollments.filter(
+            (e) =>
+              e.student_email === currentUser.email && e.status === "Approved",
+          );
+
+          if (myEnrollments.length === 0) {
+            section.style.display = "none";
+            return;
+          }
+
+          section.style.display = "block";
+
+          // --- Course Progress Bars ---
+          const progList = document.getElementById("ps-course-progress-list");
+          if (progList) {
+            const myCourses = courses.filter((c) =>
+              myEnrollments.some((e) => String(e.course_id) === String(c.id)),
+            );
+
+            if (myCourses.length === 0) {
+              progList.innerHTML = `<div style="color:#94a3b8;font-size:14px;">No courses yet.</div>`;
+            } else {
+              progList.innerHTML = myCourses
+                .slice(0, 4)
+                .map((c, i) => {
+                  const mockProgress =
+                    [65, 40, 80, 30][i] || Math.floor(Math.random() * 60) + 20;
+                  const colors = ["#2563eb", "#10b981", "#f59e0b", "#a855f7"];
+                  const color = colors[i % colors.length];
+                  const shortTitle =
+                    c.title.length > 22 ? c.title.slice(0, 22) + "…" : c.title;
+                  return `
+            <div style="margin-bottom:14px;">
+              <div class="progress-bar-label">
+                <span class="dm-text" style="font-size:13px; font-weight:600; color:#0f172a;">${shortTitle}</span>
+                <span style="color:${color}; font-weight:700;">${mockProgress}%</span>
+              </div>
+              <div class="mini-progress-bar">
+                <div class="mini-progress-fill" style="width:${mockProgress}%; background:${color};"></div>
+              </div>
+            </div>`;
+                })
+                .join("");
+            }
+          }
+
+          // --- Upcoming Deadlines ---
+          const deadlineContainer = document.getElementById(
+            "ps-upcoming-deadlines",
+          );
+          if (deadlineContainer) {
+            const results = await Promise.all(
+              myEnrollments.map(async (enr) => {
+                const [assignments, submissions] = await Promise.all([
+                  safeFetchJSON(`${API_URL}/assignments/${enr.course_id}`),
+                  safeFetchJSON(
+                    `${API_URL}/assignment-submissions/${enr.course_id}`,
+                  ),
+                ]);
+                const mySubIds = Array.isArray(submissions)
+                  ? submissions
+                      .filter((s) => s.student_email === currentUser.email)
+                      .map((s) => s.assignment_id)
+                  : [];
+                if (!Array.isArray(assignments)) return [];
+                return assignments
+                  .filter((a) => !mySubIds.includes(a.id))
+                  .map((a) => ({ ...a, course_title: enr.course_title }));
+              }),
+            );
+
+            const allPending = results.flat().sort((a, b) => {
+              return new Date(a.due_date) - new Date(b.due_date);
+            });
+
+            if (allPending.length === 0) {
+              deadlineContainer.innerHTML = `
+          <div style="text-align:center; padding:16px; background:#f0fdf4; border-radius:12px; border:1px solid #bbf7d0;">
+            <div style="font-size:24px; margin-bottom:6px;">🎉</div>
+            <div style="color:#16a34a; font-weight:700; font-size:14px;">All caught up!</div>
+            <div style="color:#64748b; font-size:12px; margin-top:4px;">No pending assignments</div>
+          </div>`;
+              return;
+            }
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            deadlineContainer.innerHTML = allPending
+              .slice(0, 4)
+              .map((a) => {
+                const due = new Date(a.due_date);
+                due.setHours(0, 0, 0, 0);
+                const diff = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+
+                let badgeColor, dotColor, badgeText;
+                if (diff < 0) {
+                  badgeColor =
+                    "#fef2f2; color:#ef4444; border:1px solid #fca5a5;";
+                  dotColor = "#ef4444";
+                  badgeText = "Overdue";
+                } else if (diff === 0) {
+                  badgeColor =
+                    "#fff7ed; color:#ea580c; border:1px solid #fdba74;";
+                  dotColor = "#f97316";
+                  badgeText = "Due Today!";
+                } else if (diff <= 2) {
+                  badgeColor =
+                    "#fefce8; color:#ca8a04; border:1px solid #fde047;";
+                  dotColor = "#f59e0b";
+                  badgeText = `${diff}d left`;
+                } else {
+                  badgeColor =
+                    "#eff6ff; color:#2563eb; border:1px solid #bfdbfe;";
+                  dotColor = "#3b82f6";
+                  badgeText = `${diff}d left`;
+                }
+
+                const shortTitle =
+                  a.title.length > 20 ? a.title.slice(0, 20) + "…" : a.title;
+                const shortCourse =
+                  a.course_title.length > 18
+                    ? a.course_title.slice(0, 18) + "…"
+                    : a.course_title;
+
+                return `
+          <div class="assign-countdown-item">
+            <div class="assign-dot" style="background:${dotColor};"></div>
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:14px; font-weight:700; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-text">${shortTitle}</div>
+              <div style="font-size:12px; color:#64748b;" class="dm-desc">📚 ${shortCourse}</div>
+            </div>
+            <span class="assign-days-badge" style="background:${badgeColor}">${badgeText}</span>
+          </div>`;
+              })
+              .join("");
+          }
+        } catch (e) {
+          console.error("Progress summary error:", e);
         }
       }
 
