@@ -127,7 +127,7 @@ const alterQueries = [
   "ALTER TABLE assignment_submissions ADD COLUMN course_name VARCHAR(255) DEFAULT NULL",
   "ALTER TABLE assignment_submissions ADD COLUMN assignment_title VARCHAR(255) DEFAULT NULL",
   "ALTER TABLE users ADD COLUMN first_login VARCHAR(100) DEFAULT NULL",
-"ALTER TABLE users ADD COLUMN last_login VARCHAR(100) DEFAULT NULL",
+  "ALTER TABLE users ADD COLUMN last_login VARCHAR(100) DEFAULT NULL",
 ];
 alterQueries.forEach((query) => {
   db.query(query, (err) => {
@@ -233,12 +233,16 @@ app.post("/login", (req, res) => {
         delete user.password;
         if (user.status === "Banned") {
           return res.status(403).json({
-            error: "Account Suspended: Your account has been suspended by the administrator.",
+            error:
+              "Account Suspended: Your account has been suspended by the administrator.",
           });
         }
         const now = new Date().toLocaleString("en-US", {
-          month: "short", day: "numeric", year: "numeric",
-          hour: "2-digit", minute: "2-digit",
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
         });
         const updateFields = user.first_login
           ? "last_login = ?"
@@ -253,7 +257,7 @@ app.post("/login", (req, res) => {
             user.last_login = now;
             if (!user.first_login) user.first_login = now;
             res.status(200).json({ user });
-          }
+          },
         );
       } else {
         res.status(401).json({ error: "Invalid email or password" });
@@ -341,7 +345,7 @@ app.delete("/delete-account", (req, res) => {
 
 app.get("/users", (req, res) => {
   db.query(
-    "SELECT id, name, email, role, avatar, status FROM users ORDER BY id DESC",
+    "SELECT id, name, email, role, avatar, status, first_login, last_login FROM users ORDER BY id DESC",
     (err, data) =>
       err
         ? res.status(500).json({ error: err.message })

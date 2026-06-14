@@ -8684,6 +8684,12 @@
         if (!body) return;
 
         try {
+          const allUsers = await safeFetchJSON(`${API_URL}/users`);
+          const thisUser = Array.isArray(allUsers)
+            ? allUsers.find((u) => u.email === email)
+            : null;
+          const firstLoginStr = thisUser?.first_login || "Not recorded";
+          const lastLoginStr = thisUser?.last_login || "Not recorded";
           if (isInstructor) {
             // INSTRUCTOR DETAIL
             const [courses, enrollments] = await Promise.all([
@@ -9162,8 +9168,10 @@
   <div style="font-size:14px;font-weight:700;color:${textColor};word-break:break-all;">${email}</div>
   <div style="font-size:11px;color:${subColor};font-weight:600;">Published / Pending</div>
   <div style="font-size:14px;font-weight:700;color:${textColor};">${approvedCourses.length} live | ${pendingCourses.length} pending</div>
-  <div style="font-size:11px;color:${subColor};font-weight:600;">Status</div>
-  <div style="font-size:14px;font-weight:700;color:${status === "Approved" ? "#10b981" : "#ef4444"};">${status === "Approved" ? "✅ Approved Instructor" : "⛔ Suspended"}</div>
+<div style="font-size:11px;color:${subColor};font-weight:600;">First Login</div>
+<div style="font-size:14px;font-weight:700;color:${textColor};">${firstLoginStr}</div>
+<div style="font-size:11px;color:${subColor};font-weight:600;">Last Login</div>
+<div style="font-size:14px;font-weight:700;color:${textColor};">${lastLoginStr}</div>
 </div>
 <div style="margin-bottom:20px;">
   <h4 style="font-size:15px;font-weight:800;color:${textColor};margin-bottom:12px;">📚 All Courses (${myCourses.length})</h4>
