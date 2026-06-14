@@ -243,6 +243,7 @@ app.post("/login", (req, res) => {
           year: "numeric",
           hour: "2-digit",
           minute: "2-digit",
+          timeZone: "Asia/Dhaka",
         });
         const updateFields = user.first_login
           ? "last_login = ?"

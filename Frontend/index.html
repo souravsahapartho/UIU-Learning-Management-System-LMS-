@@ -8688,8 +8688,8 @@
           const thisUser = Array.isArray(allUsers)
             ? allUsers.find((u) => u.email === email)
             : null;
-          const firstLoginStr = thisUser?.first_login || "Not recorded";
-          const lastLoginStr = thisUser?.last_login || "Not recorded";
+          const firstLoginStr = thisUser?.first_login || "Not Available";
+          const lastLoginStr = thisUser?.last_login || "Not Available";
           if (isInstructor) {
             // INSTRUCTOR DETAIL
             const [courses, enrollments] = await Promise.all([
@@ -8788,15 +8788,6 @@
     <div>
       <div style="font-size:11px;color:${subColor};font-weight:600;">Email</div>
       <div style="font-size:14px;font-weight:700;color:${textColor};word-break:break-all;">${email}</div>
-    </div>
-  </div>
-  <div style="display:flex;align-items:center;gap:12px;">
-    <div style="width:34px;height:34px;background:#ecfdf5;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-    </div>
-    <div>
-      <div style="font-size:11px;color:${subColor};font-weight:600;">Published / Pending</div>
-      <div style="font-size:14px;font-weight:700;color:${textColor};">${approvedCourses.length} live &nbsp;|&nbsp; ${pendingCourses.length} pending</div>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
@@ -8905,18 +8896,25 @@
                   </div>
                 </div>
                 <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:34px;height:34px;background:#f0fdf4;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            </div>
-            <div>
-              <div style="font-size:11px;color:${subColor};font-weight:600;">First Login</div>
-              <div style="font-size:13px;font-weight:700;color:${textColor};">${firstLoginStr}</div>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:34px;height:34px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            </div>
+  <div style="width:34px;height:34px;background:#f0fdf4;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+  </div>
+  <div>
+    <div style="font-size:11px;color:${subColor};font-weight:600;">First Login</div>
+    <div style="font-size:13px;font-weight:700;color:${textColor};">${firstLoginStr}</div>
+  </div>
+</div>
+<div style="display:flex;align-items:center;gap:12px;">
+  <div style="width:34px;height:34px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+  </div>
+  <div>
+    <div style="font-size:11px;color:${subColor};font-weight:600;">Last Login</div>
+    <div style="font-size:13px;font-weight:700;color:${textColor};">${lastLoginStr}</div>
+  </div>
+</div>
+                <div style="display:flex;align-items:center;gap:12px;">
+           
             <div>
               <div style="font-size:11px;color:${subColor};font-weight:600;">Last Login</div>
               <div style="font-size:13px;font-weight:700;color:${textColor};">${lastLoginStr}</div>
@@ -8947,6 +8945,8 @@
         status,
         avatar,
       ) {
+        console.log("DEBUG role received:", JSON.stringify(role));
+        console.log("DEBUG email received:", email);
         const name = decodeURIComponent(encodedName);
         const existing = document.getElementById("admin-user-detail-modal");
         if (existing) existing.remove();
@@ -9029,8 +9029,8 @@
           const thisUser = Array.isArray(allUsers)
             ? allUsers.find((u) => u.email === email)
             : null;
-          const firstLoginStr = thisUser?.first_login || "Not recorded";
-          const lastLoginStr = thisUser?.last_login || "Not recorded";
+          const firstLoginStr = thisUser?.first_login || "Not Available";
+          const lastLoginStr = thisUser?.last_login || "Not Available";
 
           const myEnrollments = Array.isArray(enrollments)
             ? enrollments.filter(
@@ -9180,6 +9180,30 @@
 <button onclick="document.getElementById('admin-user-detail-modal').remove()" style="width:100%;padding:14px;background:linear-gradient(135deg,#0f172a,#1e3a5f);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">Close</button>`;
             return;
           }
+          if (role === "admin") {
+            body.innerHTML = `
+    <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:14px;padding:16px;margin-bottom:20px;display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <div style="font-size:11px;color:${subColor};font-weight:600;">Email</div>
+        <div style="font-size:14px;font-weight:700;color:${textColor};word-break:break-all;">${email}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:${subColor};font-weight:600;">First Login</div>
+        <div style="font-size:14px;font-weight:700;color:${textColor};">${firstLoginStr}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:${subColor};font-weight:600;">Last Login</div>
+        <div style="font-size:14px;font-weight:700;color:${textColor};">${lastLoginStr}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:${subColor};font-weight:600;">Role</div>
+        <div style="font-size:14px;font-weight:700;color:#7c3aed;">👑 Administrator</div>
+      </div>
+    </div>
+    <button onclick="document.getElementById('admin-user-detail-modal').remove()" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">Close</button>
+  `;
+            return;
+          }
           let enrolledHtml = "";
           if (myEnrollments.length === 0) {
             enrolledHtml = `<div style="color:${subColor};font-size:13px;padding:10px;text-align:center;">Not enrolled in any course yet.</div>`;
@@ -9258,6 +9282,7 @@
                 <div style="font-size:11px;color:${subColor};font-weight:600;margin-top:4px;">Avg Marks</div>
               </div>
             </div>
+            
 
             <!-- Enrolled Courses -->
             <div style="margin-bottom:20px;">
@@ -9287,6 +9312,17 @@
               </h4>
               ${feedbackHtml}
             </div>
+
+            <!-- Login Info -->
+  <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:14px;padding:16px;margin-bottom:20px;display:flex;flex-direction:column;gap:12px;">
+    <div>
+      <div style="font-size:11px;color:${subColor};font-weight:600;">First Login</div>
+      <div style="font-size:14px;font-weight:700;color:${textColor};">${firstLoginStr}</div>
+    </div>
+    <div>
+      <div style="font-size:11px;color:${subColor};font-weight:600;">Last Login</div>
+      <div style="font-size:14px;font-weight:700;color:${textColor};">${lastLoginStr}</div>
+    </div>
 
         
             <button onclick="document.getElementById('admin-user-detail-modal').remove()" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">Close</button>
