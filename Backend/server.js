@@ -101,6 +101,7 @@ const tableQueries = [
   `CREATE TABLE IF NOT EXISTS assignment_submissions (id INT AUTO_INCREMENT PRIMARY KEY, assignment_id INT NOT NULL, course_id VARCHAR(100), student_email VARCHAR(100), student_name VARCHAR(100), submission_text TEXT, \`date\` VARCHAR(50), marks INT DEFAULT NULL, instructor_comment TEXT DEFAULT NULL, course_name VARCHAR(255) DEFAULT NULL, assignment_title VARCHAR(255) DEFAULT NULL)`,
   `CREATE TABLE IF NOT EXISTS ban_requests (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100), course_title VARCHAR(255), inst_email VARCHAR(100), inst_name VARCHAR(100), student_email VARCHAR(100), student_name VARCHAR(100), status VARCHAR(50) DEFAULT 'Pending', \`date\` VARCHAR(50))`,
   `CREATE TABLE IF NOT EXISTS profile_pictures (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), email VARCHAR(100), user_type VARCHAR(50), image_link VARCHAR(500), uploaded_time VARCHAR(50))`,
+
   `CREATE TABLE IF NOT EXISTS chat_read_status (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_email VARCHAR(100) NOT NULL,
@@ -125,6 +126,8 @@ const alterQueries = [
   "ALTER TABLE course_chats ADD COLUMN media_type VARCHAR(50) DEFAULT NULL",
   "ALTER TABLE assignment_submissions ADD COLUMN course_name VARCHAR(255) DEFAULT NULL",
   "ALTER TABLE assignment_submissions ADD COLUMN assignment_title VARCHAR(255) DEFAULT NULL",
+  "ALTER TABLE users ADD COLUMN first_login VARCHAR(100) DEFAULT NULL",
+"ALTER TABLE users ADD COLUMN last_login VARCHAR(100) DEFAULT NULL",
 ];
 alterQueries.forEach((query) => {
   db.query(query, (err) => {
@@ -230,11 +233,28 @@ app.post("/login", (req, res) => {
         delete user.password;
         if (user.status === "Banned") {
           return res.status(403).json({
-            error:
-              "Account Suspended: Your account has been suspended by the administrator.",
+            error: "Account Suspended: Your account has been suspended by the administrator.",
           });
         }
-        res.status(200).json({ user: user });
+        const now = new Date().toLocaleString("en-US", {
+          month: "short", day: "numeric", year: "numeric",
+          hour: "2-digit", minute: "2-digit",
+        });
+        const updateFields = user.first_login
+          ? "last_login = ?"
+          : "first_login = ?, last_login = ?";
+        const updateValues = user.first_login
+          ? [now, email]
+          : [now, now, email];
+        db.query(
+          `UPDATE users SET ${updateFields} WHERE email = ?`,
+          updateValues,
+          () => {
+            user.last_login = now;
+            if (!user.first_login) user.first_login = now;
+            res.status(200).json({ user });
+          }
+        );
       } else {
         res.status(401).json({ error: "Invalid email or password" });
       }
