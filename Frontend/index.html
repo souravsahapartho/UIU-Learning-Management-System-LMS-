@@ -5022,6 +5022,7 @@
       let currentRoomName = "";
       let chatRefreshInterval = null;
       let globalChatPollingInterval = null;
+      let completedModules = new Set();
 
       const courseGradients = [
         "linear-gradient(135deg, #3b82f6, #1e40af)",
@@ -6809,17 +6810,18 @@
         const videoBox = document.querySelector(".cp-video-box");
         if (!videoBox) return;
 
-        document
-          .querySelectorAll(".lesson-item")
-          .forEach((el) => el.classList.remove("active"));
-        const allLessons = document.querySelectorAll(".lesson-item");
-        if (allLessons[moduleIndex - 1])
-          allLessons[moduleIndex - 1].classList.add("active");
+        document.querySelectorAll(".lesson-item").forEach((el, idx) => {
+          el.style.borderLeft = "4px solid transparent";
+        });
+        const activeItem = document.getElementById(
+          `module-item-${moduleIndex}`,
+        );
+        if (activeItem) activeItem.style.borderLeft = "4px solid #2563eb";
 
         if (!videoUrl || videoUrl === "null" || videoUrl === "") {
           videoBox.innerHTML = `
-      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:64px;height:64px;opacity:0.5;">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;height:100%;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:64px;height:64px;opacity:0.4;">
           <circle cx="12" cy="12" r="10"></circle>
           <polygon points="10 8 16 12 10 16 10 8"></polygon>
         </svg>
@@ -6829,9 +6831,64 @@
         }
 
         videoBox.innerHTML = `
-    <video controls autoplay style="width:100%;height:100%;border-radius:16px;object-fit:cover;background:#000;">
+    <video controls autoplay 
+      style="width:100%;height:100%;border-radius:16px;object-fit:cover;background:#000;"
+      onended="markModuleCompleted(${moduleIndex})">
       <source src="${videoUrl}" type="video/mp4">
     </video>`;
+      }
+
+      async function markModuleCompleted(moduleIndex) {
+        if (!currentUser || currentUser.role !== "student") return;
+
+        const now = new Date().toLocaleString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        try {
+          await fetch(`${API_URL}/module-progress`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              course_id: String(currentCoursePlayerId),
+              student_email: currentUser.email,
+              module_index: moduleIndex,
+              completed_at: now,
+            }),
+          });
+
+          completedModules.add(moduleIndex);
+
+          // UI update - circle blue করো
+          const item = document.getElementById(`module-item-${moduleIndex}`);
+          if (item) {
+            const circle = item.querySelector(".lesson-circle");
+            if (circle) {
+              circle.style.background = "#2563eb";
+              circle.style.borderColor = "#2563eb";
+              circle.style.color = "white";
+              circle.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+            }
+            const titleEl = item.querySelector("div > div > div:first-child");
+            if (titleEl) {
+              titleEl.style.color = "#2563eb";
+              titleEl.style.fontWeight = "700";
+            }
+          }
+
+          // Auto next module load
+          const totalModules = currentCourseObj?.total_lessons || 4;
+          if (moduleIndex < totalModules) {
+            setTimeout(() => loadModuleVideo("", moduleIndex + 1), 1000);
+            await renderDynamicLessons(totalModules);
+          }
+        } catch (e) {
+          console.error("Progress save error:", e);
+        }
       }
 
       async function renderDynamicLessons(total) {
@@ -6843,6 +6900,8 @@
           currentUser.role === "instructor" &&
           currentCourseObj &&
           currentCourseObj.instructor_email === currentUser.email;
+
+        const isStudent = currentUser && currentUser.role === "student";
 
         let moduleVideos = {};
         try {
@@ -6856,23 +6915,40 @@
           }
         } catch (e) {}
 
+        if (isStudent) {
+          try {
+            const progress = await safeFetchJSON(
+              `${API_URL}/module-progress/${currentCoursePlayerId}/${currentUser.email}`,
+            );
+            if (Array.isArray(progress)) {
+              completedModules = new Set(progress.map((p) => p.module_index));
+            }
+          } catch (e) {}
+        }
+
         let html = `<div style="padding: 20px 24px; border-bottom: 1px solid #e2e8f0; font-weight: 800; font-size: 18px; color: #0f172a;">Course Content (${total} Modules)</div>`;
 
         for (let i = 1; i <= total; i++) {
-          let stateClass = i === 1 ? "completed" : i === 2 ? "active" : "";
-          let circleContent =
-            i === 1
-              ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>`
-              : ``;
+          const savedVideo =
+            moduleVideos[i] || (i === 1 ? currentCourseObj?.video_url : null);
+          const isCompleted = completedModules.has(i);
+          const isActive = i === 1;
+
           let title =
             i === 1
               ? "Course Introduction"
               : i === total
                 ? "Final Assessment"
                 : `Module ${i}`;
+          let duration = 10 + i * 5;
 
-          const savedVideo =
-            moduleVideos[i] || (i === 1 ? currentCourseObj?.video_url : null);
+          const circleContent = isCompleted
+            ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+            : `<span style="font-size:11px;font-weight:700;">${i}</span>`;
+
+          const circleStyle = isCompleted
+            ? `background:#2563eb;border-color:#2563eb;`
+            : `background:transparent;border-color:#cbd5e1;color:#94a3b8;`;
 
           let videoSection = "";
           if (isInstructor) {
@@ -6899,24 +6975,26 @@
            </div>`;
           } else {
             videoSection = savedVideo
-              ? `<div style="margin-top:8px;">
-            <video controls style="width:100%;border-radius:8px;max-height:120px;">
+              ? `<div style="margin-top:8px;cursor:pointer;" onclick="loadModuleVideo('${savedVideo}', ${i})">
+            <video style="width:100%;border-radius:8px;max-height:100px;pointer-events:none;">
               <source src="${savedVideo}" type="video/mp4">
             </video>
            </div>`
               : `<div style="margin-top:6px;font-size:12px;color:#94a3b8;font-style:italic;">📭 Module not uploaded yet</div>`;
           }
 
-          const videoForThisModule =
-            moduleVideos[i] || (i === 1 ? currentCourseObj?.video_url : null);
-
           html += `
-  <div class="lesson-item ${stateClass}" style="flex-direction:column;align-items:flex-start;cursor:pointer;" onclick="loadModuleVideo('${videoForThisModule || ""}', ${i})">
-    <div style="display:flex;align-items:center;gap:15px;width:100%;">
-          <div class="lesson-circle">${circleContent}</div>
+      <div class="lesson-item ${isCompleted ? "completed" : ""}" 
+           id="module-item-${i}"
+           style="flex-direction:column;align-items:flex-start;cursor:pointer;border-left:${isActive ? "4px solid #2563eb" : "4px solid transparent"};"
+           onclick="loadModuleVideo('${savedVideo || ""}', ${i})">
+        <div style="display:flex;align-items:center;gap:15px;width:100%;">
+          <div class="lesson-circle" style="${circleStyle}color:${isCompleted ? "white" : "#94a3b8"};">
+            ${circleContent}
+          </div>
           <div style="flex:1;">
-            <div style="font-weight:600;font-size:15px;color:#0f172a;">${title}</div>
-            <div style="font-size:13px;color:#64748b;margin-top:4px;">${10 + i * 5} min</div>
+            <div style="font-weight:${isCompleted ? "700" : "600"};font-size:15px;color:${isCompleted ? "#2563eb" : "#0f172a"};">${title}</div>
+            <div style="font-size:13px;color:#64748b;margin-top:4px;">${duration} min ${isCompleted ? "✅" : ""}</div>
           </div>
         </div>
         ${videoSection}

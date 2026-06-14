@@ -102,8 +102,14 @@ const tableQueries = [
   `CREATE TABLE IF NOT EXISTS ban_requests (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100), course_title VARCHAR(255), inst_email VARCHAR(100), inst_name VARCHAR(100), student_email VARCHAR(100), student_name VARCHAR(100), status VARCHAR(50) DEFAULT 'Pending', \`date\` VARCHAR(50))`,
   `CREATE TABLE IF NOT EXISTS profile_pictures (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), email VARCHAR(100), user_type VARCHAR(50), image_link VARCHAR(500), uploaded_time VARCHAR(50))`,
   `CREATE TABLE IF NOT EXISTS module_videos (id INT AUTO_INCREMENT PRIMARY KEY, course_id VARCHAR(100), module_index INT, video_url VARCHAR(500), uploaded_by VARCHAR(100), UNIQUE KEY unique_module (course_id, module_index))`,
-
-  `CREATE TABLE IF NOT EXISTS chat_read_status (
+  `CREATE TABLE IF NOT EXISTS module_progress (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  course_id VARCHAR(100),
+  student_email VARCHAR(100),
+  module_index INT,
+  completed_at VARCHAR(100),
+  UNIQUE KEY unique_progress (course_id, student_email, module_index)
+)``CREATE TABLE IF NOT EXISTS chat_read_status (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_email VARCHAR(100) NOT NULL,
   course_id VARCHAR(100) NOT NULL,
@@ -585,16 +591,22 @@ app.put(
   },
 );
 
-app.post("/upload-module-video", (req, res, next) => {
-  const uploadMiddleware = upload.single("moduleVideo");
-  uploadMiddleware(req, res, (err) => {
-    if (err) return res.status(500).json({ error: "Upload failed: " + err.message });
-    next();
-  });
-}, (req, res) => {
-  if (!req.file) return res.status(400).json({ error: "No video file uploaded." });
-  res.status(200).json({ url: req.file.path });
-});
+app.post(
+  "/upload-module-video",
+  (req, res, next) => {
+    const uploadMiddleware = upload.single("moduleVideo");
+    uploadMiddleware(req, res, (err) => {
+      if (err)
+        return res.status(500).json({ error: "Upload failed: " + err.message });
+      next();
+    });
+  },
+  (req, res) => {
+    if (!req.file)
+      return res.status(400).json({ error: "No video file uploaded." });
+    res.status(200).json({ url: req.file.path });
+  },
+);
 
 app.get("/courses", (req, res) => {
   db.query("SELECT * FROM courses ORDER BY id DESC", (err, data) =>
@@ -801,6 +813,37 @@ app.get("/all-complaints", (req, res) => {
   );
 });
 
+app.post("/module-progress", (req, res) => {
+  const { course_id, student_email, module_index, completed_at } = req.body;
+  db.query(
+    `INSERT INTO module_progress (course_id, student_email, module_index, completed_at) 
+     VALUES (?, ?, ?, ?) 
+     ON DUPLICATE KEY UPDATE completed_at = ?`,
+    [
+      String(course_id),
+      String(student_email),
+      module_index,
+      completed_at,
+      completed_at,
+    ],
+    (err) =>
+      err
+        ? res.status(500).json({ error: err.message })
+        : res.status(200).json({ message: "Saved!" }),
+  );
+});
+
+app.get("/module-progress/:courseId/:studentEmail", (req, res) => {
+  db.query(
+    "SELECT module_index FROM module_progress WHERE course_id = ? AND student_email = ?",
+    [String(req.params.courseId), String(req.params.studentEmail)],
+    (err, data) =>
+      err
+        ? res.status(500).json({ error: err.message })
+        : res.status(200).json(data),
+  );
+});
+
 app.get("/course-complaints/:courseId", (req, res) => {
   db.query(
     "SELECT * FROM complaints WHERE course_id = ? ORDER BY id DESC",
@@ -854,7 +897,10 @@ app.post("/module-videos", (req, res) => {
   db.query(
     "INSERT INTO module_videos (course_id, module_index, video_url, uploaded_by) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE video_url = ?",
     [String(course_id), module_index, video_url, uploaded_by, video_url],
-    (err) => err ? res.status(500).json({ error: err.message }) : res.status(200).json({ message: "Saved!" })
+    (err) =>
+      err
+        ? res.status(500).json({ error: err.message })
+        : res.status(200).json({ message: "Saved!" }),
   );
 });
 
@@ -862,7 +908,10 @@ app.get("/module-videos/:courseId", (req, res) => {
   db.query(
     "SELECT * FROM module_videos WHERE course_id = ?",
     [String(req.params.courseId)],
-    (err, data) => err ? res.status(500).json({ error: err.message }) : res.status(200).json(data)
+    (err, data) =>
+      err
+        ? res.status(500).json({ error: err.message })
+        : res.status(200).json(data),
   );
 });
 
@@ -870,7 +919,10 @@ app.delete("/module-videos/:courseId/:moduleIndex", (req, res) => {
   db.query(
     "DELETE FROM module_videos WHERE course_id = ? AND module_index = ?",
     [String(req.params.courseId), req.params.moduleIndex],
-    (err) => err ? res.status(500).json({ error: err.message }) : res.status(200).json({ message: "Deleted!" })
+    (err) =>
+      err
+        ? res.status(500).json({ error: err.message })
+        : res.status(200).json({ message: "Deleted!" }),
   );
 });
 
