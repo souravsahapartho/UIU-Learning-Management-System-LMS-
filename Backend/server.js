@@ -135,6 +135,7 @@ const alterQueries = [
   "ALTER TABLE assignment_submissions ADD COLUMN assignment_title VARCHAR(255) DEFAULT NULL",
   "ALTER TABLE users ADD COLUMN first_login VARCHAR(100) DEFAULT NULL",
   "ALTER TABLE users ADD COLUMN last_login VARCHAR(100) DEFAULT NULL",
+  "ALTER TABLE module_videos ADD COLUMN description TEXT DEFAULT NULL",
 ];
 alterQueries.forEach((query) => {
   db.query(query, (err) => {
@@ -893,14 +894,39 @@ app.get("/assignments/:courseId", (req, res) => {
 });
 
 app.post("/module-videos", (req, res) => {
-  const { course_id, module_index, video_url, uploaded_by } = req.body;
+  const { course_id, module_index, video_url, uploaded_by, description } =
+    req.body;
   db.query(
-    "INSERT INTO module_videos (course_id, module_index, video_url, uploaded_by) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE video_url = ?",
-    [String(course_id), module_index, video_url, uploaded_by, video_url],
+    `INSERT INTO module_videos (course_id, module_index, video_url, uploaded_by, description) 
+     VALUES (?, ?, ?, ?, ?) 
+     ON DUPLICATE KEY UPDATE video_url = ?, description = COALESCE(?, description)`,
+    [
+      String(course_id),
+      module_index,
+      video_url,
+      uploaded_by,
+      description || null,
+      video_url,
+      description || null,
+    ],
     (err) =>
       err
         ? res.status(500).json({ error: err.message })
         : res.status(200).json({ message: "Saved!" }),
+  );
+});
+
+app.put("/module-videos/description", (req, res) => {
+  const { course_id, module_index, description } = req.body;
+  db.query(
+    `INSERT INTO module_videos (course_id, module_index, video_url, description) 
+     VALUES (?, ?, '', ?) 
+     ON DUPLICATE KEY UPDATE description = ?`,
+    [String(course_id), module_index, description, description],
+    (err) =>
+      err
+        ? res.status(500).json({ error: err.message })
+        : res.status(200).json({ message: "Description saved!" }),
   );
 });
 

@@ -6840,6 +6840,7 @@
 
       async function markModuleCompleted(moduleIndex) {
         if (!currentUser || currentUser.role !== "student") return;
+        if (completedModules.has(moduleIndex)) return; // already completed
 
         const now = new Date().toLocaleString("en-US", {
           month: "short",
@@ -6863,31 +6864,49 @@
 
           completedModules.add(moduleIndex);
 
-          // UI update - circle blue করো
+          // শুধু UI update - re-render নয়
           const item = document.getElementById(`module-item-${moduleIndex}`);
+          const circle = document.getElementById(`circle-${moduleIndex}`);
+
+          if (circle) {
+            circle.style.background = "#2563eb";
+            circle.style.borderColor = "#2563eb";
+            circle.style.color = "white";
+            circle.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+          }
+
           if (item) {
-            const circle = item.querySelector(".lesson-circle");
-            if (circle) {
-              circle.style.background = "#2563eb";
-              circle.style.borderColor = "#2563eb";
-              circle.style.color = "white";
-              circle.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-            }
+            item.style.borderLeft = "4px solid #2563eb";
+            item.classList.add("completed");
             const titleEl = item.querySelector("div > div > div:first-child");
             if (titleEl) {
               titleEl.style.color = "#2563eb";
               titleEl.style.fontWeight = "700";
             }
-          }
-
-          // Auto next module load
-          const totalModules = currentCourseObj?.total_lessons || 4;
-          if (moduleIndex < totalModules) {
-            setTimeout(() => loadModuleVideo("", moduleIndex + 1), 1000);
-            await renderDynamicLessons(totalModules);
+            const timeEl = item.querySelector("div > div > div:last-child");
+            if (timeEl) {
+              timeEl.innerHTML = `${10 + moduleIndex * 5} min <span style="color:#2563eb;">✓ Completed</span>`;
+            }
           }
         } catch (e) {
           console.error("Progress save error:", e);
+        }
+      }
+
+      async function saveModuleDescription(moduleIndex, description) {
+        if (!description.trim()) return;
+        try {
+          await fetch(`${API_URL}/module-videos/description`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              course_id: String(currentCoursePlayerId),
+              module_index: moduleIndex,
+              description: description.trim(),
+            }),
+          });
+        } catch (e) {
+          console.error("Description save error:", e);
         }
       }
 
@@ -6903,7 +6922,9 @@
 
         const isStudent = currentUser && currentUser.role === "student";
 
+        // Module videos load
         let moduleVideos = {};
+        let moduleDescriptions = {};
         try {
           const vids = await safeFetchJSON(
             `${API_URL}/module-videos/${currentCoursePlayerId}`,
@@ -6911,10 +6932,12 @@
           if (Array.isArray(vids)) {
             vids.forEach((v) => {
               moduleVideos[v.module_index] = v.video_url;
+              moduleDescriptions[v.module_index] = v.description || "";
             });
           }
         } catch (e) {}
 
+        // Completed modules load (only for students)
         if (isStudent) {
           try {
             const progress = await safeFetchJSON(
@@ -6931,8 +6954,8 @@
         for (let i = 1; i <= total; i++) {
           const savedVideo =
             moduleVideos[i] || (i === 1 ? currentCourseObj?.video_url : null);
+          const savedDesc = moduleDescriptions[i] || "";
           const isCompleted = completedModules.has(i);
-          const isActive = i === 1;
 
           let title =
             i === 1
@@ -6944,14 +6967,26 @@
 
           const circleContent = isCompleted
             ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>`
-            : `<span style="font-size:11px;font-weight:700;">${i}</span>`;
+            : `<span style="font-size:11px;font-weight:700;color:${isCompleted ? "white" : "#64748b"};">${i}</span>`;
 
           const circleStyle = isCompleted
-            ? `background:#2563eb;border-color:#2563eb;`
-            : `background:transparent;border-color:#cbd5e1;color:#94a3b8;`;
+            ? `background:#2563eb !important;border-color:#2563eb !important;color:white;`
+            : `background:transparent;border-color:#cbd5e1;`;
 
+          // Video section
           let videoSection = "";
           if (isInstructor) {
+            // Description input for instructor
+            const descSection = `
+        <div style="margin-top:8px;">
+          <textarea 
+            id="desc-input-${i}"
+            placeholder="Add module description..."
+            onblur="saveModuleDescription(${i}, this.value)"
+            style="width:100%;padding:8px;border-radius:8px;border:1px solid #cbd5e1;font-size:12px;resize:vertical;min-height:60px;font-family:'Inter',sans-serif;box-sizing:border-box;"
+          >${savedDesc}</textarea>
+        </div>`;
+
             videoSection = savedVideo
               ? `<div style="margin-top:8px;">
             <video controls style="width:100%;border-radius:8px;max-height:120px;">
@@ -6964,21 +6999,25 @@
               </label>
               <button onclick="deleteModuleVideo(${i})" style="font-size:11px;color:#ef4444;font-weight:600;background:#fef2f2;padding:4px 10px;border-radius:20px;border:1px solid #fca5a5;cursor:pointer;">🗑 Remove</button>
             </div>
+            ${descSection}
            </div>`
               : `<div style="margin-top:8px;">
             <div style="font-size:12px;color:#94a3b8;font-style:italic;margin-bottom:6px;">📭 Module not uploaded yet</div>
-            <label id="module-upload-label-${i}" style="cursor:pointer;font-size:11px;color:#2563eb;font-weight:600;background:#eff6ff;padding:6px 14px;border-radius:20px;border:1px solid #bfdbfe;display:inline-flex;align-items:center;gap:6px;">
+            <label style="cursor:pointer;font-size:11px;color:#2563eb;font-weight:600;background:#eff6ff;padding:6px 14px;border-radius:20px;border:1px solid #bfdbfe;display:inline-flex;align-items:center;gap:6px;">
               ⬆️ Upload Video
               <input type="file" accept="video/*" style="display:none;" onchange="uploadModuleVideoToCloud(${i}, this)">
             </label>
             <span id="module-upload-status-${i}" style="font-size:11px;color:#64748b;margin-left:8px;"></span>
+            ${descSection}
            </div>`;
           } else {
+            // Student view
             videoSection = savedVideo
-              ? `<div style="margin-top:8px;cursor:pointer;" onclick="loadModuleVideo('${savedVideo}', ${i})">
+              ? `<div style="margin-top:8px;cursor:pointer;border-radius:8px;overflow:hidden;" onclick="loadModuleVideo('${savedVideo}', ${i})">
             <video style="width:100%;border-radius:8px;max-height:100px;pointer-events:none;">
               <source src="${savedVideo}" type="video/mp4">
             </video>
+            ${savedDesc ? `<div style="font-size:12px;color:#64748b;margin-top:6px;padding:0 4px;">${savedDesc}</div>` : ""}
            </div>`
               : `<div style="margin-top:6px;font-size:12px;color:#94a3b8;font-style:italic;">📭 Module not uploaded yet</div>`;
           }
@@ -6986,15 +7025,29 @@
           html += `
       <div class="lesson-item ${isCompleted ? "completed" : ""}" 
            id="module-item-${i}"
-           style="flex-direction:column;align-items:flex-start;cursor:pointer;border-left:${isActive ? "4px solid #2563eb" : "4px solid transparent"};"
+           style="flex-direction:column;align-items:flex-start;cursor:pointer;
+                  border-left:4px solid ${isCompleted ? "#2563eb" : "transparent"};"
            onclick="loadModuleVideo('${savedVideo || ""}', ${i})">
         <div style="display:flex;align-items:center;gap:15px;width:100%;">
-          <div class="lesson-circle" style="${circleStyle}color:${isCompleted ? "white" : "#94a3b8"};">
+          <div class="lesson-circle" 
+               id="circle-${i}"
+               style="width:28px;height:28px;border-radius:50%;border:2px solid;
+                      display:flex;align-items:center;justify-content:center;flex-shrink:0;
+                      ${
+                        isCompleted
+                          ? "background:#2563eb;border-color:#2563eb;color:white;"
+                          : "background:transparent;border-color:#cbd5e1;color:#64748b;"
+                      }">
             ${circleContent}
           </div>
           <div style="flex:1;">
-            <div style="font-weight:${isCompleted ? "700" : "600"};font-size:15px;color:${isCompleted ? "#2563eb" : "#0f172a"};">${title}</div>
-            <div style="font-size:13px;color:#64748b;margin-top:4px;">${duration} min ${isCompleted ? "✅" : ""}</div>
+            <div style="font-weight:${isCompleted ? "700" : "600"};font-size:15px;
+                        color:${isCompleted ? "#2563eb" : "#0f172a"};">
+              ${title}
+            </div>
+            <div style="font-size:13px;color:#64748b;margin-top:2px;">
+              ${duration} min ${isCompleted ? '<span style="color:#2563eb;">✓ Completed</span>' : ""}
+            </div>
           </div>
         </div>
         ${videoSection}
