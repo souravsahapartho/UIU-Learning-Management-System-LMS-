@@ -7175,6 +7175,19 @@
               selectedCourse.description ||
               "Course details will be available soon.";
 
+          completedModules = new Set();
+
+          if (currentUser.role === "student") {
+            try {
+              const progress = await safeFetchJSON(
+                `${API_URL}/module-progress/${courseId}/${currentUser.email}`,
+              );
+              if (Array.isArray(progress)) {
+                completedModules = new Set(progress.map((p) => p.module_index));
+              }
+            } catch (e) {}
+          }
+
           renderDynamicLessons(selectedCourse.total_lessons || 4);
 
           const markBtn = document.getElementById("cp-mark-completed-btn");
