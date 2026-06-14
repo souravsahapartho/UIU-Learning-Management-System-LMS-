@@ -6874,11 +6874,11 @@
               "Progress save failed: " +
                 (errData.error || "Unknown error. Please try again."),
             );
-            return; // UI update korbo na jodi save fail kore
+            return;
           }
 
           completedModules.add(Number(moduleIndex));
-          // ... বাকি UI update কোড একই থাকবে
+          await renderDynamicLessons(currentCourseObj.total_lessons || 4);
         } catch (e) {
           console.error("Progress save error:", e);
           alert("Connection error. Please try again.");
