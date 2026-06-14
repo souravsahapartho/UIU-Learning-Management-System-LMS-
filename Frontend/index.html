@@ -4931,7 +4931,7 @@
                     </button>
                   </div>
                   <div id="cp-feedback-area-container" class="hidden"></div>
-               <div id="cp-assignments-area-container" class="hidden"></div>
+                  <div id="cp-assignments-area-container" class="hidden"></div>
                   <div id="cp-students-area-container" class="hidden"></div>
                   <div id="cp-chat-area-container" class="hidden"></div>
                 </div>
@@ -6892,6 +6892,12 @@
           return;
         }
 
+        const modData = moduleDataMap[Number(moduleIndex)];
+        if (modData && !modData.videoUrl) {
+          alert("এই module এর video upload হয়নি, এটি এখনো locked।");
+          return;
+        }
+
         const now = new Date().toLocaleString("en-US", {
           month: "short",
           day: "numeric",
@@ -7010,6 +7016,7 @@
         for (let i = 1; i <= total; i++) {
           const savedVideo =
             moduleVideos[i] || (i === 1 ? currentCourseObj?.video_url : null);
+          const isLockedForStudent = isStudent && !savedVideo;
           const savedDesc = moduleDescriptions[i] || "";
           const isCompleted = completedModules.has(i);
 
@@ -7029,7 +7036,9 @@
 
           const circleContent = isCompleted
             ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>`
-            : `<span style="font-size:11px;font-weight:700;color:${isCompleted ? "white" : "#64748b"};">${i}</span>`;
+            : isLockedForStudent
+              ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`
+              : `<span style="font-size:11px;font-weight:700;color:${isCompleted ? "white" : "#64748b"};">${i}</span>`;
 
           const circleStyle = isCompleted
             ? `background:#2563eb !important;border-color:#2563eb !important;color:white;`
@@ -7079,23 +7088,25 @@
           } else {
             videoSection = savedVideo
               ? `<div style="margin-top:8px;cursor:pointer;border-radius:8px;overflow:hidden;" onclick="loadModuleVideo('${savedVideo}', ${i})">
-              <video style="width:100%;border-radius:8px;max-height:100px;pointer-events:none;">
-                <source src="${savedVideo}" type="video/mp4">
-              </video>
-              ${savedDesc ? `<div style="font-size:12px;color:#64748b;margin-top:6px;padding:0 4px;">${savedDesc}</div>` : ""}
-             </div>`
+    <video style="width:100%;border-radius:8px;max-height:100px;pointer-events:none;">
+      <source src="${savedVideo}" type="video/mp4">
+    </video>
+    ${savedDesc ? `<div style="font-size:12px;color:#64748b;margin-top:6px;padding:0 4px;">${savedDesc}</div>` : ""}
+   </div>`
               : `<div style="margin-top:6px;">
-              <div style="font-size:12px;color:#94a3b8;font-style:italic;">📭 Module not uploaded yet</div>
-              ${savedDesc ? `<div style="font-size:12px;color:#64748b;margin-top:6px;padding:0 4px;">${savedDesc}</div>` : ""}
-             </div>`;
+    <div style="font-size:12px;color:#94a3b8;font-style:italic;">📭 Module not uploaded yet</div>
+    ${savedDesc ? `<div style="font-size:12px;color:#64748b;margin-top:6px;padding:0 4px;">${savedDesc}</div>` : ""}
+   </div>`;
           }
 
           html += `
-            <div class="lesson-item ${isCompleted ? "completed" : ""}"
-                 id="module-item-${i}"
-                 style="flex-direction:column;align-items:flex-start;cursor:pointer;
-                        border-left:4px solid ${isCompleted ? "#2563eb" : "transparent"};"
-                 onclick="loadModuleVideo('${savedVideo || ""}', ${i})">
+  <div class="lesson-item ${isCompleted ? "completed" : ""}"
+       id="module-item-${i}"
+       style="flex-direction:column;align-items:flex-start;
+              cursor:${isLockedForStudent ? "not-allowed" : "pointer"};
+              opacity:${isLockedForStudent ? "0.55" : "1"};
+              border-left:4px solid ${isCompleted ? "#2563eb" : "transparent"};"
+       onclick="${isLockedForStudent ? `alert('এই module এর video এখনো upload হয়নি। Instructor video upload করলেই এটি unlock হবে।')` : `loadModuleVideo('${savedVideo || ""}', ${i})`}">
               <div style="display:flex;align-items:center;gap:15px;width:100%;">
                 <div class="lesson-circle"
                      id="circle-${i}"
@@ -7109,14 +7120,16 @@
                   ${circleContent}
                 </div>
                 <div style="flex:1;">
-                  <div style="font-weight:${isCompleted ? "700" : "600"};font-size:15px;
-                              color:${isCompleted ? "#2563eb" : "#0f172a"};">
-                    ${title}
-                  </div>
-                  <div style="font-size:13px;color:#64748b;margin-top:2px;">
-                    ${duration} min ${isCompleted ? '<span style="color:#2563eb;">✓ Completed</span>' : ""}
-                  </div>
-                </div>
+  <div style="font-weight:${isCompleted ? "700" : "600"};font-size:15px;
+              color:${isCompleted ? "#2563eb" : "#0f172a"};">
+    ${title}
+  </div>
+  <div style="font-size:13px;color:#64748b;margin-top:2px;">
+    ${duration} min
+    ${isCompleted ? '<span style="color:#2563eb;">✓ Completed</span>' : ""}
+    ${isLockedForStudent ? '<span style="color:#ef4444;font-weight:700;">🔒 Locked</span>' : ""}
+  </div>
+</div>
               </div>
               ${videoSection}
             </div>`;
