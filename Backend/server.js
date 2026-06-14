@@ -117,6 +117,12 @@ const tableQueries = [
   last_read_message_id INT DEFAULT 0,
   UNIQUE KEY unique_user_room (user_email, course_id)
 )`,
+  `CREATE TABLE IF NOT EXISTS student_activity (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  student_email VARCHAR(100) NOT NULL,
+  activity_date DATE NOT NULL,
+  UNIQUE KEY unique_activity (student_email, activity_date)
+)`,
 ];
 
 tableQueries.forEach((query) => {
@@ -839,6 +845,36 @@ app.get("/module-progress/:courseId/:studentEmail", (req, res) => {
   db.query(
     "SELECT module_index FROM module_progress WHERE course_id = ? AND student_email = ?",
     [String(req.params.courseId), String(req.params.studentEmail)],
+    (err, data) =>
+      err
+        ? res.status(500).json({ error: err.message })
+        : res.status(200).json(data),
+  );
+});
+
+app.post("/student-activity", (req, res) => {
+  const { student_email, activity_date } = req.body;
+  if (!student_email || !activity_date) {
+    return res
+      .status(400)
+      .json({ error: "Missing student_email or activity_date" });
+  }
+  db.query(
+    `INSERT INTO student_activity (student_email, activity_date) 
+     VALUES (?, ?) 
+     ON DUPLICATE KEY UPDATE activity_date = activity_date`,
+    [String(student_email), activity_date],
+    (err) =>
+      err
+        ? res.status(500).json({ error: err.message })
+        : res.status(200).json({ message: "Activity logged" }),
+  );
+});
+
+app.get("/student-activity/:email", (req, res) => {
+  db.query(
+    "SELECT DATE_FORMAT(activity_date, '%Y-%m-%d') as activity_date FROM student_activity WHERE student_email = ? ORDER BY activity_date DESC",
+    [String(req.params.email)],
     (err, data) =>
       err
         ? res.status(500).json({ error: err.message })

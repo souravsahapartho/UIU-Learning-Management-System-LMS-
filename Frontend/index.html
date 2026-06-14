@@ -5080,6 +5080,29 @@
         }
       }
 
+      function getLocalDateStr(d) {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }
+
+      async function logStudentActivity() {
+        if (!currentUser || currentUser.role !== "student") return;
+        try {
+          await fetch(`${API_URL}/student-activity`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              student_email: currentUser.email,
+              activity_date: getLocalDateStr(new Date()),
+            }),
+          });
+        } catch (e) {
+          console.warn("Activity log failed", e);
+        }
+      }
+
       function toggleDarkMode(checkbox) {
         if (checkbox.checked) {
           document.body.classList.add("dark-mode");
@@ -5923,6 +5946,7 @@
           }, 100);
         } else if (safeRole === "student") {
           setTimeout(async () => {
+            await logStudentActivity();
             await renderStudentEnrolledCourses();
             await renderStudentDueAssignments();
           }, 100);
@@ -6698,61 +6722,38 @@
             }
           }
 
-          // Streak & Activity calculation
+          // Streak & Activity calculation (DB-backed via /student-activity)
           try {
-            const allProgressResults = await Promise.all(
-              myEnrollments.map((enr) =>
-                safeFetchJSON(
-                  `${API_URL}/module-progress/${enr.course_id}/${currentUser.email}`,
-                ),
-              ),
+            const activityData = await safeFetchJSON(
+              `${API_URL}/student-activity/${currentUser.email}`,
             );
 
-            let allCompletions = [];
-            allProgressResults.forEach((progress) => {
-              if (Array.isArray(progress)) {
-                progress.forEach((p) => {
-                  if (p.completed_at) {
-                    const d = new Date(p.completed_at);
-                    if (!isNaN(d.getTime())) allCompletions.push(d);
-                  }
-                });
-              }
-            });
-
-            const activeDateSet = new Set(
-              allCompletions.map((d) => d.toDateString()),
-            );
-            const todayDateObj = new Date();
-            todayDateObj.setHours(0, 0, 0, 0);
-            activeDateSet.add(todayDateObj.toDateString());
+            const activeDateSet = new Set();
+            if (Array.isArray(activityData)) {
+              activityData.forEach((row) => {
+                if (row.activity_date) activeDateSet.add(row.activity_date);
+              });
+            }
 
             // Current streak: count consecutive days ending today
             let streak = 0;
             let cursor = new Date();
-            cursor.setHours(0, 0, 0, 0);
-            while (activeDateSet.has(cursor.toDateString())) {
+            while (activeDateSet.has(getLocalDateStr(cursor))) {
               streak++;
               cursor.setDate(cursor.getDate() - 1);
             }
 
-            // Hours this month: 1 hour counted for each distinct day the user was active (logged in / completed something)
+            // Hours this month: 1 hour for each distinct active day this month
             const now2 = new Date();
-            const activeDaysThisMonth = new Set();
-            allCompletions.forEach((d) => {
-              if (
-                d.getMonth() === now2.getMonth() &&
-                d.getFullYear() === now2.getFullYear()
-              ) {
-                activeDaysThisMonth.add(d.toDateString());
+            let activeDaysThisMonth = 0;
+            activeDateSet.forEach((dateStr) => {
+              const [y, m] = dateStr.split("-").map(Number);
+              if (m - 1 === now2.getMonth() && y === now2.getFullYear()) {
+                activeDaysThisMonth++;
               }
             });
 
-            const today2 = new Date();
-            today2.setHours(0, 0, 0, 0);
-            activeDaysThisMonth.add(today2.toDateString());
-
-            const hoursThisMonth = activeDaysThisMonth.size * 1;
+            const hoursThisMonth = activeDaysThisMonth;
 
             const streakEl = document.getElementById("ps-streak-days");
             const hoursEl = document.getElementById("ps-hours-month");
@@ -6775,8 +6776,7 @@
               for (let i = 6; i >= 0; i--) {
                 const d = new Date();
                 d.setDate(d.getDate() - i);
-                d.setHours(0, 0, 0, 0);
-                const isActive = activeDateSet.has(d.toDateString());
+                const isActive = activeDateSet.has(getLocalDateStr(d));
                 const label = dayLabels[d.getDay()];
                 icons += `<span style="font-size: 20px" title="${label}">${isActive ? "✅" : "⬜"}</span>`;
               }
