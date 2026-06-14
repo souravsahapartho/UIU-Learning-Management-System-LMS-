@@ -31,18 +31,15 @@ const hashPassword = (password) => {
   return crypto.createHash("sha256").update(String(password)).digest("hex");
 };
 
-// --- CLOUDINARY CONFIGURATION ---
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// --- MULTER STORAGE SETUP ---
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
-    // Media types anujayi folder e pathano
     if (file.mimetype.includes("video")) {
       return {
         folder: "elms/course_videos",
@@ -73,7 +70,6 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage: storage });
 
-// --- DATABASE CONNECTION ---
 const db = mysql.createPool({
   host: process.env.MYSQLHOST,
   user: process.env.MYSQLUSER,
@@ -85,19 +81,14 @@ const db = mysql.createPool({
   queueLimit: 0,
 });
 
-// Test Connection
 db.query("SELECT 1", (err) => {
   if (err) {
-    console.error(
-      "Database connection failed:",
-      err.message,
-    );
+    console.error("Database connection failed:", err.message);
   } else {
     console.log("Database connected.");
   }
 });
 
-// Initializing Tables
 const tableQueries = [
   `CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), email VARCHAR(100) UNIQUE, password VARCHAR(255), role VARCHAR(50) DEFAULT 'student', avatar VARCHAR(500) DEFAULT 'U', status VARCHAR(50) DEFAULT 'Pending')`,
   `CREATE TABLE IF NOT EXISTS courses (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), description TEXT, category VARCHAR(100), difficulty VARCHAR(50), instructor_email VARCHAR(100), instructor_name VARCHAR(100), total_lessons INT DEFAULT 4, status VARCHAR(50) DEFAULT 'Pending', thumbnail_url VARCHAR(500) DEFAULT NULL, video_url VARCHAR(500) DEFAULT NULL)`,
@@ -142,14 +133,12 @@ alterQueries.forEach((query) => {
       err.code !== "ER_DUP_FIELDNAME" &&
       !err.message.includes("already exists")
     ) {
-      // Ignoring normal duplicate field errors
     }
   });
 });
 
 app.get("/", (req, res) => res.json({ message: "Backend API is active." }));
 
-// --- PROFILE PICTURE UPLOAD API ---
 app.post(
   "/upload-profile-pic",
   (req, res, next) => {
@@ -177,11 +166,7 @@ app.post(
       "INSERT INTO profile_pictures (name, email, user_type, image_link, uploaded_time) VALUES (?, ?, ?, ?, ?)",
       [name || "", email || "", role || "", imageUrl, uploadedTime],
       (err) => {
-        if (err)
-          console.error(
-            "Profile picture save error:",
-            err.message,
-          );
+        if (err) console.error("Profile picture save error:", err.message);
         res.status(200).json({
           message: "Profile picture uploaded successfully",
           url: imageUrl,
@@ -191,7 +176,6 @@ app.post(
   },
 );
 
-// --- CHAT MEDIA UPLOAD API ---
 app.post(
   "/upload-chat-media",
   (req, res, next) => {
@@ -214,7 +198,6 @@ app.post(
   },
 );
 
-// --- USER APIs ---
 app.post("/signup", (req, res) => {
   const { name, email, password, role, avatar } = req.body;
   const encryptedPassword = hashPassword(password || "");
@@ -356,8 +339,6 @@ app.put("/update-user-status", (req, res) => {
         : res.status(200).json({ message: "Status updated" }),
   );
 });
-
-// --- COURSE APIs WITH CLOUDINARY UPLOAD ---
 
 app.post(
   "/upload-course",
@@ -571,7 +552,6 @@ app.put("/course-status", (req, res) => {
   );
 });
 
-// --- ENROLLMENT APIs ---
 app.get("/enrollments", (req, res) => {
   db.query("SELECT * FROM enrollments ORDER BY id DESC", (err, data) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -624,7 +604,6 @@ app.delete("/enrollments/:id", (req, res) => {
   );
 });
 
-// --- CHAT APIs ---
 app.get("/course-chats/:courseId", (req, res) => {
   db.query(
     "SELECT * FROM course_chats WHERE course_id = ? ORDER BY id ASC",
@@ -712,7 +691,6 @@ app.get("/course-chats-latest/:courseId", (req, res) => {
   );
 });
 
-// --- FEEDBACK & COMPLAINT APIs ---
 app.get("/course-feedbacks/:courseId", (req, res) => {
   db.query(
     "SELECT * FROM feedbacks WHERE course_id = ? ORDER BY id DESC",
@@ -797,7 +775,6 @@ app.post("/course-complaints", (req, res) => {
   );
 });
 
-// --- ASSIGNMENT APIs ---
 app.get("/assignments/:courseId", (req, res) => {
   db.query(
     "SELECT * FROM assignments WHERE course_id = ? ORDER BY id DESC",
@@ -848,7 +825,6 @@ app.get("/assignment-submissions/:courseId", (req, res) => {
   );
 });
 
-// ✅ এটা দিয়ে replace করো
 app.post("/assignment-submissions", (req, res) => {
   const {
     assignment_id,
@@ -857,8 +833,8 @@ app.post("/assignment-submissions", (req, res) => {
     student_name,
     submission_text,
     date,
-    assignment_title, // optional, may be undefined
-    course_name, // optional, may be undefined
+    assignment_title,
+    course_name,
   } = req.body;
 
   db.query(
@@ -892,7 +868,6 @@ app.put("/assignment-submissions/:id/grade", (req, res) => {
   );
 });
 
-// --- BAN REQUEST APIs ---
 app.get("/ban-requests", (req, res) => {
   db.query("SELECT * FROM ban_requests ORDER BY id DESC", (err, data) =>
     err
@@ -1004,7 +979,6 @@ app.put("/ban-requests/:id", async (req, res) => {
   }
 });
 
-// --- NOTIFICATION APIs ---
 app.get("/notifications/:identifier", (req, res) => {
   db.query(
     "SELECT * FROM notifications WHERE identifier = ? ORDER BY id DESC",
@@ -1039,7 +1013,6 @@ app.put("/notifications/read", (req, res) => {
   );
 });
 
-// --- UNREAD CHAT COUNT APIs ---
 app.get("/unread-counts/:userEmail", async (req, res) => {
   const userEmail = req.params.userEmail;
   const promiseDb = db.promise();

@@ -2501,7 +2501,6 @@
       </div>
     </nav>
 
-    <!-- Landing page -->
     <div id="landing-page" class="page">
       <div class="hero-section">
         <div class="hero-content">
@@ -2540,7 +2539,6 @@
       </div>
     </div>
 
-    <!-- login -->
     <div id="login-page" class="page hidden">
       <div class="auth-container">
         <div class="auth-box">
@@ -2571,7 +2569,6 @@
       </div>
     </div>
 
-    <!-- Signup -->
     <div id="signup-page" class="page hidden">
       <div class="auth-container">
         <div class="auth-box">
@@ -2615,7 +2612,7 @@
       </div>
     </div>
 
-    <!-- Sidebar -->
+    <!-- sidebar -->
     <div
       class="sidebar-overlay"
       id="sidebar-overlay"
@@ -2902,7 +2899,7 @@
             ></div>
           </div>
 
-          <!-- INSTRUCTOR DASHBOARD -->
+          <!-- instructor Dashbosrd -->
           <div id="instructor-dashboard-view" style="display: none">
             <div class="welcome-banner" style="background-color: #0f172a">
               <h1 id="welcome-msg-inst">Dashboard Overview</h1>
@@ -3067,7 +3064,7 @@
             ></div>
           </div>
 
-          <!-- Admin dashboard -->
+          <!--Admin-->
           <div id="admin-dashboard-view" style="display: none">
             <div class="admin-hero">
               <div class="admin-hero-content">
@@ -3323,7 +3320,6 @@
           </div>
         </div>
 
-        <!-- Browse courses -->
         <div id="student-browse-courses-content" class="hidden">
           <button
             class="btn-back"
@@ -3364,7 +3360,7 @@
           ></div>
         </div>
 
-        <!-- 🔥 INSTRUCTOR STUDENTS VIEW 🔥 -->
+        <!--INS STU view-->
         <div id="instructor-students-content" class="hidden">
           <button
             class="btn-back"
@@ -3444,7 +3440,6 @@
           </div>
         </div>
 
-        <!-- student progress section -->
         <div id="student-progress-content" class="hidden">
           <button
             class="btn-back"
@@ -3581,7 +3576,6 @@
           </div>
         </div>
 
-        <!-- Instructor Upload Course View -->
         <div id="instructor-upload-course-content" class="hidden">
           <button
             class="btn-back"
@@ -3752,7 +3746,6 @@
           </div>
         </div>
 
-        <!-- Instructor EDIT Course View -->
         <div id="instructor-edit-course-content" class="hidden">
           <button
             class="btn-back"
@@ -3927,7 +3920,7 @@
           </div>
         </div>
 
-        <!-- admin views -->
+        <!--admin-->
         <div id="admin-users-content" class="hidden">
           <button
             class="btn-back"
@@ -4063,7 +4056,6 @@
           <div class="admin-course-grid" id="admin-course-list"></div>
         </div>
 
-        <!-- Notifications -->
         <div id="notifications-content-area" class="hidden">
           <button
             class="btn-back"
@@ -4105,7 +4097,6 @@
           ></div>
         </div>
 
-        <!-- Settings -->
         <div id="settings-content-area" class="hidden">
           <button
             class="btn-back"
@@ -4292,7 +4283,6 @@
           </div>
         </div>
 
-        <!-- 🔥 COURSE PLAYER 🔥 -->
         <div id="course-player-content" class="hidden">
           <button
             class="btn-back"
@@ -4601,7 +4591,6 @@
       </div>
     </div>
 
-    <!-- 🔥 GLOBAL WHATSAPP STYLE CHAT 🔥 -->
     <div
       class="global-chat-fab hidden"
       id="global-chat-fab"
@@ -7384,7 +7373,6 @@
                 ? allCourses2.find((c) => String(c.id) === String(e.course_id))
                 : null;
 
-              // Only show chat room if course is still published/approved
               if (matchedCourse && matchedCourse.status === "Approved") {
                 rooms.push({
                   id: e.course_id,
@@ -7423,12 +7411,11 @@
       }
 
       async function openChatRoom(roomId, roomName, isBroadcast) {
-        // 🔥 INSTANT: Remove badge from this room immediately (optimistic update)
         if (window.__unreadRoomsData) {
           window.__unreadRoomsData = window.__unreadRoomsData.filter(
             (x) => String(x.course_id) !== String(roomId),
           );
-          // Total badge instantly recalculate
+
           const newTotal = window.__unreadRoomsData.reduce(
             (sum, x) => sum + x.unread,
             0,
@@ -7469,7 +7456,6 @@
                 `;
         const inputArea = document.getElementById("g-chat-input-area");
 
-        // 🔥 Check if this room's course is unpublished
         let isCourseUnpublished = false;
         if (!isBroadcast) {
           try {
