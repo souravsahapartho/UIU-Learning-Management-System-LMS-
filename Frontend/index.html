@@ -7697,6 +7697,7 @@
           overlay.classList.add("hidden");
           overlay.style.display = "none";
           if (chatRefreshInterval) clearInterval(chatRefreshInterval);
+          setTimeout(checkUnreadGlobalChats, 300);
         }
       }
 
@@ -8173,17 +8174,47 @@
           const data = await safeFetchJSON(
             `${API_URL}/unread-counts/${currentUser.email}`,
           );
+
           const overlay = document.getElementById("global-chat-overlay");
           const isChatOpen = overlay && !overlay.classList.contains("hidden");
 
-          if (!isChatOpen && data && data.total > 0) {
-            badge.innerText = data.total > 9 ? "9+" : data.total;
+          let broadcastIds = [
+            "broadcast",
+            "broadcast_students",
+            "broadcast_instructors",
+          ];
+          let filteredRooms = [];
+          let broadcastUnread = 0;
+
+          if (data && data.rooms) {
+            data.rooms.forEach((r) => {
+              if (broadcastIds.includes(String(r.course_id))) {
+                broadcastUnread += r.unread;
+              } else {
+                filteredRooms.push(r);
+              }
+            });
+
+            if (broadcastUnread > 0) {
+              filteredRooms.push({
+                course_id: "broadcast",
+                unread: broadcastUnread,
+              });
+            }
+          }
+
+          window.__unreadRoomsData = filteredRooms;
+
+          const total = filteredRooms.reduce((sum, r) => sum + r.unread, 0);
+
+          if (!isChatOpen && total > 0) {
+            badge.innerText = total > 99 ? "99+" : total;
             badge.style.display = "flex";
+          } else if (isChatOpen) {
+            badge.style.display = "none";
           } else {
             badge.style.display = "none";
           }
-
-          window.__unreadRoomsData = data && data.rooms ? data.rooms : [];
 
           const listContainer = document.getElementById(
             "g-chat-list-container",
@@ -8198,6 +8229,7 @@
 
       async function markRoomAsRead(roomId) {
         let idsToMark = [roomId];
+
         if (roomId === "broadcast") {
           idsToMark = ["broadcast"];
           if (currentUser.role === "student" || currentUser.role === "admin")
@@ -8205,6 +8237,7 @@
           if (currentUser.role === "instructor" || currentUser.role === "admin")
             idsToMark.push("broadcast_instructors");
         }
+
         for (let id of idsToMark) {
           try {
             const messages = await safeFetchJSON(
@@ -8223,8 +8256,42 @@
                 last_message_id: maxId,
               }),
             });
-          } catch (e) {}
+          } catch (e) {
+            console.warn("markRoomAsRead failed for", id, e);
+          }
         }
+
+        if (window.__unreadRoomsData) {
+          if (roomId === "broadcast") {
+            window.__unreadRoomsData = window.__unreadRoomsData.filter(
+              (r) =>
+                ![
+                  "broadcast",
+                  "broadcast_students",
+                  "broadcast_instructors",
+                ].includes(String(r.course_id)),
+            );
+          } else {
+            window.__unreadRoomsData = window.__unreadRoomsData.filter(
+              (r) => String(r.course_id) !== String(roomId),
+            );
+          }
+
+          const newTotal = window.__unreadRoomsData.reduce(
+            (sum, r) => sum + r.unread,
+            0,
+          );
+          const badge = document.getElementById("global-chat-badge");
+          if (badge) {
+            if (newTotal > 0) {
+              badge.innerText = newTotal > 99 ? "99+" : newTotal;
+              badge.style.display = "flex";
+            } else {
+              badge.style.display = "none";
+            }
+          }
+        }
+
         await checkUnreadGlobalChats();
       }
 
