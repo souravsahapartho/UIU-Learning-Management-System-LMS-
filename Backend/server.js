@@ -109,7 +109,8 @@ const tableQueries = [
   module_index INT,
   completed_at VARCHAR(100),
   UNIQUE KEY unique_progress (course_id, student_email, module_index)
-)``CREATE TABLE IF NOT EXISTS chat_read_status (
+)`,
+  `CREATE TABLE IF NOT EXISTS chat_read_status (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_email VARCHAR(100) NOT NULL,
   course_id VARCHAR(100) NOT NULL,
