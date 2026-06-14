@@ -6895,9 +6895,12 @@
       }
 
       async function saveModuleDescription(moduleIndex, description) {
-        if (!description.trim()) return;
+        if (!description.trim()) {
+          alert("Description লিখো আগে!");
+          return;
+        }
         try {
-          await fetch(`${API_URL}/module-videos/description`, {
+          const res = await fetch(`${API_URL}/module-videos/description`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -6906,7 +6909,21 @@
               description: description.trim(),
             }),
           });
+          if (res.ok) {
+            const statusEl = document.getElementById(
+              `desc-save-status-${moduleIndex}`,
+            );
+            if (statusEl) {
+              statusEl.style.display = "block";
+              setTimeout(() => {
+                statusEl.style.display = "none";
+              }, 3000);
+            }
+          } else {
+            alert("Save failed. আবার try করো।");
+          }
         } catch (e) {
+          alert("Connection error!");
           console.error("Description save error:", e);
         }
       }
@@ -6977,16 +6994,20 @@
           // Video section
           let videoSection = "";
           if (isInstructor) {
-           
             const descSection = `
-        <div style="margin-top:8px;">
-          <textarea 
-            id="desc-input-${i}"
-            placeholder="Add module description..."
-            onblur="saveModuleDescription(${i}, this.value)"
-            style="width:100%;padding:8px;border-radius:8px;border:1px solid #cbd5e1;font-size:12px;resize:vertical;min-height:60px;font-family:'Inter',sans-serif;box-sizing:border-box;"
-          >${savedDesc}</textarea>
-        </div>`;
+<div style="margin-top:8px;">
+  <textarea 
+    id="desc-input-${i}"
+    placeholder="Add module description..."
+    style="width:100%;padding:8px;border-radius:8px;border:1px solid #cbd5e1;font-size:12px;resize:vertical;min-height:60px;font-family:'Inter',sans-serif;box-sizing:border-box;"
+  >${savedDesc}</textarea>
+  <button 
+    onclick="saveModuleDescription(${i}, document.getElementById('desc-input-${i}').value)"
+    style="margin-top:6px;width:100%;padding:7px;background:#2563eb;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">
+    💾 Save Description
+  </button>
+  <span id="desc-save-status-${i}" style="font-size:11px;color:#10b981;font-weight:600;display:none;margin-top:4px;display:block;">✅ Saved!</span>
+</div>`;
 
             videoSection = savedVideo
               ? `<div style="margin-top:8px;">
@@ -7012,7 +7033,6 @@
             ${descSection}
            </div>`;
           } else {
-         
             videoSection = savedVideo
               ? `<div style="margin-top:8px;cursor:pointer;border-radius:8px;overflow:hidden;" onclick="loadModuleVideo('${savedVideo}', ${i})">
             <video style="width:100%;border-radius:8px;max-height:100px;pointer-events:none;">
@@ -9210,7 +9230,6 @@
           const firstLoginStr = thisUser?.first_login || "Not Available";
           const lastLoginStr = thisUser?.last_login || "Not Available";
           if (isInstructor) {
-         
             const [courses, enrollments] = await Promise.all([
               safeFetchJSON(`${API_URL}/courses`),
               safeFetchJSON(`${API_URL}/enrollments`),
