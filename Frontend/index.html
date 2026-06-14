@@ -4637,6 +4637,7 @@
                     Welcome to the Lesson!
                   </h2>
                   <p
+                    id="cp-lesson-desc-text"
                     style="
                       color: #64748b;
                       font-size: 15px;
@@ -6657,6 +6658,11 @@
             titleEl.innerText = selectedCourse.title || "Untitled Course";
           if (descEl)
             descEl.innerText = selectedCourse.description || "Course details.";
+          const lessonDescEl = document.getElementById("cp-lesson-desc-text");
+          if (lessonDescEl)
+            lessonDescEl.innerText =
+              selectedCourse.description ||
+              "Course details will be available soon.";
 
           renderDynamicLessons(selectedCourse.total_lessons || 4);
 
