@@ -7013,7 +7013,7 @@
                                   <span style="font-size: 11px; color: #94a3b8;">Last active</span>
                                   <span style="font-size: 12px; color: #334155;" class="dm-desc">${st.lastActive}</span>
                               </div>
-                              <button style="padding: 6px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; background: white; border: 1px solid #cbd5e1; color: #334155; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='white'">View Details</button>
+                             <button style="padding: 6px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; background: white; border: 1px solid #cbd5e1; color: #334155; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='white'" onclick="showStudentDetailModal('${st.name}', '${st.email}', '${st.avatar}', ${st.enrolledCount}, ${st.completedCount}, ${st.progress}, '${st.lastActive}')">View Details</button>
                           </div>
                        </div>`;
           })
@@ -8531,6 +8531,146 @@
         document.addEventListener("DOMContentLoaded", documentReady);
       } else {
         documentReady();
+      }
+      function showStudentDetailModal(
+        name,
+        email,
+        avatar,
+        enrolled,
+        completed,
+        progress,
+        lastActive,
+      ) {
+        const existing = document.getElementById("student-detail-modal");
+        if (existing) existing.remove();
+
+        const isDark = document.body.classList.contains("dark-mode");
+        const bgColor = isDark ? "#1e293b" : "#ffffff";
+        const overlayBg = "rgba(0,0,0,0.6)";
+        const textColor = isDark ? "#f8fafc" : "#0f172a";
+        const subColor = isDark ? "#94a3b8" : "#64748b";
+        const borderColor = isDark ? "#334155" : "#e2e8f0";
+        const cardBg = isDark ? "#0f172a" : "#f8fafc";
+
+        const avatarHtml =
+          avatar && avatar.startsWith("http")
+            ? `<img src="${avatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
+            : `<span style="font-size:32px; font-weight:800; color:white;">${avatar}</span>`;
+
+        const progressColor =
+          progress >= 70 ? "#10b981" : progress >= 40 ? "#f59e0b" : "#ef4444";
+        const progressLabel =
+          progress >= 70
+            ? "On Track 🚀"
+            : progress >= 40
+              ? "In Progress ⚡"
+              : "Needs Attention ⚠️";
+
+        const modal = document.createElement("div");
+        modal.id = "student-detail-modal";
+        modal.style.cssText = `
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: ${overlayBg}; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; backdrop-filter: blur(4px);
+  `;
+
+        modal.innerHTML = `
+    <div style="background:${bgColor}; border-radius:24px; width:100%; max-width:480px; box-shadow:0 25px 50px rgba(0,0,0,0.3); overflow:hidden; animation: modalSlideIn 0.25s ease;">
+      
+      <!-- Header -->
+      <div style="background: linear-gradient(135deg, #2563eb, #0ea5e9); padding:32px 28px 24px; position:relative; text-align:center;">
+        <button onclick="document.getElementById('student-detail-modal').remove()" style="position:absolute; top:16px; right:16px; background:rgba(255,255,255,0.2); border:none; width:32px; height:32px; border-radius:50%; cursor:pointer; color:white; font-size:16px; display:flex; align-items:center; justify-content:center; font-weight:700;">✕</button>
+        
+        <div style="width:80px; height:80px; border-radius:50%; background:#1e40af; border:3px solid rgba(255,255,255,0.4); margin:0 auto 14px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+          ${avatarHtml}
+        </div>
+        <h2 style="color:white; font-size:22px; font-weight:800; margin-bottom:4px;">${name}</h2>
+        <p style="color:rgba(255,255,255,0.8); font-size:14px; font-weight:500;">${email}</p>
+        <span style="background:rgba(255,255,255,0.2); color:white; padding:4px 14px; border-radius:50px; font-size:12px; font-weight:700; margin-top:10px; display:inline-block; border:1px solid rgba(255,255,255,0.3);">🎓 Student</span>
+      </div>
+
+      <!-- Stats Row -->
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0; border-bottom:1px solid ${borderColor};">
+        <div style="padding:20px 16px; text-align:center; border-right:1px solid ${borderColor};">
+          <div style="font-size:28px; font-weight:800; color:#2563eb;">${enrolled}</div>
+          <div style="font-size:12px; color:${subColor}; font-weight:600; margin-top:4px;">Enrolled</div>
+        </div>
+        <div style="padding:20px 16px; text-align:center; border-right:1px solid ${borderColor};">
+          <div style="font-size:28px; font-weight:800; color:#10b981;">${completed}</div>
+          <div style="font-size:12px; color:${subColor}; font-weight:600; margin-top:4px;">Completed</div>
+        </div>
+        <div style="padding:20px 16px; text-align:center;">
+          <div style="font-size:28px; font-weight:800; color:#f59e0b;">${progress}%</div>
+          <div style="font-size:12px; color:${subColor}; font-weight:600; margin-top:4px;">Progress</div>
+        </div>
+      </div>
+
+      <!-- Details -->
+      <div style="padding:24px 28px; display:flex; flex-direction:column; gap:16px;">
+        
+        <!-- Progress Bar -->
+        <div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <span style="font-size:14px; font-weight:700; color:${textColor};">Overall Progress</span>
+            <span style="font-size:13px; font-weight:700; color:${progressColor};">${progressLabel}</span>
+          </div>
+          <div style="height:10px; background:${borderColor}; border-radius:10px; overflow:hidden;">
+            <div style="height:100%; width:${progress}%; background:${progressColor}; border-radius:10px; transition:width 0.5s ease;"></div>
+          </div>
+        </div>
+
+        <!-- Info Items -->
+        <div style="background:${cardBg}; border-radius:14px; padding:16px; display:flex; flex-direction:column; gap:12px; border:1px solid ${borderColor};">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:36px; height:36px; background:#eff6ff; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            </div>
+            <div>
+              <div style="font-size:11px; color:${subColor}; font-weight:600;">Email Address</div>
+              <div style="font-size:14px; font-weight:700; color:${textColor}; word-break:break-all;">${email}</div>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:36px; height:36px; background:#f0fdf4; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </div>
+            <div>
+              <div style="font-size:11px; color:${subColor}; font-weight:600;">Last Active</div>
+              <div style="font-size:14px; font-weight:700; color:${textColor};">${lastActive}</div>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:36px; height:36px; background:#fef3c7; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+            </div>
+            <div>
+              <div style="font-size:11px; color:${subColor}; font-weight:600;">Status</div>
+              <div style="font-size:14px; font-weight:700; color:#10b981;">✅ Active Student</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Close Button -->
+        <button onclick="document.getElementById('student-detail-modal').remove()" style="width:100%; padding:14px; background:linear-gradient(135deg,#2563eb,#0ea5e9); color:white; border:none; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; margin-top:4px;">Close</button>
+      </div>
+    </div>
+
+    <style>
+      @keyframes modalSlideIn {
+        from { opacity:0; transform:translateY(-20px) scale(0.96); }
+        to { opacity:1; transform:translateY(0) scale(1); }
+      }
+    </style>
+  `;
+
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) modal.remove();
+        });
+
+        document.body.appendChild(modal);
       }
     </script>
   </body>
