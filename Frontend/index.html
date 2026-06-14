@@ -6805,7 +6805,7 @@
         }
       }
 
-      function renderDynamicLessons(total) {
+      async function renderDynamicLessons(total) {
         const container = document.getElementById("cp-lesson-list-box");
         if (!container) return;
 
@@ -6814,6 +6814,18 @@
           currentUser.role === "instructor" &&
           currentCourseObj &&
           currentCourseObj.instructor_email === currentUser.email;
+
+        let moduleVideos = {};
+        try {
+          const vids = await safeFetchJSON(
+            `${API_URL}/module-videos/${currentCoursePlayerId}`,
+          );
+          if (Array.isArray(vids)) {
+            vids.forEach((v) => {
+              moduleVideos[v.module_index] = v.video_url;
+            });
+          }
+        } catch (e) {}
 
         let html = `<div style="padding: 20px 24px; border-bottom: 1px solid #e2e8f0; font-weight: 800; font-size: 18px; color: #0f172a;">Course Content (${total} Modules)</div>`;
 
@@ -6830,8 +6842,7 @@
                 ? "Final Assessment"
                 : `Module ${i}`;
 
-          const moduleKey = `module_video_${currentCoursePlayerId}_${i}`;
-          const savedVideo = localStorage.getItem(moduleKey);
+          const savedVideo = moduleVideos[i];
 
           let videoSection = "";
           if (isInstructor) {
@@ -6840,20 +6851,21 @@
             <video controls style="width:100%;border-radius:8px;max-height:120px;">
               <source src="${savedVideo}" type="video/mp4">
             </video>
-            <div style="display:flex;gap:6px;margin-top:4px;">
-              <label style="cursor:pointer;font-size:11px;color:#2563eb;font-weight:600;background:#eff6ff;padding:4px 10px;border-radius:20px;border:1px solid #bfdbfe;">
-                Replace Video
-                <input type="file" accept="video/*" style="display:none;" onchange="uploadModuleVideo(${i}, this)">
+            <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">
+              <label style="cursor:pointer;font-size:11px;color:#2563eb;font-weight:600;background:#eff6ff;padding:4px 10px;border-radius:20px;border:1px solid #bfdbfe;display:inline-flex;align-items:center;gap:4px;">
+                🔄 Replace
+                <input type="file" accept="video/*" style="display:none;" onchange="uploadModuleVideoToCloud(${i}, this)">
               </label>
-              <button onclick="removeModuleVideo(${i})" style="font-size:11px;color:#ef4444;font-weight:600;background:#fef2f2;padding:4px 10px;border-radius:20px;border:1px solid #fca5a5;cursor:pointer;">Remove</button>
+              <button onclick="deleteModuleVideo(${i})" style="font-size:11px;color:#ef4444;font-weight:600;background:#fef2f2;padding:4px 10px;border-radius:20px;border:1px solid #fca5a5;cursor:pointer;">🗑 Remove</button>
             </div>
            </div>`
               : `<div style="margin-top:8px;">
-            <div style="font-size:12px;color:#94a3b8;font-style:italic;margin-bottom:4px;">📭 Module not uploaded yet</div>
-            <label style="cursor:pointer;font-size:11px;color:#2563eb;font-weight:600;background:#eff6ff;padding:4px 10px;border-radius:20px;border:1px solid #bfdbfe;display:inline-block;">
-              Upload Video
-              <input type="file" accept="video/*" style="display:none;" onchange="uploadModuleVideo(${i}, this)">
+            <div style="font-size:12px;color:#94a3b8;font-style:italic;margin-bottom:6px;">📭 Module not uploaded yet</div>
+            <label id="module-upload-label-${i}" style="cursor:pointer;font-size:11px;color:#2563eb;font-weight:600;background:#eff6ff;padding:6px 14px;border-radius:20px;border:1px solid #bfdbfe;display:inline-flex;align-items:center;gap:6px;">
+              ⬆️ Upload Video
+              <input type="file" accept="video/*" style="display:none;" onchange="uploadModuleVideoToCloud(${i}, this)">
             </label>
+            <span id="module-upload-status-${i}" style="font-size:11px;color:#64748b;margin-left:8px;"></span>
            </div>`;
           } else {
             videoSection = savedVideo
@@ -6878,6 +6890,73 @@
       </div>`;
         }
         container.innerHTML = html;
+      }
+
+      async function uploadModuleVideoToCloud(moduleIndex, input) {
+        if (!input.files || !input.files[0]) return;
+        const file = input.files[0];
+
+        const statusEl = document.getElementById(
+          `module-upload-status-${moduleIndex}`,
+        );
+        const labelEl = document.getElementById(
+          `module-upload-label-${moduleIndex}`,
+        );
+
+        if (statusEl) statusEl.innerText = "⏳ Uploading...";
+        if (labelEl) labelEl.style.opacity = "0.5";
+
+        const formData = new FormData();
+        formData.append("moduleVideo", file);
+
+        try {
+          const res = await fetch(`${API_URL}/upload-module-video`, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!res.ok) {
+            if (statusEl) statusEl.innerText = "❌ Upload failed";
+            if (labelEl) labelEl.style.opacity = "1";
+            return;
+          }
+
+          const data = await res.json();
+          const videoUrl = data.url;
+
+          await fetch(`${API_URL}/module-videos`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              course_id: String(currentCoursePlayerId),
+              module_index: moduleIndex,
+              video_url: videoUrl,
+              uploaded_by: currentUser.email,
+            }),
+          });
+
+          alert(`Module ${moduleIndex} video uploaded successfully!`);
+          await renderDynamicLessons(currentCourseObj.total_lessons || 4);
+        } catch (e) {
+          alert("Upload failed. Please check your connection.");
+          if (statusEl) statusEl.innerText = "❌ Failed";
+          if (labelEl) labelEl.style.opacity = "1";
+        }
+      }
+
+      async function deleteModuleVideo(moduleIndex) {
+        if (!confirm(`Remove video from Module ${moduleIndex}?`)) return;
+        try {
+          await fetch(
+            `${API_URL}/module-videos/${currentCoursePlayerId}/${moduleIndex}`,
+            {
+              method: "DELETE",
+            },
+          );
+          await renderDynamicLessons(currentCourseObj.total_lessons || 4);
+        } catch (e) {
+          alert("Failed to remove video. Please try again.");
+        }
       }
 
       function uploadModuleVideo(moduleIndex, input) {
