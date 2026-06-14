@@ -554,6 +554,32 @@ app.put(
         thumbnail: thumbnailUrl,
         video: videoUrl,
       });
+      if (title) {
+        db.query(
+          "UPDATE enrollments SET course_title = ? WHERE course_id = ?",
+          [title, courseId],
+        );
+        db.query("UPDATE assignments SET course_name = ? WHERE course_id = ?", [
+          title,
+          courseId,
+        ]);
+        db.query(
+          "UPDATE assignment_submissions SET course_name = ? WHERE course_id = ?",
+          [title, courseId],
+        );
+        db.query("UPDATE feedbacks SET course_name = ? WHERE course_id = ?", [
+          title,
+          courseId,
+        ]);
+        db.query("UPDATE complaints SET course_name = ? WHERE course_id = ?", [
+          title,
+          courseId,
+        ]);
+        db.query(
+          "UPDATE course_chats SET course_name = ? WHERE course_id = ?",
+          [title, courseId],
+        );
+      }
     });
   },
 );

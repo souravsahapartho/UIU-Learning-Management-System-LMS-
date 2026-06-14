@@ -6663,7 +6663,7 @@
                     : a.course_title;
 
                 return `
-                <div class="assign-countdown-item">
+                <div class="assign-countdown-item" style="cursor:pointer;" onclick="openCoursePlayer('${a.course_id}'); setTimeout(()=>switchCpTab('assignments'), 800); toggleGlobalChat && document.getElementById('global-chat-overlay')?.classList.contains('hidden') ? null : toggleGlobalChat(false);">
                   <div class="assign-dot" style="background:${dotColor};"></div>
                   <div style="flex:1; min-width:0;">
                     <div style="font-size:14px; font-weight:700; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-text">${shortTitle}</div>
