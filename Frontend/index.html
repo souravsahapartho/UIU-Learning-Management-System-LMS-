@@ -9033,9 +9033,14 @@
           const lastLoginStr = thisUser?.last_login || "Not Available";
 
           const myEnrollments = Array.isArray(enrollments)
-            ? enrollments.filter(
-                (e) => e.student_email === email && e.status === "Approved",
-              )
+            ? enrollments.filter((e) => {
+                if (e.student_email !== email || e.status !== "Approved")
+                  return false;
+                const course = Array.isArray(courses)
+                  ? courses.find((c) => String(c.id) === String(e.course_id))
+                  : null;
+                return course && course.status === "Approved";
+              })
             : [];
 
           let allSubmissions = [];
