@@ -5821,9 +5821,8 @@
         const setEmailEl = document.getElementById("set-email");
         if (setEmailEl) setEmailEl.value = user.email || "";
 
-        // Show global chat fab if logged in
         document.getElementById("global-chat-fab").classList.remove("hidden");
-        checkUnreadGlobalChats(); // Initial check (instant)
+        checkUnreadGlobalChats();
         if (!globalChatPollingInterval) {
           globalChatPollingInterval = setInterval(checkUnreadGlobalChats, 3000);
         }
@@ -6082,30 +6081,27 @@
               }
 
               return `
-      <div class="user-card card-${statusClass}" style="${cardExtraStyle}">
-                <span class="user-card-badge ${statusClass}">${u.status}</span>
-                <div class="user-card-header">
-                  <div class="user-avatar-large" style="background-color:${roleColor}">${avatarHtml}</div>
-                  <div class="user-main-info">
-                    <h3 style="font-size:18px;font-weight:800;color:#0f172a;margin-bottom:4px;" class="dm-title">${u.name}</h3>
-                    <p style="font-size:13px;color:#64748b;font-weight:500;" class="dm-desc">${u.email}</p>
-                    <div style="display:inline-block;margin-top:8px;font-size:11px;font-weight:700;color:${roleColor};background:${u.role === "instructor" ? "#eff6ff" : u.role === "admin" ? "#f5f3ff" : "#ecfdf5"};padding:4px 10px;border-radius:50px;text-transform:uppercase;border:1px solid ${u.role === "instructor" ? "#bfdbfe" : u.role === "admin" ? "#ddd6fe" : "#a7f3d0"};">${u.role}</div>
-                    ${
-                      u.role === "instructor"
-                        ? `
-        <div style="margin-top:8px;font-size:12px;color:#64748b;display:flex;align-items:center;gap:6px;">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-          <span style="color:#2563eb;font-weight:600;">Course Instructor</span>
-        </div>`
-                        : ""
-                    }
-                  </div>
-                </div>
-                <button class="btn btn-outline" style="width:100%;margin-top:10px;border-radius:12px;font-size:13px;padding:10px;border-color:#ddd6fe;color:#7c3aed;background:#f5f3ff;" onclick="showAdminUserDetail('${u.email}','${encodeURIComponent(u.name)}','${u.role}','${u.status}','${u.avatar || "U"}')">
-                  👁 View Full Details
-                </button>
-                <div style="margin-top:auto;">${actionsHtml}</div>
-              </div>`;
+<div class="user-card card-${statusClass}" style="${cardExtraStyle}">
+  <span class="user-card-badge ${statusClass}">${u.status}</span>
+
+  <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:16px;padding-right:70px;">
+    <div class="user-avatar-large" style="background-color:${roleColor};flex-shrink:0;">${avatarHtml}</div>
+    <div style="min-width:0;flex:1;overflow:hidden;">
+      <h3 style="font-size:16px;font-weight:800;color:#0f172a;margin-bottom:3px;word-break:break-word;line-height:1.3;" class="dm-title">${u.name}</h3>
+      <p style="font-size:12px;color:#64748b;font-weight:500;word-break:break-all;line-height:1.4;margin-bottom:6px;" class="dm-desc">${u.email}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+        <span style="display:inline-block;font-size:11px;font-weight:700;color:${roleColor};background:${u.role === "instructor" ? "#eff6ff" : u.role === "admin" ? "#f5f3ff" : "#ecfdf5"};padding:3px 10px;border-radius:50px;text-transform:uppercase;border:1px solid ${u.role === "instructor" ? "#bfdbfe" : u.role === "admin" ? "#ddd6fe" : "#a7f3d0"};">${u.role}</span>
+        ${u.role === "instructor" ? `<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#2563eb;font-weight:600;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>Course Instructor</span>` : ""}
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-outline" style="width:100%;margin-bottom:10px;border-radius:12px;font-size:13px;padding:10px;border-color:#ddd6fe;color:#7c3aed;background:#f5f3ff;" onclick="showAdminUserDetail('${u.email}','${encodeURIComponent(u.name)}','${u.role}','${u.status}','${u.avatar || "U"}')">
+    👁 View Full Details
+  </button>
+
+  <div style="margin-top:auto;">${actionsHtml}</div>
+</div>`;
             })
             .join("");
         } catch (e) {
@@ -6553,7 +6549,7 @@
             }
           }
 
-          // --- Course Progress Bars ---
+          // Course Progress Bars
           const progList = document.getElementById("ps-course-progress-list");
           if (progList) {
             const myCourses = courses.filter((c) =>
@@ -6587,7 +6583,7 @@
             }
           }
 
-          // --- Upcoming Deadlines ---
+          // Upcoming Deadlines
           const deadlineContainer = document.getElementById(
             "ps-upcoming-deadlines",
           );
@@ -6698,7 +6694,6 @@
               e.student_email === currentUser.email && e.status === "Approved",
           );
 
-          // 🔥 Fetch courses to filter out unpublished ones
           const allCourses = await safeFetchJSON(`${API_URL}/courses`);
           const unpublishedIds = Array.isArray(allCourses)
             ? allCourses
@@ -6850,12 +6845,11 @@
             currentUser.role === "instructor" &&
             selectedCourse.status === "Unpublished"
           ) {
-            // শুধু warning দেখাবে, কিন্তু course player open হবে
             const titleEl = document.getElementById("cp-course-title");
             if (titleEl)
               titleEl.innerHTML = `${selectedCourse.title} <span style="background:#fef2f2; color:#ef4444; font-size:14px; padding:4px 10px; border-radius:8px; border:1px solid #fca5a5; margin-left:10px;">⛔ Unpublished by Admin</span>`;
           }
-          // Unpublished course — student er kache block
+
           if (currentUser.role === "student") {
             const enrollments2 = await safeFetchJSON(`${API_URL}/enrollments`);
             const isEnrolled =
@@ -7006,8 +7000,8 @@
                 email: e.student_email,
                 avatar: finalAvatarUrl,
                 enrolledCount: 0,
-                completedCount: Math.floor(Math.random() * 3), // Mock data
-                progress: Math.floor(Math.random() * 60) + 20, // Mock data
+                completedCount: Math.floor(Math.random() * 3),
+                progress: Math.floor(Math.random() * 60) + 20,
                 lastActive: e.date || "Unknown",
               });
             }
@@ -8092,7 +8086,7 @@
               ...(Array.isArray(m2) ? m2 : []),
               ...(Array.isArray(m3) ? m3 : []),
             ];
-            // Sort by ID to ensure accurate chronological order globally
+
             messages.sort((a, b) => a.id - b.id);
           } else {
             const res = await safeFetchJSON(
@@ -8691,7 +8685,7 @@
 
         try {
           if (isInstructor) {
-            // ---- INSTRUCTOR DETAIL ----
+            // INSTRUCTOR DETAIL
             const [courses, enrollments] = await Promise.all([
               safeFetchJSON(`${API_URL}/courses`),
               safeFetchJSON(`${API_URL}/enrollments`),
@@ -8825,7 +8819,7 @@
       <button onclick="document.getElementById('admin-user-detail-modal').remove()" style="width:100%;padding:14px;background:linear-gradient(135deg,#0f172a,#1e3a5f);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">Close</button>
       `;
           } else {
-            // ---- STUDENT DETAIL ----
+            // STUDENT DETAIL
             const progressColor =
               progress >= 70
                 ? "#10b981"
@@ -8993,7 +8987,6 @@
         });
         document.body.appendChild(modal);
 
-        // Now fetch all data
         try {
           const [enrollments, courses, submissions, feedbacks, assignments] =
             await Promise.all([
@@ -9014,7 +9007,6 @@
               )
             : [];
 
-          // Get all submissions for this student across all courses
           let allSubmissions = [];
           let allFeedbacks = [];
 
@@ -9263,7 +9255,7 @@
               ${feedbackHtml}
             </div>
 
-            <!-- Close -->
+        
             <button onclick="document.getElementById('admin-user-detail-modal').remove()" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">Close</button>
           `;
         } catch (e) {
