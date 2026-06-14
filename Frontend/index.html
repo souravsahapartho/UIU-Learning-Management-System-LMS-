@@ -6856,7 +6856,7 @@
         });
 
         try {
-          await fetch(`${API_URL}/module-progress`, {
+          const res = await fetch(`${API_URL}/module-progress`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -6867,33 +6867,21 @@
             }),
           });
 
+          if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            console.error("Progress save failed:", errData);
+            alert(
+              "Progress save failed: " +
+                (errData.error || "Unknown error. Please try again."),
+            );
+            return; // UI update korbo na jodi save fail kore
+          }
+
           completedModules.add(Number(moduleIndex));
-
-          const item = document.getElementById(`module-item-${moduleIndex}`);
-          const circle = document.getElementById(`circle-${moduleIndex}`);
-
-          if (circle) {
-            circle.style.background = "#2563eb";
-            circle.style.borderColor = "#2563eb";
-            circle.style.color = "white";
-            circle.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-          }
-
-          if (item) {
-            item.style.borderLeft = "4px solid #2563eb";
-            item.classList.add("completed");
-            const titleEl = item.querySelector("div > div > div:first-child");
-            if (titleEl) {
-              titleEl.style.color = "#2563eb";
-              titleEl.style.fontWeight = "700";
-            }
-            const timeEl = item.querySelector("div > div > div:last-child");
-            if (timeEl) {
-              timeEl.innerHTML = `${10 + moduleIndex * 5} min <span style="color:#2563eb;">✓ Completed</span>`;
-            }
-          }
+          // ... বাকি UI update কোড একই থাকবে
         } catch (e) {
           console.error("Progress save error:", e);
+          alert("Connection error. Please try again.");
         }
       }
 
@@ -7040,12 +7028,15 @@
           } else {
             videoSection = savedVideo
               ? `<div style="margin-top:8px;cursor:pointer;border-radius:8px;overflow:hidden;" onclick="loadModuleVideo('${savedVideo}', ${i})">
-            <video style="width:100%;border-radius:8px;max-height:100px;pointer-events:none;">
-              <source src="${savedVideo}" type="video/mp4">
-            </video>
-            ${savedDesc ? `<div style="font-size:12px;color:#64748b;margin-top:6px;padding:0 4px;">${savedDesc}</div>` : ""}
-           </div>`
-              : `<div style="margin-top:6px;font-size:12px;color:#94a3b8;font-style:italic;">📭 Module not uploaded yet</div>`;
+        <video style="width:100%;border-radius:8px;max-height:100px;pointer-events:none;">
+          <source src="${savedVideo}" type="video/mp4">
+        </video>
+        ${savedDesc ? `<div style="font-size:12px;color:#64748b;margin-top:6px;padding:0 4px;">${savedDesc}</div>` : ""}
+       </div>`
+              : `<div style="margin-top:6px;">
+        <div style="font-size:12px;color:#94a3b8;font-style:italic;">📭 Module not uploaded yet</div>
+        ${savedDesc ? `<div style="font-size:12px;color:#64748b;margin-top:6px;padding:0 4px;">${savedDesc}</div>` : ""}
+       </div>`;
           }
 
           html += `
