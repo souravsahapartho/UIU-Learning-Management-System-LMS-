@@ -143,6 +143,7 @@ const alterQueries = [
   "ALTER TABLE users ADD COLUMN first_login VARCHAR(100) DEFAULT NULL",
   "ALTER TABLE users ADD COLUMN last_login VARCHAR(100) DEFAULT NULL",
   "ALTER TABLE module_videos ADD COLUMN description TEXT DEFAULT NULL",
+  "ALTER TABLE module_videos ADD COLUMN duration INT DEFAULT NULL",
 ];
 alterQueries.forEach((query) => {
   db.query(query, (err) => {
@@ -931,20 +932,32 @@ app.get("/assignments/:courseId", (req, res) => {
 });
 
 app.post("/module-videos", (req, res) => {
-  const { course_id, module_index, video_url, uploaded_by, description } =
-    req.body;
+  const {
+    course_id,
+    module_index,
+    video_url,
+    uploaded_by,
+    description,
+    duration,
+  } = req.body;
+  const durationVal =
+    duration !== undefined && duration !== null && !isNaN(duration)
+      ? Math.round(duration)
+      : null;
   db.query(
-    `INSERT INTO module_videos (course_id, module_index, video_url, uploaded_by, description) 
-     VALUES (?, ?, ?, ?, ?) 
-     ON DUPLICATE KEY UPDATE video_url = ?, description = COALESCE(?, description)`,
+    `INSERT INTO module_videos (course_id, module_index, video_url, uploaded_by, description, duration) 
+     VALUES (?, ?, ?, ?, ?, ?) 
+     ON DUPLICATE KEY UPDATE video_url = ?, description = COALESCE(?, description), duration = COALESCE(?, duration)`,
     [
       String(course_id),
       module_index,
       video_url,
       uploaded_by,
       description || null,
+      durationVal,
       video_url,
       description || null,
+      durationVal,
     ],
     (err) =>
       err

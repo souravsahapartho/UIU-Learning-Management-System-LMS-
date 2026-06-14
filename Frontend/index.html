@@ -7116,9 +7116,9 @@
 
         const isStudent = currentUser && currentUser.role === "student";
 
-        // Module videos load
         let moduleVideos = {};
         let moduleDescriptions = {};
+        let moduleDurations = {};
         try {
           const vids = await safeFetchJSON(
             `${API_URL}/module-videos/${currentCoursePlayerId}`,
@@ -7127,6 +7127,7 @@
             vids.forEach((v) => {
               moduleVideos[v.module_index] = v.video_url;
               moduleDescriptions[v.module_index] = v.description || "";
+              moduleDurations[v.module_index] = v.duration || null;
             });
           }
         } catch (e) {}
@@ -7165,7 +7166,8 @@
               : i === total
                 ? "Final Assessment"
                 : `Module ${i}`;
-          let duration = 10 + i * 5;
+          let durationLabel =
+            formatDuration(moduleDurations[i]) || `${10 + i * 5} min`;
 
           moduleDataMap[i] = {
             title: title,
@@ -7264,7 +7266,7 @@
     ${title}
   </div>
   <div style="font-size:13px;color:#64748b;margin-top:2px;">
-    ${duration} min
+    ${durationLabel}
     ${isCompleted ? '<span style="color:#2563eb;">✓ Completed</span>' : ""}
     ${isLockedForStudent ? '<span style="color:#ef4444;font-weight:700;">🔒 Locked</span>' : ""}
   </div>
@@ -7292,9 +7294,10 @@
         if (statusEl) statusEl.innerText = "⏳ Uploading...";
         if (labelEl) labelEl.style.opacity = "0.5";
 
+        const videoDurationSeconds = await getVideoDuration(file);
+
         const formData = new FormData();
         formData.append("moduleVideo", file);
-
         try {
           const res = await fetch(`${API_URL}/upload-module-video`, {
             method: "POST",
@@ -7318,6 +7321,7 @@
               module_index: moduleIndex,
               video_url: videoUrl,
               uploaded_by: currentUser.email,
+              duration: videoDurationSeconds,
             }),
           });
 
