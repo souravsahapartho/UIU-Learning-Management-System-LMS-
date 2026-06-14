@@ -6805,6 +6805,35 @@
         }
       }
 
+      function loadModuleVideo(videoUrl, moduleIndex) {
+        const videoBox = document.querySelector(".cp-video-box");
+        if (!videoBox) return;
+
+        document
+          .querySelectorAll(".lesson-item")
+          .forEach((el) => el.classList.remove("active"));
+        const allLessons = document.querySelectorAll(".lesson-item");
+        if (allLessons[moduleIndex - 1])
+          allLessons[moduleIndex - 1].classList.add("active");
+
+        if (!videoUrl || videoUrl === "null" || videoUrl === "") {
+          videoBox.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:64px;height:64px;opacity:0.5;">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8"></polygon>
+        </svg>
+        <p style="color:#94a3b8;font-size:14px;">No video uploaded for Module ${moduleIndex}</p>
+      </div>`;
+          return;
+        }
+
+        videoBox.innerHTML = `
+    <video controls autoplay style="width:100%;height:100%;border-radius:16px;object-fit:cover;background:#000;">
+      <source src="${videoUrl}" type="video/mp4">
+    </video>`;
+      }
+
       async function renderDynamicLessons(total) {
         const container = document.getElementById("cp-lesson-list-box");
         if (!container) return;
@@ -6842,7 +6871,8 @@
                 ? "Final Assessment"
                 : `Module ${i}`;
 
-          const savedVideo = moduleVideos[i];
+          const savedVideo =
+            moduleVideos[i] || (i === 1 ? currentCourseObj?.video_url : null);
 
           let videoSection = "";
           if (isInstructor) {
@@ -6877,9 +6907,12 @@
               : `<div style="margin-top:6px;font-size:12px;color:#94a3b8;font-style:italic;">📭 Module not uploaded yet</div>`;
           }
 
+          const videoForThisModule =
+            moduleVideos[i] || (i === 1 ? currentCourseObj?.video_url : null);
+
           html += `
-      <div class="lesson-item ${stateClass}" style="flex-direction:column;align-items:flex-start;">
-        <div style="display:flex;align-items:center;gap:15px;width:100%;">
+  <div class="lesson-item ${stateClass}" style="flex-direction:column;align-items:flex-start;cursor:pointer;" onclick="loadModuleVideo('${videoForThisModule || ""}', ${i})">
+    <div style="display:flex;align-items:center;gap:15px;width:100%;">
           <div class="lesson-circle">${circleContent}</div>
           <div style="flex:1;">
             <div style="font-weight:600;font-size:15px;color:#0f172a;">${title}</div>
