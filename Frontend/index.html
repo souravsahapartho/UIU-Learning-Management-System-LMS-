@@ -5023,6 +5023,7 @@
       let chatRefreshInterval = null;
       let globalChatPollingInterval = null;
       let completedModules = new Set();
+      let currentModuleIndex = 1;
 
       const courseGradients = [
         "linear-gradient(135deg, #3b82f6, #1e40af)",
@@ -6809,6 +6810,7 @@
       function loadModuleVideo(videoUrl, moduleIndex) {
         const videoBox = document.querySelector(".cp-video-box");
         if (!videoBox) return;
+        currentModuleIndex = moduleIndex;
 
         document.querySelectorAll(".lesson-item").forEach((el, idx) => {
           el.style.borderLeft = "4px solid transparent";
@@ -6840,7 +6842,7 @@
 
       async function markModuleCompleted(moduleIndex) {
         if (!currentUser || currentUser.role !== "student") return;
-        if (completedModules.has(moduleIndex)) return; // already completed
+        if (completedModules.has(moduleIndex)) return;
 
         const now = new Date().toLocaleString("en-US", {
           month: "short",
@@ -6864,7 +6866,6 @@
 
           completedModules.add(moduleIndex);
 
-          // শুধু UI update - re-render নয়
           const item = document.getElementById(`module-item-${moduleIndex}`);
           const circle = document.getElementById(`circle-${moduleIndex}`);
 
@@ -6976,7 +6977,7 @@
           // Video section
           let videoSection = "";
           if (isInstructor) {
-            // Description input for instructor
+           
             const descSection = `
         <div style="margin-top:8px;">
           <textarea 
@@ -7011,7 +7012,7 @@
             ${descSection}
            </div>`;
           } else {
-            // Student view
+         
             videoSection = savedVideo
               ? `<div style="margin-top:8px;cursor:pointer;border-radius:8px;overflow:hidden;" onclick="loadModuleVideo('${savedVideo}', ${i})">
             <video style="width:100%;border-radius:8px;max-height:100px;pointer-events:none;">
@@ -7191,10 +7192,17 @@
           renderDynamicLessons(selectedCourse.total_lessons || 4);
 
           const markBtn = document.getElementById("cp-mark-completed-btn");
-          if (markBtn)
+          if (markBtn) {
             markBtn.style.display =
               currentUser.role === "student" ? "inline-flex" : "none";
-
+            markBtn.onclick = () => {
+              if (!currentModuleIndex) {
+                alert("আগে একটা module select করো।");
+                return;
+              }
+              markModuleCompleted(currentModuleIndex);
+            };
+          }
           const resourceBtn = document.getElementById("cp-resource-btn");
           if (resourceBtn) {
             const isOwner =
@@ -9202,7 +9210,7 @@
           const firstLoginStr = thisUser?.first_login || "Not Available";
           const lastLoginStr = thisUser?.last_login || "Not Available";
           if (isInstructor) {
-            // INSTRUCTOR DETAIL
+         
             const [courses, enrollments] = await Promise.all([
               safeFetchJSON(`${API_URL}/courses`),
               safeFetchJSON(`${API_URL}/enrollments`),
