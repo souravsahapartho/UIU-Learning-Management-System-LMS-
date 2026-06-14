@@ -6810,7 +6810,7 @@
       function loadModuleVideo(videoUrl, moduleIndex) {
         const videoBox = document.querySelector(".cp-video-box");
         if (!videoBox) return;
-        currentModuleIndex = moduleIndex;
+        currentModuleIndex = Number(moduleIndex);
 
         document.querySelectorAll(".lesson-item").forEach((el, idx) => {
           el.style.borderLeft = "4px solid transparent";
@@ -6842,7 +6842,10 @@
 
       async function markModuleCompleted(moduleIndex) {
         if (!currentUser || currentUser.role !== "student") return;
-        if (completedModules.has(moduleIndex)) return;
+        if (completedModules.has(Number(moduleIndex))) {
+          alert("এই module টি আগেই completed!");
+          return;
+        }
 
         const now = new Date().toLocaleString("en-US", {
           month: "short",
@@ -6864,7 +6867,7 @@
             }),
           });
 
-          completedModules.add(moduleIndex);
+          completedModules.add(Number(moduleIndex));
 
           const item = document.getElementById(`module-item-${moduleIndex}`);
           const circle = document.getElementById(`circle-${moduleIndex}`);
@@ -6962,7 +6965,9 @@
               `${API_URL}/module-progress/${currentCoursePlayerId}/${currentUser.email}`,
             );
             if (Array.isArray(progress)) {
-              completedModules = new Set(progress.map((p) => p.module_index));
+              completedModules = new Set(
+                progress.map((p) => Number(p.module_index)),
+              );
             }
           } catch (e) {}
         }
@@ -7216,11 +7221,7 @@
             markBtn.style.display =
               currentUser.role === "student" ? "inline-flex" : "none";
             markBtn.onclick = () => {
-              if (!currentModuleIndex) {
-                alert("আগে একটা module select করো।");
-                return;
-              }
-              markModuleCompleted(currentModuleIndex);
+              markModuleCompleted(Number(currentModuleIndex));
             };
           }
           const resourceBtn = document.getElementById("cp-resource-btn");
