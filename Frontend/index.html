@@ -7280,6 +7280,28 @@
         updateCourseProgress();
       }
 
+      function getVideoDuration(file) {
+        return new Promise((resolve) => {
+          const video = document.createElement("video");
+          video.preload = "metadata";
+          video.onloadedmetadata = function () {
+            window.URL.revokeObjectURL(video.src);
+            resolve(Math.round(video.duration));
+          };
+          video.onerror = function () {
+            resolve(null);
+          };
+          video.src = URL.createObjectURL(file);
+        });
+      }
+
+      function formatDuration(seconds) {
+        if (!seconds || isNaN(seconds)) return null;
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m}:${s.toString().padStart(2, "0")} min`;
+      }
+
       async function uploadModuleVideoToCloud(moduleIndex, input) {
         if (!input.files || !input.files[0]) return;
         const file = input.files[0];
