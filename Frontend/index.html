@@ -3093,27 +3093,34 @@
                 </div>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap">
                   <div>
-                    <div class="ps-card-value" style="color: #f59e0b">7</div>
+                    <div
+                      class="ps-card-value"
+                      style="color: #f59e0b"
+                      id="ps-streak-days"
+                    >
+                      0
+                    </div>
                     <div class="ps-card-desc" style="color: #94a3b8">
                       Day Streak
                     </div>
                   </div>
                   <div>
-                    <div class="ps-card-value" style="color: #2563eb">12</div>
+                    <div
+                      class="ps-card-value"
+                      style="color: #2563eb"
+                      id="ps-hours-month"
+                    >
+                      0
+                    </div>
                     <div class="ps-card-desc" style="color: #94a3b8">
                       Hrs This Month
                     </div>
                   </div>
                 </div>
-                <div style="margin-top: 8px; display: flex; gap: 6px">
-                  <span style="font-size: 20px" title="Mon">✅</span>
-                  <span style="font-size: 20px" title="Tue">✅</span>
-                  <span style="font-size: 20px" title="Wed">✅</span>
-                  <span style="font-size: 20px" title="Thu">✅</span>
-                  <span style="font-size: 20px" title="Fri">✅</span>
-                  <span style="font-size: 20px" title="Sat">✅</span>
-                  <span style="font-size: 20px" title="Sun">✅</span>
-                </div>
+                <div
+                  style="margin-top: 8px; display: flex; gap: 6px"
+                  id="ps-week-activity"
+                ></div>
                 <div
                   class="ps-card-desc"
                   style="color: #94a3b8; margin-top: 4px"
@@ -6535,35 +6542,37 @@
             container.innerHTML = `<p style="color:#64748b; width:100%;">You are not enrolled in any courses yet.</p>`;
             return;
           }
-        const courseCardsHtml = await Promise.all(
-  myEnrolledCourses.map(async (c) => {
-    const bgIndex =
-      (parseInt(String(c.id).slice(-3)) || 0) %
-      courseGradients.length;
-    let bgStyle = `background: ${courseGradients[bgIndex]}; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
-    let thumbHTML = c.thumbnail_url
-      ? `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"><div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div></div>`
-      : `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div>`;
+          const courseCardsHtml = await Promise.all(
+            myEnrolledCourses.map(async (c) => {
+              const bgIndex =
+                (parseInt(String(c.id).slice(-3)) || 0) %
+                courseGradients.length;
+              let bgStyle = `background: ${courseGradients[bgIndex]}; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
+              let thumbHTML = c.thumbnail_url
+                ? `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"><div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div></div>`
+                : `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div>`;
 
-    const isUnpublished = c.status === "Unpublished";
+              const isUnpublished = c.status === "Unpublished";
 
-    // Dynamic progress calculation
-    let progressPercent = 0;
-    try {
-      const progress = await safeFetchJSON(
-        `${API_URL}/module-progress/${c.id}/${currentUser.email}`,
-      );
-      const totalLessons = c.total_lessons || 4;
-      const completedCount = Array.isArray(progress) ? progress.length : 0;
-      progressPercent =
-        totalLessons > 0
-          ? Math.round((completedCount / totalLessons) * 100)
-          : 0;
-    } catch (e) {
-      progressPercent = 0;
-    }
+              // Dynamic progress calculation
+              let progressPercent = 0;
+              try {
+                const progress = await safeFetchJSON(
+                  `${API_URL}/module-progress/${c.id}/${currentUser.email}`,
+                );
+                const totalLessons = c.total_lessons || 4;
+                const completedCount = Array.isArray(progress)
+                  ? progress.length
+                  : 0;
+                progressPercent =
+                  totalLessons > 0
+                    ? Math.round((completedCount / totalLessons) * 100)
+                    : 0;
+              } catch (e) {
+                progressPercent = 0;
+              }
 
-    return `
+              return `
       <div class="std-course-card" style="${isUnpublished ? "opacity:0.75;" : ""}">
         ${thumbHTML}
         ${
@@ -6593,10 +6602,10 @@
           }
         </div>
       </div>`;
-  }),
-);
+            }),
+          );
 
-container.innerHTML = courseCardsHtml.join("");
+          container.innerHTML = courseCardsHtml.join("");
         } catch (e) {
           console.error(e);
         }
@@ -6647,28 +6656,123 @@ container.innerHTML = courseCardsHtml.join("");
             if (myCourses.length === 0) {
               progList.innerHTML = `<div style="color:#94a3b8;font-size:14px;">No courses yet.</div>`;
             } else {
-              progList.innerHTML = myCourses
-                .slice(0, 4)
-                .map((c, i) => {
-                  const mockProgress =
-                    [65, 40, 80, 30][i] || Math.floor(Math.random() * 60) + 20;
-                  const colors = ["#2563eb", "#10b981", "#f59e0b", "#a855f7"];
+              const colors = ["#2563eb", "#10b981", "#f59e0b", "#a855f7"];
+              const progressResults = await Promise.all(
+                myCourses.slice(0, 4).map(async (c) => {
+                  try {
+                    const progress = await safeFetchJSON(
+                      `${API_URL}/module-progress/${c.id}/${currentUser.email}`,
+                    );
+                    const totalLessons = c.total_lessons || 4;
+                    const completedCount = Array.isArray(progress)
+                      ? progress.length
+                      : 0;
+                    const percent =
+                      totalLessons > 0
+                        ? Math.round((completedCount / totalLessons) * 100)
+                        : 0;
+                    return { course: c, percent };
+                  } catch (e) {
+                    return { course: c, percent: 0 };
+                  }
+                }),
+              );
+
+              progList.innerHTML = progressResults
+                .map(({ course: c, percent }, i) => {
                   const color = colors[i % colors.length];
                   const shortTitle =
                     c.title.length > 22 ? c.title.slice(0, 22) + "…" : c.title;
                   return `
-                        <div style="margin-bottom:14px;">
-                          <div class="progress-bar-label">
-                            <span class="dm-text" style="font-size:13px; font-weight:600; color:#0f172a;">${shortTitle}</span>
-                            <span style="color:${color}; font-weight:700;">${mockProgress}%</span>
-                          </div>
-                          <div class="mini-progress-bar">
-                            <div class="mini-progress-fill" style="width:${mockProgress}%; background:${color};"></div>
-                          </div>
-                        </div>`;
+            <div style="margin-bottom:14px;">
+              <div class="progress-bar-label">
+                <span class="dm-text" style="font-size:13px; font-weight:600; color:#0f172a;">${shortTitle}</span>
+                <span style="color:${color}; font-weight:700;">${percent}%</span>
+              </div>
+              <div class="mini-progress-bar">
+                <div class="mini-progress-fill" style="width:${percent}%; background:${color};"></div>
+              </div>
+            </div>`;
                 })
                 .join("");
             }
+          }
+
+          // Streak & Activity calculation
+          try {
+            const allProgressResults = await Promise.all(
+              myEnrollments.map((enr) =>
+                safeFetchJSON(
+                  `${API_URL}/module-progress/${enr.course_id}/${currentUser.email}`,
+                ),
+              ),
+            );
+
+            let allCompletions = [];
+            allProgressResults.forEach((progress) => {
+              if (Array.isArray(progress)) {
+                progress.forEach((p) => {
+                  if (p.completed_at) {
+                    const d = new Date(p.completed_at);
+                    if (!isNaN(d.getTime())) allCompletions.push(d);
+                  }
+                });
+              }
+            });
+
+            // Build set of active dates (YYYY-MM-DD)
+            const activeDateSet = new Set(
+              allCompletions.map((d) => d.toDateString()),
+            );
+
+            // Current streak: count consecutive days ending today
+            let streak = 0;
+            let cursor = new Date();
+            cursor.setHours(0, 0, 0, 0);
+            while (activeDateSet.has(cursor.toDateString())) {
+              streak++;
+              cursor.setDate(cursor.getDate() - 1);
+            }
+
+            // Hours this month: each completed module ~ counted as 0.5 hr (adjustable estimate)
+            const now2 = new Date();
+            const hoursThisMonth =
+              allCompletions.filter(
+                (d) =>
+                  d.getMonth() === now2.getMonth() &&
+                  d.getFullYear() === now2.getFullYear(),
+              ).length * 0.5;
+
+            const streakEl = document.getElementById("ps-streak-days");
+            const hoursEl = document.getElementById("ps-hours-month");
+            if (streakEl) streakEl.innerText = streak;
+            if (hoursEl) hoursEl.innerText = hoursThisMonth.toFixed(1);
+
+            // Last 7 days activity icons
+            const weekContainer = document.getElementById("ps-week-activity");
+            if (weekContainer) {
+              const dayLabels = [
+                "Sun",
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu",
+                "Fri",
+                "Sat",
+              ];
+              let icons = "";
+              for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                d.setHours(0, 0, 0, 0);
+                const isActive = activeDateSet.has(d.toDateString());
+                const label = dayLabels[d.getDay()];
+                icons += `<span style="font-size: 20px" title="${label}">${isActive ? "✅" : "⬜"}</span>`;
+              }
+              weekContainer.innerHTML = icons;
+            }
+          } catch (e) {
+            console.error("Streak calculation error:", e);
           }
 
           // Upcoming Deadlines
