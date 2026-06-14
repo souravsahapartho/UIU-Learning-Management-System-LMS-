@@ -2570,11 +2570,17 @@
         flex-shrink: 0;
       }
       body.dark-mode .ps-card {
-        background: #1e293b;
-        border-color: #334155;
+        background: #1e293b !important;
+        border-color: #334155 !important;
       }
       body.dark-mode .ps-card-title {
         color: #94a3b8;
+      }
+      body.dark-mode .ps-card-value {
+        color: #f8fafc !important;
+      }
+      body.dark-mode .ps-card-desc {
+        color: #64748b !important;
       }
       body.dark-mode .mini-progress-bar {
         background: #334155;
@@ -2584,6 +2590,9 @@
       }
       body.dark-mode .progress-bar-label {
         color: #cbd5e1;
+      }
+      body.dark-mode #ps-course-progress-list .dm-text {
+        color: #f8fafc !important;
       }
     </style>
   </head>
@@ -3039,6 +3048,7 @@
 
               <div
                 class="ps-card"
+                id="ps-streak-card"
                 style="
                   background: linear-gradient(135deg, #eff6ff, #f0fdf4);
                   border: 1px solid #e2e8f0;
@@ -4920,6 +4930,17 @@
           document.body.classList.remove("dark-mode");
           localStorage.setItem("elms_dark_mode", "false");
         }
+        const streakCard = document.getElementById("ps-streak-card");
+        if (streakCard) {
+          if (checkbox.checked) {
+            streakCard.style.background = "#1e293b";
+            streakCard.style.borderColor = "#334155";
+          } else {
+            streakCard.style.background =
+              "linear-gradient(135deg, #eff6ff, #f0fdf4)";
+            streakCard.style.borderColor = "#e2e8f0";
+          }
+        }
       }
 
       window.addEventListener("DOMContentLoaded", () => {
@@ -6365,6 +6386,17 @@
           }
 
           section.style.display = "block";
+          const streakCard = document.getElementById("ps-streak-card");
+          if (streakCard) {
+            if (document.body.classList.contains("dark-mode")) {
+              streakCard.style.background = "#1e293b";
+              streakCard.style.borderColor = "#334155";
+            } else {
+              streakCard.style.background =
+                "linear-gradient(135deg, #eff6ff, #f0fdf4)";
+              streakCard.style.borderColor = "#e2e8f0";
+            }
+          }
 
           // --- Course Progress Bars ---
           const progList = document.getElementById("ps-course-progress-list");
