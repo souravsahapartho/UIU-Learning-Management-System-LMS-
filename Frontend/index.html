@@ -6535,49 +6535,68 @@
             container.innerHTML = `<p style="color:#64748b; width:100%;">You are not enrolled in any courses yet.</p>`;
             return;
           }
-          container.innerHTML = myEnrolledCourses
-            .map((c) => {
-              const bgIndex =
-                (parseInt(String(c.id).slice(-3)) || 0) %
-                courseGradients.length;
-              let bgStyle = `background: ${courseGradients[bgIndex]}; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
-              let thumbHTML = c.thumbnail_url
-                ? `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"><div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div></div>`
-                : `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div>`;
+        const courseCardsHtml = await Promise.all(
+  myEnrolledCourses.map(async (c) => {
+    const bgIndex =
+      (parseInt(String(c.id).slice(-3)) || 0) %
+      courseGradients.length;
+    let bgStyle = `background: ${courseGradients[bgIndex]}; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
+    let thumbHTML = c.thumbnail_url
+      ? `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"><div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div></div>`
+      : `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div>`;
 
-              const isUnpublished = c.status === "Unpublished";
-              return `
-                    <div class="std-course-card" style="${isUnpublished ? "opacity:0.75;" : ""}">
-                      ${thumbHTML}
-                      ${
-                        isUnpublished
-                          ? `
-                        <div style="background:#fef2f2; border-top: 2px solid #fca5a5; padding: 10px 16px; display:flex; align-items:center; gap:8px;">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                          <span style="font-size:12px; font-weight:700; color:#ef4444;">⛔ Unpublished by Admin</span>
-                        </div>`
-                          : ""
-                      }
-                      <div class="std-course-card-content">
-                        <h3 style="font-size:18px; font-weight:700; color:#0f172a; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                        <p style="font-size:14px; color:#64748b; margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p>
-                        ${
-                          isUnpublished
-                            ? `
-                          <div style="background:#fef2f2; border:1px solid #fca5a5; border-radius:10px; padding:12px; margin-top:auto; font-size:13px; color:#b91c1c; font-weight:600; text-align:center;">
-                            This course is currently unavailable.
-                          </div>`
-                            : `
-                          <div class="progress-bar-bg" style="margin-top: auto;"><div class="progress-bar-fill" style="width:50%;"></div></div>
-                          <div style="display:flex; justify-content:space-between; color:#64748b; font-size:13px; font-weight:500;">
-                            <span class="dm-desc">50% Complete</span>
-                            <button class="btn btn-outline" style="padding: 4px 12px; font-size: 12px;" onclick="openCoursePlayer('${c.id}')">Continue</button>
-                          </div>`
-                        }
-                      </div>
-                    </div>`;
-            })
-            .join("");
+    const isUnpublished = c.status === "Unpublished";
+
+    // Dynamic progress calculation
+    let progressPercent = 0;
+    try {
+      const progress = await safeFetchJSON(
+        `${API_URL}/module-progress/${c.id}/${currentUser.email}`,
+      );
+      const totalLessons = c.total_lessons || 4;
+      const completedCount = Array.isArray(progress) ? progress.length : 0;
+      progressPercent =
+        totalLessons > 0
+          ? Math.round((completedCount / totalLessons) * 100)
+          : 0;
+    } catch (e) {
+      progressPercent = 0;
+    }
+
+    return `
+      <div class="std-course-card" style="${isUnpublished ? "opacity:0.75;" : ""}">
+        ${thumbHTML}
+        ${
+          isUnpublished
+            ? `
+          <div style="background:#fef2f2; border-top: 2px solid #fca5a5; padding: 10px 16px; display:flex; align-items:center; gap:8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <span style="font-size:12px; font-weight:700; color:#ef4444;">⛔ Unpublished by Admin</span>
+          </div>`
+            : ""
+        }
+        <div class="std-course-card-content">
+          <h3 style="font-size:18px; font-weight:700; color:#0f172a; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
+          <p style="font-size:14px; color:#64748b; margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p>
+          ${
+            isUnpublished
+              ? `
+            <div style="background:#fef2f2; border:1px solid #fca5a5; border-radius:10px; padding:12px; margin-top:auto; font-size:13px; color:#b91c1c; font-weight:600; text-align:center;">
+              This course is currently unavailable.
+            </div>`
+              : `
+            <div class="progress-bar-bg" style="margin-top: auto;"><div class="progress-bar-fill" style="width:${progressPercent}%;"></div></div>
+            <div style="display:flex; justify-content:space-between; color:#64748b; font-size:13px; font-weight:500;">
+              <span class="dm-desc">${progressPercent}% Complete</span>
+              <button class="btn btn-outline" style="padding: 4px 12px; font-size: 12px;" onclick="openCoursePlayer('${c.id}')">Continue</button>
+            </div>`
+          }
+        </div>
+      </div>`;
+  }),
+);
+
+container.innerHTML = courseCardsHtml.join("");
         } catch (e) {
           console.error(e);
         }
@@ -7064,7 +7083,7 @@
 
             videoSection = savedVideo
               ? `<div style="margin-top:8px;">
-                  <video controls style="width:100%;border-radius:8px;max-height:120px;">
+                  <video controls preload="metadata" style="width:100%;border-radius:8px;max-height:120px;background:#000;">
                     <source src="${savedVideo}" type="video/mp4">
                   </video>
                   <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">
@@ -7088,7 +7107,7 @@
           } else {
             videoSection = savedVideo
               ? `<div style="margin-top:8px;cursor:pointer;border-radius:8px;overflow:hidden;" onclick="loadModuleVideo('${savedVideo}', ${i})">
-    <video style="width:100%;border-radius:8px;max-height:100px;pointer-events:none;">
+   <video preload="metadata" muted style="width:100%;border-radius:8px;max-height:100px;pointer-events:none;background:#000;">
       <source src="${savedVideo}" type="video/mp4">
     </video>
     ${savedDesc ? `<div style="font-size:12px;color:#64748b;margin-top:6px;padding:0 4px;">${savedDesc}</div>` : ""}
