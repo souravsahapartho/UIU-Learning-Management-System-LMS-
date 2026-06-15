@@ -10530,6 +10530,121 @@
           }, 100);
         });
       }
+      async function renderInstructorGradeAssignments() {
+        const container = document.getElementById("instructor-grade-list");
+        if (!container) return;
+        container.innerHTML = `<div style="text-align:center;padding:40px;color:#64748b;">⏳ Loading submissions...</div>`;
+
+        try {
+          const courses = await safeFetchJSON(`${API_URL}/courses`);
+          if (!Array.isArray(courses)) return;
+
+          const myCourses = courses.filter(
+            (c) => c.instructor_email === currentUser.email,
+          );
+
+          if (myCourses.length === 0) {
+            container.innerHTML = `<div style="text-align:center;padding:40px;color:#64748b;background:#f8fafc;border-radius:16px;">No courses found.</div>`;
+            return;
+          }
+
+          let allUngraded = [];
+
+          await Promise.all(
+            myCourses.map(async (course) => {
+              try {
+                const [submissions, assignments] = await Promise.all([
+                  safeFetchJSON(
+                    `${API_URL}/assignment-submissions/${course.id}`,
+                  ),
+                  safeFetchJSON(`${API_URL}/assignments/${course.id}`),
+                ]);
+
+                if (!Array.isArray(submissions)) return;
+
+                const assignMap = {};
+                if (Array.isArray(assignments)) {
+                  assignments.forEach((a) => {
+                    assignMap[a.id] = a.title;
+                  });
+                }
+
+                submissions
+                  .filter((s) => s.marks == null)
+                  .forEach((s) => {
+                    allUngraded.push({
+                      ...s,
+                      course_title: course.title,
+                      course_id: course.id,
+                      assignment_title:
+                        s.assignment_title ||
+                        assignMap[s.assignment_id] ||
+                        "Assignment",
+                      course_name: s.course_name || course.title,
+                    });
+                  });
+              } catch (e) {}
+            }),
+          );
+
+          allUngraded.sort((a, b) => b.id - a.id);
+
+          if (allUngraded.length === 0) {
+            container.innerHTML = `
+        <div style="text-align:center;padding:40px;background:#f0fdf4;border-radius:16px;border:1px solid #bbf7d0;">
+          <div style="font-size:40px;margin-bottom:12px;">🎉</div>
+          <h3 style="color:#16a34a;font-size:20px;font-weight:800;margin-bottom:8px;">All caught up!</h3>
+          <p style="color:#64748b;">No ungraded submissions at the moment.</p>
+        </div>`;
+            return;
+          }
+
+          let html = `
+      <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:20px;">📋</span>
+        <div>
+          <div style="font-weight:700;color:#92400e;font-size:14px;">${allUngraded.length} ungraded submission${allUngraded.length > 1 ? "s" : ""} pending</div>
+          <div style="font-size:12px;color:#b45309;">Review and grade each submission below</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">`;
+
+          allUngraded.forEach((s) => {
+            html += `
+        <div style="background:white;border:1px solid #e2e8f0;border-radius:16px;padding:20px;border-left:4px solid #f59e0b;" class="assignment-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+            <div>
+              <h4 style="font-size:16px;font-weight:800;color:#0f172a;margin-bottom:4px;" class="dm-title">📝 ${s.assignment_title}</h4>
+              <div style="font-size:13px;color:#2563eb;font-weight:600;">📚 ${s.course_title}</div>
+              <div style="font-size:13px;color:#64748b;margin-top:4px;">
+                👤 <b>${s.student_name}</b> &nbsp;|&nbsp; ✉️ ${s.student_email} &nbsp;|&nbsp; 📅 ${s.date}
+              </div>
+            </div>
+            <span style="background:#fef3c7;color:#d97706;padding:4px 12px;border-radius:50px;font-size:12px;font-weight:700;border:1px solid #fde68a;white-space:nowrap;flex-shrink:0;">⏳ Ungraded</span>
+          </div>
+          <div style="background:#f8fafc;border-radius:10px;padding:12px;margin-bottom:14px;font-size:14px;color:#334155;line-height:1.6;word-break:break-word;border:1px solid #e2e8f0;" class="dm-desc">
+            ${s.submission_text}
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <input type="number" id="grade-marks-${s.id}" min="0" max="10" placeholder="Marks /10"
+              style="width:110px;padding:10px 12px;border-radius:8px;border:1.5px solid #cbd5e1;outline:none;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;">
+            <input type="text" id="grade-comment-${s.id}" placeholder="Feedback comment (optional)"
+              style="flex:1;min-width:150px;padding:10px 12px;border-radius:8px;border:1.5px solid #cbd5e1;outline:none;font-family:'Inter',sans-serif;font-size:14px;">
+            <button class="btn btn-primary" style="padding:10px 20px;border-radius:8px;white-space:nowrap;"
+              onclick="gradeFromPanel(${s.id}, '${s.course_id}', '${encodeURIComponent(s.student_email)}', '${encodeURIComponent(s.assignment_title)}', '${encodeURIComponent(s.course_title)}')">
+              ✅ Save Grade
+            </button>
+          </div>
+        </div>`;
+          });
+
+          html += `</div>`;
+          container.innerHTML = html;
+        } catch (e) {
+          console.error(e);
+          container.innerHTML = `<div style="color:#ef4444;text-align:center;padding:20px;">Failed to load submissions.</div>`;
+        }
+      }
     </script>
   </body>
 </html>
