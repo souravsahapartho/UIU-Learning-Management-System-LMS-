@@ -2812,7 +2812,11 @@
             </svg>
             <span class="notification-badge" id="nav-notif-badge">0</span>
           </button>
-          <div class="profile-badge">
+          <div
+            class="profile-badge"
+            onclick="openProfilePage()"
+            style="cursor: pointer"
+          >
             <div class="avatar-top" id="top-avatar">U</div>
             <div class="profile-info">
               <div
@@ -4338,7 +4342,32 @@
             id="notifications-page-list"
           ></div>
         </div>
+        <div id="profile-page-content" class="hidden">
+          <button
+            class="btn-back"
+            onclick="
+              handleNav('Dashboard', document.querySelector('.nav-item-dash'))
+            "
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Dashboard
+          </button>
 
+          <div id="profile-page-inner" style="max-width: 700px; margin: 0 auto">
+            <div style="text-align: center; padding: 20px; color: #64748b">
+              Loading profile...
+            </div>
+          </div>
+        </div>
         <div id="settings-content-area" class="hidden">
           <button
             class="btn-back"
@@ -5274,6 +5303,7 @@
           "Browse Courses": "student-browse-courses-content",
           Progress: "student-progress-content",
           Settings: "settings-content-area",
+          Profile: "profile-page-content",
           Notifications: "notifications-content-area",
           AdminUserProfile: "admin-user-profile-content",
           CoursePlayer: "course-player-content",
@@ -5291,6 +5321,7 @@
           const targetEl = document.getElementById(target);
           if (targetEl) targetEl.classList.remove("hidden");
           if (label === "Notifications") renderNotificationsPage();
+          if (label === "Profile") renderProfilePage();
           if (label === "Progress") renderStudentProgressPage();
           if (label === "Browse Courses") renderStudentBrowseCourses();
           if (label === "Students") renderInstructorStudents();
@@ -10643,6 +10674,453 @@
         } catch (e) {
           console.error(e);
           container.innerHTML = `<div style="color:#ef4444;text-align:center;padding:20px;">Failed to load submissions.</div>`;
+        }
+      }
+      function openProfilePage() {
+        handleNav("Profile", null);
+      }
+
+      async function renderProfilePage() {
+        const container = document.getElementById("profile-page-inner");
+        if (!container || !currentUser) return;
+        container.innerHTML = `<div style="text-align:center; padding:40px; color:#64748b;">⏳ Loading your profile...</div>`;
+
+        const isDark = document.body.classList.contains("dark-mode");
+        const cardBg = isDark ? "#1e293b" : "#ffffff";
+        const textColor = isDark ? "#f8fafc" : "#0f172a";
+        const subColor = isDark ? "#94a3b8" : "#64748b";
+        const borderColor = isDark ? "#334155" : "#e2e8f0";
+        const innerBg = isDark ? "#0f172a" : "#f8fafc";
+
+        try {
+          const [allUsers, enrollments, courses] = await Promise.all([
+            safeFetchJSON(`${API_URL}/users`),
+            safeFetchJSON(`${API_URL}/enrollments`),
+            safeFetchJSON(`${API_URL}/courses`),
+          ]);
+
+          const thisUser = Array.isArray(allUsers)
+            ? allUsers.find((u) => u.email === currentUser.email)
+            : null;
+          const firstLogin = thisUser?.first_login || "Not available";
+          const lastLogin = thisUser?.last_login || "Not available";
+
+          const avatarHtml =
+            currentUser.avatar && currentUser.avatar.startsWith("http")
+              ? `<img src="${currentUser.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`
+              : `<span style="font-size:36px;font-weight:800;color:white;">${currentUser.avatar || "U"}</span>`;
+
+          const roleColor =
+            currentUser.role === "instructor"
+              ? "#2563eb"
+              : currentUser.role === "admin"
+                ? "#7c3aed"
+                : "#10b981";
+          const headerGradient =
+            currentUser.role === "instructor"
+              ? "linear-gradient(135deg, #0f172a, #1e3a5f)"
+              : currentUser.role === "admin"
+                ? "linear-gradient(135deg, #7c3aed, #4f46e5)"
+                : "linear-gradient(135deg, #2563eb, #0ea5e9)";
+
+          // — STUDENT LOGIC —
+          if (currentUser.role === "student") {
+            const myEnrollments = Array.isArray(enrollments)
+              ? enrollments.filter(
+                  (e) =>
+                    e.student_email === currentUser.email &&
+                    e.status === "Approved",
+                )
+              : [];
+
+            const myCourses = Array.isArray(courses)
+              ? courses.filter(
+                  (c) =>
+                    myEnrollments.some(
+                      (e) => String(e.course_id) === String(c.id),
+                    ) && c.status === "Approved",
+                )
+              : [];
+
+            // submissions fetch
+            let allSubmissions = [];
+            let totalAssignments = 0;
+
+            await Promise.all(
+              myEnrollments.map(async (enr) => {
+                const [assignments, submissions] = await Promise.all([
+                  safeFetchJSON(`${API_URL}/assignments/${enr.course_id}`),
+                  safeFetchJSON(
+                    `${API_URL}/assignment-submissions/${enr.course_id}`,
+                  ),
+                ]);
+                if (Array.isArray(assignments))
+                  totalAssignments += assignments.length;
+                if (Array.isArray(submissions)) {
+                  allSubmissions.push(
+                    ...submissions.filter(
+                      (s) => s.student_email === currentUser.email,
+                    ),
+                  );
+                }
+              }),
+            );
+
+            const gradedSubs = allSubmissions.filter((s) => s.marks != null);
+            const avgMarks =
+              gradedSubs.length > 0
+                ? (
+                    gradedSubs.reduce((sum, s) => sum + Number(s.marks), 0) /
+                    gradedSubs.length
+                  ).toFixed(1)
+                : null;
+            const submittedCount = allSubmissions.length;
+
+            // Progress calculation
+            let totalLessons = 0;
+            let totalCompleted = 0;
+            const progressResults = await Promise.all(
+              myCourses.map(async (c) => {
+                const progress = await safeFetchJSON(
+                  `${API_URL}/module-progress/${c.id}/${currentUser.email}`,
+                );
+                const tl = c.total_lessons || 4;
+                const done = Array.isArray(progress) ? progress.length : 0;
+                totalLessons += tl;
+                totalCompleted += done;
+                return {
+                  course: c,
+                  done,
+                  tl,
+                  percent: tl > 0 ? Math.round((done / tl) * 100) : 0,
+                };
+              }),
+            );
+
+            const overallPercent =
+              totalLessons > 0
+                ? Math.round((totalCompleted / totalLessons) * 100)
+                : 0;
+
+            // Progress level
+            let levelLabel, levelColor, levelBg, levelIcon;
+            if (overallPercent >= 80) {
+              levelLabel = "Very Good 🏆";
+              levelColor = "#059669";
+              levelBg = "#ecfdf5";
+              levelIcon = "🟢";
+            } else if (overallPercent >= 50) {
+              levelLabel = "Safe ✅";
+              levelColor = "#2563eb";
+              levelBg = "#eff6ff";
+              levelIcon = "🔵";
+            } else if (overallPercent >= 20) {
+              levelLabel = "In Progress ⚡";
+              levelColor = "#d97706";
+              levelBg = "#fef3c7";
+              levelIcon = "🟡";
+            } else {
+              levelLabel = "Danger Zone ⚠️";
+              levelColor = "#e11d48";
+              levelBg = "#fef2f2";
+              levelIcon = "🔴";
+            }
+
+            const progressBarColor =
+              overallPercent >= 80
+                ? "#059669"
+                : overallPercent >= 50
+                  ? "#2563eb"
+                  : overallPercent >= 20
+                    ? "#f59e0b"
+                    : "#e11d48";
+
+            container.innerHTML = `
+        <!-- Header -->
+        <div style="background:${headerGradient}; border-radius:20px; padding:32px 24px 24px; text-align:center; margin-bottom:20px; position:relative;">
+          <div style="width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.15);border:3px solid rgba(255,255,255,0.4);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+            ${avatarHtml}
+          </div>
+          <h2 style="color:white;font-size:22px;font-weight:800;margin-bottom:4px;">${currentUser.name}</h2>
+          <p style="color:rgba(255,255,255,0.8);font-size:13px;margin-bottom:10px;">${currentUser.email}</p>
+          <span style="background:rgba(255,255,255,0.2);color:white;padding:5px 16px;border-radius:50px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,0.3);">🎓 Student</span>
+        </div>
+
+        <!-- Progress Level Badge -->
+        <div style="background:${levelBg};border:2px solid ${levelColor};border-radius:16px;padding:18px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:${subColor};margin-bottom:4px;">Overall Learning Level</div>
+            <div style="font-size:22px;font-weight:800;color:${levelColor};">${levelIcon} ${levelLabel}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:36px;font-weight:800;color:${levelColor};">${overallPercent}%</div>
+            <div style="font-size:12px;color:${subColor};">Overall Progress</div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:16px;padding:20px;margin-bottom:20px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+            <span style="font-size:14px;font-weight:700;color:${textColor};">Course Completion</span>
+            <span style="font-size:14px;font-weight:700;color:${progressBarColor};">${totalCompleted}/${totalLessons} lessons</span>
+          </div>
+          <div style="height:12px;background:${borderColor};border-radius:10px;overflow:hidden;">
+            <div style="height:100%;width:${overallPercent}%;background:${progressBarColor};border-radius:10px;transition:width 0.5s;"></div>
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+          <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:14px;padding:16px;text-align:center;">
+            <div style="font-size:28px;font-weight:800;color:#2563eb;">${myCourses.length}</div>
+            <div style="font-size:11px;color:${subColor};font-weight:600;margin-top:4px;">Enrolled Courses</div>
+          </div>
+          <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:14px;padding:16px;text-align:center;">
+            <div style="font-size:28px;font-weight:800;color:#10b981;">${submittedCount}/${totalAssignments}</div>
+            <div style="font-size:11px;color:${subColor};font-weight:600;margin-top:4px;">Assignments Submitted</div>
+          </div>
+          <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:14px;padding:16px;text-align:center;">
+            <div style="font-size:28px;font-weight:800;color:#f59e0b;">${avgMarks !== null ? avgMarks + "/10" : "N/A"}</div>
+            <div style="font-size:11px;color:${subColor};font-weight:600;margin-top:4px;">Avg Assignment Marks</div>
+          </div>
+        </div>
+
+        <!-- Login Info -->
+        <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:16px;padding:20px;margin-bottom:20px;">
+          <h4 style="font-size:15px;font-weight:800;color:${textColor};margin-bottom:14px;">📅 Login History</h4>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;background:#f0fdf4;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </div>
+              <div>
+                <div style="font-size:11px;color:${subColor};font-weight:600;">First Login</div>
+                <div style="font-size:14px;font-weight:700;color:${textColor};">${firstLogin}</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </div>
+              <div>
+                <div style="font-size:11px;color:${subColor};font-weight:600;">Last Login</div>
+                <div style="font-size:14px;font-weight:700;color:${textColor};">${lastLogin}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Per Course Progress -->
+        <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:16px;padding:20px;margin-bottom:20px;">
+          <h4 style="font-size:15px;font-weight:800;color:${textColor};margin-bottom:16px;">📚 Per Course Progress</h4>
+          ${
+            progressResults.length === 0
+              ? `<div style="text-align:center;color:${subColor};padding:10px;">No courses enrolled.</div>`
+              : progressResults
+                  .map(({ course: c, done, tl, percent }) => {
+                    const bc =
+                      percent >= 80
+                        ? "#059669"
+                        : percent >= 50
+                          ? "#2563eb"
+                          : percent >= 20
+                            ? "#f59e0b"
+                            : "#e11d48";
+                    return `
+                  <div style="margin-bottom:16px;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
+                      <span style="font-size:14px;font-weight:700;color:${textColor};">${c.title}</span>
+                      <span style="font-size:13px;font-weight:700;color:${bc};">${done}/${tl} (${percent}%)</span>
+                    </div>
+                    <div style="height:8px;background:${borderColor};border-radius:10px;overflow:hidden;">
+                      <div style="height:100%;width:${percent}%;background:${bc};border-radius:10px;"></div>
+                    </div>
+                  </div>`;
+                  })
+                  .join("")
+          }
+        </div>
+      `;
+
+            // — INSTRUCTOR LOGIC —
+          } else if (currentUser.role === "instructor") {
+            const myCourses = Array.isArray(courses)
+              ? courses.filter((c) => c.instructor_email === currentUser.email)
+              : [];
+
+            const approvedCourses = myCourses.filter(
+              (c) => c.status === "Approved",
+            );
+            const pendingCourses = myCourses.filter(
+              (c) => c.status === "Pending",
+            );
+
+            const myEnrollments = Array.isArray(enrollments)
+              ? enrollments.filter(
+                  (e) =>
+                    e.instructor_email === currentUser.email &&
+                    e.status === "Approved",
+                )
+              : [];
+
+            const uniqueStudents = [
+              ...new Set(myEnrollments.map((e) => e.student_email)),
+            ].length;
+            const pendingRequests = Array.isArray(enrollments)
+              ? enrollments.filter(
+                  (e) =>
+                    e.instructor_email === currentUser.email &&
+                    e.status === "Pending",
+                ).length
+              : 0;
+
+            // Grade all submissions across courses
+            let totalGradedMarks = 0;
+            let gradedCount = 0;
+
+            await Promise.all(
+              myCourses.map(async (c) => {
+                const subs = await safeFetchJSON(
+                  `${API_URL}/assignment-submissions/${c.id}`,
+                );
+                if (Array.isArray(subs)) {
+                  subs
+                    .filter((s) => s.marks != null)
+                    .forEach((s) => {
+                      totalGradedMarks += Number(s.marks);
+                      gradedCount++;
+                    });
+                }
+              }),
+            );
+
+            const avgGiven =
+              gradedCount > 0
+                ? (totalGradedMarks / gradedCount).toFixed(1)
+                : null;
+
+            container.innerHTML = `
+        <!-- Header -->
+        <div style="background:${headerGradient};border-radius:20px;padding:32px 24px 24px;text-align:center;margin-bottom:20px;">
+          <div style="width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.15);border:3px solid rgba(255,255,255,0.4);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+            ${avatarHtml}
+          </div>
+          <h2 style="color:white;font-size:22px;font-weight:800;margin-bottom:4px;">${currentUser.name}</h2>
+          <p style="color:rgba(255,255,255,0.8);font-size:13px;margin-bottom:10px;">${currentUser.email}</p>
+          <span style="background:rgba(255,255,255,0.2);color:white;padding:5px 16px;border-radius:50px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,0.3);">👨‍🏫 Instructor</span>
+        </div>
+
+        <!-- Stats -->
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;">
+          <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:14px;padding:16px;text-align:center;">
+            <div style="font-size:28px;font-weight:800;color:#2563eb;">${myCourses.length}</div>
+            <div style="font-size:11px;color:${subColor};font-weight:600;margin-top:4px;">Total Courses</div>
+          </div>
+          <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:14px;padding:16px;text-align:center;">
+            <div style="font-size:28px;font-weight:800;color:#10b981;">${uniqueStudents}</div>
+            <div style="font-size:11px;color:${subColor};font-weight:600;margin-top:4px;">Total Students</div>
+          </div>
+          <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:14px;padding:16px;text-align:center;">
+            <div style="font-size:28px;font-weight:800;color:#059669;">${approvedCourses.length}</div>
+            <div style="font-size:11px;color:${subColor};font-weight:600;margin-top:4px;">Published Courses</div>
+          </div>
+          <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:14px;padding:16px;text-align:center;">
+            <div style="font-size:28px;font-weight:800;color:#f59e0b;">${pendingRequests}</div>
+            <div style="font-size:11px;color:${subColor};font-weight:600;margin-top:4px;">Pending Enrollments</div>
+          </div>
+        </div>
+
+        <!-- Avg marks given -->
+        <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:16px;padding:20px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:${subColor};">Average Marks Given to Students</div>
+            <div style="font-size:28px;font-weight:800;color:#a855f7;">${avgGiven !== null ? avgGiven + "/10" : "No graded submissions"}</div>
+          </div>
+          <div style="font-size:13px;color:${subColor};">Based on ${gradedCount} graded submission${gradedCount !== 1 ? "s" : ""}</div>
+        </div>
+
+        <!-- Login Info -->
+        <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:16px;padding:20px;margin-bottom:20px;">
+          <h4 style="font-size:15px;font-weight:800;color:${textColor};margin-bottom:14px;">📅 Login History</h4>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;background:#f0fdf4;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </div>
+              <div>
+                <div style="font-size:11px;color:${subColor};font-weight:600;">First Login</div>
+                <div style="font-size:14px;font-weight:700;color:${textColor};">${firstLogin}</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </div>
+              <div>
+                <div style="font-size:11px;color:${subColor};font-weight:600;">Last Login</div>
+                <div style="font-size:14px;font-weight:700;color:${textColor};">${lastLogin}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Courses List -->
+        <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:16px;padding:20px;margin-bottom:20px;">
+          <h4 style="font-size:15px;font-weight:800;color:${textColor};margin-bottom:14px;">📚 Your Courses</h4>
+          ${
+            myCourses.length === 0
+              ? `<div style="text-align:center;color:${subColor};padding:10px;">No courses uploaded yet.</div>`
+              : myCourses
+                  .map((c) => {
+                    const stuCount = myEnrollments.filter(
+                      (e) => String(e.course_id) === String(c.id),
+                    ).length;
+                    const sc =
+                      c.status === "Approved"
+                        ? "#059669"
+                        : c.status === "Pending"
+                          ? "#d97706"
+                          : "#ef4444";
+                    const sb =
+                      c.status === "Approved"
+                        ? "#ecfdf5"
+                        : c.status === "Pending"
+                          ? "#fefce8"
+                          : "#fef2f2";
+                    return `
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid ${borderColor};gap:10px;flex-wrap:wrap;">
+                    <div style="flex:1;min-width:0;">
+                      <div style="font-size:14px;font-weight:700;color:${textColor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c.title}</div>
+                      <div style="font-size:12px;color:${subColor};margin-top:2px;">👥 ${stuCount} students</div>
+                    </div>
+                    <span style="background:${sb};color:${sc};padding:3px 10px;border-radius:50px;font-size:11px;font-weight:700;white-space:nowrap;">${c.status}</span>
+                  </div>`;
+                  })
+                  .join("")
+          }
+        </div>
+      `;
+            // — ADMIN LOGIC —
+          } else {
+            container.innerHTML = `
+        <div style="background:${headerGradient};border-radius:20px;padding:32px 24px 24px;text-align:center;margin-bottom:20px;">
+          <div style="width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.15);border:3px solid rgba(255,255,255,0.4);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+            ${avatarHtml}
+          </div>
+          <h2 style="color:white;font-size:22px;font-weight:800;margin-bottom:4px;">${currentUser.name}</h2>
+          <p style="color:rgba(255,255,255,0.8);font-size:13px;margin-bottom:10px;">${currentUser.email}</p>
+          <span style="background:rgba(255,255,255,0.2);color:white;padding:5px 16px;border-radius:50px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,0.3);">👑 Administrator</span>
+        </div>
+        <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:16px;padding:20px;margin-bottom:20px;">
+          <h4 style="font-size:15px;font-weight:800;color:${textColor};margin-bottom:14px;">📅 Login History</h4>
+          <div style="font-size:14px;font-weight:600;color:${subColor};margin-bottom:8px;">First Login: <span style="color:${textColor};">${firstLogin}</span></div>
+          <div style="font-size:14px;font-weight:600;color:${subColor};">Last Login: <span style="color:${textColor};">${lastLogin}</span></div>
+        </div>
+      `;
+          }
+        } catch (e) {
+          console.error(e);
+          container.innerHTML = `<div style="color:#ef4444;text-align:center;padding:40px;">Failed to load profile.</div>`;
         }
       }
     </script>
