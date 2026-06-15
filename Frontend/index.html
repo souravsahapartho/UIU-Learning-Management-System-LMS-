@@ -7513,8 +7513,11 @@
         listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">⏳ Loading students...</div>`;
 
         try {
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
-          const users = await safeFetchJSON(`${API_URL}/users`);
+          const [enrollments, users, courses] = await Promise.all([
+            safeFetchJSON(`${API_URL}/enrollments`),
+            safeFetchJSON(`${API_URL}/users`),
+            safeFetchJSON(`${API_URL}/courses`),
+          ]);
 
           if (!Array.isArray(enrollments)) {
             listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to fetch enrollments.</div>`;
@@ -7527,6 +7530,7 @@
               e.status === "Approved",
           );
 
+          // Build student map
           let studentMap = new Map();
           myEnrollments.forEach((e) => {
             if (!studentMap.has(e.student_email)) {
@@ -7543,117 +7547,103 @@
                 name: safeName,
                 email: e.student_email,
                 avatar: finalAvatarUrl,
+                enrolledCourseIds: [],
                 enrolledCount: 0,
-                completedCount: Math.floor(Math.random() * 3),
-                progress: Math.floor(Math.random() * 60) + 20,
                 lastActive: e.date || "Unknown",
               });
             }
             let st = studentMap.get(e.student_email);
             st.enrolledCount++;
+            st.enrolledCourseIds.push(String(e.course_id));
+            // Keep latest date
+            if (e.date && e.date > st.lastActive) st.lastActive = e.date;
           });
 
-          instGlobalStudents = Array.from(studentMap.values());
+          // Fetch real progress & activity for each student
+          const studentList = Array.from(studentMap.values());
+
+          await Promise.all(
+            studentList.map(async (st) => {
+              // Get activity for last active date
+              try {
+                const actData = await safeFetchJSON(
+                  `${API_URL}/student-activity/${st.email}`,
+                );
+                if (Array.isArray(actData) && actData.length > 0) {
+                  st.lastActive = actData[0].activity_date; // already sorted DESC
+                }
+              } catch (e) {}
+
+              // Get progress across all enrolled courses
+              let totalLessons = 0;
+              let totalCompleted = 0;
+              let completedCoursesCount = 0;
+
+              await Promise.all(
+                st.enrolledCourseIds.map(async (courseId) => {
+                  try {
+                    const course = Array.isArray(courses)
+                      ? courses.find((c) => String(c.id) === courseId)
+                      : null;
+                    const courseTotalLessons = course
+                      ? course.total_lessons || 4
+                      : 4;
+                    totalLessons += courseTotalLessons;
+
+                    const progress = await safeFetchJSON(
+                      `${API_URL}/module-progress/${courseId}/${st.email}`,
+                    );
+                    const done = Array.isArray(progress) ? progress.length : 0;
+                    totalCompleted += done;
+
+                    if (done >= courseTotalLessons) completedCoursesCount++;
+                  } catch (e) {}
+                }),
+              );
+
+              st.completedCount = completedCoursesCount;
+              st.totalCompleted = totalCompleted;
+              st.totalLessons = totalLessons;
+              st.progress =
+                totalLessons > 0
+                  ? Math.round((totalCompleted / totalLessons) * 100)
+                  : 0;
+            }),
+          );
+
+          instGlobalStudents = studentList;
 
           if (statsContainer) {
-            let activeThisWeek = Math.floor(instGlobalStudents.length * 0.8);
+            const avgProgress =
+              studentList.length > 0
+                ? Math.round(
+                    studentList.reduce((s, st) => s + st.progress, 0) /
+                      studentList.length,
+                  )
+                : 0;
             statsContainer.innerHTML = `
-                                    <div class="p-stat-card p-stat-card-blue"><div class="p-card-top"><h3>Total Students</h3></div><div><div class="val">${instGlobalStudents.length}</div><div class="desc">Enrolled in your courses</div></div></div>
-                                    <div class="p-stat-card p-stat-card-green"><div class="p-card-top"><h3>Active This Week</h3></div><div><div class="val">${activeThisWeek}</div><div class="desc">Engaging with content</div></div></div>
-                                `;
+        <div class="p-stat-card p-stat-card-blue">
+          <div class="p-card-top"><h3>Total Students</h3></div>
+          <div><div class="val">${studentList.length}</div>
+          <div class="desc">Enrolled in your courses</div></div>
+        </div>
+        <div class="p-stat-card p-stat-card-green">
+          <div class="p-card-top"><h3>Avg Progress</h3></div>
+          <div><div class="val">${avgProgress}%</div>
+          <div class="desc">Across all students</div></div>
+        </div>
+        <div class="p-stat-card p-stat-card-yellow">
+          <div class="p-card-top"><h3>Completed Courses</h3></div>
+          <div><div class="val">${studentList.reduce((s, st) => s + st.completedCount, 0)}</div>
+          <div class="desc">Fully finished</div></div>
+        </div>
+      `;
           }
 
-          displayInstStudents(instGlobalStudents);
+          displayInstStudents(studentList);
         } catch (e) {
           console.error(e);
           listContainer.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load students.</div>`;
-        }
-      }
-
-      async function renderInstructorGradeAssignments() {
-        const container = document.getElementById("instructor-grade-list");
-        if (!container) return;
-        container.innerHTML = `<div style="text-align:center;padding:40px;color:#64748b;">⏳ Loading submissions...</div>`;
-
-        try {
-          const courses = await safeFetchJSON(`${API_URL}/courses`);
-          if (!Array.isArray(courses)) return;
-
-          const myCourses = courses.filter(
-            (c) =>
-              c.instructor_email === currentUser.email &&
-              c.status === "Approved",
-          );
-
-          if (myCourses.length === 0) {
-            container.innerHTML = `<div style="text-align:center;padding:40px;color:#64748b;background:#f8fafc;border-radius:16px;">No active courses found.</div>`;
-            return;
-          }
-
-          let allUngraded = [];
-
-          for (let course of myCourses) {
-            const submissions = await safeFetchJSON(
-              `${API_URL}/assignment-submissions/${course.id}`,
-            );
-            if (!Array.isArray(submissions)) continue;
-
-            const ungraded = submissions.filter((s) => s.marks == null);
-            ungraded.forEach((s) => {
-              allUngraded.push({
-                ...s,
-                course_title: course.title,
-                course_id: course.id,
-              });
-            });
-          }
-
-          if (allUngraded.length === 0) {
-            container.innerHTML = `
-              <div style="text-align:center;padding:40px;background:#f0fdf4;border-radius:16px;border:1px solid #bbf7d0;">
-                <div style="font-size:40px;margin-bottom:12px;">🎉</div>
-                <h3 style="color:#16a34a;font-size:20px;font-weight:800;margin-bottom:8px;">All caught up!</h3>
-                <p style="color:#64748b;">No ungraded submissions at the moment.</p>
-              </div>`;
-            return;
-          }
-
-          let html = `<div style="display:flex;flex-direction:column;gap:16px;">`;
-
-          allUngraded.forEach((s) => {
-            html += `
-              <div style="background:white;border:1px solid #e2e8f0;border-radius:16px;padding:20px;border-left:4px solid #f59e0b;">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
-                  <div>
-                    <h4 style="font-size:16px;font-weight:800;color:#0f172a;margin-bottom:4px;">📝 ${s.assignment_title || "Assignment"}</h4>
-                    <div style="font-size:13px;color:#2563eb;font-weight:600;">📚 ${s.course_title || s.course_name || ""}</div>
-                    <div style="font-size:13px;color:#64748b;margin-top:4px;">👤 ${s.student_name} &nbsp;|&nbsp; 📅 ${s.date}</div>
-                  </div>
-                  <span style="background:#fef3c7;color:#d97706;padding:4px 12px;border-radius:50px;font-size:12px;font-weight:700;border:1px solid #fde68a;white-space:nowrap;">Ungraded</span>
-                </div>
-
-                <div style="background:#f8fafc;border-radius:10px;padding:12px;margin-bottom:14px;font-size:14px;color:#334155;line-height:1.6;word-break:break-word;">
-                  ${s.submission_text}
-                </div>
-
-                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-                  <input type="number" id="grade-marks-${s.id}" min="0" max="10" placeholder="Marks /10"
-                    style="width:100px;padding:8px 12px;border-radius:8px;border:1px solid #cbd5e1;outline:none;font-family:'Inter',sans-serif;font-size:14px;">
-                  <input type="text" id="grade-comment-${s.id}" placeholder="Feedback (optional)"
-                    style="flex:1;min-width:150px;padding:8px 12px;border-radius:8px;border:1px solid #cbd5e1;outline:none;font-family:'Inter',sans-serif;font-size:14px;">
-                  <button class="btn btn-primary" style="padding:8px 20px;"
-                    onclick="gradeFromPanel(${s.id}, '${s.course_id}', '${encodeURIComponent(s.student_email)}', '${encodeURIComponent(s.assignment_title || "")}', '${encodeURIComponent(s.course_title || s.course_name || "")}')">
-                    Save Grade
-                  </button>
-                </div>
-              </div>`;
-          });
-
-          html += `</div>`;
-          container.innerHTML = html;
-        } catch (e) {
-          console.error(e);
-          container.innerHTML = `<div style="color:#ef4444;text-align:center;padding:20px;">Failed to load submissions.</div>`;
         }
       }
 
