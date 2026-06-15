@@ -10385,10 +10385,16 @@
                   percent,
                   progress,
                 }) => {
-                  // Find last activity date from progress
+                  const sortedProgress = [...progress]
+                    .filter((p) => p.completed_at)
+                    .sort((a, b) => {
+                      return (
+                        new Date(b.completed_at) - new Date(a.completed_at)
+                      );
+                    });
                   const lastCompleted =
-                    progress.length > 0
-                      ? progress[progress.length - 1].completed_at || ""
+                    sortedProgress.length > 0
+                      ? sortedProgress[0].completed_at
                       : "";
 
                   // Streak badge: check if any activity in last 2 days
@@ -10426,8 +10432,8 @@
                 ${streakBadge}
               </div>
               <div style="font-size:12px; color:#94a3b8;">
-                ${lastCompleted ? `Last activity: ${lastCompleted}` : "Not started yet"}
-              </div>
+  ${completedCount > 0 && lastCompleted ? `Last activity: ${lastCompleted}` : completedCount === 0 ? "Not started yet" : "In progress"}
+</div>
             </div>
             <div class="progress-bar-bg" style="margin-bottom:0;">
               <div style="height:100%; width:${percent}%; background:${barColor}; border-radius:10px;"></div>
