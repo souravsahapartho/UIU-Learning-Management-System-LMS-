@@ -6657,7 +6657,6 @@
             }
           }
 
-          // Streak & Activity calculation (DB-backed via /student-activity)
           try {
             const activityData = await safeFetchJSON(
               `${API_URL}/student-activity/${currentUser.email}`,
@@ -6670,7 +6669,6 @@
               });
             }
 
-            // Current streak: count consecutive days ending today
             let streak = 0;
             let cursor = new Date();
             while (activeDateSet.has(getLocalDateStr(cursor))) {
@@ -6678,7 +6676,6 @@
               cursor.setDate(cursor.getDate() - 1);
             }
 
-            // Hours this month: 1 hour for each distinct active day this month
             const now2 = new Date();
             let activeDaysThisMonth = 0;
             activeDateSet.forEach((dateStr) => {
@@ -6695,7 +6692,7 @@
             if (streakEl) streakEl.innerText = streak;
             if (hoursEl) hoursEl.innerText = hoursThisMonth;
 
-            // Last 7 days activity icons
+
             const weekContainer = document.getElementById("ps-week-activity");
             if (weekContainer) {
               const dayLabels = [
@@ -6721,7 +6718,6 @@
             console.error("Streak calculation error:", e);
           }
 
-          // Upcoming Deadlines
           const deadlineContainer = document.getElementById(
             "ps-upcoming-deadlines",
           );
@@ -6957,13 +6953,13 @@
       async function markModuleCompleted(moduleIndex) {
         if (!currentUser || currentUser.role !== "student") return;
         if (completedModules.has(Number(moduleIndex))) {
-          alert("এই module টি আগেই completed!");
+          alert("This module is already completed!");
           return;
         }
 
         const modData = moduleDataMap[Number(moduleIndex)];
         if (modData && !modData.videoUrl) {
-          alert("এই module এর video upload হয়নি, এটি এখনো locked।");
+          alert("This module has no video uploaded yet and is still locked.");
           return;
         }
 
@@ -7007,7 +7003,7 @@
 
       async function saveModuleDescription(moduleIndex, description) {
         if (!description.trim()) {
-          alert("Description লিখো আগে!");
+          alert("Please write a description first!");
           return;
         }
         try {
@@ -7031,10 +7027,10 @@
               }, 3000);
             }
           } else {
-            alert("Save failed. আবার try করো।");
+            alert("Save failed. Please try again.");
           }
         } catch (e) {
-          alert("Connection error!");
+          alert("Connection error. Please check your internet and try again.");
           console.error("Description save error:", e);
         }
       }
@@ -7067,7 +7063,6 @@
           }
         } catch (e) {}
 
-        // Completed modules load (only for students)
         if (isStudent) {
           try {
             const progress = await safeFetchJSON(
@@ -7120,7 +7115,6 @@
             ? `background:#2563eb !important;border-color:#2563eb !important;color:white;`
             : `background:transparent;border-color:#cbd5e1;`;
 
-          // Video section
           let videoSection = "";
           if (isInstructor) {
             const descSection = `
@@ -7182,7 +7176,7 @@
               cursor:${isLockedForStudent ? "not-allowed" : "pointer"};
               opacity:${isLockedForStudent ? "0.55" : "1"};
               border-left:4px solid ${isCompleted ? "#2563eb" : "transparent"};"
-       onclick="${isLockedForStudent ? `alert('এই module এর video এখনো upload হয়নি। Instructor video upload করলেই এটি unlock হবে।')` : `loadModuleVideo('${savedVideo || ""}', ${i})`}">
+       onclick="${isLockedForStudent ? `alert('This module is locked. It will unlock once the instructor uploads the video.')` : `loadModuleVideo('${savedVideo || ""}', ${i})`}">
               <div style="display:flex;align-items:center;gap:15px;width:100%;">
                 <div class="lesson-circle"
                      id="circle-${i}"
@@ -7561,7 +7555,6 @@
               e.status === "Approved",
           );
 
-          // Build student map
           let studentMap = new Map();
           myEnrollments.forEach((e) => {
             if (!studentMap.has(e.student_email)) {
@@ -7586,26 +7579,22 @@
             let st = studentMap.get(e.student_email);
             st.enrolledCount++;
             st.enrolledCourseIds.push(String(e.course_id));
-            // Keep latest date
             if (e.date && e.date > st.lastActive) st.lastActive = e.date;
           });
 
-          // Fetch real progress & activity for each student
           const studentList = Array.from(studentMap.values());
 
           await Promise.all(
             studentList.map(async (st) => {
-              // Get activity for last active date
               try {
                 const actData = await safeFetchJSON(
                   `${API_URL}/student-activity/${st.email}`,
                 );
                 if (Array.isArray(actData) && actData.length > 0) {
-                  st.lastActive = actData[0].activity_date; // already sorted DESC
+                  st.lastActive = actData[0].activity_date;
                 }
               } catch (e) {}
 
-              // Get progress across all enrolled courses
               let totalLessons = 0;
               let totalCompleted = 0;
               let completedCoursesCount = 0;
@@ -9775,7 +9764,6 @@
             <button onclick="document.getElementById('admin-user-detail-modal').remove()" style="width:100%;padding:14px;background:linear-gradient(135deg,#0f172a,#1e3a5f);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">Close</button>
             `;
           } else {
-            // STUDENT DETAIL
             const progressColor =
               progress >= 70
                 ? "#10b981"
@@ -10178,7 +10166,6 @@
               .join("");
           }
 
-          // Assignments section
           let assignHtml = "";
           if (allSubmissions.length === 0) {
             assignHtml = `<div style="color:${subColor};font-size:13px;padding:10px;text-align:center;">No assignments submitted yet.</div>`;
@@ -10291,7 +10278,6 @@
         }
       }
       async function renderStudentProgressPage() {
-        // Stats grid
         const statsGrid = document.getElementById("dynamic-prog-stats-grid");
         const courseProgList = document.getElementById(
           "dynamic-course-progress-list",
@@ -10353,7 +10339,6 @@
             }),
           );
 
-          // Aggregate stats
           const totalCompleted = progressResults.reduce(
             (sum, r) => sum + r.completedCount,
             0,
@@ -10367,7 +10352,6 @@
               ? Math.round((totalCompleted / totalLessons) * 100)
               : 0;
 
-          // Streak calculation
           const activeDateSet = new Set();
           if (Array.isArray(activityData)) {
             activityData.forEach((row) => {
@@ -10381,7 +10365,6 @@
             cursor.setDate(cursor.getDate() - 1);
           }
 
-          // Update stat cards
           const totalEl = document.getElementById("pp-total-progress");
           const lessonsEl = document.getElementById("pp-lessons-completed");
           const lessonsDescEl = document.getElementById("pp-lessons-desc");
@@ -10423,7 +10406,6 @@
                       ? sortedProgress[0].completed_at
                       : "";
 
-                  // Streak badge: check if any activity in last 2 days
                   const today = new Date();
                   const yesterday = new Date();
                   yesterday.setDate(yesterday.getDate() - 1);
@@ -10723,7 +10705,7 @@
                 ? "linear-gradient(135deg, #7c3aed, #4f46e5)"
                 : "linear-gradient(135deg, #2563eb, #0ea5e9)";
 
-          // — STUDENT LOGIC —
+          // STUDENT LOGIC
           if (currentUser.role === "student") {
             const myEnrollments = Array.isArray(enrollments)
               ? enrollments.filter(
@@ -10742,7 +10724,6 @@
                 )
               : [];
 
-            // submissions fetch
             let allSubmissions = [];
             let totalAssignments = 0;
 
@@ -10942,7 +10923,7 @@
         </div>
       `;
 
-            // — INSTRUCTOR LOGIC —
+            // INSTRUCTOR LOGIC
           } else if (currentUser.role === "instructor") {
             const myCourses = Array.isArray(courses)
               ? courses.filter((c) => c.instructor_email === currentUser.email)
@@ -10974,7 +10955,6 @@
                 ).length
               : 0;
 
-            // Grade all submissions across courses
             let totalGradedMarks = 0;
             let gradedCount = 0;
 
@@ -11100,7 +11080,7 @@
           }
         </div>
       `;
-            // — ADMIN LOGIC —
+            // ADMIN LOGIC
           } else {
             container.innerHTML = `
         <div style="background:${headerGradient};border-radius:20px;padding:32px 24px 24px;text-align:center;margin-bottom:20px;">
