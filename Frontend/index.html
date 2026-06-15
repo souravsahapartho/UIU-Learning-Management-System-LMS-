@@ -7741,14 +7741,14 @@
                                               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15l-2 5l9-5-9-5-2 5z"></path><circle cx="12" cy="8" r="7"></circle></svg>
                                               <div style="display: flex; flex-direction: column;">
                                                   <span style="font-size: 11px; color: #64748b;">Completed</span>
-                                                  <span style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.completedCount}</span>
+                                                 <span style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.totalCompleted}/${st.totalLessons}</span>
                                               </div>
                                           </div>
                                           <div style="display: flex; align-items: center; gap: 10px;">
                                               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
                                               <div style="display: flex; flex-direction: column;">
                                                   <span style="font-size: 11px; color: #64748b;">Progress</span>
-                                                  <span style="font-size: 14px; font-weight: 700; color: #0f172a;" class="dm-text">${st.progress}%</span>
+                                                  <span style="font-size: 14px; font-weight: 700; color: ${st.progress >= 70 ? "#10b981" : st.progress >= 40 ? "#f59e0b" : "#ef4444"};" class="dm-text">${st.progress}%</span>
                                               </div>
                                           </div>
                                       </div>
