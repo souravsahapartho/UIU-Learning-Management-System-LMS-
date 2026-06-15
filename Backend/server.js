@@ -144,6 +144,7 @@ const alterQueries = [
   "ALTER TABLE users ADD COLUMN last_login VARCHAR(100) DEFAULT NULL",
   "ALTER TABLE module_videos ADD COLUMN description TEXT DEFAULT NULL",
   "ALTER TABLE module_videos ADD COLUMN duration INT DEFAULT NULL",
+  "ALTER TABLE ban_requests ADD COLUMN reason TEXT DEFAULT NULL",
 ];
 alterQueries.forEach((query) => {
   db.query(query, (err) => {
@@ -1101,6 +1102,7 @@ app.post("/ban-requests", (req, res) => {
     student_email,
     student_name,
     date,
+    reason,
   } = req.body;
   db.query(
     "SELECT * FROM ban_requests WHERE course_id = ? AND student_email = ? AND status = 'Pending'",
@@ -1113,7 +1115,7 @@ app.post("/ban-requests", (req, res) => {
             "A pending request already exists for this student in this course.",
         });
       db.query(
-        "INSERT INTO ban_requests (course_id, course_title, inst_email, inst_name, student_email, student_name, `date`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO ban_requests (course_id, course_title, inst_email, inst_name, student_email, student_name, `date`, reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
         [
           String(course_id),
           String(course_title),
@@ -1122,6 +1124,7 @@ app.post("/ban-requests", (req, res) => {
           String(student_email),
           String(student_name),
           String(date),
+          reason ? String(reason) : null,
         ],
         (err) =>
           err
