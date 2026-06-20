@@ -267,6 +267,6 @@ To access the Admin dashboard and test administrative features, use the followin
 
 ---
 
-**Developed By:** Sourav Saha & his team
+**Developed By:** Sourav, Supty, Jannat, Binoy
 
 *United International University*
