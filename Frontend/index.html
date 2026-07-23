@@ -515,7 +515,6 @@
         gap: 24px;
         margin-bottom: 30px;
       }
-      /* student coourse design - binoy */
       .std-course-card {
         background: white;
         border-radius: 24px;
@@ -865,7 +864,6 @@
         font-weight: 500;
         color: #9333ea;
       }
-      /* upload course - binoy*/
       .upload-course-hero {
         background: linear-gradient(135deg, #0ea5e9, #2563eb);
         border-radius: 24px;
@@ -1352,7 +1350,6 @@
       .notif-icon.orange {
         background-color: #f97316;
       }
-      /* video play - binoy */
       .course-player-container {
         max-width: 1200px;
         margin: 0 auto;
@@ -1432,7 +1429,6 @@
         color: #0f172a;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
       }
-      /* lesson list - binoy */
       .lesson-list-box {
         background: white;
         border-radius: 16px;
@@ -1477,7 +1473,6 @@
         gap: 24px;
       }
 
-      /* GLOBAL CHAT WHATSAPP STYLE */
       .global-chat-fab {
         position: fixed;
         bottom: 30px;
@@ -1712,7 +1707,7 @@
         flex-direction: column;
         background: #ffffff;
       }
-      /* Adjust main header padding to accommodate the top right close button */
+
       .g-chat-main-header {
         padding: 20px;
         padding-right: 60px;
@@ -2611,7 +2606,6 @@
     </style>
   </head>
   <body>
-    <!-- Navbar - Supty -->
     <nav class="navbar" id="main-nav">
       <div class="logo" onclick="navigateTo('landing')">
         <span>ELMS</span> Platform
@@ -2629,7 +2623,6 @@
       </div>
     </nav>
 
-    <!-- Landing page - supty -->
     <div id="landing-page" class="page">
       <div class="hero-section">
         <div class="hero-content">
@@ -2668,7 +2661,6 @@
       </div>
     </div>
 
-    <!-- login page - supty -->
     <div id="login-page" class="page hidden">
       <div class="auth-container">
         <div class="auth-box">
@@ -2699,7 +2691,6 @@
       </div>
     </div>
 
-    <!-- Signup page - supty -->
     <div id="signup-page" class="page hidden">
       <div class="auth-container">
         <div class="auth-box">
@@ -2743,7 +2734,6 @@
       </div>
     </div>
 
-    <!-- Sidebar - supty -->
     <div
       class="sidebar-overlay"
       id="sidebar-overlay"
@@ -2779,7 +2769,6 @@
       <div id="sidebar-bottom"></div>
     </aside>
 
-    <!-- Dashboard - supty -->
     <div id="dashboard-page" class="page hidden">
       <header class="navbar" style="position: sticky; top: 0">
         <div class="left-nav-container">
@@ -2867,9 +2856,7 @@
       </header>
 
       <div class="dashboard-content">
-        <!-- home dashboard -->
         <div id="dashboard-home-content">
-          <!-- Student dash - supty -->
           <div id="student-dashboard-view" style="display: none">
             <div
               class="welcome-banner"
@@ -3057,7 +3044,6 @@
               id="student-enrolled-courses-grid"
             ></div>
           </div>
-          <!-- Progress - supty -->
           <div
             class="progress-summary-section"
             id="student-progress-summary-section"
@@ -3086,7 +3072,6 @@
               Your Learning Summary
             </h2>
             <div class="progress-summary-grid">
-              <!-- Card 1: Overall Progress -->
               <div class="ps-card">
                 <div class="ps-card-title">📊 Overall Progress</div>
                 <div id="ps-course-progress-list"></div>
@@ -3141,7 +3126,6 @@
                 </div>
               </div>
 
-              <!-- Card 3: Upcoming Due Assignments -->
               <div class="ps-card">
                 <div class="ps-card-title">⏰ Upcoming Deadlines</div>
                 <div id="ps-upcoming-deadlines">
@@ -3160,7 +3144,6 @@
             </div>
           </div>
 
-          <!-- instructor Dashbosrd - supty -->
           <div id="instructor-dashboard-view" style="display: none">
             <div class="welcome-banner" style="background-color: #0f172a">
               <h1 id="welcome-msg-inst">Dashboard Overview</h1>
@@ -3325,7 +3308,6 @@
             ></div>
           </div>
 
-          <!--Admin-->
           <div id="admin-dashboard-view" style="display: none">
             <div class="admin-hero">
               <div class="admin-hero-content">
@@ -3621,7 +3603,6 @@
           ></div>
         </div>
 
-        <!--INS STU view-->
         <div id="instructor-students-content" class="hidden">
           <button
             class="btn-back"
@@ -3701,7 +3682,6 @@
           </div>
         </div>
 
-        <!-- Student Progress Page - supty -->
         <div id="student-progress-content" class="hidden">
           <button
             class="btn-back"
@@ -3725,9 +3705,7 @@
             <h1>Your Progress</h1>
             <p>Track your learning journey and achievements</p>
           </div>
-          <div class="prog-stats-grid" id="dynamic-prog-stats-grid">
-            <!-- Filled dynamically -->
-          </div>
+          <div class="prog-stats-grid" id="dynamic-prog-stats-grid"></div>
           <div class="prog-section-card" id="dynamic-course-progress-card">
             <h2 class="prog-section-title">Course Progress</h2>
             <p class="prog-section-subtitle">
@@ -3740,7 +3718,6 @@
             </div>
           </div>
         </div>
-        <!-- Instructor upload course -- supty -->
         <div id="instructor-upload-course-content" class="hidden">
           <button
             class="btn-back"
@@ -4122,7 +4099,6 @@
           <div id="instructor-grade-list"></div>
         </div>
 
-        <!--admin - sourav-->
         <div id="admin-users-content" class="hidden">
           <button
             class="btn-back"
@@ -4626,7 +4602,6 @@
 
             <div class="cp-layout">
               <div id="cp-content-wrapper" style="position: relative">
-                <!-- Locked Overlay -->
                 <div
                   id="cp-locked-overlay"
                   class="hidden"
@@ -4775,7 +4750,6 @@
                     </button>
                   </div>
                 </div>
-                //course activity - binoy
                 <div
                   id="course-activities-box"
                   style="
@@ -4919,10 +4893,8 @@
       >
     </div>
 
-    <!-- Chat - sourav-->
     <div class="global-chat-overlay hidden" id="global-chat-overlay">
       <div class="global-chat-container">
-        <!-- New Top Right Close Button -->
         <div
           class="close-chat-btn-top"
           onclick="toggleGlobalChat(false)"
@@ -4941,14 +4913,11 @@
           </svg>
         </div>
 
-        <!-- Sidebar -->
         <div class="g-chat-sidebar">
           <div class="g-chat-header">Chats</div>
-          <div class="g-chat-list" id="g-chat-list-container">
-            <!-- Chat groups loaded dynamically -->
-          </div>
+          <div class="g-chat-list" id="g-chat-list-container"></div>
         </div>
-        <!-- Main Chat Room -->
+
         <div class="g-chat-main">
           <div class="g-chat-main-header" id="g-chat-main-header">
             <div
@@ -4959,9 +4928,7 @@
             </div>
             <div style="font-size: 16px">Select a chat to start messaging</div>
           </div>
-          <div class="g-chat-messages" id="g-chat-messages-container">
-            <!-- Messages -->
-          </div>
+          <div class="g-chat-messages" id="g-chat-messages-container"></div>
           <div class="g-chat-input-area" id="g-chat-input-area">
             <input
               type="text"
@@ -6486,7 +6453,6 @@
         }
       }
 
-      // Enrolled Course (Student Dashboard) - binoy
       async function renderStudentEnrolledCourses() {
         const container = document.getElementById(
           "student-enrolled-courses-grid",
@@ -6525,7 +6491,6 @@
 
               const isUnpublished = c.status === "Unpublished";
 
-              // Dynamic progress calculation
               let progressPercent = 0;
               try {
                 const progress = await safeFetchJSON(
@@ -6617,7 +6582,6 @@
             }
           }
 
-          // Course Progress Bars
           const progList = document.getElementById("ps-course-progress-list");
           if (progList) {
             const myCourses = courses.filter((c) =>
@@ -7980,7 +7944,6 @@
         container.innerHTML = html;
         loadAssignments(currentCoursePlayerId);
       }
-      //create assigment - binoy
       async function createAssignment() {
         const title = document.getElementById("assign-title").value.trim();
         const desc = document.getElementById("assign-desc").value.trim();
@@ -9602,7 +9565,6 @@
         modal.innerHTML = `
                 <div style="background:${bgColor};border-radius:24px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,0.3);animation:modalSlideIn 0.25s ease;margin:auto;">
 
-                  <!-- Header -->
                   <div style="background:${headerGradient};padding:28px 24px 20px;text-align:center;position:relative;">
                     <button onclick="document.getElementById('student-detail-modal').remove()" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.2);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;color:white;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;">✕</button>
                     <div style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.15);border:3px solid rgba(255,255,255,0.4);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
@@ -9761,7 +9723,6 @@
         </div>
       </div>
 
-            <!-- Course List -->
             <div style="margin-bottom:20px;">
               <h4 style="font-size:15px;font-weight:800;color:${textColor};margin-bottom:12px;display:flex;align-items:center;gap:8px;">
                 <span style="width:4px;height:16px;background:#2563eb;border-radius:4px;display:inline-block;"></span>
@@ -9789,7 +9750,6 @@
                   : "Needs Attention ⚠️";
 
             body.innerHTML = `
-                    <!-- Stats -->
                     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
                       <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:14px;padding:14px;text-align:center;">
                         <div style="font-size:24px;font-weight:800;color:#2563eb;">${enrolled}</div>
@@ -9805,7 +9765,6 @@
                       </div>
                     </div>
 
-                    <!-- Progress Bar -->
                     <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:14px;padding:16px;margin-bottom:20px;">
                       <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
                         <span style="font-size:14px;font-weight:700;color:${textColor};">Overall Progress</span>
@@ -9816,7 +9775,6 @@
                       </div>
                     </div>
 
-                    <!-- Info -->
                     <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:14px;padding:16px;margin-bottom:20px;display:flex;flex-direction:column;gap:12px;">
                       <div style="display:flex;align-items:center;gap:12px;">
                         <div style="width:34px;height:34px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -9937,7 +9895,6 @@
         modal.innerHTML = `
                 <div style="background:${bgColor};border-radius:24px;width:100%;max-width:560px;box-shadow:0 25px 50px rgba(0,0,0,0.3);overflow:hidden;animation:modalSlideIn 0.25s ease;margin:auto;">
 
-                  <!-- Header -->
                   <div style="background:linear-gradient(135deg,#7c3aed,#4f46e5);padding:28px 24px 20px;text-align:center;position:relative;">
                     <button onclick="document.getElementById('admin-user-detail-modal').remove()" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.2);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;color:white;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;">✕</button>
                     <div style="width:72px;height:72px;border-radius:50%;background:#5b21b6;border:3px solid rgba(255,255,255,0.4);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
@@ -9951,7 +9908,6 @@
                     </div>
                   </div>
 
-                  <!-- Loading state -->
                   <div id="admin-user-detail-body" style="padding:24px;">
                     <div style="text-align:center;color:${subColor};padding:20px;">⏳ Loading user data...</div>
                   </div>
@@ -10200,7 +10156,6 @@
               .join("");
           }
 
-          // Feedback section
           let feedbackHtml = "";
           if (allFeedbacks.length === 0) {
             feedbackHtml = `<div style="color:${subColor};font-size:13px;padding:10px;text-align:center;">No feedback given yet.</div>`;
@@ -10221,7 +10176,6 @@
           }
 
           body.innerHTML = `
-                  <!-- Quick Stats -->
                   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
                     <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:14px;padding:14px;text-align:center;">
                       <div style="font-size:24px;font-weight:800;color:#2563eb;">${myEnrollments.length}</div>
@@ -10237,8 +10191,6 @@
                     </div>
                   </div>
 
-
-                  <!-- Enrolled Courses -->
                   <div style="margin-bottom:20px;">
                     <h4 style="font-size:15px;font-weight:800;color:${textColor};margin-bottom:12px;display:flex;align-items:center;gap:8px;">
                       <span style="width:4px;height:16px;background:#2563eb;border-radius:4px;display:inline-block;"></span>
@@ -10249,7 +10201,6 @@
                     </div>
                   </div>
 
-                  <!-- Assignments & Marks -->
                   <div style="margin-bottom:20px;">
                     <h4 style="font-size:15px;font-weight:800;color:${textColor};margin-bottom:12px;display:flex;align-items:center;gap:8px;">
                       <span style="width:4px;height:16px;background:#10b981;border-radius:4px;display:inline-block;"></span>
@@ -10258,7 +10209,6 @@
                     ${assignHtml}
                   </div>
 
-                  <!-- Feedbacks -->
                   <div style="margin-bottom:20px;">
                     <h4 style="font-size:15px;font-weight:800;color:${textColor};margin-bottom:12px;display:flex;align-items:center;gap:8px;">
                       <span style="width:4px;height:16px;background:#f59e0b;border-radius:4px;display:inline-block;"></span>
@@ -10267,7 +10217,6 @@
                     ${feedbackHtml}
                   </div>
 
-                  <!-- Login Info -->
         <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:14px;padding:16px;margin-bottom:20px;display:flex;flex-direction:column;gap:12px;">
           <div>
             <div style="font-size:11px;color:${subColor};font-weight:600;">First Login</div>
@@ -10326,7 +10275,6 @@
               )
             : [];
 
-          // Fetch progress for all courses
           const progressResults = await Promise.all(
             myCourses.map(async (c) => {
               const progress = await safeFetchJSON(
@@ -10389,7 +10337,6 @@
           if (streakEl) streakEl.innerText = streak;
           if (coursesEl) coursesEl.innerText = myCourses.length;
 
-          // Course progress bars
           if (courseProgList) {
             if (progressResults.length === 0) {
               courseProgList.innerHTML = `<div style="text-align:center; padding:20px; color:#64748b;">No enrolled courses found.</div>`;
@@ -10716,7 +10663,6 @@
                 ? "linear-gradient(135deg, #7c3aed, #4f46e5)"
                 : "linear-gradient(135deg, #2563eb, #0ea5e9)";
 
-          // STUDENT LOGIC
           if (currentUser.role === "student") {
             const myEnrollments = Array.isArray(enrollments)
               ? enrollments.filter(
@@ -10768,7 +10714,6 @@
                 : null;
             const submittedCount = allSubmissions.length;
 
-            // Progress calculation
             let totalLessons = 0;
             let totalCompleted = 0;
             const progressResults = await Promise.all(
@@ -10794,7 +10739,6 @@
                 ? Math.round((totalCompleted / totalLessons) * 100)
                 : 0;
 
-            // Progress level
             let levelLabel, levelColor, levelBg, levelIcon;
             if (overallPercent >= 80) {
               levelLabel = "Very Good 🏆";
@@ -10828,7 +10772,6 @@
                     : "#e11d48";
 
             container.innerHTML = `
-        <!-- Header -->
         <div style="background:${headerGradient}; border-radius:20px; padding:32px 24px 24px; text-align:center; margin-bottom:20px; position:relative;">
           <div style="width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.15);border:3px solid rgba(255,255,255,0.4);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
             ${avatarHtml}
@@ -10838,7 +10781,6 @@
           <span style="background:rgba(255,255,255,0.2);color:white;padding:5px 16px;border-radius:50px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,0.3);">🎓 Student</span>
         </div>
 
-        <!-- Progress Level Badge -->
         <div style="background:${levelBg};border:2px solid ${levelColor};border-radius:16px;padding:18px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
           <div>
             <div style="font-size:13px;font-weight:600;color:${subColor};margin-bottom:4px;">Overall Learning Level</div>
@@ -10850,7 +10792,6 @@
           </div>
         </div>
 
-        <!-- Progress Bar -->
         <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:16px;padding:20px;margin-bottom:20px;">
           <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
             <span style="font-size:14px;font-weight:700;color:${textColor};">Course Completion</span>
@@ -10861,7 +10802,6 @@
           </div>
         </div>
 
-        <!-- Stats Grid -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
           <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:14px;padding:16px;text-align:center;">
             <div style="font-size:28px;font-weight:800;color:#2563eb;">${myCourses.length}</div>
@@ -10877,7 +10817,6 @@
           </div>
         </div>
 
-        <!-- Login Info -->
         <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:16px;padding:20px;margin-bottom:20px;">
           <h4 style="font-size:15px;font-weight:800;color:${textColor};margin-bottom:14px;">📅 Login History</h4>
           <div style="display:flex;flex-direction:column;gap:12px;">
@@ -10902,7 +10841,6 @@
           </div>
         </div>
 
-        <!-- Per Course Progress -->
         <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:16px;padding:20px;margin-bottom:20px;">
           <h4 style="font-size:15px;font-weight:800;color:${textColor};margin-bottom:16px;">📚 Per Course Progress</h4>
           ${
@@ -10934,7 +10872,6 @@
         </div>
       `;
 
-            // INSTRUCTOR LOGIC
           } else if (currentUser.role === "instructor") {
             const myCourses = Array.isArray(courses)
               ? courses.filter((c) => c.instructor_email === currentUser.email)
@@ -10991,7 +10928,6 @@
                 : null;
 
             container.innerHTML = `
-        <!-- Header -->
         <div style="background:${headerGradient};border-radius:20px;padding:32px 24px 24px;text-align:center;margin-bottom:20px;">
           <div style="width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.15);border:3px solid rgba(255,255,255,0.4);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
             ${avatarHtml}
@@ -11001,7 +10937,6 @@
           <span style="background:rgba(255,255,255,0.2);color:white;padding:5px 16px;border-radius:50px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,0.3);">👨‍🏫 Instructor</span>
         </div>
 
-        <!-- Stats -->
         <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;">
           <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:14px;padding:16px;text-align:center;">
             <div style="font-size:28px;font-weight:800;color:#2563eb;">${myCourses.length}</div>
@@ -11021,7 +10956,7 @@
           </div>
         </div>
 
-        <!-- Avg marks given -->
+
         <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:16px;padding:20px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
           <div>
             <div style="font-size:13px;font-weight:600;color:${subColor};">Average Marks Given to Students</div>
@@ -11029,8 +10964,6 @@
           </div>
           <div style="font-size:13px;color:${subColor};">Based on ${gradedCount} graded submission${gradedCount !== 1 ? "s" : ""}</div>
         </div>
-
-        <!-- Login Info -->
         <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:16px;padding:20px;margin-bottom:20px;">
           <h4 style="font-size:15px;font-weight:800;color:${textColor};margin-bottom:14px;">📅 Login History</h4>
           <div style="display:flex;flex-direction:column;gap:12px;">
@@ -11055,7 +10988,6 @@
           </div>
         </div>
 
-        <!-- Courses List -->
         <div style="background:${cardBg};border:1px solid ${borderColor};border-radius:16px;padding:20px;margin-bottom:20px;">
           <h4 style="font-size:15px;font-weight:800;color:${textColor};margin-bottom:14px;">📚 Your Courses</h4>
           ${
@@ -11091,7 +11023,6 @@
           }
         </div>
       `;
-            // ADMIN LOGIC
           } else {
             container.innerHTML = `
         <div style="background:${headerGradient};border-radius:20px;padding:32px 24px 24px;text-align:center;margin-bottom:20px;">

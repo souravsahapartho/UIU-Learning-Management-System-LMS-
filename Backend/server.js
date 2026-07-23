@@ -163,7 +163,7 @@ alterQueries.forEach((query) => {
 
 app.get("/", (req, res) => res.json({ message: "Backend API is active." }));
 
-//upload profile - jannat
+
 app.post(
   "/upload-profile-pic",
   (req, res, next) => {
@@ -201,7 +201,6 @@ app.post(
   },
 );
 
-//chat media
 app.post(
   "/upload-chat-media",
   (req, res, next) => {
@@ -224,7 +223,6 @@ app.post(
   },
 );
 
-//signup - jannat
 app.post("/signup", (req, res) => {
   const { name, email, password, role, avatar } = req.body;
   const encryptedPassword = hashPassword(password || "");
@@ -244,7 +242,6 @@ app.post("/signup", (req, res) => {
   );
 });
 
-//login - jannat
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
   const encryptedPassword = hashPassword(password || "");
@@ -292,7 +289,6 @@ app.post("/login", (req, res) => {
   );
 });
 
-//update profile - jannat
 app.put("/update-profile", async (req, res) => {
   const { name, avatar, email } = req.body;
   try {
@@ -334,7 +330,6 @@ app.put("/update-profile", async (req, res) => {
   }
 });
 
-//update password - jannat
 app.put("/update-password", (req, res) => {
   const { email, oldPassword, newPassword } = req.body;
   const oldEncrypted = hashPassword(oldPassword || "");
@@ -363,7 +358,6 @@ app.put("/update-password", (req, res) => {
   );
 });
 
-//delete account - jannat
 app.delete("/delete-account", (req, res) => {
   db.query("DELETE FROM users WHERE email = ?", [req.body.email], (err) =>
     err
@@ -521,7 +515,6 @@ app.post(
   },
 );
 
-// BINOY — Edit / Update Course
 app.put(
   "/update-course/:id",
   (req, res, next) => {
@@ -613,7 +606,6 @@ app.put(
   },
 );
 
-// BINOY — Module Video Upload API
 app.post(
   "/upload-module-video",
   (req, res, next) => {
@@ -631,7 +623,6 @@ app.post(
   },
 );
 
-// BINOY — Get All Courses
 app.get("/courses", (req, res) => {
   db.query("SELECT * FROM courses ORDER BY id DESC", (err, data) =>
     err
@@ -837,7 +828,6 @@ app.get("/all-complaints", (req, res) => {
   );
 });
 
-// BINOY — Module Progress Tracking
 app.post("/module-progress", (req, res) => {
   const { course_id, student_email, module_index, completed_at } = req.body;
   db.query(
@@ -1018,7 +1008,6 @@ app.delete("/module-videos/:courseId/:moduleIndex", (req, res) => {
   );
 });
 
-// BINOY — Create Assignment
 app.post("/assignments", (req, res) => {
   const {
     course_id,
@@ -1214,7 +1203,6 @@ app.put("/ban-requests/:id", async (req, res) => {
   }
 });
 
-//notificiations - jannat
 app.get("/notifications/:identifier", (req, res) => {
   db.query(
     "SELECT * FROM notifications WHERE identifier = ? ORDER BY id DESC",
