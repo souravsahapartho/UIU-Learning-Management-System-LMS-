@@ -374,13 +374,24 @@
       }
       .auth-box {
         background: white;
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        padding: 44px 40px;
+        border-radius: 24px;
+        box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.05);
         border: 1px solid #e2e8f0;
         width: 100%;
-        max-width: 400px;
+        max-width: 440px;
         margin: 0 auto;
+        position: relative;
+        overflow: hidden;
+      }
+      .auth-box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #2563eb, #38bdf8);
       }
       .error-message {
         background-color: #fef2f2;
@@ -435,11 +446,38 @@
         overflow-x: hidden;
       }
       .welcome-banner {
+        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 55%, #0284c7 100%) !important;
         color: white;
-        padding: 40px;
+        padding: 36px 40px;
         border-radius: 24px;
         margin-bottom: 30px;
-        word-wrap: break-word;
+        box-shadow: 0 16px 36px -10px rgba(37, 99, 235, 0.35);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .welcome-banner::after {
+        content: "";
+        position: absolute;
+        top: -50px;
+        right: -30px;
+        width: 220px;
+        height: 220px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.22) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+      }
+      .welcome-banner h1 {
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 8px;
+        letter-spacing: -0.02em;
+      }
+      .welcome-banner p {
+        font-size: 15px;
+        color: rgba(255, 255, 255, 0.9);
+        max-width: 600px;
+        line-height: 1.5;
       }
       .stats-grid {
         display: grid;
@@ -450,64 +488,92 @@
       .student-card,
       .instructor-card {
         background: white;
-        padding: 24px;
-        border-radius: 16px;
-        border: 2px solid;
+        padding: 24px 26px;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 8px 24px -6px rgba(15, 23, 42, 0.05);
         display: flex;
         flex-direction: column;
         overflow: hidden;
         word-wrap: break-word;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+      }
+      .student-card:hover,
+      .instructor-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 32px -8px rgba(15, 23, 42, 0.1);
       }
       .student-card.blue-card {
-        background-color: #f4f8ff;
-        border-color: #dce8ff;
+        background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%);
+        border-color: #bfdbfe;
+        border-top: 4px solid #2563eb;
       }
       .student-card.orange-card {
-        background-color: #fffaf2;
-        border-color: #ffedd5;
+        background: linear-gradient(180deg, #ffffff 0%, #fffbf5 100%);
+        border-color: #fed7aa;
+        border-top: 4px solid #f97316;
       }
       .student-card.green-card {
-        background-color: #f2fdf5;
-        border-color: #dcfce7;
+        background: linear-gradient(180deg, #ffffff 0%, #f6fdf9 100%);
+        border-color: #bbf7d0;
+        border-top: 4px solid #10b981;
+      }
+      .student-card.purple-card {
+        background: linear-gradient(180deg, #ffffff 0%, #faf5ff 100%);
+        border-color: #e9d5ff;
+        border-top: 4px solid #8b5cf6;
       }
       .card-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 30px;
+        margin-bottom: 24px;
         flex-wrap: wrap;
         gap: 10px;
       }
       .card-header h3 {
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 700;
-        color: #0f172a;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
       }
       .icon-bg {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         flex-shrink: 0;
+        box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.15);
       }
       .icon-bg.blue-icon {
-        background-color: #0a5cff;
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
       }
       .icon-bg.orange-icon {
-        background-color: #e87000;
+        background: linear-gradient(135deg, #f97316, #c2410c);
       }
       .icon-bg.green-icon {
-        background-color: #00a843;
+        background: linear-gradient(135deg, #10b981, #047857);
+      }
+      .icon-bg.purple-icon {
+        background: linear-gradient(135deg, #8b5cf6, #6d28d9);
       }
       .student-card .number {
-        font-size: 42px;
-        font-weight: 800;
+        font-size: 38px;
+        font-weight: 900;
         line-height: 1;
         margin-bottom: 8px;
+        letter-spacing: -0.02em;
         word-break: break-all;
+      }
+      .student-card .desc {
+        font-size: 13px;
+        font-weight: 600;
+        color: #64748b;
       }
       .continue-learning-grid {
         display: grid;
@@ -517,60 +583,60 @@
       }
       .std-course-card {
         background: white;
-        border-radius: 24px;
+        border-radius: 20px;
         border: 1px solid #e2e8f0;
+        box-shadow: 0 8px 24px -6px rgba(15, 23, 42, 0.05);
         overflow: hidden;
         display: flex;
         flex-direction: column;
         cursor: pointer;
-        transition: 0.2s;
+        transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
         width: 100%;
+        position: relative;
       }
       .std-course-card:hover {
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        transform: translateY(-6px);
+        box-shadow: 0 20px 35px -8px rgba(15, 23, 42, 0.12);
+        border-color: #cbd5e1;
       }
-      .std-course-img {
-        height: 160px;
-        padding: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
+      .std-course-img-box {
+        position: relative;
+        height: 165px;
         overflow: hidden;
-        cursor: pointer;
+        background-color: #0f172a;
       }
-      .std-course-img h4 {
-        color: white;
-        font-size: 22px;
-        font-weight: 800;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        margin: 0;
-        line-height: 1.3;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        word-wrap: break-word;
+      .std-course-img-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.35s ease;
+      }
+      .std-course-card:hover .std-course-img-box img {
+        transform: scale(1.05);
       }
       .std-course-card-content {
-        padding: 24px;
+        padding: 20px 22px 22px;
         display: flex;
         flex-direction: column;
         flex: 1;
-        overflow: hidden;
+        background: white;
+      }
+      body.dark-mode .std-course-card-content {
+        background: #1e293b;
       }
       .progress-bar-bg {
         width: 100%;
         height: 8px;
-        background: #e2e8f0;
+        background: #f1f5f9;
         border-radius: 10px;
         overflow: hidden;
-        margin-bottom: 15px;
+        margin-bottom: 12px;
       }
       .progress-bar-fill {
         height: 100%;
-        background: #2563eb;
+        background: linear-gradient(90deg, #2563eb, #38bdf8);
         border-radius: 10px;
+        transition: width 0.4s ease;
       }
       .instructor-card {
         color: white;
@@ -1862,7 +1928,7 @@
       body.dark-mode .upload-box {
         background-color: #1e293b;
         border-color: #334155;
-        box-shadow: none;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.05);
       }
       body.dark-mode .form-group input,
       body.dark-mode .form-group select,
@@ -5273,7 +5339,18 @@
         "linear-gradient(135deg, #ec4899, #be123c)",
       ];
 
+      const apiCache = new Map();
+      const CACHE_TTL_MS = 3000;
+
       async function safeFetchJSON(url, options = {}) {
+        const isGet = !options.method || options.method.toUpperCase() === "GET";
+        const cacheKey = isGet ? url : null;
+        if (isGet && apiCache.has(cacheKey)) {
+          const cached = apiCache.get(cacheKey);
+          if (Date.now() - cached.timestamp < CACHE_TTL_MS) {
+            return JSON.parse(JSON.stringify(cached.data));
+          }
+        }
         try {
           const res = await fetch(url, options);
           if (!res.ok) return [];
@@ -5281,6 +5358,9 @@
           if (contentType && contentType.includes("application/json")) {
             const data = await res.json();
             if (data && data.error) return [];
+            if (isGet) {
+              apiCache.set(cacheKey, { timestamp: Date.now(), data });
+            }
             return data;
           }
           return [];
@@ -5288,6 +5368,10 @@
           console.warn("API Error:", e);
           return [];
         }
+      }
+
+      function invalidateCache() {
+        apiCache.clear();
       }
 
       function getLocalDateStr(d) {
@@ -5654,8 +5738,10 @@
       }
 
       async function updateAdminStats() {
-        let users = await safeFetchJSON(`${API_URL}/users`);
-        let courses = await safeFetchJSON(`${API_URL}/courses`);
+        const [users, courses] = await Promise.all([
+          safeFetchJSON(`${API_URL}/users`),
+          safeFetchJSON(`${API_URL}/courses`),
+        ]);
 
         if (!Array.isArray(users) || !Array.isArray(courses)) return;
 
@@ -5681,8 +5767,10 @@
 
       async function updateInstructorStats() {
         if (!currentUser) return;
-        const courses = await safeFetchJSON(`${API_URL}/courses`);
-        const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+        const [courses, enrollments] = await Promise.all([
+          safeFetchJSON(`${API_URL}/courses`),
+          safeFetchJSON(`${API_URL}/enrollments`),
+        ]);
 
         if (!Array.isArray(courses) || !Array.isArray(enrollments)) return;
 
@@ -5747,7 +5835,7 @@
           "instructor-enrollment-requests",
         );
         if (!container) return;
-        container.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">Loading requests...</div>`;
+        container.innerHTML = `<div style="padding: 24px; text-align: center; color: #64748b;">Loading requests...</div>`;
 
         try {
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
@@ -5759,7 +5847,7 @@
           );
 
           if (pendingReqs.length === 0) {
-            container.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b; background: #f8fafc;">No pending enrollment requests.</div>`;
+            container.innerHTML = `<div style="padding: 30px; text-align: center; color: #64748b; background: white; border-radius: 16px; border: 1px dashed #cbd5e1;"><span style="font-size: 28px; display: block; margin-bottom: 6px;">✨</span>No pending enrollment requests.</div>`;
             return;
           }
 
@@ -5769,24 +5857,28 @@
             const safeTitle = encodeURIComponent(req.course_title);
             const safeName = encodeURIComponent(req.student_name);
             htmlStr += `
-                                <div class="submission-item">
-                                  <div>
-                                    <div style="font-weight: 700; color: #0f172a; font-size: 15px;">
-                                      ${req.student_name} <span style="font-weight: 500; color: #64748b; font-size: 13px;">(${req.student_email})</span>
-                                    </div>
-                                    <div style="font-size: 13px; color: #2563eb; margin-top: 4px; font-weight: 600;">
-                                      Course: ${req.course_title}
-                                    </div>
-                                    <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">
-                                      Requested on: ${req.date}
-                                    </div>
-                                  </div>
-                                  <div style="display: flex; gap: 10px;">
-                                    <button class="btn btn-success" style="padding: 6px 16px; font-size: 13px;" onclick="processEnrollment(${req.id}, 'Approved', '${safeEmail}', '${safeTitle}', '${safeName}')">Approve</button>
-                                    <button class="btn btn-outline" style="padding: 6px 16px; font-size: 13px; border-color: #fca5a5; color: #ef4444;" onclick="processEnrollment(${req.id}, 'Rejected', '${safeEmail}', '${safeTitle}', '${safeName}')">Reject</button>
-                                  </div>
-                                </div>
-                              `;
+              <div class="submission-item" style="background: white; border-radius: 16px; border: 1px solid #e2e8f0; padding: 20px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; box-shadow: 0 4px 12px -2px rgba(15,23,42,0.04); margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                  <div style="width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; flex-shrink: 0;">
+                    ${(req.student_name || "S")[0]}
+                  </div>
+                  <div>
+                    <div style="font-weight: 800; color: #0f172a; font-size: 15px;" class="dm-title">
+                      ${req.student_name} <span style="font-weight: 500; color: #64748b; font-size: 13px;">(${req.student_email})</span>
+                    </div>
+                    <div style="font-size: 13px; color: #2563eb; margin-top: 4px; font-weight: 700;">
+                      📚 ${req.course_title}
+                    </div>
+                    <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
+                      Requested: ${req.date}
+                    </div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                  <button class="btn btn-success" style="padding: 8px 18px; font-size: 13px; font-weight: 700; border-radius: 10px;" onclick="processEnrollment(${req.id}, 'Approved', '${safeEmail}', '${safeTitle}', '${safeName}')">✓ Accept</button>
+                  <button class="btn btn-outline" style="padding: 8px 18px; font-size: 13px; font-weight: 700; border-radius: 10px; border-color: #fca5a5; color: #ef4444;" onclick="processEnrollment(${req.id}, 'Rejected', '${safeEmail}', '${safeTitle}', '${safeName}')">✕ Reject</button>
+                </div>
+              </div>`;
           });
           container.innerHTML = htmlStr;
         } catch (e) {
@@ -5820,6 +5912,7 @@
           });
 
           if (res.ok) {
+            invalidateCache();
             const color = status === "Approved" ? "green" : "red";
             const text =
               status === "Approved"
@@ -5997,8 +6090,10 @@
         if (!container) return;
 
         try {
-          const courses = await safeFetchJSON(`${API_URL}/courses`);
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          const [courses, enrollments] = await Promise.all([
+            safeFetchJSON(`${API_URL}/courses`),
+            safeFetchJSON(`${API_URL}/enrollments`),
+          ]);
 
           if (!Array.isArray(courses)) return;
 
@@ -6007,7 +6102,7 @@
           );
 
           if (myCourses.length === 0) {
-            container.innerHTML = `<p style="color:#64748b; width: 100%;">You haven't uploaded any courses yet.</p>`;
+            container.innerHTML = `<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: #64748b; background: white; border-radius: 20px; border: 1px dashed #cbd5e1;"><span style="font-size: 36px; display: block; margin-bottom: 10px;">📤</span>You haven't uploaded any courses yet. <div style="margin-top: 14px;"><button class="btn btn-primary" onclick="handleNav('Upload Course', document.querySelector('.nav-item-upload'))">Upload New Course</button></div></div>`;
             return;
           }
 
@@ -6016,20 +6111,25 @@
               const bgIndex =
                 (parseInt(String(c.id).slice(-3)) || 0) %
                 courseGradients.length;
-              let bgStyle = `background: ${courseGradients[bgIndex]}; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
+              const bgStyle = courseGradients[bgIndex];
+              const category = c.category || "General";
 
-              let thumbHTML = "";
-              if (c.thumbnail_url) {
-                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')">
-                                       <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
-                                           <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                                       </div>
-                                  </div>`;
-              } else {
-                thumbHTML = `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')">
-                                       <h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4>
-                                  </div>`;
-              }
+              const thumbHTML = c.thumbnail_url
+                ? `<div class="std-course-img-box" onclick="openCoursePlayer('${c.id}')">
+                     <img src="${c.thumbnail_url}" alt="${c.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                     <div style="display:none; width:100%; height:100%; background:${bgStyle}; align-items:center; justify-content:center;">
+                       <span style="font-size:36px;">🎓</span>
+                     </div>
+                     <div style="position:absolute; top:12px; left:12px; display:flex; gap:6px; z-index:2;">
+                       <span style="background:rgba(15,23,42,0.8); backdrop-filter:blur(8px); color:white; font-size:11px; font-weight:700; padding:4px 10px; border-radius:50px;">${category}</span>
+                     </div>
+                   </div>`
+                : `<div class="std-course-img-box" style="background:${bgStyle}; display:flex; align-items:center; justify-content:center; text-align:center; padding:20px;" onclick="openCoursePlayer('${c.id}')">
+                     <span style="font-size:42px;">🎓</span>
+                     <div style="position:absolute; top:12px; left:12px; display:flex; gap:6px;">
+                       <span style="background:rgba(15,23,42,0.8); backdrop-filter:blur(8px); color:white; font-size:11px; font-weight:700; padding:4px 10px; border-radius:50px;">${category}</span>
+                     </div>
+                   </div>`;
 
               let studentCount = Array.isArray(enrollments)
                 ? enrollments.filter(
@@ -6038,27 +6138,29 @@
                 : 0;
               let statusBadge =
                 c.status === "Approved"
-                  ? `<span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #a7f3d0;">Live</span>`
+                  ? `<span style="background:#ecfdf5; color:#059669; padding:4px 10px; border-radius:50px; font-size:11px; font-weight:800; border:1px solid #a7f3d0; display:flex; align-items:center; gap:4px;">● Live</span>`
                   : c.status === "Unpublished"
-                    ? `<span style="background: #fef2f2; color: #ef4444; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #fca5a5;">⛔ Unpublished</span>`
-                    : `<span style="background: #fffbeb; color: #d97706; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #fde68a;">Pending</span>`;
+                    ? `<span style="background:#fef2f2; color:#ef4444; padding:4px 10px; border-radius:50px; font-size:11px; font-weight:800; border:1px solid #fca5a5;">⛔ Unpublished</span>`
+                    : `<span style="background:#fffbeb; color:#d97706; padding:4px 10px; border-radius:50px; font-size:11px; font-weight:800; border:1px solid #fde68a;">⏳ Pending</span>`;
 
               return `
-                                    <div class="std-course-card">
-                                        ${thumbHTML}
-                                        <div class="std-course-card-content">
-                                            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px;">
-                                                <h3 style="font-size:18px; font-weight:700; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                                                ${statusBadge}
-                                            </div>
-                                            <p style="font-size:14px; color:#2563eb; margin-bottom:10px; font-weight: 600;">Enrolled Students: <span style="background: #eff6ff; padding: 2px 8px; border-radius: 12px; color: #1e40af;">${studentCount}</span></p>
-                                            <div style="margin-top:auto; display: flex; flex-direction: column; gap: 8px;">
-                                                <button class="btn btn-outline" style="width:100%;" onclick="openCoursePlayer('${c.id}')" ${c.status === "Pending" ? 'disabled title="Awaiting admin approval"' : ""}>View Details</button>
-                                                <button class="btn btn-outline" style="width:100%; border-color:#10b981; color:#059669;" onclick="openEditCourse('${c.id}')">Edit Course</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                 `;
+                <div class="std-course-card">
+                  ${thumbHTML}
+                  <div class="std-course-card-content">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; gap:8px;">
+                      <h3 class="dm-title" style="font-size:17px; font-weight:800; color:#0f172a; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${c.title}</h3>
+                      ${statusBadge}
+                    </div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; padding:8px 12px; background:#f8fafc; border-radius:10px;">
+                      <span style="font-size:12px; font-weight:700; color:#475569;" class="dm-desc">👥 Enrolled Students</span>
+                      <span style="font-size:13px; font-weight:800; color:#2563eb; background:#eff6ff; padding:2px 8px; border-radius:6px;">${studentCount}</span>
+                    </div>
+                    <div style="margin-top:auto; display:flex; flex-direction:column; gap:8px;">
+                      <button class="btn btn-primary" style="width:100%; border-radius:12px; font-weight:700;" onclick="openCoursePlayer('${c.id}')" ${c.status === "Pending" ? 'disabled title="Awaiting admin approval"' : ""}>▶ Manage & View Content</button>
+                      <button class="btn btn-outline" style="width:100%; border-radius:12px; font-weight:700; border-color:#cbd5e1;" onclick="openEditCourse('${c.id}')">✏️ Edit Syllabus / Info</button>
+                    </div>
+                  </div>
+                </div>`;
             })
             .join("");
         } catch (e) {
@@ -6160,26 +6262,26 @@
         updateNotificationBadge();
 
         if (safeRole === "admin") {
-          setTimeout(async () => {
-            await updateAdminStats();
-            await renderAdminCourses();
-            await renderAdminUsers();
-            await renderAdminBanRequests();
-            await renderAdminActivity();
-            await renderAdminComplaints();
-          }, 100);
+          Promise.all([
+            updateAdminStats(),
+            renderAdminCourses(),
+            renderAdminUsers(),
+            renderAdminBanRequests(),
+            renderAdminActivity(),
+            renderAdminComplaints(),
+          ]);
         } else if (safeRole === "instructor") {
-          setTimeout(async () => {
-            await updateInstructorStats();
-            await renderInstructorLiveCourses();
-            await renderInstructorRequests();
-          }, 100);
+          Promise.all([
+            updateInstructorStats(),
+            renderInstructorLiveCourses(),
+            renderInstructorRequests(),
+          ]);
         } else if (safeRole === "student") {
-          setTimeout(async () => {
-            await logStudentActivity();
-            await renderStudentEnrolledCourses();
-            await renderStudentDueAssignments();
-          }, 100);
+          Promise.all([
+            logStudentActivity(),
+            renderStudentEnrolledCourses(),
+            renderStudentDueAssignments(),
+          ]);
         }
       }
 
@@ -6454,6 +6556,7 @@
             body: JSON.stringify({ email: email, status: status }),
           });
           if (res.ok) {
+            invalidateCache();
             alert(
               `The account has been ${status === "Approved" ? "approved" : "suspended"} successfully.`,
             );
@@ -6483,66 +6586,71 @@
         const container = document.getElementById("admin-course-list");
         if (!container) return;
         try {
-          const courses = await safeFetchJSON(`${API_URL}/courses`);
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          const [courses, enrollments] = await Promise.all([
+            safeFetchJSON(`${API_URL}/courses`),
+            safeFetchJSON(`${API_URL}/enrollments`),
+          ]);
 
           if (!Array.isArray(courses)) return;
 
           if (courses.length === 0) {
-            container.innerHTML = `<p style="color:#64748b;">No courses uploaded yet.</p>`;
+            container.innerHTML = `<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: #64748b; background: white; border-radius: 20px; border: 1px dashed #cbd5e1;"><span style="font-size: 36px; display: block; margin-bottom: 10px;">📚</span>No courses uploaded yet.</div>`;
             updateAdminStats();
             return;
           }
-          container.innerHTML = `<p style="color:#64748b; padding:10px;">Loading course analytics...</p>`;
           let htmlStr = "";
           for (let c of courses) {
             const isPending = c.status === "Pending";
             const isUnpublished = c.status === "Unpublished";
             const bgIndex =
               (parseInt(String(c.id).slice(-3)) || 0) % courseGradients.length;
-            let bgStyle = `background: ${courseGradients[bgIndex]}; display:flex; align-items:center; justify-content:center; text-align:center; padding:15px; border-bottom:1px solid #e2e8f0; cursor: pointer;`;
+            const bgStyle = courseGradients[bgIndex];
+            const category = c.category || "General";
             let enrolledCount = Array.isArray(enrollments)
               ? enrollments.filter(
                   (e) => e.course_id == c.id && e.status === "Approved",
                 ).length
               : 0;
 
-            let thumbHTML = c.thumbnail_url
-              ? `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
-                                     <div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border-radius: 12px; padding: 20px;">
-                                         <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4>
-                                     </div></div>`
-              : `<div style="height: 140px; border-radius: 12px; margin-bottom: 15px; ${bgStyle}" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
-                                     <h4 style="color:white; font-size:18px; font-weight:800; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${c.title}</h4></div>`;
+            const thumbHTML = c.thumbnail_url
+              ? `<div class="std-course-img-box" style="height: 140px; border-radius: 14px; margin-bottom: 14px;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
+                   <img src="${c.thumbnail_url}" alt="${c.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                   <div style="display:none; width:100%; height:100%; background:${bgStyle}; align-items:center; justify-content:center;">
+                     <span style="font-size:32px;">🎓</span>
+                   </div>
+                 </div>`
+              : `<div class="std-course-img-box" style="height: 140px; border-radius: 14px; margin-bottom: 14px; background:${bgStyle}; display:flex; align-items:center; justify-content:center; text-align:center; padding:15px;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">
+                   <span style="font-size:36px;">🎓</span>
+                 </div>`;
 
             const safeTitle = encodeURIComponent(c.title);
 
             let actionHTML = isPending
-              ? `<div class="action-container" style="display:flex; gap:12px; margin-top: 15px; flex-wrap:wrap;">
-                          <button class="btn btn-success" onclick="updateCourseStatusAPI('${c.id}', 'Approved', '${c.instructor_email || ""}', '${safeTitle}')" style="flex: 1; border-radius: 8px;">Approve</button>
-                          <button class="btn btn-primary" onclick="updateCourseStatusAPI('${c.id}', 'Rejected', '${c.instructor_email || ""}', '${safeTitle}')" style="flex: 1; background: #e11d48; border-radius: 8px;">Reject</button>
-                         </div>`
+              ? `<div class="action-container" style="display:flex; gap:10px; margin-top: 15px; flex-wrap:wrap;">
+                  <button class="btn btn-success" onclick="updateCourseStatusAPI('${c.id}', 'Approved', '${c.instructor_email || ""}', '${safeTitle}')" style="flex: 1; border-radius: 10px; font-weight:700;">✓ Approve</button>
+                  <button class="btn btn-primary" onclick="updateCourseStatusAPI('${c.id}', 'Rejected', '${c.instructor_email || ""}', '${safeTitle}')" style="flex: 1; background: #e11d48; border-radius: 10px; font-weight:700;">✕ Reject</button>
+                 </div>`
               : c.status === "Approved"
                 ? `<div style="display:flex; flex-direction:column; gap:8px; margin-top:15px;">
-                          <button class="btn btn-outline" style="width:100%; border-color:#ddd6fe; color:#4c1d95;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">View Analytics & Complaints</button>
-                          <button class="btn btn-outline" style="width:100%; border-color:#fca5a5; color:#e11d48; background:#fff5f5;" onclick="updateCourseStatusAPI('${c.id}', 'Unpublished', '${c.instructor_email || ""}', '${safeTitle}')">Unpublish Course</button>
-                         </div>`
+                  <button class="btn btn-outline" style="width:100%; border-color:#ddd6fe; color:#4c1d95; border-radius:10px; font-weight:700;" onclick="openCoursePlayer('${c.id}'); setTimeout(()=>switchCpTab('feedback'), 100);">👁 View Analytics & Feedback</button>
+                  <button class="btn btn-outline" style="width:100%; border-color:#fca5a5; color:#e11d48; background:#fff5f5; border-radius:10px; font-weight:700;" onclick="updateCourseStatusAPI('${c.id}', 'Unpublished', '${c.instructor_email || ""}', '${safeTitle}')">⛔ Unpublish Course</button>
+                 </div>`
                 : `<div style="display:flex; flex-direction:column; gap:8px; margin-top:15px;">
-                          <span style="background:#fee2e2; color:#b91c1c; padding:6px 12px; border-radius:8px; font-size:12px; font-weight:700; text-align:center;">⛔ Unpublished by Admin</span>
-                          <button class="btn btn-success" style="width:100%;" onclick="updateCourseStatusAPI('${c.id}', 'Approved', '${c.instructor_email || ""}', '${safeTitle}')">Re-publish</button>
-                         </div>`;
+                  <span style="background:#fee2e2; color:#b91c1c; padding:6px 12px; border-radius:10px; font-size:12px; font-weight:700; text-align:center;">⛔ Unpublished by Admin</span>
+                  <button class="btn btn-success" style="width:100%; border-radius:10px; font-weight:700;" onclick="updateCourseStatusAPI('${c.id}', 'Approved', '${c.instructor_email || ""}', '${safeTitle}')">Re-publish</button>
+                 </div>`;
 
             htmlStr += `
-                          <div class="admin-course-card ${isPending ? "border-pen" : isUnpublished ? "border-ban" : "border-pub"}">
-                                    ${thumbHTML}
-                                    <div class="acc-tags">
-                                        <span class="acc-tag ${isPending ? "tag-pen" : "tag-pub"}">${isPending ? "Pending" : "Published"}</span>
-                                        <span class="acc-tag" style="background:#eff6ff; color:#1e40af; border-color:#bfdbfe;">Enrolled: ${enrolledCount}</span>
-                                    </div>
-                                    <h3 style="font-size:18px; font-weight:700; color:#312e81; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                                    <p style="font-size:14px; color:#7c3aed; font-weight:500; margin-bottom:10px;" class="dm-desc">by ${c.instructor_name}</p>
-                                    <div style="margin-top:auto;">${actionHTML}</div>
-                                </div>`;
+              <div class="admin-course-card ${isPending ? "border-pen" : isUnpublished ? "border-ban" : "border-pub"}" style="background:white; border-radius:18px; padding:20px; box-shadow:0 8px 24px -6px rgba(15,23,42,0.06); display:flex; flex-direction:column;">
+                ${thumbHTML}
+                <div class="acc-tags" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                  <span class="acc-tag ${isPending ? "tag-pen" : "tag-pub"}" style="border-radius:50px; font-weight:800; padding:3px 10px;">${isPending ? "Pending" : "Published"}</span>
+                  <span class="acc-tag" style="background:#eff6ff; color:#1e40af; border-color:#bfdbfe; border-radius:50px; font-weight:700; padding:3px 10px;">👥 ${enrolledCount} Enrolled</span>
+                </div>
+                <h3 style="font-size:17px; font-weight:800; color:#1e1b4b; margin-bottom:4px; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" class="dm-title">${c.title}</h3>
+                <p style="font-size:13px; color:#6366f1; font-weight:600; margin-bottom:12px;" class="dm-desc">Instructor: ${c.instructor_name}</p>
+                <div style="margin-top:auto;">${actionHTML}</div>
+              </div>`;
           }
           container.innerHTML = htmlStr;
           updateAdminStats();
@@ -6564,6 +6672,7 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id, status }),
           });
+          invalidateCache();
           await renderAdminCourses();
           if (status === "Approved") {
             await addNotification(
@@ -6604,20 +6713,24 @@
             container.innerHTML = "";
             return;
           }
-          let htmlStr = `<h3 style="color:#e11d48; margin-bottom:15px; font-weight:800; font-size:20px;">⚠️ Pending Ban Requests</h3><div style="display:flex; flex-direction:column; gap:15px; margin-bottom:30px;">`;
+          let htmlStr = `<div style="margin-bottom:24px; padding:18px 22px; background:#fff1f2; border:1px solid #fecaca; border-radius:18px; display:flex; align-items:center; gap:12px;"><span style="font-size:24px;">⚠️</span><div><h3 style="color:#e11d48; margin:0; font-weight:800; font-size:17px;">Pending Ban Requests</h3><p style="margin:0; font-size:13px; color:#9f1239;">Instructors have flagged the following students for policy violations.</p></div></div><div style="display:flex; flex-direction:column; gap:14px; margin-bottom:30px;">`;
           banReqs.forEach((req) => {
             htmlStr += `
-                                <div style="background:#fff1f2; border:1px solid #fecaca; padding:20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
-                                   <div style="width: 100%;">
-                                      <div style="font-weight:700; color:#be123c; font-size:16px; word-break: break-word;">Ban Request for: ${req.student_name} <span style="font-size:13px; font-weight:500;">(${req.student_email})</span></div>
-                                      <div style="font-size:13px; color:#881337; margin-top:5px; font-weight:600; word-break: break-word;">Requested by: Instructor ${req.inst_name} | Course: ${req.course_title}</div>
-                                      ${req.reason ? `<div style="margin-top:8px;background:#fff1f2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;font-size:13px;color:#881337;"><b>Reason:</b> ${req.reason}</div>` : ""}
-                                   </div>
-                                   <div style="display:flex; gap:10px; width: 100%;">
-                                      <button class="btn btn-primary" style="background:#e11d48; flex:1;" onclick="processBanRequest(${req.id}, 'Approved', '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}', '${req.course_id}')">Approve & Remove</button>
-                                      <button class="btn btn-outline" style="border-color:#fca5a5; color:#be123c; background:white; flex:1;" onclick="processBanRequest(${req.id}, 'Rejected', '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}', '${req.course_id}')">Reject</button>
-                                   </div>
-                                </div>`;
+              <div style="background:white; border:1px solid #fecaca; padding:22px; border-radius:18px; box-shadow:0 8px 24px -6px rgba(225,29,72,0.08); display:flex; flex-direction:column; gap:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+                  <div>
+                    <div style="font-weight:800; color:#0f172a; font-size:16px;">${req.student_name} <span style="font-size:13px; font-weight:500; color:#64748b;">(${req.student_email})</span></div>
+                    <div style="font-size:13px; color:#e11d48; margin-top:4px; font-weight:700;">Flagged in Course: ${req.course_title}</div>
+                    <div style="font-size:12px; color:#64748b; margin-top:2px;">Requested by: Instructor ${req.inst_name}</div>
+                  </div>
+                  <span style="background:#fff1f2; color:#e11d48; font-size:11px; font-weight:800; padding:4px 10px; border-radius:50px; border:1px solid #fecaca;">Action Required</span>
+                </div>
+                ${req.reason ? `<div style="background:#fff1f2; border-left:4px solid #e11d48; border-radius:8px; padding:12px 14px; font-size:13px; color:#881337; line-height:1.45;"><b>Instructor's Note:</b> "${req.reason}"</div>` : ""}
+                <div style="display:flex; gap:10px; margin-top:4px;">
+                  <button class="btn btn-primary" style="background:#e11d48; flex:1; border-radius:10px; font-weight:700;" onclick="processBanRequest(${req.id}, 'Approved', '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}', '${req.course_id}')">✓ Approve Ban & Remove</button>
+                  <button class="btn btn-outline" style="border-color:#fca5a5; color:#be123c; background:white; flex:1; border-radius:10px; font-weight:700;" onclick="processBanRequest(${req.id}, 'Rejected', '${req.student_email}', '${req.inst_email}', '${req.student_name.replace(/'/g, "\\'")}', '${req.course_id}')">✕ Dismiss Request</button>
+                </div>
+              </div>`;
           });
           htmlStr += `</div><hr style="border:0; border-top:1px solid #e2e8f0; margin-bottom:30px;">`;
           container.innerHTML = htmlStr;
@@ -6656,6 +6769,7 @@
             const data = await res.json();
             return alert(data.error || "Failed to process ban request.");
           }
+          invalidateCache();
           alert(
             `The ban request has been ${actionStatus === "Approved" ? "approved" : "rejected"}.`,
           );
@@ -6671,14 +6785,16 @@
         );
         if (!container) return;
         try {
-          const courses = await safeFetchJSON(`${API_URL}/courses`);
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          const [courses, enrollments] = await Promise.all([
+            safeFetchJSON(`${API_URL}/courses`),
+            safeFetchJSON(`${API_URL}/enrollments`),
+          ]);
 
           if (!Array.isArray(courses)) return;
 
           let approvedCourses = courses.filter((c) => c.status === "Approved");
           if (approvedCourses.length === 0) {
-            container.innerHTML = `<p style="color:#64748b;">No available courses at the moment.</p>`;
+            container.innerHTML = `<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: #64748b; background: white; border-radius: 20px; border: 1px dashed #cbd5e1;"><span style="font-size: 36px; display: block; margin-bottom: 10px;">📚</span>No available courses at the moment.</div>`;
             return;
           }
           container.innerHTML = approvedCourses
@@ -6686,10 +6802,29 @@
               const bgIndex =
                 (parseInt(String(c.id).slice(-3)) || 0) %
                 courseGradients.length;
-              let bgStyle = `background: ${courseGradients[bgIndex]}; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; border-bottom:1px solid #e2e8f0; cursor: pointer;`;
-              let thumbHTML = c.thumbnail_url
-                ? `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"><div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div></div>`
-                : `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle}" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div>`;
+              const bgStyle = courseGradients[bgIndex];
+              const category = c.category || "General";
+              const difficulty = c.difficulty || "All Levels";
+              const lessonsCount = c.total_lessons || 4;
+
+              const thumbHTML = c.thumbnail_url
+                ? `<div class="std-course-img-box" onclick="openCoursePlayer('${c.id}')">
+                     <img src="${c.thumbnail_url}" alt="${c.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                     <div style="display:none; width:100%; height:100%; background:${bgStyle}; align-items:center; justify-content:center;">
+                       <span style="font-size:36px;">🎓</span>
+                     </div>
+                     <div style="position:absolute; top:12px; left:12px; display:flex; gap:6px; z-index:2;">
+                       <span style="background:rgba(15,23,42,0.8); backdrop-filter:blur(8px); color:white; font-size:11px; font-weight:700; padding:4px 10px; border-radius:50px; border:1px solid rgba(255,255,255,0.2);">${category}</span>
+                       <span style="background:rgba(37,99,235,0.85); backdrop-filter:blur(8px); color:white; font-size:11px; font-weight:700; padding:4px 10px; border-radius:50px;">${difficulty}</span>
+                     </div>
+                   </div>`
+                : `<div class="std-course-img-box" style="background:${bgStyle}; display:flex; align-items:center; justify-content:center; text-align:center; padding:20px;" onclick="openCoursePlayer('${c.id}')">
+                     <span style="font-size:42px;">🎓</span>
+                     <div style="position:absolute; top:12px; left:12px; display:flex; gap:6px;">
+                       <span style="background:rgba(15,23,42,0.8); backdrop-filter:blur(8px); color:white; font-size:11px; font-weight:700; padding:4px 10px; border-radius:50px; border:1px solid rgba(255,255,255,0.2);">${category}</span>
+                       <span style="background:rgba(37,99,235,0.85); backdrop-filter:blur(8px); color:white; font-size:11px; font-weight:700; padding:4px 10px; border-radius:50px;">${difficulty}</span>
+                     </div>
+                   </div>`;
 
               let myEnrollment = Array.isArray(enrollments)
                 ? enrollments.find(
@@ -6702,22 +6837,29 @@
               const safeTitle = encodeURIComponent(c.title);
 
               if (!myEnrollment)
-                btnHTML = `<button class="btn btn-primary" style="width:100%; margin-top:15px;" onclick="requestEnrollment('${c.id}', '${c.instructor_email || ""}', '${safeTitle}')">Send Join Request</button>`;
+                btnHTML = `<button class="btn btn-primary" style="width:100%; border-radius:12px; font-weight:700; box-shadow:0 4px 14px -3px rgba(37,99,235,0.4);" onclick="requestEnrollment('${c.id}', '${c.instructor_email || ""}', '${safeTitle}')">✨ Request to Join</button>`;
               else if (myEnrollment.status === "Pending")
-                btnHTML = `<button class="btn btn-outline" style="width:100%; margin-top:15px; color:#d97706; border-color:#fde68a; background:#fef3c7;" disabled>Requested (Pending)</button>`;
+                btnHTML = `<button class="btn" style="width:100%; border-radius:12px; font-weight:700; color:#d97706; border:1px solid #fde68a; background:#fef3c7;" disabled>⏳ Requested (Pending Approval)</button>`;
               else
-                btnHTML = `<button class="btn btn-outline" style="width:100%; margin-top:15px; color:#059669; border-color:#a7f3d0; background:#ecfdf5;" disabled>Already Enrolled</button>`;
-              btnHTML += `<button class="btn btn-outline" style="width:100%; margin-top:10px;" onclick="openCoursePlayer('${c.id}')">View Details</button>`;
+                btnHTML = `<button class="btn btn-success" style="width:100%; border-radius:12px; font-weight:700;" onclick="openCoursePlayer('${c.id}')">✓ Enrolled · Start Course</button>`;
+              btnHTML += `<button class="btn btn-outline" style="width:100%; border-radius:12px; font-size:13px; font-weight:600;" onclick="openCoursePlayer('${c.id}')">View Details & Player</button>`;
 
               return `
-                                      <div class="std-course-card">
-                                          ${thumbHTML}
-                                          <div class="std-course-card-content">
-                                              <h3 style="font-size:18px; font-weight:700; color:#0f172a; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-                                              <p style="font-size:14px; color:#64748b; margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p>
-                                              <div style="margin-top:auto;">${btnHTML}</div>
-                                          </div>
-                                      </div>`;
+                <div class="std-course-card">
+                  ${thumbHTML}
+                  <div class="std-course-card-content">
+                    <h3 class="dm-title" style="font-size:17px; font-weight:800; color:#0f172a; margin-bottom:6px; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${c.title}</h3>
+                    <p class="dm-desc" style="font-size:13px; color:#64748b; margin-bottom:14px; line-height:1.45; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${c.description || "Master core concepts and advance your skills with this course."}</p>
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; padding-top:10px; border-top:1px solid #f1f5f9;">
+                      <div style="display:flex; align-items:center; gap:8px;">
+                        <div style="width:26px; height:26px; border-radius:50%; background:#eff6ff; color:#2563eb; font-weight:700; font-size:11px; display:flex; align-items:center; justify-content:center;">${(c.instructor_name || "I")[0]}</div>
+                        <span style="font-size:12px; font-weight:600; color:#475569;" class="dm-desc">${c.instructor_name}</span>
+                      </div>
+                      <span style="font-size:12px; color:#64748b; font-weight:600;" class="dm-desc">📖 ${lessonsCount} Lessons</span>
+                    </div>
+                    <div style="margin-top:auto; display:flex; flex-direction:column; gap:8px;">${btnHTML}</div>
+                  </div>
+                </div>`;
             })
             .join("");
         } catch (e) {
@@ -6754,6 +6896,7 @@
             alert("Something went wrong. Please try again.");
             return;
           }
+          invalidateCache();
           if (instructorEmail)
             await addNotification(
               instructorEmail,
@@ -6777,8 +6920,10 @@
         );
         if (!container) return;
         try {
-          const courses = await safeFetchJSON(`${API_URL}/courses`);
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          const [courses, enrollments] = await Promise.all([
+            safeFetchJSON(`${API_URL}/courses`),
+            safeFetchJSON(`${API_URL}/enrollments`),
+          ]);
 
           if (!Array.isArray(courses) || !Array.isArray(enrollments)) return;
 
@@ -6794,7 +6939,7 @@
           if (stCountEl) stCountEl.innerText = myEnrolledCourses.length;
 
           if (myEnrolledCourses.length === 0) {
-            container.innerHTML = `<p style="color:#64748b; width:100%;">You are not enrolled in any courses yet.</p>`;
+            container.innerHTML = `<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: #64748b; background: white; border-radius: 20px; border: 1px dashed #cbd5e1;"><span style="font-size: 36px; display: block; margin-bottom: 10px;">🎓</span>You are not enrolled in any courses yet. <div style="margin-top: 14px;"><button class="btn btn-primary" onclick="handleNav('Browse Courses', document.querySelector('.nav-item-browse'))">Browse Courses</button></div></div>`;
             return;
           }
           const courseCardsHtml = await Promise.all(
@@ -6802,20 +6947,18 @@
               const bgIndex =
                 (parseInt(String(c.id).slice(-3)) || 0) %
                 courseGradients.length;
-              let bgStyle = `background: ${courseGradients[bgIndex]}; border-bottom:1px solid #e2e8f0; cursor:pointer;`;
-              let thumbHTML = c.thumbnail_url
-                ? `<div style="height: 160px; border-radius: 24px 24px 0 0; background-image: url('${c.thumbnail_url}'); background-size: cover; background-position: center; cursor: pointer;" onclick="openCoursePlayer('${c.id}')"><div style="background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div></div>`
-                : `<div style="height: 160px; border-radius: 24px 24px 0 0; ${bgStyle} display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;" onclick="openCoursePlayer('${c.id}')"><h4 style="color:white; font-size:22px; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5); margin:0;">${c.title}</h4></div>`;
-
+              const bgStyle = courseGradients[bgIndex];
+              const category = c.category || "General";
               const isUnpublished = c.status === "Unpublished";
 
               let progressPercent = 0;
+              let completedCount = 0;
+              const totalLessons = c.total_lessons || 4;
               try {
                 const progress = await safeFetchJSON(
                   `${API_URL}/module-progress/${c.id}/${currentUser.email}`,
                 );
-                const totalLessons = c.total_lessons || 4;
-                const completedCount = Array.isArray(progress)
+                completedCount = Array.isArray(progress)
                   ? progress.length
                   : 0;
                 progressPercent =
@@ -6826,36 +6969,56 @@
                 progressPercent = 0;
               }
 
+              const thumbHTML = c.thumbnail_url
+                ? `<div class="std-course-img-box" onclick="openCoursePlayer('${c.id}')">
+                     <img src="${c.thumbnail_url}" alt="${c.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                     <div style="display:none; width:100%; height:100%; background:${bgStyle}; align-items:center; justify-content:center;">
+                       <span style="font-size:36px;">🎓</span>
+                     </div>
+                     <div style="position:absolute; top:12px; left:12px; display:flex; gap:6px; z-index:2;">
+                       <span style="background:rgba(15,23,42,0.8); backdrop-filter:blur(8px); color:white; font-size:11px; font-weight:700; padding:4px 10px; border-radius:50px; border:1px solid rgba(255,255,255,0.2);">${category}</span>
+                     </div>
+                   </div>`
+                : `<div class="std-course-img-box" style="background:${bgStyle}; display:flex; align-items:center; justify-content:center; text-align:center; padding:20px;" onclick="openCoursePlayer('${c.id}')">
+                     <span style="font-size:42px;">🎓</span>
+                     <div style="position:absolute; top:12px; left:12px; display:flex; gap:6px;">
+                       <span style="background:rgba(15,23,42,0.8); backdrop-filter:blur(8px); color:white; font-size:11px; font-weight:700; padding:4px 10px; border-radius:50px; border:1px solid rgba(255,255,255,0.2);">${category}</span>
+                     </div>
+                   </div>`;
+
               return `
-      <div class="std-course-card" style="${isUnpublished ? "opacity:0.75;" : ""}">
-        ${thumbHTML}
-        ${
-          isUnpublished
-            ? `
-          <div style="background:#fef2f2; border-top: 2px solid #fca5a5; padding: 10px 16px; display:flex; align-items:center; gap:8px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-            <span style="font-size:12px; font-weight:700; color:#ef4444;">⛔ Unpublished by Admin</span>
-          </div>`
-            : ""
-        }
-        <div class="std-course-card-content">
-          <h3 style="font-size:18px; font-weight:700; color:#0f172a; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" class="dm-title">${c.title}</h3>
-          <p style="font-size:14px; color:#64748b; margin-bottom:10px;" class="dm-desc">By ${c.instructor_name}</p>
-          ${
-            isUnpublished
-              ? `
-            <div style="background:#fef2f2; border:1px solid #fca5a5; border-radius:10px; padding:12px; margin-top:auto; font-size:13px; color:#b91c1c; font-weight:600; text-align:center;">
-              This course is currently unavailable.
-            </div>`
-              : `
-            <div class="progress-bar-bg" style="margin-top: auto;"><div class="progress-bar-fill" style="width:${progressPercent}%;"></div></div>
-            <div style="display:flex; justify-content:space-between; color:#64748b; font-size:13px; font-weight:500;">
-              <span class="dm-desc">${progressPercent}% Complete</span>
-              <button class="btn btn-outline" style="padding: 4px 12px; font-size: 12px;" onclick="openCoursePlayer('${c.id}')">Continue</button>
-            </div>`
-          }
-        </div>
-      </div>`;
+                <div class="std-course-card" style="${isUnpublished ? "opacity:0.75;" : ""}">
+                  ${thumbHTML}
+                  ${
+                    isUnpublished
+                      ? `
+                    <div style="background:#fef2f2; border-top: 2px solid #fca5a5; padding: 10px 16px; display:flex; align-items:center; gap:8px;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                      <span style="font-size:12px; font-weight:700; color:#ef4444;">⛔ Unpublished by Admin</span>
+                    </div>`
+                      : ""
+                  }
+                  <div class="std-course-card-content">
+                    <h3 class="dm-title" style="font-size:17px; font-weight:800; color:#0f172a; margin-bottom:6px; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${c.title}</h3>
+                    <p class="dm-desc" style="font-size:13px; color:#64748b; margin-bottom:14px;">By ${c.instructor_name}</p>
+                    ${
+                      isUnpublished
+                        ? `
+                      <div style="background:#fef2f2; border:1px solid #fca5a5; border-radius:10px; padding:12px; margin-top:auto; font-size:13px; color:#b91c1c; font-weight:600; text-align:center;">
+                        This course is currently unavailable.
+                      </div>`
+                        : `
+                      <div style="margin-top:auto;">
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${progressPercent}%;"></div></div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; color:#64748b; font-size:12px; font-weight:600; margin-bottom:14px;">
+                          <span class="dm-desc">${progressPercent}% Completed</span>
+                          <span class="dm-desc">${completedCount}/${totalLessons} Modules</span>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%; border-radius: 12px; font-weight: 700; box-shadow:0 4px 14px -3px rgba(37,99,235,0.4);" onclick="openCoursePlayer('${c.id}')">▶ Resume Learning</button>
+                      </div>`
+                    }
+                  </div>
+                </div>`;
             }),
           );
 
@@ -7113,7 +7276,10 @@
         if (!container) return;
         container.innerHTML = `<div style="padding:20px; color:#64748b;">Loading assignments...</div>`;
         try {
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          const [enrollments, allCourses] = await Promise.all([
+            safeFetchJSON(`${API_URL}/enrollments`),
+            safeFetchJSON(`${API_URL}/courses`),
+          ]);
           if (!Array.isArray(enrollments)) return;
 
           const myEnrollments = enrollments.filter(
@@ -7121,7 +7287,6 @@
               e.student_email === currentUser.email && e.status === "Approved",
           );
 
-          const allCourses = await safeFetchJSON(`${API_URL}/courses`);
           const unpublishedIds = Array.isArray(allCourses)
             ? allCourses
                 .filter((c) => c.status === "Unpublished")
@@ -7165,22 +7330,24 @@
           let allPendingAssignments = results.flat();
 
           if (allPendingAssignments.length === 0) {
-            container.innerHTML = `<p style="color:#10b981; width:100%; padding:20px; background:#ecfdf5; border-radius:12px; border:1px solid #a7f3d0; text-align:center; font-weight:600;">🎉 Great job! You have no pending assignments.</p>`;
+            container.innerHTML = `<div style="grid-column: 1/-1; color:#10b981; width:100%; padding:24px; background:#ecfdf5; border-radius:16px; border:1px solid #a7f3d0; text-align:center; font-weight:700;"><span style="font-size: 28px; display:block; margin-bottom: 6px;">🎉</span>All Caught Up! You have no pending assignments.</div>`;
             return;
           }
 
           container.innerHTML = allPendingAssignments
             .map(
               (a) => `
-                                  <div class="due-assign-card" style="background:white; border-radius:16px; border:1px solid #fecaca; padding:20px; display:flex; flex-direction:column; gap:10px; border-left:4px solid #ef4444; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); width: 100%;">
-                                      <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
-                                          <h4 class="dm-title" style="font-size:16px; font-weight:700; color:#0f172a; margin:0;">${a.title}</h4>
-                                          <span style="background:#fef2f2; color:#ef4444; font-size:11px; font-weight:700; padding:4px 10px; border-radius:50px; border:1px solid #fca5a5;">Due: ${a.due_date}</span>
-                                      </div>
-                                      <p class="dm-desc" style="font-size:13px; color:#64748b; font-weight:600;">📚 ${a.course_title}</p>
-                                      <p class="dm-desc" style="font-size:13px; color:#475569; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${a.description}</p>
-                                      <button class="btn btn-outline" style="margin-top:auto; padding:6px 12px; font-size:13px; border-color:#cbd5e1; font-weight:700;" onclick="openCoursePlayer('${a.course_id}'); setTimeout(()=>switchCpTab('assignments'), 500);">Go to Assignment</button>
-                                  </div>`,
+                <div class="due-assign-card" style="background:white; border-radius:18px; border:1px solid #fed7aa; padding:22px; display:flex; flex-direction:column; gap:12px; border-left:5px solid #f97316; box-shadow:0 8px 20px -6px rgba(249,115,22,0.12); width:100%;">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+                    <h4 class="dm-title" style="font-size:16px; font-weight:800; color:#0f172a; margin:0; line-height:1.35;">${a.title}</h4>
+                    <span style="background:#fff7ed; color:#ea580c; font-size:11px; font-weight:800; padding:4px 10px; border-radius:50px; border:1px solid #fdba74; display:flex; align-items:center; gap:4px;">⏰ Due: ${a.due_date}</span>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="font-size:12px; font-weight:700; color:#2563eb; background:#eff6ff; padding:3px 8px; border-radius:6px;">📚 ${a.course_title}</span>
+                  </div>
+                  <p class="dm-desc" style="font-size:13px; color:#475569; line-height:1.45; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${a.description || "Submit your completed assignment solutions before the deadline."}</p>
+                  <button class="btn btn-primary" style="margin-top:auto; padding:10px 16px; font-size:13px; font-weight:700; border-radius:12px; box-shadow:0 4px 12px -2px rgba(37,99,235,0.35);" onclick="openCoursePlayer('${a.course_id}'); setTimeout(()=>switchCpTab('assignments'), 500);">📝 Open & Submit Assignment</button>
+                </div>`,
             )
             .join("");
         } catch (e) {
@@ -7618,8 +7785,10 @@
       async function openCoursePlayer(courseId) {
         try {
           if (!currentUser) return alert("Please log in first.");
-          const courses = await safeFetchJSON(`${API_URL}/courses`);
-          const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
+          const [courses, enrollments] = await Promise.all([
+            safeFetchJSON(`${API_URL}/courses`),
+            safeFetchJSON(`${API_URL}/enrollments`),
+          ]);
 
           if (!Array.isArray(courses)) return;
 
@@ -8325,16 +8494,14 @@
         if (!container) return;
         container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading assignments...</div>`;
         try {
-          const assignments = await safeFetchJSON(
-            `${API_URL}/assignments/${courseId}`,
-          );
+          const [assignments, submissions] = await Promise.all([
+            safeFetchJSON(`${API_URL}/assignments/${courseId}`),
+            safeFetchJSON(`${API_URL}/assignment-submissions/${courseId}`),
+          ]);
           if (!Array.isArray(assignments) || assignments.length === 0) {
             container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b; background:#f8fafc; border-radius:12px;" class="assignment-card">No assignments found for this course.</div>`;
             return;
           }
-          const submissions = await safeFetchJSON(
-            `${API_URL}/assignment-submissions/${courseId}`,
-          );
           let htmlStr = "";
           assignments.forEach((a) => {
             let studentActionHtml = "";
