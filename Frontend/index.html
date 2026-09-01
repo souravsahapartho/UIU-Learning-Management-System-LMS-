@@ -2050,416 +2050,298 @@
         color: #ef4444;
       }
 
-      @media (max-width: 1200px) {
-        .dashboard-content {
-          padding: 30px;
-        }
+      /* =========================================================
+         MODERN DESIGN SYSTEM & GLOBAL UTILITIES
+         ========================================================= */
+      :root {
+        --primary-gradient: linear-gradient(135deg, #2563eb, #1d4ed8);
+        --primary-glow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+        --card-radius: 20px;
+        --card-shadow:
+          0 10px 25px -5px rgba(0, 0, 0, 0.04),
+          0 8px 10px -6px rgba(0, 0, 0, 0.03);
+        --card-shadow-hover:
+          0 20px 35px -10px rgba(0, 0, 0, 0.09),
+          0 10px 15px -5px rgba(0, 0, 0, 0.04);
+        --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       }
-      @media (max-width: 992px) {
-        .stats-grid,
-        .prog-stats-grid {
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        }
-        .user-grid,
-        .admin-course-grid {
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        }
-        .cp-layout {
-          grid-template-columns: 1fr;
-          gap: 20px;
-        }
-      }
-      @media (max-width: 768px) {
-        .cp-video-box svg {
-          width: 48px;
-          height: 48px;
-        }
-        .cp-lesson-info {
-          padding: 16px;
-        }
-        .cp-lesson-info h2 {
-          font-size: 20px;
-        }
-        .lesson-item {
-          padding: 12px 16px;
-        }
-        .lesson-item > div:last-child > div:first-child {
-          font-size: 14px;
-        }
-        #cp-feedback-area-container,
-        #cp-assignments-area-container,
-        #cp-students-area-container {
-          padding: 0;
-        }
-        .due-assign-card {
-          padding: 16px;
-        }
-        .assignment-card {
-          padding: 14px !important;
-        }
-        .fb-item-card {
-          padding: 12px !important;
-        }
-        #assign-title,
-        #assign-desc,
-        #assign-due,
-        .submission-box {
-          font-size: 14px;
-        }
-        #cp-feedback-rating,
-        #cp-feedback-input,
-        #cp-complaint-input {
-          font-size: 14px;
-        }
-        .navbar {
-          padding: 12px 20px;
-        }
-        .profile-info {
-          display: none;
-        }
-        .profile-badge {
-          padding: 6px;
-        }
-        .right-nav-container {
-          gap: 10px;
-        }
-        .logo {
-          font-size: 20px;
-        }
-        .hero-section {
-          flex-direction: column;
-          text-align: center;
-          padding: 40px 20px;
-        }
-        .hero-content h1 {
-          font-size: 32px;
-          margin-bottom: 15px;
-        }
-        .hero-content p {
-          font-size: 15px;
-          margin-bottom: 25px;
-          margin-left: auto;
-          margin-right: auto;
-        }
-        .hero-buttons {
-          justify-content: center;
-          width: 100%;
-          flex-direction: column;
-        }
-        .hero-buttons .btn {
-          width: 100%;
-          justify-content: center;
-        }
-        .hero-image-box {
-          height: auto;
-          padding: 20px 0;
-        }
-        .hero-image-box h2 {
-          font-size: 24px;
-        }
-        .auth-box {
-          padding: 30px 20px;
-          width: 100%;
-        }
-        .dashboard-content {
-          padding: 15px;
-        }
-        .welcome-banner,
-        .admin-hero,
-        .upload-course-hero {
-          padding: 24px 20px;
-          flex-direction: column;
-          text-align: center;
-        }
-        .welcome-banner h1,
-        .admin-hero h1,
-        .upload-hero-text h1 {
-          font-size: 22px;
-        }
-        .admin-hero-content {
-          flex-direction: column;
-        }
-        .stats-grid,
-        .user-grid,
-        .admin-course-grid,
-        .quick-action-grid,
-        .admin-action-grid {
-          grid-template-columns: 1fr;
-        }
-        .prog-stats-grid {
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
-        }
-        .admin-header {
-          flex-direction: column;
-          align-items: flex-start;
-          text-align: left;
-        }
-        .settings-card {
-          padding: 20px 15px;
-        }
-        .settings-card .form-group {
-          min-width: 100%;
-          flex: none;
-          width: 100%;
-        }
-        .profile-pic-section {
-          flex-direction: column;
-          text-align: center;
-        }
-        .submission-item {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-        .user-card .action-container {
-          flex-direction: column;
-        }
-        .btn-approve-full,
-        .btn-reject-full {
-          width: 100%;
-        }
-        .cp-meta {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 8px;
-        }
-        .aac-top,
-        .aac-bottom,
-        .admin-activity-section {
-          padding: 20px;
-        }
-        .upload-hero-icon {
-          display: none;
-        }
-        .cp-lesson-info .btn {
-          width: 100%;
-          justify-content: center;
-          margin-bottom: 10px;
-        }
-        .nav-item {
-          padding: 12px 16px;
-          font-size: 14px;
-        }
-        .due-assign-card {
-          text-align: center;
-          align-items: center;
-        }
-        .due-assign-card > div {
-          flex-direction: column;
-          align-items: center;
-          gap: 10px;
-          width: 100%;
-        }
-        .cp-header-area h1 {
-          font-size: 24px;
-        }
 
-        .g-chat-sidebar {
-          width: 100%;
-          height: 100%;
-          position: absolute;
-          top: 0;
-          left: 0;
-          z-index: 2;
-          transition: transform 0.25s ease;
-        }
-        .g-chat-main {
-          width: 100%;
-          height: 100%;
-          position: absolute;
-          top: 0;
-          left: 0;
-          z-index: 1;
-          transform: translateX(100%);
-          transition: transform 0.25s ease;
-        }
-        .global-chat-container.chat-open .g-chat-sidebar {
-          transform: translateX(-100%);
-        }
-        .global-chat-container.chat-open .g-chat-main {
-          transform: translateX(0);
-        }
-        .g-chat-back-btn {
-          display: flex;
-        }
-        .g-chat-messages {
-          padding: 12px;
-        }
-        .chat-msg {
-          max-width: 90%;
-          font-size: 14px;
-          padding: 10px 14px;
-        }
-        .g-chat-input-area {
-          padding: 12px;
-          gap: 8px;
-        }
-        .g-chat-input-area input[type="text"] {
-          padding: 10px 16px;
-          font-size: 13px;
-          min-width: 0;
-        }
-        .g-chat-input-area .btn {
-          padding: 10px 14px;
-          font-size: 13px;
-          flex-shrink: 0;
-        }
-        #g-chat-target {
-          font-size: 12px;
-          padding: 8px 10px;
-        }
-        .g-chat-list-container .g-chat-item {
-          padding: 14px 16px;
-        }
-        .g-chat-main-header {
-          padding: 12px 15px;
-          padding-right: 55px;
-          font-size: 14px;
-          gap: 8px;
-        }
-        .g-chat-main-header div:last-child {
-          font-size: 14px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          flex: 1;
-        }
-        .close-chat-btn-top {
-          top: 12px;
-          right: 12px;
-        }
-        .g-chat-sidebar {
-          width: 100%;
-          height: 100%;
-        }
-        .g-chat-main {
-          height: 100%;
-        }
-        .close-chat-btn-top {
-          top: 10px;
-          right: 10px;
-        }
+      ::-webkit-scrollbar {
+        width: 7px;
+        height: 7px;
       }
-      @media (max-width: 480px) {
-        .cp-header-area h1 {
-          font-size: 22px;
-        }
-        .cp-header-area p {
-          font-size: 13px;
-        }
-        .cp-tabs {
-          gap: 6px;
-          padding: 4px;
-        }
-        .cp-tab {
-          padding: 6px 12px;
-          font-size: 12px;
-        }
-        .cp-tab svg {
-          width: 14px;
-          height: 14px;
-        }
-        .lesson-list-box > div:first-child {
-          font-size: 15px;
-          padding: 15px 18px;
-        }
-        .lesson-circle {
-          width: 20px;
-          height: 20px;
-        }
-        .assignment-card > div:first-child {
-          flex-direction: column;
-          align-items: flex-start !important;
-        }
-        .due-assign-card {
-          border-left-width: 3px;
-        }
-        .due-assign-card h4 {
-          font-size: 15px;
-        }
-        .prog-stats-grid {
-          grid-template-columns: 1fr;
-        }
-        .logo {
-          font-size: 18px;
-        }
-        .user-card-header {
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-        }
-        .user-card-badge {
-          position: relative;
-          top: 0;
-          right: 0;
-          display: inline-block;
-          margin-bottom: 15px;
-          align-self: center;
-        }
-        .global-chat-fab {
-          width: 50px;
-          height: 50px;
-          bottom: 20px;
-          right: 20px;
-        }
-        .global-chat-fab svg {
-          width: 22px;
-          height: 22px;
-        }
-        .chat-msg {
-          max-width: 95%;
-          font-size: 13px;
-        }
-        .g-chat-sidebar {
-          height: 100%;
-        }
-        .g-chat-main {
-          height: 100%;
-        }
-        .g-chat-input-area {
-          flex-wrap: nowrap;
-        }
-        .g-chat-input-area input[type="text"] {
-          min-width: 0;
-        }
-        .g-chat-main-header {
-          padding-right: 50px;
-        }
-        .user-card {
-          align-items: center;
-          text-align: center;
-        }
-        .std-course-img {
-          height: 120px;
-        }
-        .admin-hero-content {
-          flex-direction: column;
-          text-align: center;
-        }
-        .cp-header {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 5px;
-        }
-        .activity-item {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 8px;
-        }
-        .act-dot {
-          display: none;
-        }
-        .card-header h3 {
-          font-size: 14px;
-        }
+      ::-webkit-scrollbar-track {
+        background: transparent;
       }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+      body.dark-mode ::-webkit-scrollbar-thumb {
+        background: #334155;
+      }
+      body.dark-mode ::-webkit-scrollbar-thumb:hover {
+        background: #475569;
+      }
+
+      /* Quick Theme Toggle Button */
+      .theme-toggle-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+        transition: var(--transition-smooth);
+        user-select: none;
+        flex-shrink: 0;
+      }
+      .theme-toggle-btn:hover {
+        background: #f1f5f9;
+        transform: rotate(15deg) scale(1.08);
+      }
+      body.dark-mode .theme-toggle-btn {
+        background: #1e293b;
+        border-color: #334155;
+        color: #f8fafc;
+      }
+      body.dark-mode .theme-toggle-btn:hover {
+        background: #334155;
+      }
+
+      /* Landing Page Feature Cards */
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+        padding: 6px 16px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
+      }
+      body.dark-mode .hero-badge {
+        background: rgba(37, 99, 235, 0.15);
+        border-color: rgba(37, 99, 235, 0.3);
+        color: #93c5fd;
+      }
+      .landing-features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 24px;
+        max-width: 1280px;
+        margin: 40px auto 60px;
+        padding: 0 40px;
+      }
+      .feat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 28px 24px;
+        border: 1px solid #e2e8f0;
+        box-shadow: var(--card-shadow);
+        transition: var(--transition-smooth);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .feat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--card-shadow-hover);
+        border-color: #cbd5e1;
+      }
+      .feat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: #eff6ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+      }
+      .feat-card h3 {
+        font-size: 17px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+      .feat-card p {
+        font-size: 14px;
+        color: #64748b;
+        line-height: 1.55;
+      }
+      body.dark-mode .feat-card {
+        background: #1e293b;
+        border-color: #334155;
+      }
+      body.dark-mode .feat-icon {
+        background: #0f172a;
+      }
+      body.dark-mode .feat-card h3 {
+        color: #f8fafc;
+      }
+      body.dark-mode .feat-card p {
+        color: #94a3b8;
+      }
+
+      /* Category Pills Bar (Horizontal Swipeable) */
+      .category-pills-bar,
+      #student-category-filters,
+      .filter-tabs-bar {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .category-pills-bar::-webkit-scrollbar,
+      #student-category-filters::-webkit-scrollbar,
+      .filter-tabs-bar::-webkit-scrollbar {
+        display: none;
+      }
+      .cat-pill {
+        white-space: nowrap;
+        padding: 8px 18px;
+        border-radius: 50px;
+        font-size: 13.5px;
+        font-weight: 600;
+        cursor: pointer;
+        background: white;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+        transition: var(--transition-smooth);
+        flex-shrink: 0;
+      }
+      .cat-pill:hover,
+      .cat-pill.active {
+        background: #2563eb;
+        color: white;
+        border-color: #2563eb;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+      }
+      body.dark-mode .cat-pill {
+        background: #1e293b;
+        color: #cbd5e1;
+        border-color: #334155;
+      }
+      body.dark-mode .cat-pill.active {
+        background: #2563eb;
+        color: white;
+        border-color: #2563eb;
+      }
+
+      /* Refined Card Transitions & Elevation */
+      .student-card,
+      .instructor-card,
+      .std-course-card,
+      .admin-course-card,
+      .user-card,
+      .admin-action-card,
+      .settings-card,
+      .ps-card,
+      .p-stat-card {
+        transition: var(--transition-smooth);
+        border-radius: var(--card-radius);
+      }
+      .student-card:hover,
+      .instructor-card:hover,
+      .std-course-card:hover,
+      .admin-course-card:hover,
+      .user-card:hover,
+      .admin-action-card:hover,
+      .ps-card:hover,
+      .p-stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--card-shadow-hover);
+      }
+
+      /* Table Responsiveness Wrapper */
+      .responsive-table-container {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+      }
+      body.dark-mode .responsive-table-container {
+        border-color: #334155;
+      }
+
+      /* Global WhatsApp Chat Dialog Styling */
+      .global-chat-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        z-index: 10001;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        transition: opacity 0.25s ease;
+      }
+      .global-chat-container {
+        display: flex;
+        flex-direction: row;
+        width: 960px;
+        max-width: 100%;
+        height: 680px;
+        max-height: 90vh;
+        border-radius: 24px;
+        overflow: hidden;
+        margin: 0;
+        background: white;
+        box-shadow:
+          0 25px 60px -15px rgba(0, 0, 0, 0.4),
+          0 0 0 1px rgba(255, 255, 255, 0.1);
+        position: relative;
+      }
+      .global-chat-fab {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: white;
+        border: none;
+        box-shadow: 0 10px 25px -3px rgba(37, 99, 235, 0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 999;
+        transition: var(--transition-smooth);
+      }
+      .global-chat-fab:hover {
+        transform: scale(1.08) translateY(-2px);
+        box-shadow: 0 16px 30px -3px rgba(37, 99, 235, 0.55);
+      }
+
+      /* Media Preview Chip in Chat */
       .g-chat-media-preview {
         display: none;
         align-items: center;
-        gap: 6px;
-        padding: 4px 8px;
+        gap: 8px;
+        padding: 6px 12px;
         background: #f1f5f9;
-        border-radius: 8px;
+        border-radius: 10px;
         border: 1px solid #e2e8f0;
         margin-right: 6px;
         flex-shrink: 0;
@@ -2472,14 +2354,17 @@
         width: 44px;
         height: 44px;
         object-fit: cover;
-        border-radius: 6px;
+        border-radius: 8px;
       }
       .g-chat-media-preview .remove-media {
         cursor: pointer;
         color: #ef4444;
         font-weight: 700;
-        font-size: 13px;
+        font-size: 14px;
+        padding: 2px 4px;
       }
+
+      /* Progress Summary Styles */
       .progress-summary-section {
         margin-top: 40px;
         margin-bottom: 30px;
@@ -2593,15 +2478,373 @@
       body.dark-mode #ps-course-progress-list .dm-text {
         color: #f8fafc !important;
       }
-      .student-card:hover,
-      .instructor-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.15);
-        transition: all 0.2s ease;
+
+      /* =========================================================
+         EXHAUSTIVE MULTI-DEVICE RESPONSIVE BREAKPOINTS
+         ========================================================= */
+
+      /* Laptops & Medium Desktops (≤ 1200px) */
+      @media (max-width: 1200px) {
+        .dashboard-content {
+          padding: 26px 30px;
+        }
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 20px;
+        }
+        .admin-action-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
       }
-      .student-card,
-      .instructor-card {
-        transition: all 0.2s ease;
+
+      /* Tablets Landscape & Small Laptops (≤ 992px) */
+      @media (max-width: 992px) {
+        .dashboard-content {
+          padding: 22px 20px;
+        }
+        .stats-grid,
+        .prog-stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 16px;
+        }
+        .user-grid,
+        .admin-course-grid {
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 18px;
+        }
+        .cp-layout {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+        .admin-action-grid {
+          grid-template-columns: 1fr;
+        }
+        .global-chat-container {
+          width: 92vw;
+          height: 80vh;
+        }
+      }
+
+      /* Tablets Portrait & Large Phones (≤ 768px) */
+      @media (max-width: 768px) {
+        .navbar {
+          padding: 12px 18px;
+        }
+        .logo {
+          font-size: 20px;
+        }
+        .profile-info {
+          display: none;
+        }
+        .profile-badge {
+          padding: 4px;
+          border-radius: 50%;
+        }
+        .avatar-top {
+          margin: 0;
+        }
+        .right-nav-container {
+          gap: 8px;
+        }
+
+        /* Hero Landing */
+        .hero-section {
+          flex-direction: column-reverse;
+          text-align: center;
+          padding: 36px 20px 48px;
+          gap: 32px;
+          min-height: auto;
+        }
+        .hero-content h1 {
+          font-size: 32px;
+          line-height: 1.2;
+          margin-bottom: 14px;
+        }
+        .hero-content p {
+          font-size: 15px;
+          margin: 0 auto 24px;
+          max-width: 100%;
+        }
+        .hero-buttons {
+          flex-direction: column;
+          width: 100%;
+          gap: 10px;
+        }
+        .hero-buttons .btn {
+          width: 100%;
+          justify-content: center;
+        }
+        .hero-image-box {
+          max-width: 100%;
+          height: auto;
+          border-radius: 20px;
+        }
+        .landing-features {
+          grid-template-columns: 1fr;
+          padding: 0 20px;
+          margin-top: 10px;
+        }
+
+        /* Auth Boxes */
+        .auth-box {
+          padding: 28px 20px;
+          border-radius: 22px;
+          width: 100%;
+          max-width: 95vw;
+        }
+
+        /* Dashboard Views */
+        .dashboard-content {
+          padding: 16px 14px;
+        }
+        .welcome-banner,
+        .admin-hero,
+        .upload-course-hero {
+          padding: 24px 18px;
+          border-radius: 20px;
+          flex-direction: column;
+          text-align: center;
+          gap: 14px;
+        }
+        .welcome-banner h1,
+        .admin-hero h1,
+        .upload-hero-text h1 {
+          font-size: 22px;
+        }
+        .admin-hero-content {
+          flex-direction: column;
+        }
+        .upload-hero-icon {
+          display: none;
+        }
+
+        /* Grids to 1 Column */
+        .stats-grid,
+        .continue-learning-grid,
+        .prog-stats-grid,
+        .user-grid,
+        .admin-course-grid,
+        .quick-action-grid,
+        .admin-action-grid,
+        .progress-summary-grid,
+        [style*="grid-template-columns:repeat(3,1fr)"],
+        [style*="grid-template-columns:repeat(2,1fr)"] {
+          grid-template-columns: 1fr !important;
+          gap: 14px;
+        }
+
+        /* Course Player */
+        .cp-video-box {
+          border-radius: 14px;
+        }
+        .cp-lesson-info {
+          padding: 16px;
+        }
+        .cp-lesson-info h2 {
+          font-size: 19px;
+        }
+        .cp-meta {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 6px;
+        }
+        .cp-lesson-info .btn {
+          width: 100%;
+          justify-content: center;
+        }
+        .lesson-item {
+          padding: 12px 14px;
+        }
+        .cp-tabs {
+          margin: 16px 0;
+          padding: 4px;
+        }
+        .cp-tab {
+          padding: 7px 12px;
+          font-size: 12.5px;
+        }
+
+        /* Due Assignments Card */
+        .due-assign-card {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 16px;
+        }
+        .due-assign-card > div {
+          width: 100%;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+        .due-assign-card .btn {
+          width: 100%;
+          justify-content: center;
+        }
+
+        /* Settings Card */
+        .settings-card {
+          padding: 20px 16px;
+          border-radius: 18px;
+        }
+        .settings-card .form-group {
+          min-width: 100% !important;
+          width: 100% !important;
+        }
+        .profile-pic-section {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        /* User Cards */
+        .user-card {
+          padding: 20px 16px;
+        }
+        .user-card .action-container {
+          flex-direction: column;
+          gap: 8px;
+        }
+        .btn-approve-full,
+        .btn-reject-full {
+          width: 100%;
+        }
+
+        /* Modals on Mobile */
+        .modal-container,
+        #modal-detail-body {
+          padding: 16px !important;
+        }
+
+        /* Global WhatsApp Chat Full Screen On Mobile */
+        .global-chat-overlay {
+          padding: 0 !important;
+          align-items: stretch !important;
+          justify-content: stretch !important;
+        }
+        .global-chat-container {
+          width: 100vw !important;
+          height: 100% !important;
+          max-height: 100% !important;
+          border-radius: 0 !important;
+          box-shadow: none !important;
+        }
+        .g-chat-sidebar {
+          width: 100% !important;
+          height: 100% !important;
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 2;
+          transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .g-chat-main {
+          width: 100% !important;
+          height: 100% !important;
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 1;
+          transform: translateX(100%);
+          transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .global-chat-container.chat-open .g-chat-sidebar {
+          transform: translateX(-100%);
+        }
+        .global-chat-container.chat-open .g-chat-main {
+          transform: translateX(0);
+        }
+        .g-chat-back-btn {
+          display: flex !important;
+        }
+        .g-chat-main-header {
+          padding: 12px 14px;
+          padding-right: 50px;
+        }
+        .g-chat-messages {
+          padding: 12px;
+        }
+        .chat-msg {
+          max-width: 90%;
+          font-size: 13.5px;
+        }
+        .g-chat-input-area {
+          padding: 10px 12px;
+          gap: 6px;
+        }
+        .close-chat-btn-top {
+          top: 10px;
+          right: 10px;
+        }
+      }
+
+      /* Small Phones (≤ 480px) */
+      @media (max-width: 480px) {
+        .navbar {
+          padding: 10px 12px;
+        }
+        .logo {
+          font-size: 18px;
+        }
+        .btn {
+          padding: 9px 16px;
+          font-size: 13.5px;
+          border-radius: 12px;
+        }
+        .hero-content h1 {
+          font-size: 26px;
+        }
+        .welcome-banner {
+          padding: 18px 14px;
+        }
+        .welcome-banner h1 {
+          font-size: 19px;
+        }
+        .student-card {
+          padding: 16px;
+        }
+        .user-card-header {
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+        .user-card-badge {
+          position: static;
+          margin-bottom: 10px;
+          display: inline-block;
+        }
+        .global-chat-fab {
+          width: 52px;
+          height: 52px;
+          bottom: 18px;
+          right: 18px;
+        }
+        .cp-header-area h1 {
+          font-size: 20px;
+        }
+        .cp-tab {
+          padding: 5px 10px;
+          font-size: 11.5px;
+        }
+        .std-course-img {
+          height: 140px;
+        }
+      }
+
+      /* Extra Small Phones (≤ 360px) */
+      @media (max-width: 360px) {
+        .logo {
+          font-size: 16px;
+        }
+        .navbar {
+          padding: 8px 10px;
+        }
+        .hero-content h1 {
+          font-size: 22px;
+        }
+        .btn {
+          padding: 8px 14px;
+          font-size: 12.5px;
+        }
       }
     </style>
   </head>
@@ -2614,6 +2857,13 @@
         id="nav-buttons"
         style="display: flex; gap: 10px; align-items: center"
       >
+        <button
+          class="theme-toggle-btn"
+          onclick="toggleThemeQuickly()"
+          title="Toggle Dark/Light Mode"
+        >
+          🌙
+        </button>
         <button class="btn btn-outline" onclick="navigateTo('login')">
           Login
         </button>
@@ -2626,17 +2876,21 @@
     <div id="landing-page" class="page">
       <div class="hero-section">
         <div class="hero-content">
+          <div class="hero-badge">
+            🎓 United International University · ELMS
+          </div>
           <h1>Learn Smarter<br />with <span>ELMS</span></h1>
           <p>
-            Modern Learning Management System for the future. Track your journey
-            and reach your career goals today.
+            A high-performance Educational Learning Management System engineered
+            for modern universities. Track learning journeys, stream lecture
+            modules, and collaborate in real time.
           </p>
           <div class="hero-buttons">
             <button class="btn btn-primary" onclick="navigateTo('signup')">
               Get Started
             </button>
             <button class="btn btn-outline" onclick="navigateTo('login')">
-              Login
+              Sign In
             </button>
           </div>
         </div>
@@ -2657,6 +2911,41 @@
               this.style.borderRadius = 'inherit';
             "
           />
+        </div>
+      </div>
+
+      <div class="landing-features">
+        <div class="feat-card">
+          <div class="feat-icon">🔐</div>
+          <h3>Role-Based Access</h3>
+          <p>
+            Dedicated dashboard architectures for Administrators, Instructors,
+            and Students with fine-grained security.
+          </p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🎥</div>
+          <h3>Dynamic Course Player</h3>
+          <p>
+            Seamless module video playlists, interactive progress tracking,
+            assignments, and verified ratings.
+          </p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">💬</div>
+          <h3>WhatsApp-Style Chat</h3>
+          <p>
+            Live course channels, instructor-student discussions, official
+            broadcasts, and instant media sharing.
+          </p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">⚡</div>
+          <h3>Cloud Powered Backend</h3>
+          <p>
+            High availability powered by TiDB Cloud Serverless database and
+            Cloudinary media processing.
+          </p>
         </div>
       </div>
     </div>
@@ -2789,6 +3078,13 @@
           <div class="logo">ELMS Hub</div>
         </div>
         <div class="right-nav-container">
+          <button
+            class="theme-toggle-btn"
+            onclick="toggleThemeQuickly()"
+            title="Toggle Dark/Light Mode"
+          >
+            🌙
+          </button>
           <button
             class="nav-icon-btn"
             onclick="
@@ -4950,7 +5246,12 @@
     </div>
 
     <script>
-      const API_URL = "https://uiu-learning-management-system-lms.onrender.com";
+      const API_URL =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1" ||
+        window.location.protocol === "file:"
+          ? "http://localhost:5005"
+          : "https://uiu-learning-management-system-lms.onrender.com";
       let currentUser = null;
       let currentCoursePlayerId = null;
       let currentCourseObj = null;
@@ -5031,6 +5332,22 @@
             streakCard.style.borderColor = "#e2e8f0";
           }
         }
+        updateThemeToggleIcons();
+      }
+
+      function toggleThemeQuickly() {
+        const isDark = document.body.classList.contains("dark-mode");
+        const dmToggle = document.getElementById("dark-mode-toggle");
+        if (dmToggle) dmToggle.checked = !isDark;
+        toggleDarkMode({ checked: !isDark });
+      }
+
+      function updateThemeToggleIcons() {
+        const isDark = document.body.classList.contains("dark-mode");
+        document.querySelectorAll(".theme-toggle-btn").forEach((btn) => {
+          btn.innerHTML = isDark ? "☀️" : "🌙";
+          btn.title = isDark ? "Switch to Light Mode" : "Switch to Dark Mode";
+        });
       }
 
       window.addEventListener("DOMContentLoaded", () => {
@@ -5040,6 +5357,7 @@
           const dmToggle = document.getElementById("dark-mode-toggle");
           if (dmToggle) dmToggle.checked = true;
         }
+        updateThemeToggleIcons();
 
         const savedUser = localStorage.getItem("elms_current_user");
         if (savedUser && savedUser !== "undefined") {
@@ -7054,7 +7372,7 @@
                   : completedModules;
             }
           } catch (e) {}
-        } 
+        }
         <!-- YOLO badge test -->
 
         let html = `<div style="padding: 20px 24px; border-bottom: 1px solid #e2e8f0; font-weight: 800; font-size: 18px; color: #0f172a;">Course Content (${total} Modules)</div>`;
