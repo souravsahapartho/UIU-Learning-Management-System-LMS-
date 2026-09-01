@@ -2057,8 +2057,12 @@
         --primary-gradient: linear-gradient(135deg, #2563eb, #1d4ed8);
         --primary-glow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
         --card-radius: 20px;
-        --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
-        --card-shadow-hover: 0 20px 35px -10px rgba(0, 0, 0, 0.09), 0 10px 15px -5px rgba(0, 0, 0, 0.04);
+        --card-shadow:
+          0 10px 25px -5px rgba(0, 0, 0, 0.04),
+          0 8px 10px -6px rgba(0, 0, 0, 0.03);
+        --card-shadow-hover:
+          0 20px 35px -10px rgba(0, 0, 0, 0.09),
+          0 10px 15px -5px rgba(0, 0, 0, 0.04);
         --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
@@ -2302,7 +2306,9 @@
         overflow: hidden;
         margin: 0;
         background: white;
-        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        box-shadow:
+          0 25px 60px -15px rgba(0, 0, 0, 0.4),
+          0 0 0 1px rgba(255, 255, 255, 0.1);
         position: relative;
       }
       .global-chat-fab {
@@ -2851,7 +2857,13 @@
         id="nav-buttons"
         style="display: flex; gap: 10px; align-items: center"
       >
-        <button class="theme-toggle-btn" onclick="toggleThemeQuickly()" title="Toggle Dark/Light Mode">🌙</button>
+        <button
+          class="theme-toggle-btn"
+          onclick="toggleThemeQuickly()"
+          title="Toggle Dark/Light Mode"
+        >
+          🌙
+        </button>
         <button class="btn btn-outline" onclick="navigateTo('login')">
           Login
         </button>
@@ -2864,10 +2876,14 @@
     <div id="landing-page" class="page">
       <div class="hero-section">
         <div class="hero-content">
-          <div class="hero-badge">🎓 United International University · ELMS</div>
+          <div class="hero-badge">
+            🎓 United International University · ELMS
+          </div>
           <h1>Learn Smarter<br />with <span>ELMS</span></h1>
           <p>
-            A high-performance Educational Learning Management System engineered for modern universities. Track learning journeys, stream lecture modules, and collaborate in real time.
+            A high-performance Educational Learning Management System engineered
+            for modern universities. Track learning journeys, stream lecture
+            modules, and collaborate in real time.
           </p>
           <div class="hero-buttons">
             <button class="btn btn-primary" onclick="navigateTo('signup')">
@@ -2902,22 +2918,34 @@
         <div class="feat-card">
           <div class="feat-icon">🔐</div>
           <h3>Role-Based Access</h3>
-          <p>Dedicated dashboard architectures for Administrators, Instructors, and Students with fine-grained security.</p>
+          <p>
+            Dedicated dashboard architectures for Administrators, Instructors,
+            and Students with fine-grained security.
+          </p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">🎥</div>
           <h3>Dynamic Course Player</h3>
-          <p>Seamless module video playlists, interactive progress tracking, assignments, and verified ratings.</p>
+          <p>
+            Seamless module video playlists, interactive progress tracking,
+            assignments, and verified ratings.
+          </p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">💬</div>
           <h3>WhatsApp-Style Chat</h3>
-          <p>Live course channels, instructor-student discussions, official broadcasts, and instant media sharing.</p>
+          <p>
+            Live course channels, instructor-student discussions, official
+            broadcasts, and instant media sharing.
+          </p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">⚡</div>
           <h3>Cloud Powered Backend</h3>
-          <p>High availability powered by TiDB Cloud Serverless database and Cloudinary media processing.</p>
+          <p>
+            High availability powered by TiDB Cloud Serverless database and
+            Cloudinary media processing.
+          </p>
         </div>
       </div>
     </div>
@@ -3050,7 +3078,13 @@
           <div class="logo">ELMS Hub</div>
         </div>
         <div class="right-nav-container">
-          <button class="theme-toggle-btn" onclick="toggleThemeQuickly()" title="Toggle Dark/Light Mode">🌙</button>
+          <button
+            class="theme-toggle-btn"
+            onclick="toggleThemeQuickly()"
+            title="Toggle Dark/Light Mode"
+          >
+            🌙
+          </button>
           <button
             class="nav-icon-btn"
             onclick="
