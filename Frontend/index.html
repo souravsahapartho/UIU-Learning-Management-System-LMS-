@@ -3342,7 +3342,7 @@
         <div class="hero-image-wrapper">
           <div class="floating-pill pill-top-left">
             <span>⭐</span>
-            <span>4.9/5 Rating · 12K+ Enrolled</span>
+            <span>4.9/5 Student Evaluation Rating</span>
           </div>
           <div class="hero-image-box">
             <img
@@ -3363,8 +3363,8 @@
             />
           </div>
           <div class="floating-pill pill-bottom-right">
-            <span>🚀</span>
-            <span>Live Video & Instant Chat</span>
+            <span>🎥</span>
+            <span>Interactive Lectures & Coursework</span>
           </div>
           <div class="floating-pill pill-bottom-left">
             <span>🎓</span>
@@ -3623,9 +3623,22 @@
                   margin-bottom: 12px;
                 "
               >
-                <span class="streak-badge">
-                  <span class="streak-flame">🔥</span>
-                  <span>Active Learning Streak: 5 Days</span>
+                <span
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    background: rgba(255, 255, 255, 0.2);
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    padding: 4px 12px;
+                    border-radius: 50px;
+                    font-size: 12px;
+                    font-weight: 700;
+                    color: white;
+                  "
+                >
+                  Academic Session 2025–2026
                 </span>
                 <span
                   style="
@@ -3651,15 +3664,14 @@
                       animation: greenBeaconPulse 2s infinite;
                     "
                   ></span>
-                  Spring 2026 Semester
+                  Spring Semester
                 </span>
               </div>
               <h1 id="welcome-msg-student" style="margin-bottom: 6px">
-                Dashboard Overview
+                Student Portal
               </h1>
               <p>
-                Welcome back! Track your degree progress, resume video
-                playlists, and submit upcoming assignments.
+                Access enrolled courses, track coursework progress, and review assignment schedules.
               </p>
             </div>
             <div class="stats-grid">
@@ -3867,7 +3879,7 @@
             </h2>
             <div class="progress-summary-grid">
               <div class="ps-card">
-                <div class="ps-card-title">📊 Overall Progress</div>
+                <div class="ps-card-title">Course Completion Status</div>
                 <div id="ps-course-progress-list"></div>
               </div>
 
@@ -3880,7 +3892,7 @@
                 "
               >
                 <div class="ps-card-title" style="color: #64748b">
-                  🔥 Streak & Activity
+                  Attendance & Learning Activity
                 </div>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap">
                   <div>
@@ -3892,7 +3904,7 @@
                       0
                     </div>
                     <div class="ps-card-desc" style="color: #94a3b8">
-                      Day Streak
+                      Active Days
                     </div>
                   </div>
                   <div>
@@ -3931,7 +3943,7 @@
                       padding: 10px;
                     "
                   >
-                    Loading...
+                    Retrieving data…
                   </div>
                 </div>
               </div>
@@ -3983,15 +3995,14 @@
                       animation: greenBeaconPulse 2s infinite;
                     "
                   ></span>
-                  👨‍🏫 Instructor Faculty Command Center
+                  Faculty Management Portal
                 </span>
               </div>
               <h1 id="welcome-msg-inst" style="margin-bottom: 6px">
                 Faculty Portal
               </h1>
               <p>
-                Manage course curriculums, grade student assignments, and
-                inspect real-time lecture engagement.
+                Manage course curriculums, evaluate student submissions, and review academic performance.
               </p>
             </div>
             <div class="stats-grid">
@@ -4169,8 +4180,8 @@
                   </svg>
                 </div>
                 <div>
-                  <h1 id="admin-welcome-msg">Welcome back, Admin! 👋</h1>
-                  <p>Here's what's happening on your platform today</p>
+                  <h1 id="admin-welcome-msg">System Administration</h1>
+                  <p>Institutional oversight, user accounts, and platform governance.</p>
                 </div>
               </div>
             </div>
@@ -4399,7 +4410,7 @@
               </div>
               <div id="admin-all-complaints-container">
                 <div style="text-align: center; padding: 20px; color: #94a3b8">
-                  Loading complaints...
+                  Retrieving complaint records…
                 </div>
               </div>
             </div>
@@ -4556,7 +4567,7 @@
             </p>
             <div id="dynamic-course-progress-list">
               <div style="text-align: center; padding: 20px; color: #64748b">
-                Loading...
+                Retrieving course progress data…
               </div>
             </div>
           </div>
@@ -5193,7 +5204,7 @@
 
           <div id="profile-page-inner" style="max-width: 700px; margin: 0 auto">
             <div style="text-align: center; padding: 20px; color: #64748b">
-              Loading profile...
+              Loading academic profile…
             </div>
           </div>
         </div>
@@ -6088,7 +6099,7 @@
             )
             .join("");
         } catch (e) {
-          container.innerHTML = `<div style="color:#ef4444;padding:12px;">Failed to load complaints.</div>`;
+          container.innerHTML = `<div style="color:#ef4444;padding:12px;">Unable to retrieve complaint records.</div>`;
         }
       }
 
@@ -6452,7 +6463,7 @@
           });
           container.innerHTML = htmlStr;
         } catch (e) {
-          container.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Failed to load requests.</div>`;
+          container.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Unable to retrieve enrollment requests.</div>`;
         }
       }
 
@@ -6787,13 +6798,13 @@
 
         const adminMsg = document.getElementById("admin-welcome-msg");
         if (adminMsg)
-          adminMsg.innerText = `Welcome back, ${safeName.split(" ")[0]}! 👋`;
+          adminMsg.innerText = `System Administration — ${safeName}`;
         const studentMsg = document.getElementById("welcome-msg-student");
         if (studentMsg)
-          studentMsg.innerText = `Welcome back, ${safeName.split(" ")[0]}! 👋`;
+          studentMsg.innerText = `Student Portal — ${safeName}`;
         const instMsg = document.getElementById("welcome-msg-inst");
         if (instMsg)
-          instMsg.innerText = `Welcome back, ${safeName.split(" ")[0]}! 👋`;
+          instMsg.innerText = `Faculty Portal — ${safeName}`;
 
         const sDash = document.getElementById("student-dashboard-view");
         const iDash = document.getElementById("instructor-dashboard-view");
@@ -7108,7 +7119,7 @@
             })
             .join("");
         } catch (e) {
-          container.innerHTML = `<div style="padding:20px;color:#ef4444;">Failed to load users.</div>`;
+          container.innerHTML = `<div style="padding:20px;color:#ef4444;">Unable to retrieve user records.</div>`;
         }
       }
 
@@ -7436,7 +7447,7 @@
             })
             .join("");
         } catch (e) {
-          container.innerHTML = `<p style="color:#ef4444;">Failed to load courses from DB.</p>`;
+          container.innerHTML = `<p style="color:#ef4444;">Unable to retrieve course data.</p>`;
         }
       }
 
@@ -7466,7 +7477,7 @@
           });
           if (!res.ok) {
             const errData = await res.json();
-            alert("Something went wrong. Please try again.");
+            alert("An error occurred. Please try again or contact support.");
             return;
           }
           invalidateCache();
@@ -7907,7 +7918,7 @@
           let allPendingAssignments = results.flat();
 
           if (allPendingAssignments.length === 0) {
-            container.innerHTML = `<div style="grid-column: 1/-1; color:#10b981; width:100%; padding:24px; background:#ecfdf5; border-radius:16px; border:1px solid #a7f3d0; text-align:center; font-weight:700;"><span style="font-size: 28px; display:block; margin-bottom: 6px;">🎉</span>All Caught Up! You have no pending assignments.</div>`;
+            container.innerHTML = `<div style="grid-column: 1/-1; color:#10b981; width:100%; padding:24px; background:#ecfdf5; border-radius:16px; border:1px solid #a7f3d0; text-align:center; font-weight:700;"><span style="font-size: 28px; display:block; margin-bottom: 6px;">🎉</span>No pending submissions. All assignments are submitted.</div>`;
             return;
           }
 
@@ -7931,7 +7942,7 @@
             )
             .join("");
         } catch (e) {
-          container.innerHTML = `<p style="color:#ef4444;">Failed to load assignments.</p>`;
+          container.innerHTML = `<p style="color:#ef4444;">Unable to retrieve assignment data.</p>`;
         }
       }
 
@@ -8283,7 +8294,7 @@
           `module-upload-label-${moduleIndex}`,
         );
 
-        if (statusEl) statusEl.innerText = "⏳ Uploading...";
+        if (statusEl) statusEl.innerText = "Uploading, please wait…";
         if (labelEl) labelEl.style.opacity = "0.5";
 
         const videoDurationSeconds = await getVideoDuration(file);
@@ -8520,7 +8531,7 @@
           handleNav("CoursePlayer", null);
         } catch (e) {
           console.error("OpenCoursePlayer Error:", e);
-          alert("Error loading course details: " + e.message);
+          alert("Unable to load course details: " + e.message);
         }
       }
 
@@ -8578,7 +8589,7 @@
         const statsContainer = document.getElementById("inst-students-stats");
         if (!listContainer) return;
 
-        listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">⏳ Loading students...</div>`;
+        listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">Retrieving student records…</div>`;
 
         try {
           const [enrollments, users, courses] = await Promise.all([
@@ -8706,7 +8717,7 @@
           displayInstStudents(studentList);
         } catch (e) {
           console.error(e);
-          listContainer.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load students.</div>`;
+          listContainer.innerHTML = `<div style="text-align:center; color:#ef4444;">Unable to retrieve student records.</div>`;
         }
       }
 
@@ -8845,7 +8856,7 @@
           "cp-students-area-container",
         );
         if (!listContainer) return;
-        listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">⏳ Loading students...</div>`;
+        listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #64748b;">Retrieving student records…</div>`;
         try {
           const enrollments = await safeFetchJSON(`${API_URL}/enrollments`);
           const users = await safeFetchJSON(`${API_URL}/users`);
@@ -8929,7 +8940,7 @@
           listContainer.innerHTML = htmlStr;
         } catch (e) {
           console.error(e);
-          listContainer.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load students.</div>`;
+          listContainer.innerHTML = `<div style="text-align:center; color:#ef4444;">Unable to retrieve student records.</div>`;
         }
       }
 
@@ -9072,7 +9083,7 @@
       async function loadAssignments(courseId) {
         const container = document.getElementById("assign-list");
         if (!container) return;
-        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading assignments...</div>`;
+        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Retrieving assignments…</div>`;
         try {
           const [assignments, submissions] = await Promise.all([
             safeFetchJSON(`${API_URL}/assignments/${courseId}`),
@@ -9157,7 +9168,7 @@
           });
           container.innerHTML = htmlStr;
         } catch (e) {
-          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load assignments.</div>`;
+          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Unable to retrieve assignment data.</div>`;
         }
       }
 
@@ -9567,7 +9578,7 @@
       async function loadCourseFeedback(courseId) {
         const container = document.getElementById("cp-feedback-list");
         if (!container) return;
-        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Loading feedback...</div>`;
+        container.innerHTML = `<div style="text-align:center; padding: 20px; color:#64748b;">Retrieving feedback data…</div>`;
         try {
           const feedbacks = await safeFetchJSON(
             `${API_URL}/course-feedbacks/${courseId}`,
@@ -9591,7 +9602,7 @@
           if (avgBadge)
             avgBadge.innerHTML = `Average Rating: ${(totalRating / feedbacks.length).toFixed(1)}/5 ⭐`;
         } catch (e) {
-          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Failed to load feedback.</div>`;
+          container.innerHTML = `<div style="text-align:center; color:#ef4444;">Unable to retrieve feedback.</div>`;
         }
       }
 
@@ -9677,7 +9688,7 @@
 
         const btn = document.getElementById("btn-upload-avatar");
         const originalText = btn.innerHTML;
-        btn.innerHTML = "⏳ Uploading...";
+        btn.innerHTML = "Uploading, please wait…";
         btn.disabled = true;
 
         try {
@@ -9845,7 +9856,7 @@
 
       async function loadChatGroups() {
         const listContainer = document.getElementById("g-chat-list-container");
-        listContainer.innerHTML = `<div style="padding:20px;text-align:center;color:#64748b;">Loading chats...</div>`;
+        listContainer.innerHTML = `<div style="padding:20px;text-align:center;color:#64748b;">Loading messages…</div>`;
 
         let rooms = [];
         rooms.push({
@@ -9926,7 +9937,7 @@
             })
             .join("");
         } catch (e) {
-          listContainer.innerHTML = `<div style="padding:20px;color:red;">Error loading chats</div>`;
+          listContainer.innerHTML = `<div style="padding:20px;color:red;">Unable to load messages</div>`;
         }
       }
 
@@ -10500,7 +10511,7 @@
                 } catch (uiErr) {
                   console.error("Dashboard Render Error:", uiErr);
                   errorDiv.innerText =
-                    "Something went wrong while loading your profile. Please try logging in again.";
+                    "Unable to load your profile. Please sign in again.";
                   errorDiv.style.display = "block";
                 }
               }
@@ -10527,7 +10538,7 @@
 
             const wakeupTimer = setTimeout(() => {
               if (submitBtn.disabled) {
-                submitBtn.innerHTML = "Please wait, this may take a moment...";
+                submitBtn.innerHTML = "Processing, please wait…";
               }
             }, 3000);
 
@@ -10644,7 +10655,7 @@
                   </div>
 
                   <div id="modal-detail-body" style="padding:24px;">
-                    <div style="text-align:center;color:${subColor};padding:20px;">⏳ Loading...</div>
+                    <div style="text-align:center;color:${subColor};padding:20px;">Retrieving data…</div>
                   </div>
                 </div>
                 <style>
@@ -10810,10 +10821,10 @@
                   : "#ef4444";
             const progressLabel =
               progress >= 70
-                ? "On Track 🚀"
+                ? "Satisfactory Progress"
                 : progress >= 40
-                  ? "In Progress ⚡"
-                  : "Needs Attention ⚠️";
+                  ? "In Progress"
+                  : "Requires Attention";
 
             body.innerHTML = `
                     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
@@ -10902,7 +10913,7 @@
         } catch (e) {
           console.error(e);
           if (body)
-            body.innerHTML = `<div style="color:#ef4444;text-align:center;padding:20px;">Failed to load details.</div>`;
+            body.innerHTML = `<div style="color:#ef4444;text-align:center;padding:20px;">Unable to retrieve details.</div>`;
         }
       }
       function scrollToContinueLearning() {
@@ -10975,7 +10986,7 @@
                   </div>
 
                   <div id="admin-user-detail-body" style="padding:24px;">
-                    <div style="text-align:center;color:${subColor};padding:20px;">⏳ Loading user data...</div>
+                    <div style="text-align:center;color:${subColor};padding:20px;">⏳ Retrieving user information…</div>
                   </div>
                 </div>
                 <style>
@@ -11300,7 +11311,7 @@
           console.error(e);
           const body = document.getElementById("admin-user-detail-body");
           if (body)
-            body.innerHTML = `<div style="color:#ef4444;text-align:center;padding:20px;">Failed to load user details.</div>`;
+            body.innerHTML = `<div style="color:#ef4444;text-align:center;padding:20px;">Unable to retrieve user information.</div>`;
         }
       }
       async function renderStudentProgressPage() {
@@ -11442,7 +11453,7 @@
                   );
                   const streakBadge =
                     streak > 0 && hasRecentActivity
-                      ? `<span class="streak-badge">🔥 ${streak} day streak</span>`
+                      ? `<span class="streak-badge">${streak}-Day Learning Streak</span>`
                       : "";
 
                   const barColor =
@@ -11480,7 +11491,7 @@
         } catch (e) {
           console.error("Progress page error:", e);
           if (courseProgList)
-            courseProgList.innerHTML = `<div style="color:#ef4444; text-align:center; padding:20px;">Failed to load progress data.</div>`;
+            courseProgList.innerHTML = `<div style="color:#ef4444; text-align:center; padding:20px;">Unable to retrieve academic progress data.</div>`;
         }
       }
       function showBanReasonModal(studentName) {
@@ -11570,7 +11581,7 @@
       async function renderInstructorGradeAssignments() {
         const container = document.getElementById("instructor-grade-list");
         if (!container) return;
-        container.innerHTML = `<div style="text-align:center;padding:40px;color:#64748b;">⏳ Loading submissions...</div>`;
+        container.innerHTML = `<div style="text-align:center;padding:40px;color:#64748b;">Retrieving submission records…</div>`;
 
         try {
           const courses = await safeFetchJSON(`${API_URL}/courses`);
@@ -11679,7 +11690,7 @@
           container.innerHTML = html;
         } catch (e) {
           console.error(e);
-          container.innerHTML = `<div style="color:#ef4444;text-align:center;padding:20px;">Failed to load submissions.</div>`;
+          container.innerHTML = `<div style="color:#ef4444;text-align:center;padding:20px;">Unable to retrieve submission records.</div>`;
         }
       }
       function openProfilePage() {
@@ -11689,7 +11700,7 @@
       async function renderProfilePage() {
         const container = document.getElementById("profile-page-inner");
         if (!container || !currentUser) return;
-        container.innerHTML = `<div style="text-align:center; padding:40px; color:#64748b;">⏳ Loading your profile...</div>`;
+        container.innerHTML = `<div style="text-align:center; padding:40px; color:#64748b;">Loading your academic profile…</div>`;
 
         const isDark = document.body.classList.contains("dark-mode");
         const cardBg = isDark ? "#1e293b" : "#ffffff";
@@ -12107,7 +12118,7 @@
           }
         } catch (e) {
           console.error(e);
-          container.innerHTML = `<div style="color:#ef4444;text-align:center;padding:40px;">Failed to load profile.</div>`;
+          container.innerHTML = `<div style="color:#ef4444;text-align:center;padding:40px;">Unable to load profile information.</div>`;
         }
       }
 
