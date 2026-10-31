@@ -12,7 +12,7 @@ The backend is deployed on **Render**, and the database runs on **TiDB Cloud (Se
 
 * **Role-Based Access Control (RBAC):** Three strictly isolated roles ensuring secure routing for Admins, Instructors, and Students.
 * **Database-Driven Approval System:** New student and instructor accounts are marked as 'Pending' in the database and require manual Admin approval to access the dashboard.
-* **Account Security:** Secure password hashing (SHA-256) implementation and frontend session management via Local Storage, alongside First and Last Login tracking.
+* **Account Security:** Salted password hashing with scrypt (older SHA-256 hashes are upgraded automatically on next login) and frontend session management via Local Storage, alongside First and Last Login tracking.
 * **Account Suspension:** Admins can dynamically suspend (Ban) or restore (Approve) user accounts, revoking or granting access instantly.
 * **Account Deletion:** Users have full control to permanently delete their accounts and associated data.
 
@@ -222,7 +222,7 @@ To access the Admin dashboard and test administrative features, use the followin
 * **Email:** admin@uiu.com
 * **Password:** admin123
 
-> The admin account (and all user passwords) are stored as SHA-256 hashes. If seeding this account manually via SQL, insert the pre-computed hash rather than the plain-text password.
+> The admin account (and all user passwords) are stored as salted scrypt hashes. If seeding this account manually via SQL, you can insert a SHA-256 hash of the password; it is accepted and upgraded to scrypt on first login.
 
 ---
 
