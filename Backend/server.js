@@ -27,8 +27,36 @@ app.use((req, res, next) => {
   next();
 });
 
+const SCRYPT_PREFIX = "scrypt$";
+
 const hashPassword = (password) => {
-  return crypto.createHash("sha256").update(String(password)).digest("hex");
+  const salt = crypto.randomBytes(16).toString("hex");
+  const hash = crypto.scryptSync(String(password), salt, 64).toString("hex");
+  return `${SCRYPT_PREFIX}${salt}$${hash}`;
+};
+
+const safeEqual = (a, b) => {
+  const x = Buffer.from(String(a));
+  const y = Buffer.from(String(b));
+  return x.length === y.length && crypto.timingSafeEqual(x, y);
+};
+
+// Accepts the current scrypt format plus the older unsalted SHA-256 and
+// plaintext rows; needsUpgrade tells the caller to re-store the password.
+const verifyPassword = (password, stored) => {
+  const input = String(password ?? "");
+  const saved = String(stored ?? "");
+  if (saved.startsWith(SCRYPT_PREFIX)) {
+    const [salt, hash] = saved.slice(SCRYPT_PREFIX.length).split("$");
+    if (!salt || !hash) return { ok: false, needsUpgrade: false };
+    const candidate = crypto.scryptSync(input, salt, 64).toString("hex");
+    return { ok: safeEqual(candidate, hash), needsUpgrade: false };
+  }
+  if (/^[a-f0-9]{64}$/.test(saved)) {
+    const legacy = crypto.createHash("sha256").update(input).digest("hex");
+    return { ok: safeEqual(legacy, saved), needsUpgrade: true };
+  }
+  return { ok: saved.length > 0 && safeEqual(input, saved), needsUpgrade: true };
 };
 
 cloudinary.config({
@@ -244,15 +272,22 @@ app.post("/signup", (req, res) => {
 
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-  const encryptedPassword = hashPassword(password || "");
   db.query(
-    "SELECT * FROM users WHERE email = ? AND (password = ? OR password = ?)",
-    [email || "", encryptedPassword, password || ""],
+    "SELECT * FROM users WHERE email = ?",
+    [email || ""],
     (err, data) => {
       if (err) return res.status(500).json({ error: err.message });
-      if (data.length > 0) {
+      const check =
+        data.length > 0 ? verifyPassword(password, data[0].password) : null;
+      if (check && check.ok) {
         const user = data[0];
         delete user.password;
+        if (check.needsUpgrade) {
+          db.query("UPDATE users SET password = ? WHERE email = ?", [
+            hashPassword(password),
+            email,
+          ]);
+        }
         if (user.status === "Banned") {
           return res.status(403).json({
             error:
@@ -332,16 +367,15 @@ app.put("/update-profile", async (req, res) => {
 
 app.put("/update-password", (req, res) => {
   const { email, oldPassword, newPassword } = req.body;
-  const oldEncrypted = hashPassword(oldPassword || "");
   const newEncrypted = hashPassword(newPassword || "");
 
   db.query(
-    "SELECT * FROM users WHERE email = ? AND (password = ? OR password = ?)",
-    [email, oldEncrypted, oldPassword],
+    "SELECT * FROM users WHERE email = ?",
+    [email],
     (err, data) => {
       if (err) return res.status(500).json({ error: err.message });
 
-      if (data.length > 0) {
+      if (data.length > 0 && verifyPassword(oldPassword, data[0].password).ok) {
         db.query(
           "UPDATE users SET password = ? WHERE email = ?",
           [newEncrypted, email],
