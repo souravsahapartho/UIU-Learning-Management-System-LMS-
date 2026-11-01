@@ -182,6 +182,11 @@ MYSQLPORT=4000
 CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+
+# Signs login tokens. Required: without it nobody can sign in.
+# Use at least 32 random characters, for example:
+#   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+AUTH_SECRET=your_long_random_secret
 ```
 
 > ⚠️ Never commit `.env` to version control. Ensure it is listed in `.gitignore`.
@@ -207,7 +212,7 @@ Database connected.
 3. Configure:
    * **Build Command:** `npm install`
    * **Start Command:** `node server.js`
-4. Add all variables from your `.env` file under the **Environment** tab.
+4. Add all variables from your `.env` file, including `AUTH_SECRET`, under the **Environment** tab. Changing `AUTH_SECRET` later signs every user out.
 5. Deploy — Render will provide a public URL (e.g. `https://your-app.onrender.com`).
 6. Update the `API_URL` constant in the frontend's `index.html` to point to this Render URL.
 
@@ -215,14 +220,21 @@ Database connected.
 
 Open the `index.html` file located in the `Frontend` directory using any local server (e.g., VS Code Live Server) to access the application, or host it on any static file host.
 
-### 8. Admin Credentials
+### 8. Create the First Admin Account
 
-To access the Admin dashboard and test administrative features, use the following default credentials:
+The project ships with **no default admin account or password**. Create your own:
 
-* **Email:** admin@uiu.com
-* **Password:** admin123
+1. From the project root, run `node Backend/scripts/hash-password.js`, type a strong, unique password when asked (it is not shown or saved) and copy the hash it prints.
+2. Insert the admin into your database with that hash:
 
-> The admin account (and all user passwords) are stored as salted scrypt hashes. If seeding this account manually via SQL, you can insert a SHA-256 hash of the password; it is accepted and upgraded to scrypt on first login.
+   ```sql
+   INSERT INTO users (name, email, password, role, status)
+   VALUES ('Admin', 'you@example.com', '<paste the hash>', 'admin', 'Approved');
+   ```
+
+3. Sign in on the site with that email and the password you typed.
+
+> Passwords are stored as salted scrypt hashes. Never publish credentials in this repository. If a default or shared password was ever published, change it and treat it as compromised.
 
 ---
 
