@@ -5810,6 +5810,24 @@
         window.location.protocol === "file:"
           ? "http://localhost:5005"
           : "https://uiu-learning-management-system-lms.onrender.com";
+
+      // Send the login token with every request to the API.
+      const nativeFetch = window.fetch.bind(window);
+      window.fetch = (input, init = {}) => {
+        const url = typeof input === "string" ? input : input.url;
+        let token = null;
+        try {
+          token = localStorage.getItem("elms_auth_token");
+        } catch (e) {}
+        if (token && url.startsWith(API_URL)) {
+          const headers = new Headers(init.headers || {});
+          if (!headers.has("Authorization")) {
+            headers.set("Authorization", `Bearer ${token}`);
+          }
+          init = { ...init, headers };
+        }
+        return nativeFetch(input, init);
+      };
       let currentUser = null;
       let currentCoursePlayerId = null;
       let currentCourseObj = null;
@@ -9832,6 +9850,7 @@
 
       function logout() {
         localStorage.removeItem("elms_current_user");
+        localStorage.removeItem("elms_auth_token");
         location.reload();
       }
 
@@ -10516,6 +10535,11 @@
                     "elms_current_user",
                     JSON.stringify(currentUser),
                   );
+                  if (data.token) {
+                    localStorage.setItem("elms_auth_token", data.token);
+                  } else {
+                    localStorage.removeItem("elms_auth_token");
+                  }
                   setupDashboard(user);
                   navigateTo("dashboard");
                 } catch (uiErr) {
