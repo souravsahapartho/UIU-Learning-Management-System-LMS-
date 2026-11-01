@@ -260,6 +260,42 @@ const canReadNotifications = (user, identifier) =>
   identifier === "all_users" ||
   (identifier === "admin" && user.role === "admin");
 
+// Chat rooms are course ids plus the admin broadcast channels. Course rooms
+// are open to the course instructor, approved students and admins; only
+// admins post to broadcasts.
+const BROADCAST_ROOMS = {
+  broadcast: ["admin", "instructor", "student"],
+  broadcast_instructors: ["admin", "instructor"],
+  broadcast_students: ["admin", "student"],
+};
+
+const requireRoomAccess =
+  (getRoom, posting = false) =>
+  (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ error: "Please sign in again." });
+    }
+    const room = String(getRoom(req));
+    const denied = () =>
+      res.status(403).json({ error: "You are not a member of this chat." });
+    const audience = BROADCAST_ROOMS[room];
+    if (audience) {
+      const allowed = posting
+        ? req.user.role === "admin"
+        : audience.includes(req.user.role);
+      return allowed ? next() : denied();
+    }
+    if (req.user.role === "admin") return next();
+    db.query(
+      "SELECT 1 FROM courses WHERE id = ? AND instructor_email = ? UNION SELECT 1 FROM enrollments WHERE course_id = ? AND student_email = ? AND status = 'Approved' LIMIT 1",
+      [room, req.user.email, room, req.user.email],
+      (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        rows.length > 0 ? next() : denied();
+      },
+    );
+  };
+
 // For rows that belong to a course, such as enrollments and submissions.
 const requireRecordCourseOwner = (table, getId) => (req, res, next) => {
   if (!req.user) {
@@ -364,6 +400,7 @@ app.get("/", (req, res) => res.json({ message: "Backend API is active." }));
 
 app.post(
   "/upload-profile-pic",
+  requireAuth,
   (req, res, next) => {
     const uploadMiddleware = upload.single("profilePic");
 
@@ -401,6 +438,7 @@ app.post(
 
 app.post(
   "/upload-chat-media",
+  requireAuth,
   (req, res, next) => {
     const uploadMiddleware = upload.single("media");
     uploadMiddleware(req, res, (err) => {
@@ -954,7 +992,10 @@ app.delete("/enrollments/:id", requireAuth, (req, res) => {
   );
 });
 
-app.get("/course-chats/:courseId", (req, res) => {
+app.get(
+  "/course-chats/:courseId",
+  requireRoomAccess((req) => req.params.courseId),
+  (req, res) => {
   db.query(
     "SELECT * FROM course_chats WHERE course_id = ? ORDER BY id ASC",
     [String(req.params.courseId)],
@@ -965,7 +1006,10 @@ app.get("/course-chats/:courseId", (req, res) => {
   );
 });
 
-app.post("/course-chats", (req, res) => {
+app.post(
+  "/course-chats",
+  requireRoomAccess((req) => req.body.course_id, true),
+  (req, res) => {
   const {
     course_id,
     course_name,
@@ -975,7 +1019,7 @@ app.post("/course-chats", (req, res) => {
     time,
     media_url,
     media_type,
-  } = req.body;
+  } = { ...req.body, user_name: req.user.name, user_email: req.user.email };
   if (!message && !media_url)
     return res.status(400).json({ error: "Missing fields" });
   db.query(
@@ -997,8 +1041,7 @@ app.post("/course-chats", (req, res) => {
   );
 });
 
-app.delete("/course-chats/:id", (req, res) => {
-  const { requester_email } = req.body;
+app.delete("/course-chats/:id", requireAuth, (req, res) => {
 
   db.query(
     "SELECT * FROM course_chats WHERE id = ?",
@@ -1009,7 +1052,7 @@ app.delete("/course-chats/:id", (req, res) => {
         return res.status(404).json({ error: "Message not found" });
 
       const msg = data[0];
-      const isOwner = msg.user_email === requester_email;
+      const isOwner = msg.user_email === req.user.email;
       const isAdmin = req.user?.role === "admin";
 
       if (!isOwner && !isAdmin) {
@@ -1030,7 +1073,10 @@ app.delete("/course-chats/:id", (req, res) => {
   );
 });
 
-app.get("/course-chats-latest/:courseId", (req, res) => {
+app.get(
+  "/course-chats-latest/:courseId",
+  requireRoomAccess((req) => req.params.courseId),
+  (req, res) => {
   db.query(
     "SELECT MAX(id) as maxId FROM course_chats WHERE course_id = ?",
     [String(req.params.courseId)],
@@ -1041,7 +1087,7 @@ app.get("/course-chats-latest/:courseId", (req, res) => {
   );
 });
 
-app.get("/course-feedbacks/:courseId", (req, res) => {
+app.get("/course-feedbacks/:courseId", requireAuth, (req, res) => {
   db.query(
     "SELECT * FROM feedbacks WHERE course_id = ? ORDER BY id DESC",
     [String(req.params.courseId)],
@@ -1052,7 +1098,7 @@ app.get("/course-feedbacks/:courseId", (req, res) => {
   );
 });
 
-app.post("/course-feedbacks", (req, res) => {
+app.post("/course-feedbacks", requireAuth, (req, res) => {
   const {
     course_id,
     course_name,
@@ -1061,7 +1107,7 @@ app.post("/course-feedbacks", (req, res) => {
     rating,
     comment,
     date,
-  } = req.body;
+  } = { ...req.body, user_name: req.user.name, user_email: req.user.email };
   db.query(
     "INSERT INTO feedbacks (course_id, course_name, user_name, user_email, rating, comment, `date`) VALUES (?, ?, ?, ?, ?, ?, ?)",
     [
@@ -1157,7 +1203,10 @@ app.get(
   );
 });
 
-app.get("/course-complaints/:courseId", (req, res) => {
+app.get(
+  "/course-complaints/:courseId",
+  requireCourseOwner((req) => req.params.courseId),
+  (req, res) => {
   db.query(
     "SELECT * FROM complaints WHERE course_id = ? ORDER BY id DESC",
     [String(req.params.courseId)],
@@ -1168,7 +1217,7 @@ app.get("/course-complaints/:courseId", (req, res) => {
   );
 });
 
-app.post("/course-complaints", (req, res) => {
+app.post("/course-complaints", requireAuth, (req, res) => {
   const {
     course_id,
     course_name,
@@ -1176,7 +1225,7 @@ app.post("/course-complaints", (req, res) => {
     user_email,
     complaint_text,
     date,
-  } = req.body;
+  } = { ...req.body, user_name: req.user.name, user_email: req.user.email };
   db.query(
     "INSERT INTO complaints (course_id, course_name, user_name, user_email, complaint_text, `date`) VALUES (?, ?, ?, ?, ?, ?)",
     [
