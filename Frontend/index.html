@@ -5811,20 +5811,26 @@
           ? "http://localhost:5005"
           : "https://uiu-learning-management-system-lms.onrender.com";
 
-      // Send the login token with every request to the API.
+      // Send the login token with every request to the API. Request objects
+      // are passed through untouched so their own headers are kept.
       const nativeFetch = window.fetch.bind(window);
-      window.fetch = (input, init = {}) => {
-        const url = typeof input === "string" ? input : input.url;
+      window.fetch = (input, init) => {
+        const url =
+          typeof input === "string"
+            ? input
+            : input instanceof URL
+              ? input.href
+              : "";
         let token = null;
         try {
           token = localStorage.getItem("elms_auth_token");
         } catch (e) {}
         if (token && url.startsWith(API_URL)) {
-          const headers = new Headers(init.headers || {});
+          const headers = new Headers((init && init.headers) || {});
           if (!headers.has("Authorization")) {
             headers.set("Authorization", `Bearer ${token}`);
           }
-          init = { ...init, headers };
+          init = { ...(init || {}), headers };
         }
         return nativeFetch(input, init);
       };
