@@ -5963,13 +5963,9 @@
         if (savedUser && savedUser !== "undefined") {
           try {
             currentUser = JSON.parse(savedUser);
-            // Admin and instructor actions need a login token; sessions saved
-            // before tokens existed must sign in again.
-            if (
-              (currentUser.role === "admin" ||
-                currentUser.role === "instructor") &&
-              !localStorage.getItem("elms_auth_token")
-            ) {
+            // The API needs a login token; sessions saved before tokens
+            // existed must sign in again.
+            if (!localStorage.getItem("elms_auth_token")) {
               throw new Error("Session has no login token");
             }
             setupDashboard(currentUser);
