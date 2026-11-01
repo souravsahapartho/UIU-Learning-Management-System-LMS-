@@ -18,7 +18,21 @@ process.on("unhandledRejection", (reason) =>
   console.error("Promise Error:", reason),
 );
 
-app.use(cors({ origin: "*" }));
+// ALLOWED_ORIGINS is a comma-separated list of frontend origins that browsers
+// may call this API from, for example "https://uiuelms.netlify.app". When it
+// is not set every origin is allowed. Sign-in uses a bearer token rather than
+// cookies, so this limits browser access but is not a substitute for the
+// token checks.
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
+  .split(",")
+  .map((origin) => origin.trim().replace(/\/+$/, ""))
+  .filter(Boolean);
+if (allowedOrigins.length === 0) {
+  console.warn(
+    "ALLOWED_ORIGINS is not set; browsers from any website may call this API.",
+  );
+}
+app.use(cors({ origin: allowedOrigins.length > 0 ? allowedOrigins : "*" }));
 app.use(express.json());
 
 app.use((req, res, next) => {
