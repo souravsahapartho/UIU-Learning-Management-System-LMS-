@@ -9807,13 +9807,23 @@
       async function deleteAccount() {
         if (!currentUser) return;
         if (!confirm("Are you sure you want to delete your account?")) return;
+        const password = prompt(
+          "Enter your password to confirm account deletion:",
+        );
+        if (!password) return;
         try {
-          await fetch(`${API_URL}/delete-account`, {
+          const res = await fetch(`${API_URL}/delete-account`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: currentUser.email }),
+            body: JSON.stringify({ email: currentUser.email, password }),
           });
-        } catch (err) {}
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            return alert(data.error || "Failed to delete your account.");
+          }
+        } catch (err) {
+          return alert("Connection error. Please try again.");
+        }
         alert(
           "Your account has been permanently deleted. We're sorry to see you go.",
         );
