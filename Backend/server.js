@@ -224,6 +224,42 @@ const requireCourseOwner = (getCourseId) => (req, res, next) => {
   checkCourseOwner(req, res, next, getCourseId(req));
 };
 
+const requireAuth = (req, res, next) =>
+  req.user
+    ? next()
+    : res.status(401).json({ error: "Please sign in again." });
+
+// A student's own data is visible to the student, admins and the
+// instructors who teach them.
+const requireStudentViewer = (getEmail) => (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Please sign in again." });
+  }
+  const email = String(getEmail(req));
+  if (req.user.role === "admin" || req.user.email === email) return next();
+  if (req.user.role !== "instructor") {
+    return res.status(403).json({ error: "You can only view your own data." });
+  }
+  db.query(
+    "SELECT 1 FROM enrollments e JOIN courses c ON c.id = e.course_id WHERE e.student_email = ? AND c.instructor_email = ? LIMIT 1",
+    [email, req.user.email],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (rows.length === 0)
+        return res
+          .status(403)
+          .json({ error: "This student is not in your courses." });
+      next();
+    },
+  );
+};
+
+// Notifications are addressed to an email, "admin" or "all_users".
+const canReadNotifications = (user, identifier) =>
+  identifier === user.email ||
+  identifier === "all_users" ||
+  (identifier === "admin" && user.role === "admin");
+
 // For rows that belong to a course, such as enrollments and submissions.
 const requireRecordCourseOwner = (table, getId) => (req, res, next) => {
   if (!req.user) {
@@ -469,8 +505,9 @@ app.post("/login", (req, res) => {
   );
 });
 
-app.put("/update-profile", async (req, res) => {
-  const { name, avatar, email } = req.body;
+app.put("/update-profile", requireAuth, async (req, res) => {
+  const { name, avatar } = req.body;
+  const email = req.user.email;
   try {
     const promiseDb = db.promise();
     await promiseDb.query(
@@ -557,7 +594,7 @@ app.delete("/delete-account", (req, res) => {
   );
 });
 
-app.get("/users", (req, res) => {
+app.get("/users", requireAuth, (req, res) => {
   db.query(
     "SELECT id, name, email, role, avatar, status, first_login, last_login FROM users ORDER BY id DESC",
     (err, data) =>
@@ -845,14 +882,14 @@ app.put("/course-status", requireAdmin, (req, res) => {
   );
 });
 
-app.get("/enrollments", (req, res) => {
+app.get("/enrollments", requireAuth, (req, res) => {
   db.query("SELECT * FROM enrollments ORDER BY id DESC", (err, data) => {
     if (err) return res.status(500).json({ error: err.message });
     res.status(200).json(data);
   });
 });
 
-app.post("/enrollments", (req, res) => {
+app.post("/enrollments", requireRole("student"), (req, res) => {
   const {
     course_id,
     course_title,
@@ -860,7 +897,11 @@ app.post("/enrollments", (req, res) => {
     student_name,
     instructor_email,
     date,
-  } = req.body;
+  } = {
+    ...req.body,
+    student_email: req.user.email,
+    student_name: req.user.name,
+  };
   db.query(
     "INSERT INTO enrollments (course_id, course_title, student_email, student_name, instructor_email, status, `date`) VALUES (?, ?, ?, ?, ?, 'Pending', ?)",
     [
@@ -892,11 +933,24 @@ app.put(
   );
 });
 
-app.delete("/enrollments/:id", (req, res) => {
-  db.query("DELETE FROM enrollments WHERE id = ?", [req.params.id], (err) =>
-    err
-      ? res.status(500).json({ error: err.message })
-      : res.status(200).json({ message: "Deleted" }),
+app.delete("/enrollments/:id", requireAuth, (req, res) => {
+  db.query(
+    "SELECT student_email, course_id FROM enrollments WHERE id = ?",
+    [req.params.id],
+    (lookupErr, rows) => {
+      if (lookupErr) return res.status(500).json({ error: lookupErr.message });
+      if (rows.length === 0)
+        return res.status(404).json({ error: "Enrollment not found" });
+      const remove = () =>
+        db.query("DELETE FROM enrollments WHERE id = ?", [req.params.id], (err) =>
+          err
+            ? res.status(500).json({ error: err.message })
+            : res.status(200).json({ message: "Deleted" }),
+        );
+      // The student themself, the course instructor or an admin.
+      if (rows[0].student_email === req.user.email) return remove();
+      checkCourseOwner(req, res, remove, rows[0].course_id);
+    },
   );
 });
 
@@ -1034,8 +1088,9 @@ app.get("/all-complaints", requireAdmin, (req, res) => {
   );
 });
 
-app.post("/module-progress", (req, res) => {
-  const { course_id, student_email, module_index, completed_at } = req.body;
+app.post("/module-progress", requireAuth, (req, res) => {
+  const { course_id, module_index, completed_at } = req.body;
+  const student_email = req.user.email;
   db.query(
     `INSERT INTO module_progress (course_id, student_email, module_index, completed_at) 
      VALUES (?, ?, ?, ?) 
@@ -1054,7 +1109,10 @@ app.post("/module-progress", (req, res) => {
   );
 });
 
-app.get("/module-progress/:courseId/:studentEmail", (req, res) => {
+app.get(
+  "/module-progress/:courseId/:studentEmail",
+  requireStudentViewer((req) => req.params.studentEmail),
+  (req, res) => {
   db.query(
     "SELECT module_index FROM module_progress WHERE course_id = ? AND student_email = ?",
     [String(req.params.courseId), String(req.params.studentEmail)],
@@ -1065,8 +1123,9 @@ app.get("/module-progress/:courseId/:studentEmail", (req, res) => {
   );
 });
 
-app.post("/student-activity", (req, res) => {
-  const { student_email, activity_date } = req.body;
+app.post("/student-activity", requireAuth, (req, res) => {
+  const { activity_date } = req.body;
+  const student_email = req.user.email;
   if (!student_email || !activity_date) {
     return res
       .status(400)
@@ -1084,7 +1143,10 @@ app.post("/student-activity", (req, res) => {
   );
 });
 
-app.get("/student-activity/:email", (req, res) => {
+app.get(
+  "/student-activity/:email",
+  requireStudentViewer((req) => req.params.email),
+  (req, res) => {
   db.query(
     "SELECT DATE_FORMAT(activity_date, '%Y-%m-%d') as activity_date FROM student_activity WHERE student_email = ? ORDER BY activity_date DESC",
     [String(req.params.email)],
@@ -1132,7 +1194,7 @@ app.post("/course-complaints", (req, res) => {
   );
 });
 
-app.get("/assignments/:courseId", (req, res) => {
+app.get("/assignments/:courseId", requireAuth, (req, res) => {
   db.query(
     "SELECT * FROM assignments WHERE course_id = ? ORDER BY id DESC",
     [String(req.params.courseId)],
@@ -1198,7 +1260,7 @@ app.put(
   );
 });
 
-app.get("/module-videos/:courseId", (req, res) => {
+app.get("/module-videos/:courseId", requireAuth, (req, res) => {
   db.query(
     "SELECT * FROM module_videos WHERE course_id = ?",
     [String(req.params.courseId)],
@@ -1254,18 +1316,26 @@ app.post(
   );
 });
 
-app.get("/assignment-submissions/:courseId", (req, res) => {
-  db.query(
-    "SELECT * FROM assignment_submissions WHERE course_id = ? ORDER BY id DESC",
-    [String(req.params.courseId)],
-    (err, data) =>
-      err
-        ? res.status(500).json({ error: err.message })
-        : res.status(200).json(data),
-  );
+app.get("/assignment-submissions/:courseId", requireAuth, (req, res) => {
+  const send = (onlyStudent) =>
+    db.query(
+      onlyStudent
+        ? "SELECT * FROM assignment_submissions WHERE course_id = ? AND student_email = ? ORDER BY id DESC"
+        : "SELECT * FROM assignment_submissions WHERE course_id = ? ORDER BY id DESC",
+      onlyStudent
+        ? [String(req.params.courseId), onlyStudent]
+        : [String(req.params.courseId)],
+      (err, data) =>
+        err
+          ? res.status(500).json({ error: err.message })
+          : res.status(200).json(data),
+    );
+  // Students see only their own submissions; instructors must own the course.
+  if (req.user.role === "student") return send(req.user.email);
+  checkCourseOwner(req, res, () => send(null), req.params.courseId);
 });
 
-app.post("/assignment-submissions", (req, res) => {
+app.post("/assignment-submissions", requireRole("student"), (req, res) => {
   const {
     assignment_id,
     course_id,
@@ -1275,7 +1345,11 @@ app.post("/assignment-submissions", (req, res) => {
     date,
     assignment_title,
     course_name,
-  } = req.body;
+  } = {
+    ...req.body,
+    student_email: req.user.email,
+    student_name: req.user.name,
+  };
 
   db.query(
     "INSERT INTO assignment_submissions (assignment_id, course_id, student_email, student_name, submission_text, `date`, assignment_title, course_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
@@ -1311,8 +1385,14 @@ app.put(
   );
 });
 
-app.get("/ban-requests", (req, res) => {
-  db.query("SELECT * FROM ban_requests ORDER BY id DESC", (err, data) =>
+app.get("/ban-requests", requireRole("admin", "instructor"), (req, res) => {
+  const own = req.user.role === "instructor";
+  db.query(
+    own
+      ? "SELECT * FROM ban_requests WHERE inst_email = ? ORDER BY id DESC"
+      : "SELECT * FROM ban_requests ORDER BY id DESC",
+    own ? [req.user.email] : [],
+    (err, data) =>
     err
       ? res.status(500).json({ error: err.message })
       : res.status(200).json(data),
@@ -1427,7 +1507,10 @@ app.put("/ban-requests/:id", requireAdmin, async (req, res) => {
   }
 });
 
-app.get("/notifications/:identifier", (req, res) => {
+app.get("/notifications/:identifier", requireAuth, (req, res) => {
+  if (!canReadNotifications(req.user, req.params.identifier)) {
+    return res.status(403).json({ error: "Not your notifications" });
+  }
   db.query(
     "SELECT * FROM notifications WHERE identifier = ? ORDER BY id DESC",
     [req.params.identifier],
@@ -1438,7 +1521,7 @@ app.get("/notifications/:identifier", (req, res) => {
   );
 });
 
-app.post("/notifications", (req, res) => {
+app.post("/notifications", requireAuth, (req, res) => {
   const { identifier, text, color, date, time } = req.body;
   db.query(
     "INSERT INTO notifications (identifier, text, color, `date`, `time`, unread) VALUES (?, ?, ?, ?, ?, 1)",
@@ -1450,7 +1533,11 @@ app.post("/notifications", (req, res) => {
   );
 });
 
-app.put("/notifications/read", (req, res) => {
+app.put("/notifications/read", requireAuth, (req, res) => {
+  const ownInbox = req.user.role === "admin" ? "admin" : req.user.email;
+  if (req.body.identifier !== ownInbox) {
+    return res.status(403).json({ error: "Not your notifications" });
+  }
   db.query(
     "UPDATE notifications SET unread = 0 WHERE identifier = ?",
     [req.body.identifier],
@@ -1461,8 +1548,11 @@ app.put("/notifications/read", (req, res) => {
   );
 });
 
-app.get("/unread-counts/:userEmail", async (req, res) => {
+app.get("/unread-counts/:userEmail", requireAuth, async (req, res) => {
   const userEmail = req.params.userEmail;
+  if (userEmail !== req.user.email) {
+    return res.status(403).json({ error: "You can only view your own data." });
+  }
   const promiseDb = db.promise();
   try {
     const [readRows] = await promiseDb.query(
@@ -1502,8 +1592,9 @@ app.get("/unread-counts/:userEmail", async (req, res) => {
   }
 });
 
-app.post("/mark-chat-read", (req, res) => {
-  const { user_email, course_id, last_message_id } = req.body;
+app.post("/mark-chat-read", requireAuth, (req, res) => {
+  const { course_id, last_message_id } = req.body;
+  const user_email = req.user.email;
   db.query(
     `INSERT INTO chat_read_status (user_email, course_id, last_read_message_id) 
      VALUES (?, ?, ?) 
