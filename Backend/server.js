@@ -459,6 +459,62 @@ app.post(
   },
 );
 
+// Failed password checks are counted per email. After MAX_LOGIN_FAILURES in
+// the window the account is locked for the rest of the window, which slows
+// password guessing. A successful sign-in clears the count. The count is kept
+// in memory, so it resets when the server restarts.
+const LOGIN_WINDOW_MS = 15 * 60 * 1000;
+const MAX_LOGIN_FAILURES = 10;
+const MAX_TRACKED_EMAILS = 10000;
+const loginFailures = new Map();
+
+const loginKey = (email) => String(email || "").trim().toLowerCase();
+
+const loginLockedMs = (key) => {
+  const entry = loginFailures.get(key);
+  if (!entry) return 0;
+  if (Date.now() - entry.first > LOGIN_WINDOW_MS) {
+    loginFailures.delete(key);
+    return 0;
+  }
+  return entry.count >= MAX_LOGIN_FAILURES
+    ? entry.first + LOGIN_WINDOW_MS - Date.now()
+    : 0;
+};
+
+const recordLoginFailure = (key) => {
+  const entry = loginFailures.get(key);
+  if (entry && Date.now() - entry.first <= LOGIN_WINDOW_MS) {
+    entry.count += 1;
+    return;
+  }
+  if (loginFailures.size >= MAX_TRACKED_EMAILS) {
+    loginFailures.delete(loginFailures.keys().next().value);
+  }
+  loginFailures.set(key, { count: 1, first: Date.now() });
+};
+
+// Sends the 429 response and returns true while the account is locked.
+const rejectIfLocked = (res, key) => {
+  const waitMs = loginLockedMs(key);
+  if (waitMs <= 0) return false;
+  res.set("Retry-After", String(Math.ceil(waitMs / 1000)));
+  res.status(429).json({
+    error: "Too many failed attempts. Please try again in a few minutes.",
+  });
+  return true;
+};
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MIN_PASSWORD_LENGTH = 8;
+const MAX_PASSWORD_LENGTH = 200;
+const passwordProblem = (password) =>
+  typeof password !== "string" ||
+  password.length < MIN_PASSWORD_LENGTH ||
+  password.length > MAX_PASSWORD_LENGTH
+    ? `Password must be ${MIN_PASSWORD_LENGTH} to ${MAX_PASSWORD_LENGTH} characters.`
+    : null;
+
 const SIGNUP_ROLES = ["student", "instructor"];
 
 app.post("/signup", (req, res) => {
@@ -466,6 +522,23 @@ app.post("/signup", (req, res) => {
   if (role && !SIGNUP_ROLES.includes(role)) {
     return res.status(400).json({ error: "Invalid role" });
   }
+  const cleanName = typeof name === "string" ? name.trim() : "";
+  if (!cleanName || cleanName.length > 100) {
+    return res
+      .status(400)
+      .json({ error: "Please enter your name (up to 100 characters)." });
+  }
+  if (
+    typeof email !== "string" ||
+    email.length > 100 ||
+    !EMAIL_PATTERN.test(email.trim())
+  ) {
+    return res
+      .status(400)
+      .json({ error: "Please enter a valid email address." });
+  }
+  const weakPassword = passwordProblem(password);
+  if (weakPassword) return res.status(400).json({ error: weakPassword });
   const encryptedPassword = hashPassword(password || "");
   db.query(
     "INSERT INTO users (name, email, password, role, avatar, status) VALUES (?, ?, ?, ?, ?, 'Pending')",
@@ -485,6 +558,14 @@ app.post("/signup", (req, res) => {
 
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
+  if (!AUTH_ENABLED) {
+    return res.status(503).json({
+      error:
+        "Sign-in is unavailable: the server is missing its AUTH_SECRET setting. Please contact the administrator.",
+    });
+  }
+  const failureKey = loginKey(email);
+  if (rejectIfLocked(res, failureKey)) return;
   db.query(
     "SELECT * FROM users WHERE email = ?",
     [email || ""],
@@ -493,6 +574,7 @@ app.post("/login", (req, res) => {
       const check =
         data.length > 0 ? verifyPassword(password, data[0].password) : null;
       if (check && check.ok) {
+        loginFailures.delete(failureKey);
         const user = data[0];
         delete user.password;
         if (check.needsUpgrade) {
@@ -537,6 +619,7 @@ app.post("/login", (req, res) => {
           },
         );
       } else {
+        recordLoginFailure(failureKey);
         res.status(401).json({ error: "Invalid email or password" });
       }
     },
@@ -585,9 +668,14 @@ app.put("/update-profile", requireAuth, async (req, res) => {
   }
 });
 
-app.put("/update-password", (req, res) => {
-  const { email, oldPassword, newPassword } = req.body;
-  const newEncrypted = hashPassword(newPassword || "");
+app.put("/update-password", requireAuth, (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const email = req.user.email;
+  const failureKey = loginKey(email);
+  if (rejectIfLocked(res, failureKey)) return;
+  const weakPassword = passwordProblem(newPassword);
+  if (weakPassword) return res.status(400).json({ error: weakPassword });
+  const newEncrypted = hashPassword(newPassword);
 
   db.query(
     "SELECT * FROM users WHERE email = ?",
@@ -606,14 +694,18 @@ app.put("/update-password", (req, res) => {
           },
         );
       } else {
+        recordLoginFailure(failureKey);
         res.status(401).json({ error: "Incorrect current password" });
       }
     },
   );
 });
 
-app.delete("/delete-account", (req, res) => {
-  const { email, password } = req.body;
+app.delete("/delete-account", requireAuth, (req, res) => {
+  const { password } = req.body;
+  const email = req.user.email;
+  const failureKey = loginKey(email);
+  if (rejectIfLocked(res, failureKey)) return;
   db.query(
     "SELECT password FROM users WHERE email = ?",
     [email || ""],
@@ -621,8 +713,10 @@ app.delete("/delete-account", (req, res) => {
       if (err) return res.status(500).json({ error: err.message });
       if (data.length === 0)
         return res.status(404).json({ error: "Account not found" });
-      if (!verifyPassword(password, data[0].password).ok)
+      if (!verifyPassword(password, data[0].password).ok) {
+        recordLoginFailure(failureKey);
         return res.status(401).json({ error: "Incorrect password" });
+      }
       db.query("DELETE FROM users WHERE email = ?", [email], (deleteErr) =>
         deleteErr
           ? res.status(500).json({ error: deleteErr.message })

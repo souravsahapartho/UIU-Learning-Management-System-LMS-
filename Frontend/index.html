@@ -3457,7 +3457,7 @@
             </div>
             <div class="form-group">
               <label>Password</label
-              ><input type="password" id="signup-password" required />
+              ><input type="password" id="signup-password" required minlength="8" />
             </div>
             <div class="form-group">
               <label>Role</label>
@@ -5832,7 +5832,28 @@
           }
           init = { ...(init || {}), headers };
         }
-        return nativeFetch(input, init);
+        const request = nativeFetch(input, init);
+        if (!token || !url.startsWith(API_URL)) return request;
+        // A rejected token means the session has expired or the account was
+        // changed: go back to the login screen instead of showing empty pages.
+        return request.then((res) => {
+          if (res.status === 401) {
+            res
+              .clone()
+              .json()
+              .then((data) => {
+                if (data && data.error === "Please sign in again.") {
+                  try {
+                    localStorage.removeItem("elms_current_user");
+                    localStorage.removeItem("elms_auth_token");
+                  } catch (e) {}
+                  location.reload();
+                }
+              })
+              .catch(() => {});
+          }
+          return res;
+        });
       };
       let currentUser = null;
       let currentCoursePlayerId = null;
