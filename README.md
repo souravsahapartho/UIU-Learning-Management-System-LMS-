@@ -216,6 +216,15 @@ Database connected.
 🚀 SERVER RUNNING ON PORT 5005
 ```
 
+### Running the Tests
+
+```bash
+cd Backend
+npm test
+```
+
+The suites start the real `server.js` with in-memory stand-ins for MySQL and Cloudinary, so they need no database, no accounts and no network. They cover sign-in and tokens, every role's allowed and denied access, uploads and CORS. They cannot prove that the SQL runs on a real MySQL or TiDB server, so also try the main flows against a test database before deploying.
+
 ### 6. Deploy to Render
 
 1. Push your code to GitHub.
