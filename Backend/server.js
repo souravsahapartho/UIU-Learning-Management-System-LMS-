@@ -85,7 +85,9 @@ const signToken = (userId) => {
 
 const verifyToken = (token) => {
   if (!AUTH_ENABLED || typeof token !== "string") return null;
-  const [payload, signature] = token.split(".");
+  const parts = token.split(".");
+  if (parts.length !== 2) return null;
+  const [payload, signature] = parts;
   if (!payload || !signature || !safeEqual(signature, signPayload(payload)))
     return null;
   try {
