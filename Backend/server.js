@@ -393,10 +393,22 @@ app.put("/update-password", (req, res) => {
 });
 
 app.delete("/delete-account", (req, res) => {
-  db.query("DELETE FROM users WHERE email = ?", [req.body.email], (err) =>
-    err
-      ? res.status(500).json({ error: err.message })
-      : res.status(200).json({ message: "Deleted" }),
+  const { email, password } = req.body;
+  db.query(
+    "SELECT password FROM users WHERE email = ?",
+    [email || ""],
+    (err, data) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (data.length === 0)
+        return res.status(404).json({ error: "Account not found" });
+      if (!verifyPassword(password, data[0].password).ok)
+        return res.status(401).json({ error: "Incorrect password" });
+      db.query("DELETE FROM users WHERE email = ?", [email], (deleteErr) =>
+        deleteErr
+          ? res.status(500).json({ error: deleteErr.message })
+          : res.status(200).json({ message: "Deleted" }),
+      );
+    },
   );
 });
 
