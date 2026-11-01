@@ -184,6 +184,63 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
+const requireRole =
+  (...roles) =>
+  (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ error: "Please sign in again." });
+    }
+    if (!roles.includes(req.user.role)) {
+      return res
+        .status(403)
+        .json({ error: "You do not have permission to do this." });
+    }
+    next();
+  };
+
+// Passes admins and the instructor who owns the course.
+const checkCourseOwner = (req, res, next, courseId) => {
+  const denied = () =>
+    res.status(403).json({ error: "Only the course instructor can do this." });
+  if (req.user.role === "admin") return next();
+  if (req.user.role !== "instructor") return denied();
+  db.query(
+    "SELECT instructor_email FROM courses WHERE id = ?",
+    [courseId],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (rows.length === 0)
+        return res.status(404).json({ error: "Course not found" });
+      if (rows[0].instructor_email !== req.user.email) return denied();
+      next();
+    },
+  );
+};
+
+const requireCourseOwner = (getCourseId) => (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Please sign in again." });
+  }
+  checkCourseOwner(req, res, next, getCourseId(req));
+};
+
+// For rows that belong to a course, such as enrollments and submissions.
+const requireRecordCourseOwner = (table, getId) => (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Please sign in again." });
+  }
+  db.query(
+    `SELECT course_id FROM ${table} WHERE id = ?`,
+    [getId(req)],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (rows.length === 0)
+        return res.status(404).json({ error: "Not found" });
+      checkCourseOwner(req, res, next, rows[0].course_id);
+    },
+  );
+};
+
 app.get("/auth/me", (req, res) =>
   req.user
     ? res.status(200).json({ user: req.user })
@@ -523,6 +580,7 @@ app.put("/update-user-status", requireAdmin, (req, res) => {
 
 app.post(
   "/upload-course",
+  requireRole("instructor", "admin"),
   (req, res, next) => {
     const uploadMiddleware = upload.fields([
       { name: "thumbnail", maxCount: 1 },
@@ -548,7 +606,11 @@ app.post(
       instructorEmail,
       instructorName,
       total_lessons,
-    } = req.body;
+    } = {
+      ...req.body,
+      instructorEmail: req.user.email,
+      instructorName: req.user.name,
+    };
 
     const thumbnailUrl =
       req.files && req.files["thumbnail"]
@@ -591,6 +653,7 @@ app.post(
 
 app.post(
   "/upload-course-with-media",
+  requireRole("instructor", "admin"),
   (req, res, next) => {
     const uploadMiddleware = upload.fields([
       { name: "thumbnail", maxCount: 1 },
@@ -616,7 +679,11 @@ app.post(
       instructorEmail,
       instructorName,
       total_lessons,
-    } = req.body;
+    } = {
+      ...req.body,
+      instructorEmail: req.user.email,
+      instructorName: req.user.name,
+    };
     const thumbnailUrl =
       req.files && req.files["thumbnail"]
         ? req.files["thumbnail"][0].path
@@ -651,6 +718,7 @@ app.post(
 
 app.put(
   "/update-course/:id",
+  requireCourseOwner((req) => req.params.id),
   (req, res, next) => {
     const uploadMiddleware = upload.fields([
       { name: "thumbnail", maxCount: 1 },
@@ -742,6 +810,7 @@ app.put(
 
 app.post(
   "/upload-module-video",
+  requireRole("instructor", "admin"),
   (req, res, next) => {
     const uploadMiddleware = upload.single("moduleVideo");
     uploadMiddleware(req, res, (err) => {
@@ -809,7 +878,10 @@ app.post("/enrollments", (req, res) => {
   );
 });
 
-app.put("/enrollments/status", (req, res) => {
+app.put(
+  "/enrollments/status",
+  requireRecordCourseOwner("enrollments", (req) => req.body.id),
+  (req, res) => {
   db.query(
     "UPDATE enrollments SET status = ? WHERE id = ?",
     [req.body.status, req.body.id],
@@ -1071,7 +1143,10 @@ app.get("/assignments/:courseId", (req, res) => {
   );
 });
 
-app.post("/module-videos", (req, res) => {
+app.post(
+  "/module-videos",
+  requireCourseOwner((req) => req.body.course_id),
+  (req, res) => {
   const {
     course_id,
     module_index,
@@ -1079,7 +1154,7 @@ app.post("/module-videos", (req, res) => {
     uploaded_by,
     description,
     duration,
-  } = req.body;
+  } = { ...req.body, uploaded_by: req.user.email };
   const durationVal =
     duration !== undefined && duration !== null && !isNaN(duration)
       ? Math.round(duration)
@@ -1106,7 +1181,10 @@ app.post("/module-videos", (req, res) => {
   );
 });
 
-app.put("/module-videos/description", (req, res) => {
+app.put(
+  "/module-videos/description",
+  requireCourseOwner((req) => req.body.course_id),
+  (req, res) => {
   const { course_id, module_index, description } = req.body;
   db.query(
     `INSERT INTO module_videos (course_id, module_index, video_url, description) 
@@ -1131,7 +1209,10 @@ app.get("/module-videos/:courseId", (req, res) => {
   );
 });
 
-app.delete("/module-videos/:courseId/:moduleIndex", (req, res) => {
+app.delete(
+  "/module-videos/:courseId/:moduleIndex",
+  requireCourseOwner((req) => req.params.courseId),
+  (req, res) => {
   db.query(
     "DELETE FROM module_videos WHERE course_id = ? AND module_index = ?",
     [String(req.params.courseId), req.params.moduleIndex],
@@ -1142,7 +1223,10 @@ app.delete("/module-videos/:courseId/:moduleIndex", (req, res) => {
   );
 });
 
-app.post("/assignments", (req, res) => {
+app.post(
+  "/assignments",
+  requireCourseOwner((req) => req.body.course_id),
+  (req, res) => {
   const {
     course_id,
     course_name,
@@ -1151,7 +1235,7 @@ app.post("/assignments", (req, res) => {
     due_date,
     instructor_email,
     date,
-  } = req.body;
+  } = { ...req.body, instructor_email: req.user.email };
   db.query(
     "INSERT INTO assignments (course_id, course_name, title, description, due_date, instructor_email, `date`) VALUES (?, ?, ?, ?, ?, ?, ?)",
     [
@@ -1212,7 +1296,10 @@ app.post("/assignment-submissions", (req, res) => {
   );
 });
 
-app.put("/assignment-submissions/:id/grade", (req, res) => {
+app.put(
+  "/assignment-submissions/:id/grade",
+  requireRecordCourseOwner("assignment_submissions", (req) => req.params.id),
+  (req, res) => {
   const { marks, instructor_comment } = req.body;
   db.query(
     "UPDATE assignment_submissions SET marks = ?, instructor_comment = ? WHERE id = ?",
@@ -1232,7 +1319,10 @@ app.get("/ban-requests", (req, res) => {
   );
 });
 
-app.post("/ban-requests", (req, res) => {
+app.post(
+  "/ban-requests",
+  requireCourseOwner((req) => req.body.course_id),
+  (req, res) => {
   const {
     course_id,
     course_title,
@@ -1242,7 +1332,7 @@ app.post("/ban-requests", (req, res) => {
     student_name,
     date,
     reason,
-  } = req.body;
+  } = { ...req.body, inst_email: req.user.email, inst_name: req.user.name };
   db.query(
     "SELECT * FROM ban_requests WHERE course_id = ? AND student_email = ? AND status = 'Pending'",
     [String(course_id), String(student_email)],
