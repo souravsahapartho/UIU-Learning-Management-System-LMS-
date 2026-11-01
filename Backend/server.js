@@ -251,8 +251,13 @@ app.post(
   },
 );
 
+const SIGNUP_ROLES = ["student", "instructor"];
+
 app.post("/signup", (req, res) => {
   const { name, email, password, role, avatar } = req.body;
+  if (role && !SIGNUP_ROLES.includes(role)) {
+    return res.status(400).json({ error: "Invalid role" });
+  }
   const encryptedPassword = hashPassword(password || "");
   db.query(
     "INSERT INTO users (name, email, password, role, avatar, status) VALUES (?, ?, ?, ?, ?, 'Pending')",
@@ -287,6 +292,12 @@ app.post("/login", (req, res) => {
             hashPassword(password),
             email,
           ]);
+        }
+        if (user.role !== "admin" && user.status === "Pending") {
+          return res.status(403).json({
+            error:
+              "Account Pending: Your account is awaiting administrator approval.",
+          });
         }
         if (user.status === "Banned") {
           return res.status(403).json({
