@@ -188,6 +188,12 @@ CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 #   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 AUTH_SECRET=your_long_random_secret
 
+# Optional: frontend origins allowed to call the API from a browser, comma
+# separated, no trailing slash. Leave unset to allow any origin. Add
+# http://localhost:5500 (or your dev server) for local testing, and "null" if
+# you open index.html straight from disk.
+# ALLOWED_ORIGINS=https://your-frontend.netlify.app
+
 # Optional upload size limits in MB (defaults shown)
 # MAX_IMAGE_MB=5
 # MAX_CHAT_MEDIA_MB=50
