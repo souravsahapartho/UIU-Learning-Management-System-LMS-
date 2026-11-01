@@ -2,6 +2,7 @@ const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 const crypto = require("crypto");
+const path = require("path");
 const multer = require("multer");
 const { v2: cloudinary } = require("cloudinary");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
@@ -111,31 +112,104 @@ const storage = new CloudinaryStorage({
       return {
         folder: "elms/course_videos",
         resource_type: "video",
+        public_id: crypto.randomUUID(),
         allowed_formats: ["mp4", "webm", "mov", "mkv"],
       };
     } else if (file.fieldname === "profilePic") {
       return {
         folder: "elms/profile_pics",
         resource_type: "image",
+        public_id: crypto.randomUUID(),
         allowed_formats: ["jpg", "png", "jpeg", "webp"],
       };
     } else if (file.fieldname === "media" || file.mimetype.includes("image")) {
       return {
         folder: "elms/chat_media",
         resource_type: "auto",
+        public_id: crypto.randomUUID(),
         allowed_formats: ["jpg", "png", "jpeg", "webp", "mp4", "webm"],
       };
     } else {
       return {
         folder: "elms/course_images",
         resource_type: "image",
+        public_id: crypto.randomUUID(),
         allowed_formats: ["jpg", "png", "jpeg", "webp"],
       };
     }
   },
 });
 
-const upload = multer({ storage: storage });
+const MB = 1024 * 1024;
+const limitMb = (name, fallback) => {
+  const value = Number(process.env[name]);
+  return (Number.isFinite(value) && value > 0 ? value : fallback) * MB;
+};
+// Size caps can be changed with MAX_IMAGE_MB, MAX_CHAT_MEDIA_MB and
+// MAX_VIDEO_MB. Cloudinary enforces its own plan limits on top of these.
+const MAX_IMAGE_BYTES = limitMb("MAX_IMAGE_MB", 5);
+const MAX_CHAT_MEDIA_BYTES = limitMb("MAX_CHAT_MEDIA_MB", 50);
+const MAX_VIDEO_BYTES = limitMb("MAX_VIDEO_MB", 200);
+
+// A file is accepted only when its declared type and its extension agree.
+// Cloudinary's allowed_formats then checks the real file format.
+const IMAGE_TYPES = {
+  "image/jpeg": [".jpg", ".jpeg"],
+  "image/png": [".png"],
+  "image/webp": [".webp"],
+};
+const VIDEO_TYPES = {
+  "video/mp4": [".mp4"],
+  "video/webm": [".webm"],
+  "video/quicktime": [".mov"],
+  "video/x-matroska": [".mkv"],
+};
+
+const fileFilterFor = (typesByField) => (req, file, cb) => {
+  const allowed = typesByField[file.fieldname];
+  const extension = path.extname(file.originalname || "").toLowerCase();
+  if (allowed && allowed[file.mimetype]?.includes(extension)) {
+    return cb(null, true);
+  }
+  const error = new Error("This file type is not allowed.");
+  error.code = "UNSUPPORTED_FILE";
+  cb(error);
+};
+
+const makeUpload = (maxBytes, maxFiles, typesByField) =>
+  multer({
+    storage,
+    limits: { fileSize: maxBytes, files: maxFiles },
+    fileFilter: fileFilterFor(typesByField),
+  });
+
+const imageUpload = makeUpload(MAX_IMAGE_BYTES, 1, { profilePic: IMAGE_TYPES });
+const chatUpload = makeUpload(MAX_CHAT_MEDIA_BYTES, 1, {
+  media: { ...IMAGE_TYPES, ...VIDEO_TYPES },
+});
+const videoUpload = makeUpload(MAX_VIDEO_BYTES, 1, { moduleVideo: VIDEO_TYPES });
+const courseUpload = makeUpload(MAX_VIDEO_BYTES, 2, {
+  thumbnail: IMAGE_TYPES,
+  video: VIDEO_TYPES,
+});
+
+const uploadFailure = (res, err) => {
+  if (err.code === "LIMIT_FILE_SIZE") {
+    return res.status(413).json({ error: "That file is too large." });
+  }
+  if (
+    ["UNSUPPORTED_FILE", "LIMIT_UNEXPECTED_FILE", "LIMIT_FILE_COUNT"].includes(
+      err.code,
+    )
+  ) {
+    return res
+      .status(400)
+      .json({ error: "This file type is not allowed or the upload is invalid." });
+  }
+  return res
+    .status(500)
+    .json({ error: "File upload failed: " + err.message });
+};
 
 const db = mysql.createPool({
   host: process.env.MYSQLHOST,
@@ -402,14 +476,12 @@ app.post(
   "/upload-profile-pic",
   requireAuth,
   (req, res, next) => {
-    const uploadMiddleware = upload.single("profilePic");
+    const uploadMiddleware = imageUpload.single("profilePic");
 
     uploadMiddleware(req, res, (err) => {
       if (err) {
         console.error("Profile upload error:", err.message);
-        return res
-          .status(500)
-          .json({ error: "File upload failed: " + err.message });
+        return uploadFailure(res, err);
       }
       next();
     });
@@ -440,13 +512,11 @@ app.post(
   "/upload-chat-media",
   requireAuth,
   (req, res, next) => {
-    const uploadMiddleware = upload.single("media");
+    const uploadMiddleware = chatUpload.single("media");
     uploadMiddleware(req, res, (err) => {
       if (err) {
         console.error("Chat media upload error:", err.message);
-        return res
-          .status(500)
-          .json({ error: "File upload failed: " + err.message });
+        return uploadFailure(res, err);
       }
       next();
     });
@@ -751,7 +821,7 @@ app.post(
   "/upload-course",
   requireRole("instructor", "admin"),
   (req, res, next) => {
-    const uploadMiddleware = upload.fields([
+    const uploadMiddleware = courseUpload.fields([
       { name: "thumbnail", maxCount: 1 },
       { name: "video", maxCount: 1 },
     ]);
@@ -759,9 +829,7 @@ app.post(
     uploadMiddleware(req, res, (err) => {
       if (err) {
         console.error("Course upload error:", err.message);
-        return res
-          .status(500)
-          .json({ error: "File upload failed: " + err.message });
+        return uploadFailure(res, err);
       }
       next();
     });
@@ -824,7 +892,7 @@ app.post(
   "/upload-course-with-media",
   requireRole("instructor", "admin"),
   (req, res, next) => {
-    const uploadMiddleware = upload.fields([
+    const uploadMiddleware = courseUpload.fields([
       { name: "thumbnail", maxCount: 1 },
       { name: "video", maxCount: 1 },
     ]);
@@ -832,9 +900,7 @@ app.post(
     uploadMiddleware(req, res, (err) => {
       if (err) {
         console.error("🔥 Cloudinary/Multer Error:", err.message);
-        return res
-          .status(500)
-          .json({ error: "File upload failed: " + err.message });
+        return uploadFailure(res, err);
       }
       next();
     });
@@ -889,16 +955,14 @@ app.put(
   "/update-course/:id",
   requireCourseOwner((req) => req.params.id),
   (req, res, next) => {
-    const uploadMiddleware = upload.fields([
+    const uploadMiddleware = courseUpload.fields([
       { name: "thumbnail", maxCount: 1 },
       { name: "video", maxCount: 1 },
     ]);
 
     uploadMiddleware(req, res, (err) => {
       if (err)
-        return res
-          .status(500)
-          .json({ error: "File upload failed: " + err.message });
+        return uploadFailure(res, err);
       next();
     });
   },
@@ -981,10 +1045,10 @@ app.post(
   "/upload-module-video",
   requireRole("instructor", "admin"),
   (req, res, next) => {
-    const uploadMiddleware = upload.single("moduleVideo");
+    const uploadMiddleware = videoUpload.single("moduleVideo");
     uploadMiddleware(req, res, (err) => {
       if (err)
-        return res.status(500).json({ error: "Upload failed: " + err.message });
+        return uploadFailure(res, err);
       next();
     });
   },

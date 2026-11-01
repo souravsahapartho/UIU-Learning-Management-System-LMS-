@@ -187,6 +187,11 @@ CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 # Use at least 32 random characters, for example:
 #   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 AUTH_SECRET=your_long_random_secret
+
+# Optional upload size limits in MB (defaults shown)
+# MAX_IMAGE_MB=5
+# MAX_CHAT_MEDIA_MB=50
+# MAX_VIDEO_MB=200
 ```
 
 > ⚠️ Never commit `.env` to version control. Ensure it is listed in `.gitignore`.
