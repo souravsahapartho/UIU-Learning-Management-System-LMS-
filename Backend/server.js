@@ -59,6 +59,45 @@ const verifyPassword = (password, stored) => {
   return { ok: saved.length > 0 && safeEqual(input, saved), needsUpgrade: true };
 };
 
+// Signed login tokens: base64url(payload).base64url(HMAC-SHA256). Tokens are
+// only issued when AUTH_SECRET (32+ characters) is configured.
+const AUTH_SECRET = process.env.AUTH_SECRET || "";
+const AUTH_ENABLED = AUTH_SECRET.length >= 32;
+const TOKEN_TTL_SECONDS = 7 * 24 * 60 * 60;
+
+if (!AUTH_ENABLED) {
+  console.warn(
+    "AUTH_SECRET is missing or shorter than 32 characters; login tokens are disabled.",
+  );
+}
+
+const signPayload = (payload) =>
+  crypto.createHmac("sha256", AUTH_SECRET).update(payload).digest("base64url");
+
+const signToken = (userId) => {
+  if (!AUTH_ENABLED) return null;
+  const now = Math.floor(Date.now() / 1000);
+  const payload = Buffer.from(
+    JSON.stringify({ sub: userId, iat: now, exp: now + TOKEN_TTL_SECONDS }),
+  ).toString("base64url");
+  return `${payload}.${signPayload(payload)}`;
+};
+
+const verifyToken = (token) => {
+  if (!AUTH_ENABLED || typeof token !== "string") return null;
+  const parts = token.split(".");
+  if (parts.length !== 2) return null;
+  const [payload, signature] = parts;
+  if (!payload || !signature || !safeEqual(signature, signPayload(payload)))
+    return null;
+  try {
+    const claims = JSON.parse(Buffer.from(payload, "base64url").toString());
+    return claims.sub && claims.exp > Date.now() / 1000 ? claims : null;
+  } catch {
+    return null;
+  }
+};
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -112,6 +151,32 @@ const db = mysql.createPool({
     rejectUnauthorized: true,
   },
 });
+
+// Sets req.user when the request carries a valid token. It never rejects a
+// request on its own; routes opt in to enforcement separately.
+app.use((req, res, next) => {
+  const header = req.get("Authorization") || "";
+  const claims = header.startsWith("Bearer ")
+    ? verifyToken(header.slice(7))
+    : null;
+  if (!claims) return next();
+  db.query(
+    "SELECT id, name, email, role, status FROM users WHERE id = ?",
+    [claims.sub],
+    (err, rows) => {
+      if (!err && rows.length > 0 && rows[0].status !== "Banned") {
+        req.user = rows[0];
+      }
+      next();
+    },
+  );
+});
+
+app.get("/auth/me", (req, res) =>
+  req.user
+    ? res.status(200).json({ user: req.user })
+    : res.status(401).json({ error: "Not signed in" }),
+);
 
 db.query("SELECT 1", (err) => {
   if (err) {
@@ -325,7 +390,7 @@ app.post("/login", (req, res) => {
           () => {
             user.last_login = now;
             if (!user.first_login) user.first_login = now;
-            res.status(200).json({ user });
+            res.status(200).json({ user, token: signToken(user.id) });
           },
         );
       } else {
