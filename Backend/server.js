@@ -172,6 +172,18 @@ app.use((req, res, next) => {
   );
 });
 
+// Admin-only routes take the caller's identity and role from the verified
+// token (req.user), never from the request body.
+const requireAdmin = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Please sign in again." });
+  }
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ error: "Admin access required" });
+  }
+  next();
+};
+
 app.get("/auth/me", (req, res) =>
   req.user
     ? res.status(200).json({ user: req.user })
@@ -498,7 +510,7 @@ app.get("/users", (req, res) => {
   );
 });
 
-app.put("/update-user-status", (req, res) => {
+app.put("/update-user-status", requireAdmin, (req, res) => {
   db.query(
     "UPDATE users SET status = ? WHERE email = ?",
     [req.body.status, req.body.email.trim()],
@@ -753,7 +765,7 @@ app.get("/courses", (req, res) => {
   );
 });
 
-app.put("/course-status", (req, res) => {
+app.put("/course-status", requireAdmin, (req, res) => {
   db.query(
     "UPDATE courses SET status = ? WHERE id = ?",
     [req.body.status, req.body.id],
@@ -860,7 +872,7 @@ app.post("/course-chats", (req, res) => {
 });
 
 app.delete("/course-chats/:id", (req, res) => {
-  const { requester_email, requester_role } = req.body;
+  const { requester_email } = req.body;
 
   db.query(
     "SELECT * FROM course_chats WHERE id = ?",
@@ -872,7 +884,7 @@ app.delete("/course-chats/:id", (req, res) => {
 
       const msg = data[0];
       const isOwner = msg.user_email === requester_email;
-      const isAdmin = requester_role === "admin";
+      const isAdmin = req.user?.role === "admin";
 
       if (!isOwner && !isAdmin) {
         return res
@@ -942,7 +954,7 @@ app.post("/course-feedbacks", (req, res) => {
   );
 });
 
-app.get("/all-complaints", (req, res) => {
+app.get("/all-complaints", requireAdmin, (req, res) => {
   db.query("SELECT * FROM complaints ORDER BY id DESC", (err, data) =>
     err
       ? res.status(500).json({ error: err.message })
@@ -1262,7 +1274,7 @@ app.post("/ban-requests", (req, res) => {
   );
 });
 
-app.put("/ban-requests/:id", async (req, res) => {
+app.put("/ban-requests/:id", requireAdmin, async (req, res) => {
   const { status, studentEmail, instEmail, studentName, courseId } = req.body;
   const promiseDb = db.promise();
   const now = new Date();

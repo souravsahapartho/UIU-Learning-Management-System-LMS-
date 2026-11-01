@@ -5963,6 +5963,14 @@
         if (savedUser && savedUser !== "undefined") {
           try {
             currentUser = JSON.parse(savedUser);
+            // Admin actions need a login token; sessions saved before tokens
+            // existed must sign in again.
+            if (
+              currentUser.role === "admin" &&
+              !localStorage.getItem("elms_auth_token")
+            ) {
+              throw new Error("Admin session has no login token");
+            }
             setupDashboard(currentUser);
             navigateTo("dashboard");
           } catch (e) {
