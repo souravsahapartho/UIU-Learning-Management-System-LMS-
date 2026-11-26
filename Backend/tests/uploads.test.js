@@ -62,6 +62,8 @@ const login = (e) => fetch(B + "/login", { method: "POST", headers: { "Content-T
   for (const [label, name, type] of [["exe", "a.exe", "application/octet-stream"], ["pdf", "a.pdf", "application/pdf"], ["gif", "a.gif", "image/gif"], ["html", "a.html", "text/html"], ["zip", "a.zip", "application/zip"], ["mp4 name, png type", "a.mp4", "image/png"]]) { n = n0(); r = await post("/upload-chat-media", [f("media", name, type)], TS); t(`chat media: rejected: ${label}`, r.s === 400 && n0() === n); }
   n = n0(); r = await post("/upload-chat-media", [f("media", "big.mp4", "video/mp4", Buffer.alloc(sizes.chat + 1))], TS); t("chat media: over the size cap -> 413", r.s === 413 && n0() === n);
 
+  n = n0(); await post("/upload-chat-media", [f("media", "chat.png", "image/png")], TS); t("chat media: images still go to the chat folder", h.uploads[h.uploads.length - 1].folder === "elms/chat_media");
+
   // Module videos: course owner or admin only, and videos only.
   n = n0(); r = await post("/upload-module-video", [f("moduleVideo", "a.mp4", "video/mp4")], null); t("module video: no token -> 401", r.s === 401 && n0() === n);
   r = await post("/upload-module-video", [f("moduleVideo", "a.mp4", "video/mp4")], TS); t("module video: student -> 403, nothing uploaded", r.s === 403 && n0() === n);
@@ -75,6 +77,7 @@ const login = (e) => fetch(B + "/login", { method: "POST", headers: { "Content-T
   for (const path of ["/upload-course", "/upload-course-with-media"]) {
     n = n0(); r = await post(path, course([f("thumbnail", "t.png", "image/png"), f("video", "v.mp4", "video/mp4")]), TI); t(`${path}: instructor, thumbnail + video accepted`, r.s === 200 && n0() === n + 2);
     const pair = h.uploads.slice(-2); t(`${path}: video goes to the video folder, both get random ids`, pair.some((u) => u.folder === "elms/course_videos" && u.resource_type === "video") && pair.every((u) => /^[0-9a-f-]{36}$/.test(u.public_id)));
+    t(`${path}: thumbnail goes to the course image folder`, pair.some((u) => u.field === "thumbnail" && u.folder === "elms/course_images" && u.resource_type === "image"));
     n = n0(); r = await post(path, course([f("thumbnail", "t.exe", "image/png")]), TI); t(`${path}: bad thumbnail extension -> 400`, r.s === 400 && n0() === n);
     n = n0(); r = await post(path, course([f("thumbnail", "t.mp4", "video/mp4")]), TI); t(`${path}: video in the thumbnail slot -> 400`, r.s === 400 && n0() === n);
     n = n0(); r = await post(path, course([f("video", "v.png", "image/png")]), TI); t(`${path}: image in the video slot -> 400`, r.s === 400 && n0() === n);

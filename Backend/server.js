@@ -136,7 +136,8 @@ const storage = new CloudinaryStorage({
         public_id: crypto.randomUUID(),
         allowed_formats: ["jpg", "png", "jpeg", "webp"],
       };
-    } else if (file.fieldname === "media" || file.mimetype.includes("image")) {
+    } else if (file.fieldname === "media") {
+      // Chat attachments only; course thumbnails go to course_images.
       return {
         folder: "elms/chat_media",
         resource_type: "auto",
