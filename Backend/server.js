@@ -122,7 +122,15 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
-    if (file.mimetype.includes("video")) {
+    if (file.fieldname === "media") {
+      // Chat images and videos; course thumbnails go to course_images.
+      return {
+        folder: "elms/chat_media",
+        resource_type: "auto",
+        public_id: crypto.randomUUID(),
+        allowed_formats: ["jpg", "png", "jpeg", "webp", "mp4", "webm", "mov", "mkv"],
+      };
+    } else if (file.mimetype.includes("video")) {
       return {
         folder: "elms/course_videos",
         resource_type: "video",
@@ -135,14 +143,6 @@ const storage = new CloudinaryStorage({
         resource_type: "image",
         public_id: crypto.randomUUID(),
         allowed_formats: ["jpg", "png", "jpeg", "webp"],
-      };
-    } else if (file.fieldname === "media") {
-      // Chat attachments only; course thumbnails go to course_images.
-      return {
-        folder: "elms/chat_media",
-        resource_type: "auto",
-        public_id: crypto.randomUUID(),
-        allowed_formats: ["jpg", "png", "jpeg", "webp", "mp4", "webm"],
       };
     } else {
       return {
