@@ -123,7 +123,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
     if (file.fieldname === "media") {
-      // Chat attachments only; course thumbnails go to course_images.
+      // Chat images and videos; course thumbnails go to course_images.
       return {
         folder: "elms/chat_media",
         resource_type: "auto",
