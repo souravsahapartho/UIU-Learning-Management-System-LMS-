@@ -64,6 +64,8 @@ const login = (e) => fetch(B + "/login", { method: "POST", headers: { "Content-T
 
   n = n0(); await post("/upload-chat-media", [f("media", "chat.png", "image/png")], TS); t("chat media: images still go to the chat folder", h.uploads[h.uploads.length - 1].folder === "elms/chat_media");
 
+  for (const [name, type] of [["chat.mp4", "video/mp4"], ["chat.webm", "video/webm"], ["chat.mov", "video/quicktime"], ["chat.mkv", "video/x-matroska"]]) { await post("/upload-chat-media", [f("media", name, type)], TS); const u = h.uploads[h.uploads.length - 1]; t(`chat media: ${name} goes to the chat folder`, u.folder === "elms/chat_media" && u.resource_type === "auto" && u.allowed_formats.includes(name.split(".")[1])); }
+
   // Module videos: course owner or admin only, and videos only.
   n = n0(); r = await post("/upload-module-video", [f("moduleVideo", "a.mp4", "video/mp4")], null); t("module video: no token -> 401", r.s === 401 && n0() === n);
   r = await post("/upload-module-video", [f("moduleVideo", "a.mp4", "video/mp4")], TS); t("module video: student -> 403, nothing uploaded", r.s === 403 && n0() === n);
